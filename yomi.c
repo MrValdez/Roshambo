@@ -7,7 +7,8 @@
 extern int *my_history;
 extern int *opp_history;
 
-#define null      0
+#define null            0
+#define maxYomiLayer    3
 
 /////////////////////////////
 
@@ -35,20 +36,19 @@ struct personality
     int respectTreshold;
 };
 
-typedef struct layer
+typedef struct situation
 {
-    int chosenMove;
+    int chosenMove;         // the move to play in the given situation
     int situation;          // a struct to determine the situation. game dependent
     int enemyRespect;       // See onrespect section
     
-    int layerNumber;           // Starts from 0 and ends with 4
-    struct layer* nextLayer;     // nextLayer = null, if layerNumber = 0
-} layer;
+    struct situation* nextLayer;     // nextLayer = null, if layerNumber = 0
+} situation;
 
 typedef struct database
 {
     int size;
-    layer** moves;
+    situation** situations;
 } database;
 
 database* createDatabase();
@@ -66,88 +66,95 @@ void initYomi()
     db = analysisProgram(db);
 }
 
-layer* findCounter(layer* currentLayer)
-{
-    layer* newLayer = (layer*) malloc(sizeof(layer));
-    
-    switch (currentLayer->chosenMove)
+// Given a situation, find for the appropriate counter in the database
+// and add it to its list of possible counters
+situation* findCounter(database* db, situation* currentSituation)
+{    
+    situation* iterSituation;
+    situation* foundCounter = null;
+    int i;
+
+    for (i = 0; i < db->size; i++)
     {
-        case rock:      newLayer->chosenMove = paper;
-                        break;
-        case paper:     newLayer->chosenMove = scissors;
-                        break;
-        case scissors:  newLayer->chosenMove = rock;
-                        break;
+        iterSituation = db->situations[i];
+        if (iterSituation == currentSituation)
+            continue;
+        switch (currentSituation->chosenMove)
+        {
+            case rock:      
+                if (iterSituation->chosenMove == paper)
+                    foundCounter = iterSituation;
+                break;
+            case paper:      
+                if (iterSituation->chosenMove == scissors)
+                    foundCounter = iterSituation;
+                break;
+            case scissors:      
+                if (iterSituation->chosenMove == rock)
+                    foundCounter = iterSituation;
+                break;
+         }
     }
     
-    newLayer->situation = 0;
-    newLayer->enemyRespect = 0;
-    newLayer->layerNumber = currentLayer->layerNumber + 1;
-    
-    if (newLayer->layerNumber < 4)
-    {
-        newLayer->nextLayer = findCounter(newLayer);
-    }
-    else
-        newLayer->nextLayer = null;
-    
-    return newLayer;
+    return foundCounter;
 }
 
 database* createDatabase()
 {
     // Parse all possible moves in a neutral sitatuion (game specific)
     database* db = (database*) malloc(sizeof(database));
-    db->moves = (layer**) malloc(sizeof(layer*));
+    db->situations = (situation**) malloc(sizeof(situation*));
     db->size = 0;
     
-    layer* newLayer;
+    situation* newSituation;
     
-    newLayer = (layer*) malloc(sizeof(layer));
-    newLayer->chosenMove = rock;
-    newLayer->situation = 0;
-    newLayer->enemyRespect = 0;
-    newLayer->layerNumber = 0;
-    newLayer->nextLayer = findCounter(newLayer);
-    db->moves = (layer**) realloc (db->moves, sizeof(layer*) * (db->size + 1));
-    db->moves[db->size] = newLayer;
+    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation->chosenMove = rock;
+    newSituation->situation = 0;
+    newSituation->enemyRespect = 0;
+    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
+    db->situations[db->size] = newSituation;
     db->size = db->size + 1;
 
-    newLayer = (layer*) malloc(sizeof(layer));
-    newLayer->chosenMove = paper;
-    newLayer->situation = 0;
-    newLayer->enemyRespect = 0;
-    newLayer->layerNumber = 0;
-    newLayer->nextLayer = findCounter(newLayer);
-    db->moves = (layer**) realloc (db->moves, sizeof(layer*) * (db->size + 1));
-    db->moves[db->size] = newLayer;
+    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation->chosenMove = paper;
+    newSituation->situation = 0;
+    newSituation->enemyRespect = 0;
+    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
+    db->situations[db->size] = newSituation;
     db->size = db->size + 1;
  
-    newLayer = (layer*) malloc(sizeof(layer));
-    newLayer->chosenMove = scissors;
-    newLayer->situation = 0;
-    newLayer->enemyRespect = 0;
-    newLayer->layerNumber = 0;
-    newLayer->nextLayer = findCounter(newLayer);
-    db->moves = (layer**) realloc (db->moves, sizeof(layer*) * (db->size + 1));
-    db->moves[db->size] = newLayer;
+    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation->chosenMove = scissors;
+    newSituation->situation = 0;
+    newSituation->enemyRespect = 0;
+    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
+    db->situations[db->size] = newSituation;
     db->size = db->size + 1;
- 
+
+    int i;
+    for (i = 0; i < db->size; i++)
+    {
+        situation* currentSituation = db->situations[i];
+        currentSituation->nextLayer = findCounter(db, currentSituation);
+    }
     return db;
 }
 
 void debugShow(database* db)
 {
-    int i, j;
+    int i, j, layerNumber;
     for (i = 0; i < db->size; i++)
     {
-        layer* currentMove = db->moves[i];
-        layer* currentLayer = currentMove;
-        while (currentLayer != null)
+        situation* currentSituation = db->situations[i];
+        situation* currentLayer = currentSituation;
+        layerNumber = 0;
+        
+        while (currentLayer != null && layerNumber < maxYomiLayer)
         {
-            printf("%i", currentLayer->layerNumber);
-            for (j = 0; j < 4; j++)
+            for (j = 0; j < layerNumber; j++)
                 printf(" ");
+                
             switch(currentLayer->chosenMove)
             {
                 case rock: printf("rock");
@@ -159,7 +166,9 @@ void debugShow(database* db)
             }
             printf("\n");
             currentLayer = currentLayer->nextLayer;
+            layerNumber++;
         }
+        printf("\n");
     }
 
     printf("**** End of debug print ****\nPress any key to continue...");
