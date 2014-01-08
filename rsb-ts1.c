@@ -86,7 +86,7 @@ int srandom()
 //************************************
 
 extern int yomi();
-
+extern void initYomi();
 
 #define maxrandom 2147483648.0   /* 2^31, ratio range is 0 <= r < 1 */
 
@@ -5592,6 +5592,7 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* YOMI AI */
     strcpy(crosstable[i].name, "Yomi AI");
     crosstable[i].pname = yomi;
+    initYomi();
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* nuthin' beats rock */
