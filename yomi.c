@@ -196,6 +196,7 @@ void debugShow(database* db)
     {
         situation* currentSituation = db->situations[i];
         debugSituation(currentSituation, 0);
+        printf("\n");
     }
 
     printf("**** End of debug print ****\nPress any key to continue...");
