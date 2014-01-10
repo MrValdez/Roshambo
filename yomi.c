@@ -42,8 +42,8 @@ typedef struct situation
     int situation;          // a struct to determine the situation. game dependent
     int enemyRespect;       // See onrespect section
     
-    int nextLayerSize;
-    struct situation** nextLayer;
+    int counterSize;
+    struct situation** counter;
 } situation;
 
 typedef struct database
@@ -110,11 +110,27 @@ void findCounter(database* db, situation* currentSituation)
                     currentSituation->chosenMove,
                     foundCounter->chosenMove);
 */
-            currentSituation->nextLayer = (situation**) realloc (currentSituation->nextLayer, sizeof(situation*) * (currentSituation->nextLayerSize + 1));
-            currentSituation->nextLayer[currentSituation->nextLayerSize] = foundCounter;
-            currentSituation->nextLayerSize++;
+            currentSituation->counter = (situation**) realloc (currentSituation->counter, sizeof(situation*) * (currentSituation->counterSize + 1));
+            currentSituation->counter[currentSituation->counterSize] = foundCounter;
+            currentSituation->counterSize++;
         }
     }
+}
+
+// Create a blank situation to be filled up
+situation *createSituation(database* db)
+{
+    situation* newSituation;
+    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation->situation = 0;
+    newSituation->enemyRespect = 0;
+    newSituation->counterSize = 0;
+    newSituation->counter = (situation**) malloc (sizeof(situation*));
+    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
+    db->situations[db->size] = newSituation;
+    db->size = db->size + 1;
+    
+    return newSituation;
 }
 
 database* createDatabase()
@@ -126,35 +142,14 @@ database* createDatabase()
     
     situation* newSituation;
     
-    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation = createSituation(db);
     newSituation->chosenMove = rock;
-    newSituation->situation = 0;
-    newSituation->enemyRespect = 0;
-    newSituation->nextLayerSize = 0;
-    newSituation->nextLayer = (situation**) malloc (sizeof(situation*));
-    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
-    db->situations[db->size] = newSituation;
-    db->size = db->size + 1;
 
-    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation = createSituation(db);
     newSituation->chosenMove = paper;
-    newSituation->situation = 0;
-    newSituation->enemyRespect = 0;
-    newSituation->nextLayerSize = 0;
-    newSituation->nextLayer = (situation**) malloc (sizeof(situation*));
-    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
-    db->situations[db->size] = newSituation;
-    db->size = db->size + 1;
  
-    newSituation = (situation*) malloc(sizeof(situation));
+    newSituation = createSituation(db);
     newSituation->chosenMove = scissors;
-    newSituation->situation = 0;
-    newSituation->enemyRespect = 0;
-    newSituation->nextLayerSize = 0;
-    newSituation->nextLayer = (situation**) malloc (sizeof(situation*));
-    db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
-    db->situations[db->size] = newSituation;
-    db->size = db->size + 1;
 
     int i;
     for (i = 0; i < db->size; i++)
@@ -188,9 +183,9 @@ void debugSituation(situation* currentLayer, int layerNumber)
     printf("\n");
 
     int k;
-    for (k = 0; k < currentLayer->nextLayerSize; k++)
+    for (k = 0; k < currentLayer->counterSize; k++)
     {
-        debugSituation(currentLayer->nextLayer[k], layerNumber + 1);
+        debugSituation(currentLayer->counter[k], layerNumber + 1);
     }
 }
 
