@@ -205,7 +205,7 @@ void debugShow(database* db)
 
     printf("**** End of debug print ****\nPress any key to continue...");
     getch();
-            exit(1);
+    exit(1);
 }
 
 struct database* trainingProgram(struct database* db)
