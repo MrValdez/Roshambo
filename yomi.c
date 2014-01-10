@@ -163,7 +163,7 @@ database* createDatabase()
 
 void debugSituation(situation* currentLayer, int layerNumber)
 {    
-    if (currentLayer == null || layerNumber >= maxYomiLayer)
+    if (currentLayer == null || layerNumber > maxYomiLayer)
         return;
 
     int j;
