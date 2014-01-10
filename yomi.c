@@ -4,8 +4,8 @@
 #define paper     1
 #define scissors  2
 
-extern int *my_history;
-extern int *opp_history;
+extern int my_history[];
+extern int opp_history[];
 
 #define null            0
 #define maxYomiLayer    3
@@ -39,7 +39,8 @@ struct personality
 typedef struct situation
 {
     int chosenMove;         // the move to play in the given situation
-    int situation;          // a struct to determine the situation. game dependent
+    char situation[1000];       // a struct to determine the situation. game dependent
+    int successRate;        // Can go up or down if the AI wins or lose a turn, respectively. Default: 0
     int enemyRespect;       // See onrespect section
     
     int counterSize;
@@ -52,6 +53,8 @@ typedef struct database
     situation** situations;
 } database;
 
+database* YomiDatabase;     // holds the database in global variable. because c.
+
 database* createDatabase();
 database* trainingProgram(database* db);
 database* analysisProgram(database* db);
@@ -61,11 +64,14 @@ void debugShow(database* db);
 void initYomi()
 {
     database* db = createDatabase();
-    debugShow(db);
+    //debugShow(db);
 
     db = trainingProgram(db);
     db = analysisProgram(db);
+    
+    YomiDatabase = db;
 }
+
 
 // Given a situation, find the appropriate counter in the database
 // and add it to its list of possible counters
@@ -122,10 +128,15 @@ situation *createSituation(database* db)
 {
     situation* newSituation;
     newSituation = (situation*) malloc(sizeof(situation));
-    newSituation->situation = 0;
+    //newSituation->situation[0] = "";
+    strcpy(newSituation->situation, "RPS");
+
+    newSituation->successRate = 0;
     newSituation->enemyRespect = 0;
+
     newSituation->counterSize = 0;
     newSituation->counter = (situation**) malloc (sizeof(situation*));
+
     db->situations = (situation**) realloc (db->situations, sizeof(situation*) * (db->size + 1));
     db->situations[db->size] = newSituation;
     db->size = db->size + 1;
@@ -212,15 +223,98 @@ struct database* analysisProgram(struct database* db)
 {
 }
 
+typedef int bool;
+const int True = 1;
+const int False = 0;
+
 int yomi()
 {
-    my_history[0];                  // number of games
-    my_history[my_history[0]];     // my previous move
+    int currentTurn = my_history[0]; // number of games
+    my_history[my_history[0]];       // my previous move
 
     opp_history[0];                  // opponent's number of games
-    opp_history[opp_history[0]];    // opponent's previous move
+    opp_history[opp_history[0]];     // opponent's previous move
 
-    int move = random() % 3;
+    int move;
+    
+    /*
+    // 1. Evaluate current situation.
+            Situations can exist multiple times but with different moves. 
+    // 2. Rank situations + moves.
+    // 3. Select move.
+    // 4. Update situation chosen by outcome of turn.
+            Flag this as new for farther training
+    */
 
+    database* db = YomiDatabase;        // Get the global database
+
+    // 1.
+    char* currentSituation = null;
+    
+    if (currentTurn == 0)
+    {
+        // Game is starting. Use a favored move
+        currentSituation = null;
+
+
+     currentSituation = (char*) malloc (sizeof(char*));
+     currentSituation[0] = "R";
+    }
+    else
+    {
+        // Situations for Roshambo is alternation of enemy and player moves
+        currentSituation = (char*) malloc (sizeof(char*) * (currentTurn * 2));
+        int i;
+        
+        for (i = 0; i < currentTurn; i+=2)
+        {
+            currentSituation[i + 0] = my_history[i];
+            currentSituation[i + 1] = opp_history[i];
+        }
+    }
+    
+
+    // 2.
+    int responsesCount = 0;
+    situation** responses = (situation**) malloc (sizeof(situation**));
+
+    int i;
+    situation* possibleResponse;
+    for (i = 0; i < db->size; i++)
+    {
+        possibleResponse = db->situations[i];
+        
+        // Roshambo specific scenario check
+        bool considerResponse = True;
+        int j;
+        for (j = 0; currentSituation[j] != 0; j++)
+        {
+            if (possibleResponse->situation[j] != currentSituation[j])
+            {
+                considerResponse = False;
+                break;
+            }
+        }
+        
+        if (considerResponse)            
+        {        
+            responses = (situation**) realloc (responses, sizeof(situation*) * (responsesCount + 1));
+            responses[responsesCount] = possibleResponse;
+            responsesCount++;
+        }
+    }
+    
+    // if no response was found, then we need to record the new situation
+    if (responsesCount == 0)
+    {
+        //todo:
+        responses[0] = db->situations[0];
+    }
+    
+    // select our move
+    move = responses[0]->chosenMove;
+    printf("%i", move);
+    
+    //todo: free(situation);
     return(move);
 }
