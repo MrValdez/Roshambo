@@ -75,6 +75,13 @@ void initYomi()
     YomiDatabase = db;
 }
 
+// Add counter to current situation's list of counters
+void addCounter(situation* currentSituation, situation* foundCounter)
+{
+    currentSituation->counter = (situation**) realloc (currentSituation->counter, sizeof(situation*) * (currentSituation->counterSize + 1));
+    currentSituation->counter[currentSituation->counterSize] = foundCounter;
+    currentSituation->counterSize++;
+}
 
 // Given a situation, find the appropriate counter in the database
 // and add it to its list of possible counters
@@ -119,9 +126,7 @@ void findCounter(database* db, situation* currentSituation)
                     currentSituation->chosenMove,
                     foundCounter->chosenMove);
 */
-            currentSituation->counter = (situation**) realloc (currentSituation->counter, sizeof(situation*) * (currentSituation->counterSize + 1));
-            currentSituation->counter[currentSituation->counterSize] = foundCounter;
-            currentSituation->counterSize++;
+            addCounter(currentSituation, foundCounter);
         }
     }
 }
@@ -154,30 +159,6 @@ database* createDatabase()
     database* db = (database*) malloc(sizeof(database));
     db->situations = (situation**) malloc(sizeof(situation*));
     db->size = 0;
-    
-    situation* newSituation;
-    
-    newSituation = createSituation(db);
-    newSituation->chosenMove = rock;
-    newSituation->situation[0] = scissors;
-    newSituation->situationSize++;
-
-    newSituation = createSituation(db);
-    newSituation->chosenMove = paper;
-    newSituation->situation[0] = rock;
-    newSituation->situationSize++;
-     
-    newSituation = createSituation(db);
-    newSituation->chosenMove = scissors;
-    newSituation->situation[0] = paper;
-    newSituation->situationSize++;
-    
-    int i;
-    for (i = 0; i < db->size; i++)
-    {
-        situation* currentSituation = db->situations[i];
-        findCounter(db, currentSituation);
-    }
     
     return db;
 }
@@ -225,12 +206,39 @@ void debugShow(database* db)
     exit(1);
 }
 
+// Game dependent
 struct database* trainingProgram(struct database* db)
 {
+    situation* newSituation;
+    
+    newSituation = createSituation(db);
+    newSituation->chosenMove = rock;
+    newSituation->situation[0] = scissors;
+    newSituation->situationSize++;
+
+    newSituation = createSituation(db);
+    newSituation->chosenMove = paper;
+    newSituation->situation[0] = rock;
+    newSituation->situationSize++;
+     
+    newSituation = createSituation(db);
+    newSituation->chosenMove = scissors;
+    newSituation->situation[0] = paper;
+    newSituation->situationSize++;
+    
+    int i;
+    for (i = 0; i < db->size; i++)
+    {
+        situation* currentSituation = db->situations[i];
+        findCounter(db, currentSituation);
+    }
+    
+    return db;
 }
 
 struct database* analysisProgram(struct database* db)
 {
+    return db;
 }
 
 typedef int bool;
