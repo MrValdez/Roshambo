@@ -39,7 +39,10 @@ struct personality
 typedef struct situation
 {
     int chosenMove;         // the move to play in the given situation
-    char situation[1000];       // a struct to determine the situation. game dependent
+    
+    int situationSize;          // holds how large the situation array is
+    int situation[1000];       // a struct to determine the situation. game dependent
+    
     int successRate;        // Can go up or down if the AI wins or lose a turn, respectively. Default: 0
     int enemyRespect;       // See onrespect section
     
@@ -128,8 +131,9 @@ situation *createSituation(database* db)
 {
     situation* newSituation;
     newSituation = (situation*) malloc(sizeof(situation));
+    newSituation->situationSize = 0;
     //newSituation->situation[0] = "";
-    strcpy(newSituation->situation, "RPS");
+    //strcpy(newSituation->situation, "RPS");
 
     newSituation->successRate = 0;
     newSituation->enemyRespect = 0;
@@ -155,13 +159,19 @@ database* createDatabase()
     
     newSituation = createSituation(db);
     newSituation->chosenMove = rock;
+    newSituation->situation[0] = scissors;
+    newSituation->situationSize++;
 
     newSituation = createSituation(db);
     newSituation->chosenMove = paper;
- 
+    newSituation->situation[0] = rock;
+    newSituation->situationSize++;
+     
     newSituation = createSituation(db);
     newSituation->chosenMove = scissors;
-
+    newSituation->situation[0] = paper;
+    newSituation->situationSize++;
+    
     int i;
     for (i = 0; i < db->size; i++)
     {
@@ -250,54 +260,60 @@ int yomi()
 
     // 1.
     char* currentSituation = null;
+    int currentSituationSize = currentTurn;
     
     if (currentTurn == 0)
     {
         // Game is starting. Use a favored move
         currentSituation = null;
 
-
-     currentSituation = (char*) malloc (sizeof(char*));
-     currentSituation[0] = "R";
+currentSituation = (char*) malloc (sizeof(char*));
+currentSituation[0] = paper;
+currentSituationSize = 1;
     }
     else
     {
         // Situations for Roshambo is alternation of enemy and player moves
         currentSituation = (char*) malloc (sizeof(char*) * (currentTurn * 2));
-        int i;
+        currentSituationSize = currentTurn;
+        int i, j;
         
-        for (i = 0; i < currentTurn; i+=2)
+        j = 0;
+        for (i = currentSituationSize; i > 0; i--)
         {
-            currentSituation[i + 0] = my_history[i];
-            currentSituation[i + 1] = opp_history[i];
+            currentSituation[j+0] = my_history[i];
+            currentSituation[j+1] = opp_history[i];
+            j+=2;
         }
     }
-    
 
     // 2.
     int responsesCount = 0;
     situation** responses = (situation**) malloc (sizeof(situation**));
-
+    
     int i;
     situation* possibleResponse;
+    bool considerResponse;
     for (i = 0; i < db->size; i++)
     {
         possibleResponse = db->situations[i];
         
         // Roshambo specific scenario check
-        bool considerResponse = True;
-        int j;
-        for (j = 0; currentSituation[j] != 0; j++)
+        considerResponse = True;
+        int j, k;
+        for (k = 0, j = 0; k < possibleResponse->situationSize && j < currentSituationSize; k++, j++)
         {
-            if (possibleResponse->situation[j] != currentSituation[j])
+            if (possibleResponse->situation[j] != currentSituation[k])
             {
                 considerResponse = False;
                 break;
             }
+//            printf("\n%i == %i", possibleResponse->situation[j], currentSituation[k]);
+//            getch();
         }
         
-        if (considerResponse)            
-        {        
+        if (considerResponse == True)            
+        { 
             responses = (situation**) realloc (responses, sizeof(situation*) * (responsesCount + 1));
             responses[responsesCount] = possibleResponse;
             responsesCount++;
@@ -311,9 +327,19 @@ int yomi()
         responses[0] = db->situations[0];
     }
     
-    // select our move
+    //3.
+    /* debug
+    printf("\nPossible responses found: %i", responsesCount);
+    int j;
+    for (i=0; i< responsesCount; i++)
+    {
+        for (j = 0; j < responses[i]->situationSize; j++)
+            printf("%i %i %i\n", i, j, responses[i]->situation[j]);
+    }
+    getch();    */
+
     move = responses[0]->chosenMove;
-    printf("%i", move);
+//    printf("%i", move);
     
     //todo: free(situation);
     return(move);
