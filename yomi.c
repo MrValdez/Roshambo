@@ -281,8 +281,8 @@ currentSituationSize = 1;
         j = 0;
         for (i = currentSituationSize; i > 0; i--)
         {
-            currentSituation[j+0] = my_history[i];
-            currentSituation[j+1] = opp_history[i];
+            currentSituation[j+0] = opp_history[i];
+            currentSituation[j+1] = my_history[i];
             j+=2;
         }
     }
@@ -308,8 +308,6 @@ currentSituationSize = 1;
                 considerResponse = False;
                 break;
             }
-//            printf("\n%i == %i", possibleResponse->situation[j], currentSituation[k]);
-//            getch();
         }
         
         if (considerResponse == True)            
@@ -328,7 +326,8 @@ currentSituationSize = 1;
     }
     
     //3.
-    /* debug
+    move = responses[0]->chosenMove;
+        /* debug
     printf("\nPossible responses found: %i", responsesCount);
     int j;
     for (i=0; i< responsesCount; i++)
@@ -336,10 +335,8 @@ currentSituationSize = 1;
         for (j = 0; j < responses[i]->situationSize; j++)
             printf("%i %i %i\n", i, j, responses[i]->situation[j]);
     }
+    printf("Prediction: %i Chosen move: %i\n", responses[0]->situation[0], move);
     getch();    */
-
-    move = responses[0]->chosenMove;
-//    printf("%i", move);
     
     //todo: free(situation);
     return(move);
