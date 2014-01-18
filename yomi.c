@@ -312,7 +312,6 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     if (victory)
     {
         currentSituation->successRate += (int) (currentSituation->successRate * 0.5f);
-        currentSituation->successRate = currentSituation->successRate > 100 ? 100 : currentSituation->successRate;
         
         if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
             currentSituation->enemyRespect = personality->initialDisrespectOnOpponent;
@@ -322,13 +321,23 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     else
     {
         currentSituation->successRate -= (int) (currentSituation->successRate * 0.25f);
-        currentSituation->successRate = currentSituation->successRate < -100 ? -100 : currentSituation->successRate;
         
         if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
             currentSituation->enemyRespect = personality->initialRespectOnOpponent;
         else
             currentSituation->enemyRespect += personality->respectModifier;
+
+        //printf("Lost at turn %i\n", currentTurn);
+        //printf("respect value:%i\n", currentSituation->enemyRespect);
+//    getch();
     }
+
+    // limit from -100 to +100
+    currentSituation->successRate = currentSituation->successRate > 100 ? 100 : currentSituation->successRate;
+    currentSituation->successRate = currentSituation->successRate < -100 ? -100 : currentSituation->successRate;
+    currentSituation->enemyRespect = currentSituation->enemyRespect > 100 ? 100 : currentSituation->enemyRespect;
+    currentSituation->enemyRespect = currentSituation->enemyRespect < -100 ? -100 : currentSituation->enemyRespect;
+
     
     // find the counter that the opponent used
     // todo: we could have multiple situations where the move is used. gather all of them and predict which
@@ -364,10 +373,10 @@ int yomi()
     // 5. (Because of how the test suite works, 5 is run first to check the previous turn
     if (currentTurn > 0)
     {
-        int lastTurn = currentTurn - 1;
+        int lastTurn = currentTurn;
         int lastPlayerMove = my_history[lastTurn];
         int lastOppMove = opp_history[lastTurn];
-        //evaluateTurn(db, lastTurn, lastPlayerMove, lastOppMove);
+        evaluateTurn(db, lastTurn, lastPlayerMove, lastOppMove);
     }
     
     int move = selectSituation(db, currentTurn)->chosenMove;
@@ -529,5 +538,45 @@ situation* selectSituation(database* db, int currentTurn)
     
     
     //4.
-    return responses[0];
+    situation* chosenResponse = responses[0];
+    
+    // Check if the AI should respect the opponent
+    if (chosenResponse->enemyRespect > personality->respectTreshold)
+    {
+//    printf("I have respect");getch();
+        // We respect that our opponent will counter our move. So we select the counter to their counter
+        if (chosenResponse->counterSize)
+        {
+            situation *enemyChoice;
+            int currentSuccessRateAsCounter = -1000;
+            int i;
+
+            // Yomi Layer 1
+            // in case of multiple counters, evaluate what are more likely to be chosen based on successRateAsCounter.
+            // todo: make this into a list
+            for (i = 0; i < chosenResponse->counterSize; i++)
+            {
+                if (chosenResponse->counter[i]->successRateAsCounter > currentSuccessRateAsCounter)
+                {
+                    enemyChoice = chosenResponse->counter[i];
+                    currentSuccessRateAsCounter = enemyChoice->successRateAsCounter;
+                }
+            }
+
+            // evaluate the likely responses and see if we need to go to the Yomi Layer 2.
+            // todo: make this into a list
+            situation *yomiLayer2 = enemyChoice->counter[0];
+        
+            chosenResponse = yomiLayer2;
+        }
+        else
+        {
+            // we don't know how to react. Normally, the trainer program will cover this, but in case something unexpected happens, we should have a neutral answer (or a safe answer?)
+           // todo: implement above algo
+           chosenResponse = db->situations[0];           
+        }
+    }
+    
+
+    return chosenResponse;
 }
