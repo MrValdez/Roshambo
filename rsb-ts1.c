@@ -5594,11 +5594,11 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     crosstable[i].pname = yomi;
     initYomi();
 
-#ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* nuthin' beats rock */
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
 
+#ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
     strcpy(crosstable[i].name, "R-P-S 20-20-60");
     crosstable[i].pname = r226bot;
@@ -5624,11 +5624,11 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* choose according to the digits of Pi */
     strcpy(crosstable[i].name, "* Pi");
     crosstable[i].pname = pibot;
-#endif /* end of Comment_Block */
 
     i++;  /* repeat last play infrequently */
     strcpy(crosstable[i].name, "* Switch A Lot");
     crosstable[i].pname = switchalot;
+#endif /* end of Comment_Block */
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* flatter than normal distribution (cf human) */
