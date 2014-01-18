@@ -211,6 +211,17 @@ struct database* trainingProgram(struct database* db)
 {
     situation* newSituation;
     
+    // neutral game
+    newSituation = createSituation(db);
+    newSituation->chosenMove = rock;
+
+    newSituation = createSituation(db);
+    newSituation->chosenMove = paper;
+     
+    newSituation = createSituation(db);
+    newSituation->chosenMove = scissors;
+
+    // counter situations
     newSituation = createSituation(db);
     newSituation->chosenMove = rock;
     newSituation->situation[0] = scissors;
@@ -258,9 +269,10 @@ int yomi()
     /*
     // 1. Evaluate current situation.
             Situations can exist multiple times but with different moves. 
-    // 2. Rank situations + moves.
-    // 3. Select move.
-    // 4. Update situation chosen by outcome of turn.
+    // 2. Find current situation in database.
+    // 3. Rank situations.
+    // 4. Choose move based on situation and opponent variables (likelihood of countering, etc).
+    // 5. Update situation chosen by outcome of turn.
             Flag this as new for farther training
     */
 
@@ -272,12 +284,9 @@ int yomi()
     
     if (currentTurn == 0)
     {
-        // Game is starting. Use a favored move
+        // Game is starting. Use a favored move.
         currentSituation = null;
-
-currentSituation = (char*) malloc (sizeof(char*));
-currentSituation[0] = paper;
-currentSituationSize = 1;
+        currentSituationSize = 0;
     }
     else
     {
@@ -302,49 +311,125 @@ currentSituationSize = 1;
     int i;
     situation* possibleResponse;
     bool considerResponse;
-    for (i = 0; i < db->size; i++)
+
+    if (currentSituation == null)
     {
-        possibleResponse = db->situations[i];
-        
-        // Roshambo specific scenario check
-        considerResponse = True;
-        int j, k;
-        for (k = 0, j = 0; k < possibleResponse->situationSize && j < currentSituationSize; k++, j++)
+        // first move.
+        for (i = 0; i < db->size; i++)
         {
-            if (possibleResponse->situation[j] != currentSituation[k])
-            {
-                considerResponse = False;
-                break;
+            possibleResponse = db->situations[i];
+            
+            if (possibleResponse->situationSize == 0)
+            {            
+                responses = (situation**) realloc (responses, sizeof(situation*) * (responsesCount + 1));
+                responses[responsesCount] = possibleResponse;
+                responsesCount++;
             }
         }
-        
-        if (considerResponse == True)            
-        { 
-            responses = (situation**) realloc (responses, sizeof(situation*) * (responsesCount + 1));
-            responses[responsesCount] = possibleResponse;
-            responsesCount++;
+    }
+    else
+    {
+        for (i = 0; i < db->size; i++)
+        {
+            possibleResponse = db->situations[i];
+            
+            // Roshambo specific scenario check
+            considerResponse = True;
+            int j, k;
+            for (k = 0, j = 0; k < possibleResponse->situationSize && j < currentSituationSize; k++, j++)
+            {
+                if (possibleResponse->situation[j] != currentSituation[k])
+                {
+                    considerResponse = False;
+                    break;
+                }
+            }
+            
+            if (considerResponse == True)            
+            { 
+                responses = (situation**) realloc (responses, sizeof(situation*) * (responsesCount + 1));
+                responses[responsesCount] = possibleResponse;
+                responsesCount++;
+            }
         }
     }
     
     // if no response was found, then we need to record the new situation
     if (responsesCount == 0)
     {
+//        printf("no responses found.");getch();
         //todo:
         responses[0] = db->situations[0];
     }
-    
+   
     //3.
-    move = responses[0]->chosenMove;
-        /* debug
-    printf("\nPossible responses found: %i", responsesCount);
+    {
+        situation** tempResponses = responses;
+        situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+        situation* current = null;
+        
+        /////////////////////
+        // Sort by more defined situations
+        
+        // find max
+        int i, j = 0;
+        int max = 0;
+        for (i = 0; i < responsesCount; i++)
+        {
+            current = tempResponses[i];
+
+            if (current->situationSize > max)
+                max = current->situationSize;
+        }
+
+//        printf("\nMAX%i %i\n\n", max, responsesCount);
+        for (; max >= 0; max--)
+        {
+            for (i = 0; i < responsesCount; i++)
+            {
+                current = tempResponses[i];
+//                printf("%i == %i\n", current->situationSize, max);
+                if (current->situationSize == max)
+                {
+//                    printf("added %i\n", j);
+                    sortedResponses[j++] = current;
+                }
+            }
+        }
+        
+        responses = sortedResponses;
+    }
+
+    //debug
+    if (responsesCount > 1)
+    {
+ //           printf ("%i responses found", responsesCount);getch();
+    }
+    /* debug
+    printf("\nPossible responses found: %i\n", responsesCount);
     int j;
     for (i=0; i< responsesCount; i++)
     {
+        printf("%io.%i\n", i, responses[i]->situationSize);
         for (j = 0; j < responses[i]->situationSize; j++)
+        {
             printf("%i %i %i\n", i, j, responses[i]->situation[j]);
+        }
     }
     printf("Prediction: %i Chosen move: %i\n", responses[0]->situation[0], move);
-    getch();    */
+    getch();    //*/
+    
+
+    ////////////////////
+    
+    
+    ////////////////////
+    // Sort by etc
+    ////////////////////
+    
+    
+    //4.
+    move = responses[0]->chosenMove;
     
     //todo: free(situation);
     return(move);
