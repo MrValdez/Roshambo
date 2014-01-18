@@ -26,15 +26,15 @@ The Scenario Aanalysis program will rank each move of its effectiveness, given a
 */
 
 // In theory, changing just the personality should change the behavior of the AI
-struct personality
+typedef struct sPersonality
 {
     // See onrespect section
     int initialRespectOnOpponent;     
     int initialDisrespectOnOpponent;
-    float RespectModifier;
-    float DisrespectModifier;
+    float respectModifier;
+    float disrespectModifier;
     int respectTreshold;
-};
+} sPersonality;
 
 typedef struct situation
 {
@@ -44,6 +44,9 @@ typedef struct situation
     int situation[1000];       // a struct to determine the situation. game dependent
     
     int successRate;        // Can go up or down if the AI wins or lose a turn, respectively. Default: 0
+    int successRateAsCounter;  // refers to how likely this will be used as a counter move (higher yomi layer)
+    
+    #define UNINITIALIZED_VALUE -1000
     int enemyRespect;       // See onrespect section
     
     int counterSize;
@@ -56,17 +59,22 @@ typedef struct database
     situation** situations;
 } database;
 
-database* YomiDatabase;     // holds the database in global variable. because c.
+//global variables. because c
+database* YomiDatabase;
+sPersonality* personality;
 
 database* createDatabase();
+sPersonality* developPersonality();
 database* trainingProgram(database* db);
 database* analysisProgram(database* db);
 void debugShow(database* db);
+situation* selectSituation(database* db, int currentTurn);
 
 // Initiailize the yomi AI
 void initYomi()
 {
     database* db = createDatabase();
+    personality = developPersonality();
     //debugShow(db);
 
     db = trainingProgram(db);
@@ -141,7 +149,8 @@ situation *createSituation(database* db)
     //strcpy(newSituation->situation, "RPS");
 
     newSituation->successRate = 0;
-    newSituation->enemyRespect = 0;
+    newSituation->successRateAsCounter = 0;
+    newSituation->enemyRespect = UNINITIALIZED_VALUE;
 
     newSituation->counterSize = 0;
     newSituation->counter = (situation**) malloc (sizeof(situation*));
@@ -161,6 +170,20 @@ database* createDatabase()
     db->size = 0;
     
     return db;
+}
+
+sPersonality* developPersonality()
+{
+    sPersonality *Personality = (sPersonality*) malloc(sizeof(sPersonality));
+
+    // Dummy data
+    Personality->initialRespectOnOpponent = 100;
+    Personality->initialDisrespectOnOpponent = 30;
+    Personality->respectModifier = 30;
+    Personality->disrespectModifier = 10;
+    Personality->respectTreshold = 70;
+
+    return Personality;
 }
 
 void debugSituation(situation* currentLayer, int layerNumber)
@@ -256,6 +279,68 @@ typedef int bool;
 const int True = 1;
 const int False = 0;
 
+void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
+{
+    //Check if we are victorious on turn.
+    //Ties are not considered as a victory.
+    // If we won, 
+    //  increase successRate
+    //  If successRate is not 100, 
+    //   decrease enemyRespect by Personality.disrespectModifier
+    // If we lost,
+    //  decrease successRate
+    //  increase RespectModifier by Personality.respectModifier
+    //  check if situation evaluated has an entry with the opponent's counter
+    //   if it doesn't exist, add the new situation (flag for saving into database)
+    //   update successRateForCounter.
+    
+    //todo: the successrate should be averaged, not added or multiplied
+    
+    bool victory = 
+        (playerMove == rock && oppMove == scissors) ||
+        (playerMove == paper && oppMove == rock) ||
+        (playerMove == scissors && oppMove == paper);
+        
+    situation *currentSituation = selectSituation(db, currentTurn);   // a optimization is to store the last situation in memory instead of recomputing it.
+    if (currentSituation == null)
+    {
+        //Something is wrong.
+        printf ("fatal error: selectSituation is not deterministic");
+        return;
+    }
+   
+    if (victory)
+    {
+        currentSituation->successRate += (int) (currentSituation->successRate * 0.5f);
+        currentSituation->successRate = currentSituation->successRate > 100 ? 100 : currentSituation->successRate;
+        
+        if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
+            currentSituation->enemyRespect = personality->initialDisrespectOnOpponent;
+        else
+            currentSituation->enemyRespect -= personality->disrespectModifier;
+    }
+    else
+    {
+        currentSituation->successRate -= (int) (currentSituation->successRate * 0.25f);
+        currentSituation->successRate = currentSituation->successRate < -100 ? -100 : currentSituation->successRate;
+        
+        if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
+            currentSituation->enemyRespect = personality->initialRespectOnOpponent;
+        else
+            currentSituation->enemyRespect += personality->respectModifier;
+    }
+    
+    // find the counter that the opponent used
+    // todo: we could have multiple situations where the move is used. gather all of them and predict which
+    int i;
+    for (i = 0; i < currentSituation->counterSize; i++)
+    {
+        situation *counter = currentSituation->counter[i];
+        counter->successRateAsCounter += 1;
+    } 
+}
+
+
 int yomi()
 {
     int currentTurn = my_history[0]; // number of games
@@ -263,8 +348,6 @@ int yomi()
 
     opp_history[0];                  // opponent's number of games
     opp_history[opp_history[0]];     // opponent's previous move
-
-    int move;
     
     /*
     // 1. Evaluate current situation.
@@ -278,6 +361,23 @@ int yomi()
 
     database* db = YomiDatabase;        // Get the global database
 
+    // 5. (Because of how the test suite works, 5 is run first to check the previous turn
+    if (currentTurn > 0)
+    {
+        int lastTurn = currentTurn - 1;
+        int lastPlayerMove = my_history[lastTurn];
+        int lastOppMove = opp_history[lastTurn];
+        //evaluateTurn(db, lastTurn, lastPlayerMove, lastOppMove);
+    }
+    
+    int move = selectSituation(db, currentTurn)->chosenMove;
+
+    //todo: free(situation);
+    return move;    
+}
+
+situation* selectSituation(database* db, int currentTurn)
+{
     // 1.
     char* currentSituation = null;
     int currentSituationSize = currentTurn;
@@ -403,7 +503,7 @@ int yomi()
     //debug
     if (responsesCount > 1)
     {
- //           printf ("%i responses found", responsesCount);getch();
+//          printf ("%i responses found", responsesCount);getch();
     }
     /* debug
     printf("\nPossible responses found: %i\n", responsesCount);
@@ -416,7 +516,7 @@ int yomi()
             printf("%i %i %i\n", i, j, responses[i]->situation[j]);
         }
     }
-    printf("Prediction: %i Chosen move: %i\n", responses[0]->situation[0], move);
+//    printf("Prediction: %i Chosen move: %i\n", responses[0]->situation[0]->chosenMove, responses[0]->chosenMove);
     getch();    //*/
     
 
@@ -429,8 +529,5 @@ int yomi()
     
     
     //4.
-    move = responses[0]->chosenMove;
-    
-    //todo: free(situation);
-    return(move);
+    return responses[0];
 }
