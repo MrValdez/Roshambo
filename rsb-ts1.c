@@ -47,7 +47,8 @@
 #define verbose3  1          /* print result of each match */
 
 // My Changes
-#define players   7          /* number of players in the tournament */
+#define players   6          /* number of players in the tournament */
+//#define players   29          /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 
 /*  Full History Structure (global variables, accessible to the
@@ -73,7 +74,7 @@ typedef struct {
 //********************************BUG FIXXXXXXX
 int random()
 {
-  return 4;
+  return rand();
 }
 void bzero(short int *foo, int size)
 {
@@ -5594,11 +5595,11 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     crosstable[i].pname = yomi;
     initYomi();
 
+#ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* nuthin' beats rock */
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
 
-#ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
     strcpy(crosstable[i].name, "R-P-S 20-20-60");
     crosstable[i].pname = r226bot;
