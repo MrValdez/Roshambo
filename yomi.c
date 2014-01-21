@@ -84,7 +84,7 @@ database* trainingProgram(database* db);
 database* analysisProgram(database* db);
 void debugShow(database* db);
 situation* selectSituation(database* db, int currentTurn);
-char* evaluateCurrentSituation(int currentTurn, int* currentSituationSize);
+int* evaluateCurrentSituation(int currentTurn, int* currentSituationSize);
 
 // Initiailize the yomi AI
 void initYomi()
@@ -231,12 +231,17 @@ void debugShow(database* db)
     exit(1);
 }
 
-void debugPrintSituation(char* situation, int size)
+void debugPrintSituation(int* situation, int size)
 {
 #ifdef DEBUG
     int i;
     for (i = 0; i < size; i++)
-        printf("%i", situation[i]);
+    {
+        if (situation[i] == wildcard)
+            printf("_");
+        else
+            printf("%i", situation[i]);
+    }
 #endif
 }
 
@@ -273,7 +278,7 @@ struct database* trainingProgram(struct database* db)
     newSituation->situationSize = 1;
 
     // test situation:
-    newSituation = createSituation(db);
+/*    newSituation = createSituation(db);
     newSituation->chosenMove = paper;
     newSituation->situation[0] = rock;
     newSituation->situation[1] = rock;
@@ -282,7 +287,7 @@ struct database* trainingProgram(struct database* db)
     newSituation->situation[4] = scissors;
     newSituation->situation[5] = scissors;
     newSituation->situationSize = 6;
-
+*/
     return db;
 }
 
@@ -398,7 +403,7 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
 void createYomiLayers(database* db, int currentTurn, situation* currentSituation, int oppMove)
 {
     int situationSize;
-    char* situationLastTurn = evaluateCurrentSituation(currentTurn - 1, &situationSize);
+    int* situationLastTurn = evaluateCurrentSituation(currentTurn - 1, &situationSize);
 
     situation* yomiLayer0 = findSituation(db, situationLastTurn, situationSize);
     if (yomiLayer0 == null)
@@ -578,9 +583,9 @@ int yomi()
     return move;    
 }
 
-char* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
+int* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
 {
-    char* currentSituation = null;
+    int* currentSituation = null;
 
     if (currentTurn == 0)
     {
@@ -596,7 +601,7 @@ char* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
         int startTurn = currentTurn > 6 ? currentTurn - 6 : 0;
         int maxTurn = currentTurn;
         *currentSituationSize = (maxTurn - startTurn) * 2;
-        currentSituation = (char*) malloc (sizeof(char*) * (*currentSituationSize));
+        currentSituation = (char*) malloc (sizeof(int*) * (*currentSituationSize));
                 
         j = 0;
         for (i = startTurn; i < maxTurn; i++)
@@ -695,8 +700,8 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
     return considerResponse;
 }
 
-situation* applyYomi(database* db, situation* chosenResponse)
-{    
+situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumber)
+{   
     // Check if the Yomi AI should respect the opponent on current situation
     if (chosenResponse->enemyRespect > personality->respectTreshold)
     {
@@ -732,21 +737,15 @@ situation* applyYomi(database* db, situation* chosenResponse)
                 chosenResponse = yomiLayer2;
 #ifdef DEBUG4   
                 int j;
-                printf("Situation for enemy (Yomi layer 1): \n");
-                for (j = 0; j < enemyChoice->situationSize; j++)
-                    printf("%i", enemyChoice->situation[j]);
+                printf("Situation for enemy (Yomi layer %i): ", passNumber);
+                debugPrintSituation(enemyChoice->situation, enemyChoice->situationSize);
                 printf("\n");
                 
-                printf("Situation for our counter (Yomi Layer 2): \n");
-                for (j = 0; j < chosenResponse->situationSize; j++)
-                    printf("%i", chosenResponse->situation[j]);
+                printf("Situation for our counter (Yomi Layer %i): ", passNumber + 2);
+                debugPrintSituation(chosenResponse->situation, chosenResponse->situationSize);
                 printf("\n");
                 printf(" Chosen move: %i\n", chosenResponse->chosenMove);
-                getch();//*/
 #endif
-
-                // evaluate the likely responses and see if we need to go to the Yomi Layer 3.
-                // todo: implement yomi layer 3 and 4
             }
         }
         else
@@ -761,12 +760,18 @@ situation* applyYomi(database* db, situation* chosenResponse)
     return chosenResponse;
 }
 
+situation* applyYomi(database* db, situation* chosenResponse)
+{    
+    chosenResponse = checkYomiLayer(db, chosenResponse, 1);     // Yomi layer 1 - 2
+    chosenResponse = checkYomiLayer(db, chosenResponse, 3);     // Yomi layer 3 - 4   
+}
+
 situation* selectSituation(database* db, int currentTurn)
 {
     // 1.
     int currentSituationSize;
 
-    char* currentSituation = evaluateCurrentSituation(currentTurn, &currentSituationSize);
+    int* currentSituation = evaluateCurrentSituation(currentTurn, &currentSituationSize);
 
     // 2.
     int responsesCount = 0;
@@ -939,30 +944,38 @@ situation* selectSituation(database* db, int currentTurn)
     
     //4.
     situation* chosenResponse = responses[0];
-
+    situation* originalResponse = chosenResponse;
+    
     chosenResponse = applyYomi(db, chosenResponse);
     
 #ifdef DEBUG
-    if (responsesCount > 1)
-    {
-//          printf ("%i responses found", responsesCount);getch();
-    }
-    /* debug
-*/    printf("\nPossible responses found (sorted): %i\n", responsesCount);
+    debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
+    printf("\nPossible responses found (sorted): %i\n", responsesCount);
     int j;
     for (i=0; i< responsesCount; i++)
     {
         printf("response #%i situation:", i, responses[i]->situationSize);
-        for (j = 0; j < responses[i]->situationSize; j++)
-        {
-            printf("%i",responses[i]->situation[j]);
-        }
-        if (chosenResponse == responses[i])
+        debugPrintSituation (responses[i]->situation, responses[i]->situationSize);
+        if (originalResponse == responses[i])
             printf(" (chosen) ");
         printf("\nmove: %i", responses[i]->chosenMove);
         printf(" respect: %i", responses[i]->enemyRespect);
         printf(" successRate: %i", responses[i]->successRate);
         printf("\n");
+    }
+    
+    if (originalResponse != chosenResponse)
+    {
+        for (i=0; i < db->size; i++)
+        {
+            if (db->situations[i] == chosenResponse)
+            {
+                printf("\nFinal yomi layer chosen:");
+                debugPrintSituation (db->situations[i]->situation, db->situations[i]->situationSize);
+                printf("\n");
+                break;
+            }
+        }
     }
 #endif
 
