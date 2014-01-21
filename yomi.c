@@ -10,12 +10,12 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    3
 
-/*#define DEBUG
+#define DEBUG
 #define DEBUG1
 #define DEBUG2
 #define DEBUG3
 #define DEBUG4
-#define DEBUG5*/
+#define DEBUG5
 
 /////////////////////////////
 
@@ -190,13 +190,13 @@ sPersonality* developPersonality()
     sPersonality *Personality = (sPersonality*) malloc(sizeof(sPersonality));
 
     // Dummy data
-    Personality->successRateTreshold = -30;
+    Personality->successRateTreshold = 0;
     
     Personality->initialRespectOnOpponent = 100;
     Personality->initialDisrespectOnOpponent = 30;
     Personality->respectModifier = 30;
     Personality->disrespectModifier = 10;
-    Personality->respectTreshold = 70;
+    Personality->respectTreshold = 20;
 
     return Personality;
 }
@@ -255,6 +255,7 @@ struct database* trainingProgram(struct database* db)
 
     newSituation = createSituation(db);
     newSituation->chosenMove = paper;
+    newSituation->chosenMove = paper;
      
     newSituation = createSituation(db);
     newSituation->chosenMove = scissors;
@@ -263,20 +264,17 @@ struct database* trainingProgram(struct database* db)
     newSituation = createSituation(db);
     newSituation->chosenMove = rock;
     newSituation->situation[0] = scissors;
-    newSituation->situation[1] = scissors;
-    newSituation->situationSize = 2;
+    newSituation->situationSize = 1;
 
     newSituation = createSituation(db);
     newSituation->chosenMove = paper;
     newSituation->situation[0] = rock;
-    newSituation->situation[1] = rock;
-    newSituation->situationSize = 2;
+    newSituation->situationSize = 1;
      
     newSituation = createSituation(db);
     newSituation->chosenMove = scissors;
     newSituation->situation[0] = paper;
-    newSituation->situation[1] = paper;
-    newSituation->situationSize = 2;
+    newSituation->situationSize = 1;
     
     int i;
     for (i = 0; i < db->size; i++)
@@ -362,26 +360,60 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
             currentSituation->enemyRespect += personality->respectModifier;
 
 #ifdef DEBUG
-/*      //Debug
         printf("Lost at turn %i\n", currentTurn);
         printf("choice: %i\n", currentSituation->chosenMove);
         printf("respect value:%i\n", currentSituation->enemyRespect);
         printf("Success rate:%i\n", currentSituation->successRate);
-    getch();//*/
+    getch();//
 #endif
 
         //todo: this is the training program
         // create a new situation (if none exists) that is the counter to this turn's situation. 
-        situation* foundCounter = createSituation(db);
+        
+        int size = 0;
+        char* situationData = evaluateCurrentSituation(currentTurn, &size);
+
+        situation* foundCounter = null;
+        int i, j;
+
+        for (i = 0; i < db->size; i++)
+        {
+#ifdef DEBUG
+            printf(".%i %i.", size, db->situations[i]->situationSize);
+#endif
+            if (size != db->situations[i]->situationSize)
+                continue;
+
+            char *compare = db->situations[i]->situation;
+            for (j = 0; j < size; j++)
+                if (compare != situationData[i])
+                {
+#ifdef DEBUG
+                    printf("%i %i\n", compare, situationData[i]);
+#endif
+                    continue;
+                }
+            // we found a situation that is the same as the current situation
+#ifdef DEBUG
+            printf("we found a situation that is the same as the current situation\n");
+#endif
+            foundCounter = db->situations[i];
+            break;
+        }
+
+        if (foundCounter == null)
+        {
+            // situation not found in database. add it.
+#ifdef DEBUG
+            printf("situation not found in database. add it.");
+#endif        
+            foundCounter = createSituation(db);
+        }
+        
         foundCounter->successRateAsCounter = 50;    //todo: should be personality value
         foundCounter->chosenMove = -1;
         addCounter(currentSituation, foundCounter);
-
-        int size = 0;
-        char* situationData = evaluateCurrentSituation(currentTurn, &size);
          
-        int i;
-
 #ifdef DEBUG
         printf("\nnew situation created for:");
         for (i = 0; i < size; i++)
@@ -454,6 +486,10 @@ int yomi()
     opp_history[0];                  // opponent's number of games
     opp_history[opp_history[0]];     // opponent's previous move
     
+    // Initialize database
+/*    if (currentTurn == 0)
+        initYomi();
+*/
     /*
     // 1. Evaluate current situation.
             Situations can exist multiple times but with different moves. 
@@ -461,7 +497,7 @@ int yomi()
     //    Ignore situations with low success rate
     //    Use different checks to consider if situation is in play
     // 3. Rank situations.
-    // 4. Choose move based on situation and opponent variables (likelihood of countering, etc).
+    // 4. Apply yomi. Choose move based on situation and opponent variables (likelihood of countering, etc).
     // 5. Update situation chosen by outcome of turn.
             Flag this as new for farther training
     */
@@ -558,7 +594,7 @@ bool compareSituation_Equal(situation* possibleResponse, char* currentSituation,
         return False;
 
     int i;
-    for (i = 0; i < currentSituationSize; i++)
+    for (i = 0; i < currentSituationSize; i+=2)
         if (possibleResponse->situation[i] != currentSituation[i])
             return False;
 
@@ -621,6 +657,73 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
     
     return considerResponse;
 }
+
+situation* applyYomi(database* db, situation* chosenResponse)
+{    
+    // Check if the Yomi AI should respect the opponent on current situation
+    if (chosenResponse->enemyRespect > personality->respectTreshold)
+    {
+#ifdef DEBUG4
+        printf("Considering to counter\n", chosenResponse->counterSize);
+#endif
+
+        // We respect that our opponent will counter our move. So we select their counter (yomi layer 1)
+        if (chosenResponse->counterSize)
+        {
+            situation *enemyChoice;
+            int currentSuccessRateAsCounter = -1000;
+            int i;
+
+            // Yomi Layer 1
+            // in case of multiple counters, evaluate what are more likely to be chosen based on successRateAsCounter.
+            // todo: make this into a list
+            for (i = 0; i < chosenResponse->counterSize; i++)
+            {
+                if (chosenResponse->counter[i]->successRateAsCounter > currentSuccessRateAsCounter)
+                {
+                    enemyChoice = chosenResponse->counter[i];
+                    currentSuccessRateAsCounter = enemyChoice->successRateAsCounter;
+                }
+            }
+
+            // Now that we have the enemy's yomi layer 1, we look for our counter (Yomi layer 2)
+            if (enemyChoice->counterSize)
+            {
+                // todo: make this into a list
+                situation *yomiLayer2 = enemyChoice->counter[0];
+            
+                chosenResponse = yomiLayer2;
+#ifdef DEBUG4   
+                int j;
+                printf("Situation for enemy (Yomi layer 1): \n");
+                for (j = 0; j < enemyChoice->situationSize; j++)
+                    printf("%i", enemyChoice->situation[j]);
+                printf("\n");
+                
+                printf("Situation for our counter (Yomi Layer 2): \n");
+                for (j = 0; j < chosenResponse->situationSize; j++)
+                    printf("%i", chosenResponse->situation[j]);
+                printf("\n");
+                printf("Chosen move: %i\n", chosenResponse->chosenMove);
+                getch();//*/
+#endif
+
+                // evaluate the likely responses and see if we need to go to the Yomi Layer 3.
+                // todo: implement yomi layer 3 and 4
+            }
+        }
+        else
+        {
+            // we don't know how to react. Normally, the trainer program will cover this, but in case something unexpected happens, we should have a neutral answer (or a safe answer?)
+           // todo: implement above algo
+           chosenResponse = db->situations[0];           
+           //chosenResponse = null;
+        }
+    }
+
+    return chosenResponse;
+}
+
 situation* selectSituation(database* db, int currentTurn)
 {
     // 1.
@@ -656,23 +759,55 @@ situation* selectSituation(database* db, int currentTurn)
         for (i = 0; i < db->size; i++)
         {
             possibleResponse = db->situations[i];
+
+            bool alreadyConsidered = False;
+            int j;
+            for (j=0; j< responsesCount; j++)
+            {
+                //check if response has already been considered
+                //possible to happen if we consider counters prior to this turn
+                if (possibleResponse == responses[j])
+                {
+                    alreadyConsidered = True;
+                    continue;
+                }
+            }
+            if (alreadyConsidered) continue;
             
             considerResponse = True;
             
-            // ignore low success rate scenarios
-            if (possibleResponse->successRate < personality->successRateTreshold)
+            // for low success rate scenarios, use the counter
+/*            if (possibleResponse->successRate < personality->successRateTreshold)
             {
-                considerResponse = False;
-
 #ifdef DEBUG2
-            printf("Response has low successrate (%i). ignoring situation", possibleResponse->successRate, possibleResponse->chosenMove);
+            printf("Response situation: ", possibleResponse->successRate, possibleResponse->chosenMove);
             int i;
             for (i = 0; i < possibleResponse->situationSize; i++)
                  printf("%i", possibleResponse->situation[i]);
+            printf(" has low successrate (%i).", possibleResponse->successRate, possibleResponse->chosenMove);
             printf("\n");
 #endif
-            }            
+                if (possibleResponse->counterSize)
+                {
+#ifdef DEBUG2
+                    printf("%i counters found\n", possibleResponse->counterSize);
+#endif
 
+                    //todo: some situations have multiple counters. consider them as well
+                    possibleResponse = possibleResponse->counter[0];
+                    
+#ifdef DEBUG2
+                    printf("Adding counters:\n");
+                    
+                    int i;
+                    printf(" Counter move: %i Situation:", possibleResponse->chosenMove);
+                    for (i = 0; i < possibleResponse->situationSize; i++)
+                         printf("%i", possibleResponse->situation[i]);
+                    printf("\n");
+#endif                
+                }
+            }            
+*/
             if (possibleResponse->situationSize < 2 && possibleResponse->situationSize >= 0)
             {
                 // Neutral situations
@@ -735,15 +870,15 @@ situation* selectSituation(database* db, int currentTurn)
         /////////////////////
         // Sort by more defined situations
         
-        // find max
+        // find max rankThisTurn
         int i, j = 0;
         int max = 0;
         for (i = 0; i < responsesCount; i++)
         {
             current = tempResponses[i];
 
-            if (current->situationSize > max)
-                max = current->situationSize;
+            if (current->rankThisTurn > max)
+                max = current->rankThisTurn;
         }
 
         for (; max >= 0; max--)
@@ -751,7 +886,7 @@ situation* selectSituation(database* db, int currentTurn)
             for (i = 0; i < responsesCount; i++)
             {
                 current = tempResponses[i];
-                if (current->situationSize == max)
+                if (current->rankThisTurn == max)
                 {
                     sortedResponses[j++] = current;
                 }
@@ -769,54 +904,8 @@ situation* selectSituation(database* db, int currentTurn)
     
     //4.
     situation* chosenResponse = responses[0];
-    
-    // Check if the AI should respect the opponent on current situation
-    if (chosenResponse->enemyRespect > personality->respectTreshold)
-    {
-        // We respect that our opponent will counter our move. So we select the counter to their counter (yomi layer 2)
-        if (chosenResponse->counterSize)
-        {
-            situation *enemyChoice;
-            int currentSuccessRateAsCounter = -1000;
-            int i;
 
-            // Yomi Layer 1
-            // in case of multiple counters, evaluate what are more likely to be chosen based on successRateAsCounter.
-            // todo: make this into a list
-            for (i = 0; i < chosenResponse->counterSize; i++)
-            {
-                if (chosenResponse->counter[i]->successRateAsCounter > currentSuccessRateAsCounter)
-                {
-                    enemyChoice = chosenResponse->counter[i];
-                    currentSuccessRateAsCounter = enemyChoice->successRateAsCounter;
-                }
-            }
-            chosenResponse = enemyChoice;
-#ifdef DEBUG4            
-            printf("Layer 1 chosen\n");
-#endif
-#if 0
-tofix:            
-            if (enemyChoice->counterSize)
-            {
-                // evaluate the likely responses and see if we need to go to the Yomi Layer 2.
-                // todo: make this into a list
-                situation *yomiLayer2 = enemyChoice->counter[0];
-            
-                chosenResponse = yomiLayer2;
-                printf("Turn %i\n", currentTurn);
-                printf("Chosen %i\n", chosenResponse->chosenMove);
-                printf("Layer 2 time");getch();//*/
-            }
-#endif
-        }
-        else
-        {
-            // we don't know how to react. Normally, the trainer program will cover this, but in case something unexpected happens, we should have a neutral answer (or a safe answer?)
-           // todo: implement above algo
-           chosenResponse = db->situations[0];           
-        }
-    }
+    chosenResponse = applyYomi(db, chosenResponse);
     
 #ifdef DEBUG
     if (responsesCount > 1)
@@ -835,7 +924,10 @@ tofix:
         }
         if (chosenResponse == responses[i])
             printf(" (chosen) ");
-        printf("\nmove: %i\n", responses[i]->chosenMove);
+        printf("\nmove: %i", responses[i]->chosenMove);
+        printf(" respect: %i", responses[i]->enemyRespect);
+        printf(" successRate: %i", responses[i]->successRate);
+        printf("\n");
     }
 #endif
 
