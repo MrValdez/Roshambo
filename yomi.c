@@ -1,8 +1,10 @@
 // RoShamBo Tournament Test Suite structures
 
-#define rock      0
-#define paper     1
-#define scissors  2
+#define rock        0
+#define paper       1
+#define scissors    2
+//wildcard is ? and is an unknown element or a prediction flag
+#define wildcard    -1
 
 extern int my_history[];
 extern int opp_history[];
@@ -106,52 +108,29 @@ void addCounter(situation* currentSituation, situation* foundCounter)
     currentSituation->counterSize++;
 }
 
-// Given a situation, find the appropriate counter in the database
-// and add it to its list of possible counters
-// Question: If a counter can't be found, what should the AI do?
-void findCounter(database* db, situation* currentSituation)
+// Find a situation string in the database and return it.
+// todo: its possible to have multiple situations found. return a list
+situation* findSituation(database* db, char* Situation, int situationSize)
 {    
     situation* iterSituation;
-    int i;
+    int i, j;
 
     // Check the entire database
     for (i = 0; i < db->size; i++)
     {
-        situation* foundCounter = null;
-        
         iterSituation = db->situations[i];
-        if (iterSituation == currentSituation)
-            // Don't check a situation against itself.
-            continue;
-            
-        // Look for a counter and temporary assign the
-        // move+situation to foundCounter
-        switch (currentSituation->chosenMove)
-        {
-            case rock:      
-                if (iterSituation->chosenMove == paper)
-                    foundCounter = iterSituation;
-                break;
-            case paper:      
-                if (iterSituation->chosenMove == scissors)
-                    foundCounter = iterSituation;
-                break;
-            case scissors:      
-                if (iterSituation->chosenMove == rock)
-                    foundCounter = iterSituation;
-                break;
-        }
         
-        // Add the counter to the pool
-        if (foundCounter != null)
+        if (iterSituation->situationSize != situationSize)
+            continue;
+        
+        for (j = 0; j < iterSituation->situationSize; j++)
         {
-/*            printf("counter found for %i: %i\n", 
-                    currentSituation->chosenMove,
-                    foundCounter->chosenMove);
-*/
-            addCounter(currentSituation, foundCounter);
+            if (iterSituation->situation[j] != Situation[j])
+                return iterSituation;
         }
     }
+    
+    return null;
 }
 
 // Create a blank situation to be filled up
@@ -244,6 +223,15 @@ void debugShow(database* db)
     exit(1);
 }
 
+void debugPrintSituation(char* situation, int size)
+{
+#ifdef DEBUG
+    int i;
+    for (i = 0; i < size; i++)
+        printf("%i", situation[i]);
+#endif
+}
+
 // Game dependent
 struct database* trainingProgram(struct database* db)
 {
@@ -275,14 +263,6 @@ struct database* trainingProgram(struct database* db)
     newSituation->chosenMove = scissors;
     newSituation->situation[0] = paper;
     newSituation->situationSize = 1;
-    
-    int i;
-    for (i = 0; i < db->size; i++)
-    {
-        situation* currentSituation = db->situations[i];
-        /*todo: do we need this?
-        //findCounter(db, currentSituation);*/
-    }
 
     // test situation:
     newSituation = createSituation(db);
@@ -296,6 +276,36 @@ struct database* trainingProgram(struct database* db)
     newSituation->situationSize = 6;
 
     return db;
+}
+
+situation* findCounter(database* db, situation *attackingSituation)
+{
+    int moveToCounterSituation = (attackingSituation->chosenMove + 1) % 3; //todo: roshambo specific.
+    int i;
+
+    for (i = 0; i < db->size; i++)
+    {
+        situation *currentSituation = db->situations[i];
+        
+/*      do we need this?  
+        // we only check neutral moves
+        if (currentSituation->situationSize > 2)
+        {
+#ifdef DEBUG
+            printf("skipping move: %i\n", currentSituation->chosenMove);
+#endif
+            continue;
+        } */
+        
+        // in roshambo, we only need to account for the last move in the situation
+        if (currentSituation->situation[currentSituation->situationSize - 1] == attackingSituation->situation[attackingSituation->situationSize - 1])
+        {
+            //todo: what if we have multiple counters?
+            return currentSituation;
+        }
+    }
+
+    return null;
 }
 
 struct database* analysisProgram(struct database* db)
@@ -360,16 +370,106 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
             currentSituation->enemyRespect += personality->respectModifier;
 
 #ifdef DEBUG
-        printf("Lost at turn %i\n", currentTurn);
-        printf("choice: %i\n", currentSituation->chosenMove);
-        printf("respect value:%i\n", currentSituation->enemyRespect);
-        printf("Success rate:%i\n", currentSituation->successRate);
-    getch();//
+        printf("Lost. Updating situation ", currentTurn);
+        debugPrintSituation(currentSituation->situation, currentSituation->situationSize);
+        printf(":\n");
+        printf(" Success rate:%i\n", currentSituation->successRate);
+        printf(" Enemy respect value:%i\n", currentSituation->enemyRespect);
 #endif
 
         //todo: this is the training program
         // create a new situation (if none exists) that is the counter to this turn's situation. 
         
+        int situationSize;
+        char* situationLastTurn = evaluateCurrentSituation(currentTurn - 1, &situationSize);
+        situation* yomiLayer1 = findSituation(db, situationLastTurn, situationSize);
+        int i;
+
+        //todo: check each yomiLayer1 situation and see if the move that the enemy played this turn is there
+        //      if not, create a new situation with the opponent's point of view
+        if (yomiLayer1 == null || yomiLayer1->chosenMove != oppMove)
+        {
+#ifdef DEBUG
+            printf("\nCreating new situation for yomi layer 1\n");
+#endif
+        
+            // create new situation
+            yomiLayer1 = createSituation(db);
+            yomiLayer1->chosenMove = oppMove;
+ 
+            for (i = 0; i < situationSize; i++)
+            {
+                yomiLayer1->situation[i] = situationLastTurn[i];
+            }
+            yomiLayer1->situationSize = situationSize;
+
+            yomiLayer1->successRateAsCounter += 50;    //todo: should be personality value
+
+            addCounter(currentSituation, yomiLayer1);
+        }
+
+#ifdef DEBUG
+        printf("Yomi layer 1 (");
+        debugPrintSituation(yomiLayer1->situation, yomiLayer1->situationSize);
+        printf("):\n Chosen move: %i.\n", yomiLayer1->chosenMove);
+#endif
+    
+        //todo: add wildcard prediction to findcountersituation* yomiLayer2 = findCounter(db, yomiLayer1);
+        situation* yomiLayer2 = null;
+        
+        if (yomiLayer2 == null)
+        {
+#ifdef DEBUG
+            printf("\nCreating new situation for yomi layer 2\n");
+#endif
+
+            // We did not find this counter situation in our database. Let's make one.
+            //copy situation from YomiLayer1 and put in layer2 but add the prediction flag for player's choice
+            yomiLayer2 = createSituation(db);
+            yomiLayer2->chosenMove = (oppMove + 1) % 3; //todo: very roshambo specific.
+
+            i = 0;
+            for (i = 0; i < situationSize; i++)
+            {
+                yomiLayer2->situation[i] = situationLastTurn[i];
+            }
+            
+            // add the prediction flag
+            yomiLayer2->situation[i++] = wildcard;
+            yomiLayer2->situation[i++] = oppMove;     
+            yomiLayer2->situationSize = i;
+            yomiLayer2->successRateAsCounter += 50;    //todo: should be personality value
+            
+            addCounter(yomiLayer1, yomiLayer2);
+        }
+        
+#ifdef DEBUG
+        printf("Yomi layer 2 (");
+        debugPrintSituation(yomiLayer2->situation, yomiLayer2->situationSize);
+        printf(")\n Chosen move: %i.\n\n", yomiLayer2->chosenMove);
+#endif
+
+        //check if yomiLayer1 has yomiLayer2 as its counter. If not, add it
+        bool isInCounterList = False;
+        for (i = 0; i < yomiLayer1->counterSize; i++)
+        {
+            if (yomiLayer1->counter[i] == yomiLayer2)
+            {
+                isInCounterList = True;
+                break;
+            }
+        }
+        
+        if (isInCounterList == False)
+        {
+#ifdef DEBUG      
+            printf("adding yomi layer 2 as counter to yomi layer 1");
+#endif            
+            addCounter(yomiLayer1, yomiLayer2);
+        }
+
+//////////////////
+/*        
         int size = 0;
         char* situationData = evaluateCurrentSituation(currentTurn, &size);
 
@@ -458,6 +558,7 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
             printf("\nNo counter found for losing situation!\n");
             getch();
         }
+*/        
     }
 
     // limit from -100 to +100
@@ -664,7 +765,7 @@ situation* applyYomi(database* db, situation* chosenResponse)
     if (chosenResponse->enemyRespect > personality->respectTreshold)
     {
 #ifdef DEBUG4
-        printf("Considering to counter\n", chosenResponse->counterSize);
+        printf("Respecting the opponent to counter move\n", chosenResponse->counterSize);
 #endif
 
         // We respect that our opponent will counter our move. So we select their counter (yomi layer 1)
@@ -704,7 +805,7 @@ situation* applyYomi(database* db, situation* chosenResponse)
                 for (j = 0; j < chosenResponse->situationSize; j++)
                     printf("%i", chosenResponse->situation[j]);
                 printf("\n");
-                printf("Chosen move: %i\n", chosenResponse->chosenMove);
+                printf(" Chosen move: %i\n", chosenResponse->chosenMove);
                 getch();//*/
 #endif
 
@@ -827,13 +928,11 @@ situation* selectSituation(database* db, int currentTurn)
                 int j, k;
                 
 #ifdef DEBUG2
-         //debug to see the comparisions done
+                //debug to see the comparisions done
                 printf("\nComparing the ff situations: \n");
-                for (j = 0; j < possibleResponse->situationSize; j++)
-                     printf("%i", possibleResponse->situation[j]);
+                debugPrintSituation(possibleResponse->situation, possibleResponse->situationSize);
                 printf("\n");
-                for (k = 0, j = 0; k < currentSituationSize; k++, j++)
-                     printf("%i", currentSituation[k]);
+                debugPrintSituation(currentSituation, currentSituationSize);
                 printf("\n");//*/
 #endif
 
