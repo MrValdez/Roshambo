@@ -126,8 +126,16 @@ situation* findSituation(database* db, char* Situation, int situationSize)
         for (j = 0; j < iterSituation->situationSize; j++)
         {
             if (iterSituation->situation[j] != Situation[j])
-                return iterSituation;
+            {
+                iterSituation = null;
+                break;
+            }
         }
+        
+        if (iterSituation == null)
+            continue;
+        
+        return iterSituation;
     }
     
     return null;
@@ -317,6 +325,113 @@ typedef int bool;
 const int True = 1;
 const int False = 0;
 
+situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, situation* previousYomiLayer, char *situationLastTurn, int situationLastTurnSize)
+{
+    //todo: add wildcard prediction to findcounter
+    //situation* newYomiLayer = findCounter(db, yomiLayer1);
+    //situation* newYomiLayer = findSituation(db, previousYomiLayer->situation, previousYomiLayer->situationSize);
+
+    situation* newYomiLayer = null;    
+    int oppMove = previousYomiLayer->chosenMove;
+    if (newYomiLayer == null || previousYomiLayer->chosenMove != oppMove)
+    {
+#ifdef DEBUG
+        printf("\nCreating new situation for yomi layer %i\n", layerNumber);
+#endif
+
+        //We did not find this counter situation in our database. Let's make one.
+        //copy situation from previous yomi layer and put in this layer but add the prediction flag for player's choice
+        newYomiLayer = createSituation(db);
+        
+        //todo: very roshambo specific.
+        newYomiLayer->chosenMove = (oppMove + 1) % 3; 
+        
+        int i = 0;
+        for (i = 0; i < previousYomiLayer->situationSize; i++)
+        {
+            newYomiLayer->situation[i] = previousYomiLayer->situation[i];
+        }
+        
+        if (layerNumber == 1)
+            // the yomi AI's move exist in yomi layer 1 because we lost to it (that is why we are here)
+            newYomiLayer->situation[i++] = previousYomiLayer->chosenMove;
+        else
+            // add the prediction flag
+            newYomiLayer->situation[i++] = wildcard;
+        
+        newYomiLayer->situation[i++] = oppMove;     
+        newYomiLayer->situationSize = i;
+        newYomiLayer->successRateAsCounter += 50;    //todo: should be personality value
+        
+        addCounter(previousYomiLayer, newYomiLayer);
+    }
+    
+#ifdef DEBUG
+    printf("Yomi layer %i (", layerNumber);
+    debugPrintSituation(newYomiLayer->situation, newYomiLayer->situationSize);
+    printf(")\n Chosen move: %i.\n\n", newYomiLayer->chosenMove);
+#endif
+
+    //check if yomiLayer1 has yomiLayer2 as its counter. If not, add it
+    bool isInCounterList = False;
+    int i;
+    for (i = 0; i < previousYomiLayer->counterSize; i++)
+    {
+        if (previousYomiLayer->counter[i] == newYomiLayer)
+        {
+            isInCounterList = True;
+            break;
+        }
+    }
+    
+    if (isInCounterList == False)
+    {
+#ifdef DEBUG      
+        printf("adding yomi layer %i as counter to yomi layer %i\n", layerNumber, layerNumber - 1);
+#endif            
+        addCounter(previousYomiLayer, newYomiLayer);
+    }
+    
+    return newYomiLayer;
+}
+
+void createYomiLayers(database* db, int currentTurn, situation* currentSituation, int oppMove)
+{
+    int situationSize;
+    char* situationLastTurn = evaluateCurrentSituation(currentTurn - 1, &situationSize);
+
+    situation* yomiLayer0 = findSituation(db, situationLastTurn, situationSize);
+    if (yomiLayer0 == null)
+    {
+#ifdef DEBUG
+        printf("new situation found. creating situation for ");
+        debugPrintSituation(situationLastTurn , situationSize);
+        printf("\n");
+#endif
+
+        yomiLayer0 = createSituation(db);
+        
+        //todo: very roshambo specific.
+        yomiLayer0->chosenMove = oppMove; 
+        
+        int i = 0;
+        for (i = 0; i < situationSize; i++)
+        {
+            yomiLayer0->situation[i] = situationLastTurn[i];
+        }
+        yomiLayer0->situationSize = situationSize;
+    }
+    
+    situation* yomiLayer1 = 
+        createOneYomiLayer(db, currentTurn, 1, yomiLayer0, currentSituation, situationSize);
+    situation* yomiLayer2 = 
+        createOneYomiLayer(db, currentTurn, 2, yomiLayer1, yomiLayer0, situationSize);
+    situation* yomiLayer3 = 
+        createOneYomiLayer(db, currentTurn, 3, yomiLayer2, yomiLayer1, situationSize);
+    situation* yomiLayer4 = 
+        createOneYomiLayer(db, currentTurn, 4, yomiLayer3, yomiLayer2, situationSize);     
+}
+
 void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
 {
     //Check if we are victorious on turn.
@@ -379,186 +494,7 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
 
         //todo: this is the training program
         // create a new situation (if none exists) that is the counter to this turn's situation. 
-        
-        int situationSize;
-        char* situationLastTurn = evaluateCurrentSituation(currentTurn - 1, &situationSize);
-        situation* yomiLayer1 = findSituation(db, situationLastTurn, situationSize);
-        int i;
-
-        //todo: check each yomiLayer1 situation and see if the move that the enemy played this turn is there
-        //      if not, create a new situation with the opponent's point of view
-        if (yomiLayer1 == null || yomiLayer1->chosenMove != oppMove)
-        {
-#ifdef DEBUG
-            printf("\nCreating new situation for yomi layer 1\n");
-#endif
-        
-            // create new situation
-            yomiLayer1 = createSituation(db);
-            yomiLayer1->chosenMove = oppMove;
- 
-            for (i = 0; i < situationSize; i++)
-            {
-                yomiLayer1->situation[i] = situationLastTurn[i];
-            }
-            yomiLayer1->situationSize = situationSize;
-
-            yomiLayer1->successRateAsCounter += 50;    //todo: should be personality value
-
-            addCounter(currentSituation, yomiLayer1);
-        }
-
-#ifdef DEBUG
-        printf("Yomi layer 1 (");
-        debugPrintSituation(yomiLayer1->situation, yomiLayer1->situationSize);
-        printf("):\n Chosen move: %i.\n", yomiLayer1->chosenMove);
-#endif
-    
-        //todo: add wildcard prediction to findcountersituation* yomiLayer2 = findCounter(db, yomiLayer1);
-        situation* yomiLayer2 = null;
-        
-        if (yomiLayer2 == null)
-        {
-#ifdef DEBUG
-            printf("\nCreating new situation for yomi layer 2\n");
-#endif
-
-            // We did not find this counter situation in our database. Let's make one.
-            //copy situation from YomiLayer1 and put in layer2 but add the prediction flag for player's choice
-            yomiLayer2 = createSituation(db);
-            yomiLayer2->chosenMove = (oppMove + 1) % 3; //todo: very roshambo specific.
-
-            i = 0;
-            for (i = 0; i < situationSize; i++)
-            {
-                yomiLayer2->situation[i] = situationLastTurn[i];
-            }
-            
-            // add the prediction flag
-            yomiLayer2->situation[i++] = wildcard;
-            yomiLayer2->situation[i++] = oppMove;     
-            yomiLayer2->situationSize = i;
-            yomiLayer2->successRateAsCounter += 50;    //todo: should be personality value
-            
-            addCounter(yomiLayer1, yomiLayer2);
-        }
-        
-#ifdef DEBUG
-        printf("Yomi layer 2 (");
-        debugPrintSituation(yomiLayer2->situation, yomiLayer2->situationSize);
-        printf(")\n Chosen move: %i.\n\n", yomiLayer2->chosenMove);
-#endif
-
-        //check if yomiLayer1 has yomiLayer2 as its counter. If not, add it
-        bool isInCounterList = False;
-        for (i = 0; i < yomiLayer1->counterSize; i++)
-        {
-            if (yomiLayer1->counter[i] == yomiLayer2)
-            {
-                isInCounterList = True;
-                break;
-            }
-        }
-        
-        if (isInCounterList == False)
-        {
-#ifdef DEBUG      
-            printf("adding yomi layer 2 as counter to yomi layer 1");
-#endif            
-            addCounter(yomiLayer1, yomiLayer2);
-        }
-
-//////////////////
-/*        
-        int size = 0;
-        char* situationData = evaluateCurrentSituation(currentTurn, &size);
-
-        situation* foundCounter = null;
-        int i, j;
-
-        for (i = 0; i < db->size; i++)
-        {
-#ifdef DEBUG
-            printf(".%i %i.", size, db->situations[i]->situationSize);
-#endif
-            if (size != db->situations[i]->situationSize)
-                continue;
-
-            char *compare = db->situations[i]->situation;
-            for (j = 0; j < size; j++)
-                if (compare != situationData[i])
-                {
-#ifdef DEBUG
-                    printf("%i %i\n", compare, situationData[i]);
-#endif
-                    continue;
-                }
-            // we found a situation that is the same as the current situation
-#ifdef DEBUG
-            printf("we found a situation that is the same as the current situation\n");
-#endif
-            foundCounter = db->situations[i];
-            break;
-        }
-
-        if (foundCounter == null)
-        {
-            // situation not found in database. add it.
-#ifdef DEBUG
-            printf("situation not found in database. add it.");
-#endif        
-            foundCounter = createSituation(db);
-        }
-        
-        foundCounter->successRateAsCounter = 50;    //todo: should be personality value
-        foundCounter->chosenMove = -1;
-        addCounter(currentSituation, foundCounter);
-         
-#ifdef DEBUG
-        printf("\nnew situation created for:");
-        for (i = 0; i < size; i++)
-        {
-            foundCounter->situation[i] = situationData[i];
-            printf("%i", situationData[i]);
-        }
-        foundCounter->situationSize = size;       
-        printf("\n");
-#endif        
-        // what beats this situation?
-        // todo: send this to the training program?
-        for (i = 0; i < db->size; i++)
-        {
-            situation *currentSituation = db->situations[i];
-            
-            // we only check neutral moves
-            if (currentSituation->situationSize > 2)
-            {
-#ifdef DEBUG
-                printf("skipping move: %i\n", currentSituation->chosenMove);
-#endif
-                continue;
-            }         
-            
-            // in roshambo, we only need to account for the last move in the situation
-            if (currentSituation->situation[currentSituation->situationSize - 1] == foundCounter->situation[foundCounter->situationSize - 1])
-            {
-                //todo: its possible to have multiple counters in the other games
-                foundCounter->chosenMove = (oppMove + 1) % 3; //todo: very roshambo specific.
-                
-#ifdef DEBUG
-                printf("For this situation, use counter: %i\n", foundCounter->chosenMove);
-#endif
-
-                break;
-            }
-        }
-        
-        if (foundCounter->chosenMove == -1)
-        {
-            printf("\nNo counter found for losing situation!\n");
-            getch();
-        }
-*/        
+        createYomiLayers(db, currentTurn, currentSituation, oppMove);
     }
 
     // limit from -100 to +100
