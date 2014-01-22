@@ -450,6 +450,9 @@ void createYomiLayers(database* db, int currentTurn, situation* currentSituation
         createOneYomiLayer(db, currentTurn, 3, yomiLayer2, yomiLayer1, situationSize);
     situation* yomiLayer4 = 
         createOneYomiLayer(db, currentTurn, 4, yomiLayer3, yomiLayer2, situationSize);     
+    
+    //yomiLayer5 is the same as layer 1, so we loop this back.
+    addCounter(yomiLayer4, yomiLayer1);
 }
 
 void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
