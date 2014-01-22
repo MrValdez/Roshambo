@@ -372,6 +372,10 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
         newYomiLayer->situation[i++] = oppMove;     
         newYomiLayer->situationSize = i;
         newYomiLayer->successRateAsCounter += 50;    //todo: should be personality value
+
+        // layer 1 is an enemy prediction
+        if (layerNumber == 1)
+            newYomiLayer->enemyRespect = 100;
         
         addCounter(previousYomiLayer, newYomiLayer);
     }
@@ -721,7 +725,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
             int i;
 
             // Yomi Layer 1
-            // in case of multiple counters, evaluate what are more likely to be chosen based on successRateAsCounter.
+/*            // in case of multiple counters, evaluate what are more likely to be chosen based on successRateAsCounter.
             // todo: make this into a list
             for (i = 0; i < chosenResponse->counterSize; i++)
             {
@@ -730,7 +734,8 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
                     enemyChoice = chosenResponse->counter[i];
                     currentSuccessRateAsCounter = enemyChoice->successRateAsCounter;
                 }
-            }
+            }*/
+            enemyChoice = chosenResponse;
 
             // Now that we have the enemy's yomi layer 1, we look for our counter (Yomi layer 2)
             if (enemyChoice->counterSize)
@@ -745,7 +750,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
                 debugPrintSituation(enemyChoice->situation, enemyChoice->situationSize);
                 printf("\n");
                 
-                printf("Situation for our counter (Yomi Layer %i): ", passNumber + 2);
+                printf("Situation for our counter (Yomi Layer %i): ", passNumber + 1);
                 debugPrintSituation(chosenResponse->situation, chosenResponse->situationSize);
                 printf("\n");
                 printf(" Chosen move: %i\n", chosenResponse->chosenMove);
