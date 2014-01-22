@@ -240,7 +240,15 @@ void debugPrintSituation(int* situation, int size)
         if (situation[i] == wildcard)
             printf("_");
         else
+        {
             printf("%i", situation[i]);
+            /*switch(situation[i])
+            {
+                case rock:      printf("R"); break;
+                case paper:     printf("P"); break;
+                case scissors:  printf("S"); break;
+            }*/
+        }
     }
 #endif
 }
@@ -357,11 +365,8 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
             newYomiLayer->situation[i] = previousYomiLayer->situation[i];
         }
         
+        // add the prediction flag on the first yomi layer
         if (layerNumber == 1)
-            // the yomi AI's move exist in yomi layer 1 because we lost to it (that is why we are here)
-            newYomiLayer->situation[i++] = previousYomiLayer->chosenMove;
-        else
-            // add the prediction flag
             newYomiLayer->situation[i++] = wildcard;
         
         newYomiLayer->situation[i++] = oppMove;     
@@ -426,6 +431,12 @@ void createYomiLayers(database* db, int currentTurn, situation* currentSituation
         }
         yomiLayer0->situationSize = situationSize;
     }
+    
+#ifdef DEBUG
+    printf("Yomi layer 0 (");
+    debugPrintSituation(yomiLayer0->situation, yomiLayer0->situationSize);
+    printf(")\n Chosen move: %i.\n\n", yomiLayer0->chosenMove);
+#endif
     
     situation* yomiLayer1 = 
         createOneYomiLayer(db, currentTurn, 1, yomiLayer0, currentSituation, situationSize);
