@@ -640,19 +640,17 @@ bool compareSituation_Equal(situation* possibleResponse, char* currentSituation,
     // If both situations are equal, it means this situation has already happened before
     ////////////////////////////
 
-#ifdef DEBUG2
-    printf("checking if both situations are equal\n");
-#endif
     if (possibleResponse->situationSize != currentSituationSize)
         return false;
 
     int i;
-    for (i = 0; i < currentSituationSize; i+=2)
-        if (possibleResponse->situation[i] != currentSituation[i])
+    for (i = 0; i < currentSituationSize; i++)
+        if ((possibleResponse->situation[i] != currentSituation[i]) &&
+            (possibleResponse->situation[i] != wildcard))
             return false;
 
 #ifdef DEBUG2
-    printf("equal situations found\n");
+    printf("  Both situations are equal\n");
 #endif
 
     possibleResponse->rankThisTurn += 50;
@@ -671,8 +669,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
     int difference = currentSituationSize - possibleResponse->situationSize;
     if (abs(difference) < 2)
         return false;
-    
-    
+        
     bool considerResponse = true;
     int offset = (currentSituationSize - possibleResponse->situationSize) - 2;
     if (offset < 2) offset = 2;
@@ -692,9 +689,6 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
         if (possibleResponse->situation[j] != currentSituation[k])
         {
             considerResponse = false;
-#ifdef DEBUG2
-            printf("Don't consider\n");
-#endif                        
             break;
         }
     }
@@ -702,8 +696,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
     if (considerResponse == true)
     {
 #ifdef DEBUG2
-        printf("Consider\n");
-    printf("--=\n");
+        printf("Situation similar to last turn\n");
 #endif
         possibleResponse->rankThisTurn += 30;
     }
@@ -885,7 +878,7 @@ situation* selectSituation(database* db, int currentTurn)
                 debugPrintSituation(possibleResponse->situation, possibleResponse->situationSize);
                 printf("\n");
                 debugPrintSituation(currentSituation, currentSituationSize);
-                printf("\n");//*/
+                printf("\n");
 #endif
 
                 // If we get a single true, consider it.
@@ -893,6 +886,9 @@ situation* selectSituation(database* db, int currentTurn)
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
                     compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize);
+#ifdef DEBUG2
+                printf("=Situation considered=\n\n");
+#endif
             }
             
             if (considerResponse == true)            
