@@ -10,7 +10,7 @@ extern int my_history[];
 extern int opp_history[];
 
 #define null            0
-#define maxYomiLayer    3
+#define maxYomiLayer    4
 
 #define DEBUG
 #define DEBUG1
@@ -327,8 +327,8 @@ struct database* analysisProgram(struct database* db)
 }
 
 typedef int bool;
-const int True = 1;
-const int False = 0;
+const int true = 1;
+const int false = 0;
 
 situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, situation* previousYomiLayer, char *situationLastTurn, int situationLastTurnSize)
 {
@@ -378,18 +378,18 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
 #endif
 
     //check if yomiLayer1 has yomiLayer2 as its counter. If not, add it
-    bool isInCounterList = False;
+    bool isInCounterList = false;
     int i;
     for (i = 0; i < previousYomiLayer->counterSize; i++)
     {
         if (previousYomiLayer->counter[i] == newYomiLayer)
         {
-            isInCounterList = True;
+            isInCounterList = true;
             break;
         }
     }
     
-    if (isInCounterList == False)
+    if (isInCounterList == false)
     {
 #ifdef DEBUG      
         printf("adding yomi layer %i as counter to yomi layer %i\n", layerNumber, layerNumber - 1);
@@ -633,12 +633,12 @@ bool compareSituation_Equal(situation* possibleResponse, char* currentSituation,
     printf("checking if both situations are equal\n");
 #endif
     if (possibleResponse->situationSize != currentSituationSize)
-        return False;
+        return false;
 
     int i;
     for (i = 0; i < currentSituationSize; i+=2)
         if (possibleResponse->situation[i] != currentSituation[i])
-            return False;
+            return false;
 
 #ifdef DEBUG2
     printf("equal situations found\n");
@@ -646,7 +646,7 @@ bool compareSituation_Equal(situation* possibleResponse, char* currentSituation,
 
     possibleResponse->rankThisTurn += 50;
 
-    return True;
+    return true;
 }
 
 bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSituation, int currentSituationSize)
@@ -659,10 +659,10 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
     
     int difference = currentSituationSize - possibleResponse->situationSize;
     if (abs(difference) < 2)
-        return False;
+        return false;
     
     
-    bool considerResponse = True;
+    bool considerResponse = true;
     int offset = (currentSituationSize - possibleResponse->situationSize) - 2;
     if (offset < 2) offset = 2;
 
@@ -680,7 +680,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
 #endif
         if (possibleResponse->situation[j] != currentSituation[k])
         {
-            considerResponse = False;
+            considerResponse = false;
 #ifdef DEBUG2
             printf("Don't consider\n");
 #endif                        
@@ -688,7 +688,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
         }
     }
 
-    if (considerResponse == True)
+    if (considerResponse == true)
     {
 #ifdef DEBUG2
         printf("Consider\n");
@@ -802,7 +802,7 @@ situation* selectSituation(database* db, int currentTurn)
         {
             possibleResponse = db->situations[i];
 
-            bool alreadyConsidered = False;
+            bool alreadyConsidered = false;
             int j;
             for (j=0; j< responsesCount; j++)
             {
@@ -810,13 +810,13 @@ situation* selectSituation(database* db, int currentTurn)
                 //possible to happen if we consider counters prior to this turn
                 if (possibleResponse == responses[j])
                 {
-                    alreadyConsidered = True;
+                    alreadyConsidered = true;
                     continue;
                 }
             }
             if (alreadyConsidered) continue;
             
-            considerResponse = True;
+            considerResponse = true;
             
             // for low success rate scenarios, use the counter
 /*            if (possibleResponse->successRate < personality->successRateTreshold)
@@ -853,7 +853,7 @@ situation* selectSituation(database* db, int currentTurn)
             if (possibleResponse->situationSize < 2 && possibleResponse->situationSize >= 0)
             {
                 // Neutral situations
-                considerResponse = True;
+                considerResponse = true;
             }
             else
             {            
@@ -861,7 +861,7 @@ situation* selectSituation(database* db, int currentTurn)
                 {
                     // This situation can't be considered because it cannot happen under the current situation
                     // (todo: can this be too much prediction? can it be a personality?)
-                    considerResponse = False;
+                    considerResponse = false;
                     continue;
                 }
 
@@ -877,14 +877,14 @@ situation* selectSituation(database* db, int currentTurn)
                 printf("\n");//*/
 #endif
 
-                // If we get a single True, consider it.
+                // If we get a single true, consider it.
                 considerResponse = 
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
                     compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize);
             }
             
-            if (considerResponse == True)            
+            if (considerResponse == true)            
             { 
                 responses = (situation**) realloc (responses, sizeof(situation*) * (responsesCount + 1));
                 responses[responsesCount] = possibleResponse;
