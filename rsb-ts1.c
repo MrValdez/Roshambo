@@ -42,7 +42,7 @@
 #define trials    1000       /* number of turns per match */
 
 //#define fw        4          /* field width for printed numbers */
-#define verbose1  0          /* print result of each trial */
+#define verbose1  1          /* print result of each trial */
 #define verbose2  0          /* print match histories */
 #define verbose3  1          /* print result of each match */
 
@@ -87,7 +87,6 @@ int srandom()
 //************************************
 
 extern int yomi();
-extern void initYomi();
 
 #define maxrandom 2147483648.0   /* 2^31, ratio range is 0 <= r < 1 */
 
