@@ -17,7 +17,7 @@ extern int opp_history[];
 #define DEBUG2
 #define DEBUG3
 #define DEBUG4
-#define DEBUG5
+//#define DEBUG5
 ///*/
 
 /////////////////////////////
@@ -350,7 +350,7 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
     if (newYomiLayer == null || previousYomiLayer->chosenMove != oppMove)
     {
 #ifdef DEBUG
-        printf("\nCreating new situation for yomi layer %i\n", layerNumber);
+        printf("Creating new situation for yomi layer %i\n", layerNumber);
 #endif
 
         //We did not find this counter situation in our database. Let's make one.
@@ -393,7 +393,6 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
             // other layers are basically new scenarios
             newYomiLayer->enemyRespect = UNINITIALIZED_VALUE;
         }
-            newYomiLayer->enemyRespect = 100;   //todo: should be personality value
         
         addCounter(previousYomiLayer, newYomiLayer);
     }
@@ -401,7 +400,7 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
 #ifdef DEBUG
     printf("Yomi layer %i (", layerNumber);
     debugPrintSituation(newYomiLayer->situation, newYomiLayer->situationSize);
-    printf(")\n Chosen move: %i.\n\n", newYomiLayer->chosenMove);
+    printf(")\n Chosen move: %i.\n", newYomiLayer->chosenMove);
 #endif
 
     //check if yomiLayer1 has yomiLayer2 as its counter. If not, add it
@@ -553,6 +552,10 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
         situation *counter = currentSituation->counter[i];
         counter->successRateAsCounter += 1;
     } 
+    
+#ifdef DEBUG
+    printf("======================\n\n");
+#endif
 }
 
 
@@ -1010,7 +1013,7 @@ situation* selectSituation(database* db, int currentTurn)
 #endif
     chosenResponse = applyYomi(db, chosenResponse);
     
-#ifdef DEBUG
+#ifdef DEBUG5
     printf("\n\Final situation:");
     debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
     printf("\nPossible responses found (sorted): %i\n", responsesCount);
