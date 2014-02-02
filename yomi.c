@@ -18,6 +18,7 @@ extern int opp_history[];
 #define DEBUG3
 #define DEBUG4
 #define DEBUG5
+///*/
 
 /////////////////////////////
 
@@ -182,7 +183,7 @@ sPersonality* developPersonality()
     Personality->initialRespectOnOpponent = 100;
     Personality->initialDisrespectOnOpponent = 30;
     Personality->respectModifier = 30;
-    Personality->disrespectModifier = 10;
+    Personality->disrespectModifier = 50;
     Personality->respectTreshold = 20;
 
     return Personality;
@@ -371,11 +372,28 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
         
         newYomiLayer->situation[i++] = oppMove;     
         newYomiLayer->situationSize = i;
-        newYomiLayer->successRateAsCounter += 50;    //todo: should be personality value
-
+        
+        // Layer 1 and 2 have a higher initial counter success rate than layer 3 and 4
+        if (layerNumber <= 2)
+        {
+            newYomiLayer->successRateAsCounter += 50;    //todo: should be personality value
+        }
+        else
+        {
+            newYomiLayer->successRateAsCounter = 0;    //todo: should be personality value
+        }
+        
         // layer 1 is an enemy prediction
         if (layerNumber == 1)
-            newYomiLayer->enemyRespect = 100;
+        {
+            newYomiLayer->enemyRespect = 100;   //todo: should be personality value
+        }
+        else
+        {
+            // other layers are basically new scenarios
+            newYomiLayer->enemyRespect = UNINITIALIZED_VALUE;
+        }
+            newYomiLayer->enemyRespect = 100;   //todo: should be personality value
         
         addCounter(previousYomiLayer, newYomiLayer);
     }
@@ -657,15 +675,16 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
 
 #ifdef DEBUG2
     printf("  Checking if both simulations are equal\n");
-    debugPrintSituation(possibleResponse->situation, currentSituationSize);
-    debugPrintSituation(currentSituation, currentSituationSize);
 #endif
 
     int i;
     for (i = 0; i < currentSituationSize; i++)
 {
 #ifdef DEBUG2
-     printf("%i == ", possibleResponse->situation[i]);
+     if (possibleResponse->situation[i] != wildcard)
+        printf("%i == ", possibleResponse->situation[i]);
+     else
+        printf("? == ");
      printf("%i\n", currentSituation[i]);
 #endif
         if ((possibleResponse->situation[i] != currentSituation[i]) &&
@@ -694,29 +713,33 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
         return false;
         
     bool considerResponse = true;
-    int offset = (currentSituationSize - possibleResponse->situationSize) - 2;
-    if (offset < 2) offset = 2;
 
 #ifdef DEBUG2
     printf("Checking Last Turn:\n--=\n");
-    printf("offset: %i. %i to %i\n", offset, possibleResponse->situationSize, currentSituationSize);
 #endif      
-    int j,k;
+    int j,k, offset;
     
-    for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
+    for (offset = 0; offset < currentSituationSize - difference; offset++)
     {
-#ifdef DEBUG2
-     printf("%i == ", possibleResponse->situation[j]);
-     printf("%i\n", currentSituation[k]);
-#endif
-        if (possibleResponse->situation[j] != currentSituation[k])
+        considerResponse = true;
+        for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
         {
-#ifdef DEBUG2
-            printf("Situation not the same\n");
-#endif
-            considerResponse = false;
-            break;
+    #ifdef DEBUG2
+         printf("%i == ", possibleResponse->situation[j]);
+         printf("%i\n", currentSituation[k]);
+    #endif
+            if (possibleResponse->situation[j] != currentSituation[k])
+            {
+    #ifdef DEBUG2
+                printf("Situation not the same\n");
+    #endif
+                considerResponse = false;
+                break;
+            }
         }
+        
+        if (considerResponse == true)
+            break;
     }
 
     if (considerResponse == true)
@@ -736,7 +759,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
     if (chosenResponse->enemyRespect > personality->respectTreshold)
     {
 #ifdef DEBUG4
-        printf("Respecting the opponent to counter move\n", chosenResponse->counterSize);
+        printf("Respecting the opponent to counter move (situation's respect value: %i > %i)\n", chosenResponse->enemyRespect, personality->respectTreshold);
 #endif
 
         // We respect that our opponent will counter our move. So we select their counter (yomi layer 1)
@@ -757,7 +780,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
                     currentSuccessRateAsCounter = enemyChoice->successRateAsCounter;
                 }
             }*/
-            enemyChoice = chosenResponse;
+            enemyChoice = chosenResponse->counter[0];
 
             // Now that we have the enemy's yomi layer 1, we look for our counter (Yomi layer 2)
             if (enemyChoice->counterSize)
@@ -980,9 +1003,15 @@ situation* selectSituation(database* db, int currentTurn)
     situation* chosenResponse = responses[0];
     situation* originalResponse = chosenResponse;
     
+#ifdef DEBUG4
+    printf("Selected situation (prior to applying Yomi): ");
+    debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
+    printf("\n");
+#endif
     chosenResponse = applyYomi(db, chosenResponse);
     
 #ifdef DEBUG
+    printf("\n\Final situation:");
     debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
     printf("\nPossible responses found (sorted): %i\n", responsesCount);
     int j;
