@@ -624,6 +624,11 @@ int* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
         j = 0;
         for (i = startTurn; i < maxTurn; i++)
         {
+            /* 
+            roshambo specific: player history goes first, then opp history 
+            todo: turn this into a struct
+            */
+        
             currentSituation[j+0] = my_history[i + 1];
             currentSituation[j+1] = opp_history[i + 1];
             j+=2;
@@ -641,7 +646,7 @@ int* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
     return currentSituation;
 }
 
-bool compareSituation_Equal(situation* possibleResponse, char* currentSituation, int currentSituationSize)
+bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, int currentSituationSize)
 {
     ////////////////////////////
     // If both situations are equal, it means this situation has already happened before
@@ -650,12 +655,23 @@ bool compareSituation_Equal(situation* possibleResponse, char* currentSituation,
     if (possibleResponse->situationSize != currentSituationSize)
         return false;
 
+#ifdef DEBUG2
+    printf("  Checking if both simulations are equal\n");
+    debugPrintSituation(possibleResponse->situation, currentSituationSize);
+    debugPrintSituation(currentSituation, currentSituationSize);
+#endif
+
     int i;
     for (i = 0; i < currentSituationSize; i++)
+{
+#ifdef DEBUG2
+     printf("%i == ", possibleResponse->situation[i]);
+     printf("%i\n", currentSituation[i]);
+#endif
         if ((possibleResponse->situation[i] != currentSituation[i]) &&
             (possibleResponse->situation[i] != wildcard))
             return false;
-
+}
 #ifdef DEBUG2
     printf("  Both situations are equal\n");
 #endif
@@ -665,7 +681,7 @@ bool compareSituation_Equal(situation* possibleResponse, char* currentSituation,
     return true;
 }
 
-bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSituation, int currentSituationSize)
+bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize)
 {
     ////////////////////////////
     // Compare to last turn
@@ -695,6 +711,9 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, char* currentSitua
 #endif
         if (possibleResponse->situation[j] != currentSituation[k])
         {
+#ifdef DEBUG2
+            printf("Situation not the same\n");
+#endif
             considerResponse = false;
             break;
         }
@@ -973,7 +992,7 @@ situation* selectSituation(database* db, int currentTurn)
         debugPrintSituation (responses[i]->situation, responses[i]->situationSize);
         if (originalResponse == responses[i])
             printf(" (chosen) ");
-        printf("\nmove: %i", responses[i]->chosenMove);
+        printf("\n move: %i", responses[i]->chosenMove);
         printf(" respect: %i", responses[i]->enemyRespect);
         printf(" successRate: %i", responses[i]->successRate);
         printf("\n");
