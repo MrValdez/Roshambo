@@ -940,7 +940,10 @@ situation* selectSituation(database* db, int currentTurn)
                     ||
                     compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize);
 #ifdef DEBUG2
-                printf("=Situation considered=\n\n");
+                if (considerResponse)
+                    printf("=Situation considered=\n\n");
+                else
+                    printf("=Situation not considered=\n\n");
 #endif
             }
             
