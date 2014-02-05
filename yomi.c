@@ -13,11 +13,11 @@ extern int opp_history[];
 #define maxYomiLayer    4
 
 #define DEBUG
-//#define DEBUG1
+#define DEBUG1
 #define DEBUG2
-//#define DEBUG3
-//#define DEBUG4
-//#define DEBUG5
+#define DEBUG3
+#define DEBUG4
+#define DEBUG5
 ///*/
 
 /////////////////////////////
@@ -180,10 +180,10 @@ sPersonality* developPersonality()
     // Dummy data
     Personality->successRateTreshold = 0;
     
-    Personality->initialRespectOnOpponent = 100;
-    Personality->initialDisrespectOnOpponent = 30;
-    Personality->respectModifier = 30;
-    Personality->disrespectModifier = 50;
+    Personality->initialRespectOnOpponent = 10;
+    Personality->initialDisrespectOnOpponent = 10;
+    Personality->respectModifier = 10;
+    Personality->disrespectModifier = 10;
     Personality->respectTreshold = 20;
 
     return Personality;
@@ -386,7 +386,7 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
         // layer 1 is an enemy prediction
         if (layerNumber == 1)
         {
-            newYomiLayer->enemyRespect = 100;   //todo: should be personality value
+            newYomiLayer->enemyRespect = personality->initialRespectOnOpponent;   //todo: should be personality value
         }
         else
         {
