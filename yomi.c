@@ -13,10 +13,10 @@ extern int opp_history[];
 #define maxYomiLayer    4
 
 #define DEBUG
-#define DEBUG1
+//#define DEBUG1
 #define DEBUG2
-#define DEBUG3
-#define DEBUG4
+//#define DEBUG3
+//#define DEBUG4
 //#define DEBUG5
 ///*/
 
@@ -683,16 +683,14 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
     int i;
     for (i = 0; i < currentSituationSize; i++)
 {
-#ifdef DEBUG2
-     if (possibleResponse->situation[i] != wildcard)
-        printf("%i == ", possibleResponse->situation[i]);
-     else
-        printf("? == ");
-     printf("%i\n", currentSituation[i]);
-#endif
         if ((possibleResponse->situation[i] != currentSituation[i]) &&
             (possibleResponse->situation[i] != wildcard))
+        {
+#ifdef DEBUG2
+            printf("  Both situations are not equal\n");
+#endif
             return false;
+        }
 }
 #ifdef DEBUG2
     printf("  Both situations are equal\n");
@@ -703,48 +701,64 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
     return true;
 }
 
-bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize)
+//justCheckEnemyMoves: if true, we only check the enemy's moves and we ignore our own moves. This is here in case the enemy
+//                     is not predicting our AI.
+bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize, bool justCheckEnemyMoves)
 {
     ////////////////////////////
     // Compare to last turn
     ////////////////////////////
-       
-    // we offset by 2 so we can find the situation tha reflects last turn.
-    
-    int difference = currentSituationSize - possibleResponse->situationSize;
-    if (abs(difference) < 2)
-        return false;
-        
     bool considerResponse = true;
 
 #ifdef DEBUG2
     printf("Checking Last Turn:\n--=\n");
 #endif      
     int j,k, offset;
-    
-    for (offset = 0; offset < currentSituationSize - difference; offset++)
-    {
-        considerResponse = true;
-        for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
-        {
-    #ifdef DEBUG2
-         printf("%i == ", possibleResponse->situation[j]);
-         printf("%i\n", currentSituation[k]);
-    #endif
-            if (possibleResponse->situation[j] != currentSituation[k])
-            {
-    #ifdef DEBUG2
-                printf("Situation not the same\n");
-    #endif
-                considerResponse = false;
-                break;
-            }
-        }
-        
-        if (considerResponse == true)
-            break;
-    }
 
+    // we might get possible responses that are smaller than the current situation.
+    // in this case, we have to compare the possible response to the end of the current situation.
+    // by doing this, we can also consider situations that are small but don't have much history
+    
+    offset = currentSituationSize - possibleResponse->situationSize;
+
+#ifdef DEBUG2
+    if (offset)
+    {
+        printf("\nComparing the ff situations (offset: %i): \n", offset);
+        for (j = 0; j < offset; j++)
+            printf(" ");
+        debugPrintSituation(possibleResponse->situation, possibleResponse->situationSize);
+        printf("\n");
+        debugPrintSituation(currentSituation, currentSituationSize);
+        printf("\n");   
+    } 
+#endif
+
+    considerResponse = true;
+    for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
+    {
+        if (justCheckEnemyMoves && (j % 2 == 0))
+        {
+#ifdef DEBUG2
+            printf ("Ignoring AI's previous move: %i\n", possibleResponse->situation[j]);
+#endif
+            continue;
+        }
+    
+#ifdef DEBUG2
+     printf("%i == ", possibleResponse->situation[j]);
+     printf("%i\n", currentSituation[k]);
+#endif
+        if (possibleResponse->situation[j] != currentSituation[k])
+        {
+#ifdef DEBUG2
+            printf("Situation not the same\n");
+#endif
+            considerResponse = false;
+            break;
+        }
+    }
+        
     if (considerResponse == true)
     {
 #ifdef DEBUG2
@@ -938,7 +952,9 @@ situation* selectSituation(database* db, int currentTurn)
                 considerResponse = 
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize);
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)
+                    ||
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true);
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
