@@ -356,9 +356,9 @@ situation* createOneYomiLayer(database* db, int currentTurn, int layerNumber, si
         }
         
         // add the prediction flag on the first yomi layer
-        if (layerNumber == 1)
+/*        if (layerNumber == 1)
             newYomiLayer->situation[i++] = wildcard;
-        
+ */       
         newYomiLayer->situation[i++] = oppMove;     
         newYomiLayer->situationSize = i;
         
@@ -419,27 +419,30 @@ void createYomiLayers(database* db, int currentTurn, situation* currentSituation
 {
     int situationSize;
     int* situationLastTurn = evaluateCurrentSituation(currentTurn - 1, &situationSize);
+    
+    int situationThisTurnSize;
+    int* situationThisTurn = evaluateCurrentSituation(currentTurn, &situationThisTurnSize);
 
-    situation* yomiLayer0 = findSituation(db, situationLastTurn, situationSize);
+    situation* yomiLayer0 = findSituation(db, situationThisTurn, situationThisTurnSize);
     if (yomiLayer0 == null)
     {
 #ifdef DEBUG1
         printf("new situation found. creating situation for ");
-        debugPrintSituation(situationLastTurn , situationSize);
+        debugPrintSituation(situationThisTurn, situationThisTurnSize);
         printf("\n");
 #endif
 
         yomiLayer0 = createSituation(db);
         
         //todo: very roshambo specific.
-        yomiLayer0->chosenMove = oppMove; 
+        yomiLayer0->chosenMove = (oppMove + 1) % 3; 
         
         int i = 0;
-        for (i = 0; i < situationSize; i++)
+        for (i = 0; i < situationThisTurnSize; i++)
         {
-            yomiLayer0->situation[i] = situationLastTurn[i];
+            yomiLayer0->situation[i] = situationThisTurn[i];
         }
-        yomiLayer0->situationSize = situationSize;
+        yomiLayer0->situationSize = situationThisTurnSize;
     }
     
 #ifdef DEBUG1
