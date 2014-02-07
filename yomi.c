@@ -184,7 +184,7 @@ sPersonality* developPersonality()
     Personality->initialDisrespectOnOpponent = 10;
     Personality->respectModifier = 10;
     Personality->disrespectModifier = 10;
-    Personality->respectTreshold = 20;
+    Personality->respectTreshold = 10;
 
     return Personality;
 }
@@ -264,7 +264,6 @@ struct database* trainingProgram(struct database* db)
     newSituation->chosenMove = rock;
 
     newSituation = createSituation(db);
-    newSituation->chosenMove = paper;
     newSituation->chosenMove = paper;
      
     newSituation = createSituation(db);
@@ -423,26 +422,26 @@ void createYomiLayers(database* db, int currentTurn, situation* currentSituation
     int situationThisTurnSize;
     int* situationThisTurn = evaluateCurrentSituation(currentTurn, &situationThisTurnSize);
 
-    situation* yomiLayer0 = findSituation(db, situationThisTurn, situationThisTurnSize);
+    situation* yomiLayer0 = findSituation(db, situationLastTurn, situationSize);
     if (yomiLayer0 == null)
     {
 #ifdef DEBUG1
         printf("new situation found. creating situation for ");
-        debugPrintSituation(situationThisTurn, situationThisTurnSize);
+        debugPrintSituation(situationLastTurn, situationSize);
         printf("\n");
 #endif
 
         yomiLayer0 = createSituation(db);
         
         //todo: very roshambo specific.
-        yomiLayer0->chosenMove = (oppMove + 1) % 3; 
+        yomiLayer0->chosenMove = oppMove; 
         
         int i = 0;
-        for (i = 0; i < situationThisTurnSize; i++)
+        for (i = 0; i < situationSize; i++)
         {
-            yomiLayer0->situation[i] = situationThisTurn[i];
+            yomiLayer0->situation[i] = situationLastTurn[i];
         }
-        yomiLayer0->situationSize = situationThisTurnSize;
+        yomiLayer0->situationSize = situationSize;
     }
     
 #ifdef DEBUG1
@@ -735,10 +734,6 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
             continue;
         }
     
-#ifdef DEBUG2
-     printf("%i == ", possibleResponse->situation[j]);
-     printf("%i\n", currentSituation[k]);
-#endif
         if (possibleResponse->situation[j] != currentSituation[k])
         {
 #ifdef DEBUG2
@@ -752,7 +747,12 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     if (considerResponse == true)
     {
 #ifdef DEBUG2
-        printf("Situation similar to last turn\n");
+        for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
+        {
+            printf("%i == ", possibleResponse->situation[j]);
+            printf("%i\n", currentSituation[k]);
+            printf("Situation similar to last turn\n");
+        }
 #endif
         possibleResponse->rankThisTurn += 30;
     }
@@ -971,44 +971,78 @@ situation* selectSituation(database* db, int currentTurn)
     // if no response was found, then we need to record the new situation
     if (responsesCount == 0)
     {
-        printf("no responses found.");getch();
+#ifdef DEBUG2
+        printf("no responses found.");
+#endif
         //todo:
         responses[0] = db->situations[0];
     }
    
     //3.
     {
-        situation** tempResponses = responses;
-        situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
-        situation* current = null;
-        
-        /////////////////////
-        // Sort by more defined situations
-        
-        // find max rankThisTurn
-        int i, j = 0;
-        int max = 0;
-        for (i = 0; i < responsesCount; i++)
         {
-            current = tempResponses[i];
-
-            if (current->rankThisTurn > max)
-                max = current->rankThisTurn;
-        }
-
-        for (; max >= 0; max--)
-        {
+            situation** tempResponses = responses;
+            situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+            situation* current = null;
+            
+            /////////////////////
+            // Sort by more defined situations
+            
+            // find max rankThisTurn
+            int i, j = 0;
+            int max = 0;
             for (i = 0; i < responsesCount; i++)
             {
                 current = tempResponses[i];
-                if (current->rankThisTurn == max)
+
+                if (current->rankThisTurn > max)
+                    max = current->rankThisTurn;
+            }
+
+            for (; max >= 0; max--)
+            {
+                for (i = 0; i < responsesCount; i++)
                 {
-                    sortedResponses[j++] = current;
+                    current = tempResponses[i];
+                    if (current->rankThisTurn == max)
+                    {
+                        sortedResponses[j++] = current;
+                    }
                 }
             }
+            
+            responses = sortedResponses;
         }
         
-        responses = sortedResponses;
+        {
+            // remove those with low success rate
+            situation** successfulResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+            situation* current = null;
+
+            int i, j = 0;
+            int max = 0;
+            for (i = 0; i < responsesCount; i++)
+            {
+                current = responses[i];
+                if (current->successRate >= personality->successRateTreshold)
+                {
+                    successfulResponses[j++] = current;
+                }
+            }
+         
+            if (j > 0)
+            {
+                responses = successfulResponses;
+                responsesCount = j;
+            }
+            else    
+            {
+                //this means that all the possible responses are actually bad choices (low success rate)
+            #ifdef DEBUG3
+                printf("All possible responses have low success rate.\n");
+            #endif
+            }
+        }
     }
     ////////////////////
     
@@ -1031,7 +1065,7 @@ situation* selectSituation(database* db, int currentTurn)
 #ifdef DEBUG5
     printf("Final situation: ");
     debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
-    printf("\n\nPossible responses found (sorted): %i\n", responsesCount);
+    printf("\n\nPossible responses found (sorted):\n");
     int j;
     for (i=0; i< responsesCount; i++)
     {
