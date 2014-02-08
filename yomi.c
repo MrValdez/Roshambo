@@ -14,11 +14,11 @@ extern int opp_history[];
 
 #define DEBUG
 #define DEBUG1
-//#define DEBUG2
+/*#define DEBUG2
 #define DEBUG3
 #define DEBUG4
 #define DEBUG5
-///*/
+///*/   
 
 /////////////////////////////
 
@@ -135,7 +135,7 @@ situation* findSituation(database* db, char* Situation, int situationSize, int m
         
         if (iterSituation == null)
             continue;
-        
+
         if (move != wildcard &&
             iterSituation->chosenMove != move)
             continue;
@@ -314,8 +314,7 @@ situation* findCounter(database* db, situation *attackingSituation)
 #endif
             continue;
         } */
-
-        if (currentSituation->situationSize > 0 &&
+       if (currentSituation->situationSize > 0 &&
             currentSituation->situationSize == attackingSituation->situationSize)
         {        
             // in roshambo, we only need to account for the last move in the situation
@@ -359,21 +358,20 @@ typedef int bool;
 const int true = 1;
 const int false = 0;
 
-situation* createOneYomiLayer(database* db, int layerNumber, situation* previousYomiLayer)
+situation* createOneYomiLayer(database* db, int layerNumber, situation* previousYomiLayer, int oppMove)
 {
     //todo: add wildcard prediction to findcounter
-    situation* newYomiLayer = findCounter(db, previousYomiLayer);
-    /*situation* newYomiLayer = findSituation(db, previousYomiLayer->situation, previousYomiLayer->situationSize);
+    //situation* newYomiLayer = findCounter(db, previousYomiLayer);
+    situation* newYomiLayer = findSituation(db, previousYomiLayer->situation, previousYomiLayer->situationSize, oppMove);
 
     if (newYomiLayer != null && newYomiLayer->counterSize)
-        newYomiLayer = newYomiLayer->counter;
+        newYomiLayer = newYomiLayer->counter[0];
     else
         newYomiLayer = null;
-*/ 
+
     //situation* newYomiLayer = null;    
     
-    int oppMove = previousYomiLayer->chosenMove;
-    if (newYomiLayer == null || previousYomiLayer->chosenMove != oppMove)
+    if (newYomiLayer == null || newYomiLayer->chosenMove != oppMove)
     {
 #ifdef DEBUG1
         printf("Creating new situation for yomi layer %i\n", layerNumber);
@@ -384,6 +382,8 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         newYomiLayer = createSituation(db);
         
         //todo: very roshambo specific.
+        if (oppMove == wildcard)
+            oppMove = previousYomiLayer->chosenMove;
         newYomiLayer->chosenMove = (oppMove + 1) % 3; 
         
         int i = 0;
@@ -393,9 +393,9 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         }
         
         // add the prediction flag on the first yomi layer
-        if (layerNumber == 1)
+/*        if (layerNumber == 1)
             newYomiLayer->situation[i++] = wildcard;
-       
+*/       
         newYomiLayer->situation[i++] = oppMove;     
         newYomiLayer->situationSize = i;
         
@@ -466,9 +466,13 @@ void createYomiLayers(database* db, situation* currentSituation, int oppMove)
 #endif
 
         yomiLayer0 = createSituation(db);
-        
-        //todo: very roshambo specific.
-        yomiLayer0->chosenMove = oppMove; 
+        int i;
+        for (i = 0; i < currentSituation->situationSize; i++)
+        {
+            yomiLayer0->situation[i] = currentSituation->situation[i];
+        }
+        yomiLayer0->situationSize = currentSituation->situationSize;
+        yomiLayer0->chosenMove = currentSituation->chosenMove;
     }
     
 #ifdef DEBUG1
@@ -478,13 +482,13 @@ void createYomiLayers(database* db, situation* currentSituation, int oppMove)
 #endif
     
     situation* yomiLayer1 = 
-        createOneYomiLayer(db, 1, yomiLayer0);
+        createOneYomiLayer(db, 1, yomiLayer0, oppMove);
     situation* yomiLayer2 = 
-        createOneYomiLayer(db, 2, yomiLayer1);
+        createOneYomiLayer(db, 2, yomiLayer1, wildcard);
     situation* yomiLayer3 = 
-        createOneYomiLayer(db, 3, yomiLayer2);
+        createOneYomiLayer(db, 3, yomiLayer2, wildcard);
     situation* yomiLayer4 = 
-        createOneYomiLayer(db, 4, yomiLayer3);     
+        createOneYomiLayer(db, 4, yomiLayer3, wildcard);     
     
     //yomiLayer5 is the same as layer 1, so we loop this back.
     addCounter(yomiLayer4, yomiLayer1);
@@ -550,7 +554,7 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
             currentSituation->enemyRespect += personality->respectModifier;
 
 #ifdef DEBUG1
-        printf("Lost. Updating situation ", currentTurn);
+        printf("Lost. Updating situation ");
         debugPrintSituation(currentSituation->situation, currentSituation->situationSize);
         printf(":\n");
         printf(" Success rate:%i\n", currentSituation->successRate);
@@ -558,8 +562,22 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
 #endif
 
         //todo: this is the training program
-        // create a new situation (if none exists) that is the counter to this turn's situation. 
-        createYomiLayers(db, currentSituation, oppMove);
+        {
+            int newSituationSize = 0;
+            situation* newSituation = createSituation(db);
+            
+            int* currentSituation = evaluateCurrentSituation(currentTurn - 1, &newSituationSize);
+            int i;
+            for (i = 0; i < newSituationSize; i++)
+            {
+                newSituation->situation[i] = currentSituation[i];
+            }
+            newSituation->situationSize = newSituationSize;
+            newSituation->chosenMove = playerMove;
+            
+            // create a new situation (if none exists) that is the counter to this turn's situation. 
+            createYomiLayers(db, newSituation, oppMove);
+        }
     }
 
     // limit from -100 to +100
@@ -760,7 +778,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     considerResponse = true;
     for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
     {
-        if (justCheckEnemyMoves && (j % 2 == 0))
+        if (justCheckEnemyMoves && (j % 2 == 1))
         {
 #ifdef DEBUG2
             printf ("Ignoring AI's previous move: %i\n", possibleResponse->situation[j]);
@@ -768,7 +786,8 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
             continue;
         }
     
-        if (possibleResponse->situation[j] != currentSituation[k])
+        if (possibleResponse->situation[j] != currentSituation[k] &&
+            possibleResponse->situation[j] != wildcard)
         {
 #ifdef DEBUG2
             printf("Situation not the same\n");
@@ -797,7 +816,9 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
 situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumber)
 {   
     // Check if the Yomi AI should respect the opponent on current situation
-    if (chosenResponse->enemyRespect >= personality->respectTreshold)
+    if (chosenResponse->enemyRespect >= personality->respectTreshold 
+        //chosenResponse->successRate <= 0
+        )
     {
 #ifdef DEBUG4
         printf("Respecting the opponent to counter move (situation's respect value: %i >= %i)\n", chosenResponse->enemyRespect, personality->respectTreshold);
