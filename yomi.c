@@ -14,7 +14,7 @@ extern int opp_history[];
 
 #define DEBUG
 #define DEBUG1
-#define DEBUG2
+//#define DEBUG2
 #define DEBUG3
 #define DEBUG4
 #define DEBUG5
@@ -982,9 +982,9 @@ situation* selectSituation(database* db, int currentTurn)
                 considerResponse = 
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false);
-/*                    ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true);*/
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)
+                    ||
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true);
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
@@ -1014,67 +1014,116 @@ situation* selectSituation(database* db, int currentTurn)
    
     //3.
     {
-        {
-            situation** tempResponses = responses;
-            situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+        
+        if (responsesCount)
+        {            
             situation* current = null;
-            
-            /////////////////////
-            // Sort by more defined situations
-            
-            // find max rankThisTurn
-            int i, j = 0;
-            int max = 0;
-            for (i = 0; i < responsesCount; i++)
-            {
-                current = tempResponses[i];
 
-                if (current->rankThisTurn > max)
-                    max = current->rankThisTurn;
-            }
-
-            for (; max >= 0; max--)
             {
+                situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+                /////////////////////
+                // Sort by more defined situations
+                
+                // find max rankThisTurn
+                int i, sortedIndex = 0;
+                int max = 0;
                 for (i = 0; i < responsesCount; i++)
                 {
-                    current = tempResponses[i];
-                    if (current->rankThisTurn == max)
+                    current = responses[i];
+
+                    if (current->rankThisTurn > max)
+                        max = current->rankThisTurn;
+                }
+
+                for (; max >= 0; max--)
+                {
+                    for (i = 0; i < responsesCount; i++)
                     {
-                        sortedResponses[j++] = current;
+                        current = responses[i];
+                        if (current->rankThisTurn == max)
+                        {
+                            sortedResponses[sortedIndex++] = current;
+                        }
                     }
                 }
+                
+                responses = sortedResponses;
             }
-            
-            responses = sortedResponses;
-        }
-        
-        {
-            // remove those with low success rate
-            situation** successfulResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
-            situation* current = null;
 
-            int i, j = 0;
-            int max = 0;
-            for (i = 0; i < responsesCount; i++)
             {
-                current = responses[i];
-                if (current->successRate >= personality->successRateTreshold)
+                /////////////////////
+                // Sort by more successful situations                                
+                situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+                int i = 0, j = 0, k = 0;
+                int sortedIndex = 0;
+                int startpos = 0;
+                int previousRank = responses[0]->rankThisTurn;
+                
+                while (i < responsesCount)
                 {
-                    successfulResponses[j++] = current;
+                    // find max successRate
+                    int max = 0;
+                    for (; i < responsesCount; i++)
+                    {
+                        current = responses[i];
+
+                        if (current->successRate > max)
+                            max = current->successRate;
+                        
+                        if (previousRank != current->rankThisTurn)
+                        {
+                            previousRank = current->rankThisTurn;
+                            break;
+                        }
+                    }
+
+
+                    for (; max >= -100; max--)
+                    {
+                        for (j = startpos; j < i; j++)
+                        {
+                            current = responses[j];
+                            if (current->successRate == max)
+                            {
+                                sortedResponses[sortedIndex++] = current;
+                            }
+                        }
+                    }
+                    
+                    startpos = j;
                 }
+                    
+                responses = sortedResponses;
             }
-         
-            if (j > 0)
+       
             {
-                responses = successfulResponses;
-                responsesCount = j;
-            }
-            else    
-            {
-                //this means that all the possible responses are actually bad choices (low success rate)
-            #ifdef DEBUG3
-                printf("All possible responses have low success rate.\n");
-            #endif
+                // remove those with low success rate
+                situation** successfulResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+                situation* current = null;
+
+                int i, sortedIndex = 0;
+                int max = 0;
+                for (i = 0; i < responsesCount; i++)
+                {
+                    current = responses[i];
+                    if (current->successRate >= personality->successRateTreshold)
+                    {
+                        successfulResponses[sortedIndex++] = current;
+                    }
+                }
+             
+                if (sortedIndex > 0)
+                {
+                    responses = successfulResponses;
+                    responsesCount = sortedIndex;
+                }
+                else    
+                {
+                    //this means that all the possible responses are actually bad choices (low success rate)
+                #ifdef DEBUG3
+                    printf("All possible responses have low success rate.\n");
+                #endif
+                }
             }
         }
     }
@@ -1089,6 +1138,12 @@ situation* selectSituation(database* db, int currentTurn)
     situation* chosenResponse = responses[0];
     situation* originalResponse = chosenResponse;
     
+#ifdef DEBUG2
+    // If debug 2 is enabled, we need to reprint this so we can see it immediately.
+    printf("\nsituation for turn #%i is: ", currentTurn);
+    debugPrintSituation(currentSituation, currentSituationSize);
+    printf("\n\n");
+#endif
 #ifdef DEBUG4
     printf("Selected situation (prior to applying Yomi): ");
     debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
@@ -1119,6 +1174,7 @@ situation* selectSituation(database* db, int currentTurn)
         printf("\n move: %i", responses[i]->chosenMove);
         printf(" respect: %i", responses[i]->enemyRespect);
         printf(" successRate: %i", responses[i]->successRate);
+        printf("\n response rank: %i", responses[i]->rankThisTurn);
         printf("\n");
     }
     
