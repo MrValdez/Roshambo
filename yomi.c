@@ -1097,9 +1097,18 @@ situation* selectSituation(database* db, int currentTurn)
     chosenResponse = applyYomi(db, chosenResponse);
     
 #ifdef DEBUG5
-    printf("Final situation: ");
-    debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
-    printf("\n\nPossible responses found (sorted):\n");
+    if (chosenResponse == originalResponse)
+    {
+        printf(" No yomi layer chosen.\n");
+    }
+    else
+    {
+        printf("Yomi applied. Final situation: ");
+        debugPrintSituation (chosenResponse->situation, chosenResponse->situationSize);
+        printf("\n");
+    }
+    
+    printf("\nPossible responses found (sorted):\n");
     int j;
     for (i=0; i< responsesCount; i++)
     {
