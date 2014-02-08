@@ -1,3 +1,6 @@
+/*todo: remove duplicates when creating new situations
+        make sure that our assumption for the offset for odd situations are correct
+*/
 // RoShamBo Tournament Test Suite structures
 
 #define rock        0
@@ -14,7 +17,7 @@ extern int opp_history[];
 
 #define DEBUG
 #define DEBUG1
-/*#define DEBUG2
+#define DEBUG2
 #define DEBUG3
 #define DEBUG4
 #define DEBUG5
@@ -264,17 +267,17 @@ struct database* trainingProgram(struct database* db)
     situation* newSituation;
     
     // neutral game
-    newSituation = createSituation(db);
-    newSituation->chosenMove = rock;
-    createYomiLayers(db, newSituation, wildcard);
+    situation* newSituation1 = createSituation(db);
+    newSituation1->chosenMove = rock;
 
-    newSituation = createSituation(db);
-    newSituation->chosenMove = paper;
-    createYomiLayers(db, newSituation, wildcard);
+    situation* newSituation2 = createSituation(db);
+    newSituation2->chosenMove = paper;
      
-    newSituation = createSituation(db);
-    newSituation->chosenMove = scissors;
-    createYomiLayers(db, newSituation, wildcard);
+    situation* newSituation3 = createSituation(db);
+    newSituation3->chosenMove = scissors;
+    createYomiLayers(db, newSituation1, wildcard);
+    createYomiLayers(db, newSituation2, wildcard);
+    createYomiLayers(db, newSituation3, wildcard);
     
 /*
     // counter situations
@@ -759,8 +762,14 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     // we might get possible responses that are smaller than the current situation.
     // in this case, we have to compare the possible response to the end of the current situation.
     // by doing this, we can also consider situations that are small but don't have much history
-    
     offset = currentSituationSize - possibleResponse->situationSize;
+    
+    // if the possible response has an odd length, we align accordingly
+    bool futureSituation = possibleResponse->situationSize % 2 == 1;
+    if (futureSituation)
+        offset -= 1;
+    if (offset < 0)
+        offset = 0;
 
 #ifdef DEBUG2
     if (offset)
@@ -778,7 +787,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     considerResponse = true;
     for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
     {
-        if (justCheckEnemyMoves && (j % 2 == 1))
+        if (justCheckEnemyMoves && (j % 2 == 0))
         {
 #ifdef DEBUG2
             printf ("Ignoring AI's previous move: %i\n", possibleResponse->situation[j]);
@@ -804,10 +813,21 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
         {
             printf("%i == ", possibleResponse->situation[j]);
             printf("%i\n", currentSituation[k]);
-            printf("Situation similar to last turn\n");
         }
+        printf("Situation similar to last turn\n");
 #endif
-        possibleResponse->rankThisTurn += 30;
+        if (futureSituation == false)
+        {
+            possibleResponse->rankThisTurn += 30;
+        }
+        else
+        {
+            // if we offset, it means we are doing a prediction.
+            // (uunahan na natin ang kalaban)
+            // so we rank the next layer.
+            possibleResponse->counter[0]->rankThisTurn += 50;
+            return false;
+        }
     }
     
     return considerResponse;
@@ -940,41 +960,16 @@ situation* selectSituation(database* db, int currentTurn)
             
             considerResponse = true;
             
-            // for low success rate scenarios, use the counter
-/*            if (possibleResponse->successRate < personality->successRateTreshold)
-            {
-#ifdef DEBUG2
-            printf("Response situation: ", possibleResponse->successRate, possibleResponse->chosenMove);
-            int i;
-            for (i = 0; i < possibleResponse->situationSize; i++)
-                 printf("%i", possibleResponse->situation[i]);
-            printf(" has low successrate (%i).", possibleResponse->successRate, possibleResponse->chosenMove);
-            printf("\n");
-#endif
-                if (possibleResponse->counterSize)
-                {
-#ifdef DEBUG2
-                    printf("%i counters found\n", possibleResponse->counterSize);
-#endif
-
-                    //todo: some situations have multiple counters. consider them as well
-                    possibleResponse = possibleResponse->counter[0];
-                    
-#ifdef DEBUG2
-                    printf("Adding counters:\n");
-                    
-                    int i;
-                    printf(" Counter move: %i Situation:", possibleResponse->chosenMove);
-                    for (i = 0; i < possibleResponse->situationSize; i++)
-                         printf("%i", possibleResponse->situation[i]);
-                    printf("\n");
-#endif                
-                }
-            }            
-*/
             if (possibleResponse->situationSize < 2 && possibleResponse->situationSize >= 0)
             {
                 // Neutral situations
+                considerResponse = true;
+            }
+            else if (possibleResponse->rankThisTurn > 0)
+            {
+                // This can happen in cases where we marked a counter as being valid
+                // todo: refactor this so cases like this will be considered when the counter is marked instead
+                //       of after
                 considerResponse = true;
             }
             else
@@ -1003,9 +998,9 @@ situation* selectSituation(database* db, int currentTurn)
                 considerResponse = 
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)/*
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true);
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true)*/;
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
@@ -1188,14 +1183,15 @@ situation* selectSituation(database* db, int currentTurn)
     int j;
     for (i=0; i< responsesCount; i++)
     {
-        printf("response #%i situation:", i, responses[i]->situationSize);
+        printf("response #%i situation: ", i, responses[i]->situationSize);
         debugPrintSituation (responses[i]->situation, responses[i]->situationSize);
         if (originalResponse == responses[i])
             printf(" (chosen) ");
         printf("\n move: %i", responses[i]->chosenMove);
         printf(" respect: %i", responses[i]->enemyRespect);
         printf(" successRate: %i", responses[i]->successRate);
-        printf("\n response rank: %i", responses[i]->rankThisTurn);
+        printf(" rank: %i", responses[i]->rankThisTurn);
+        printf("\n");
         printf("\n");
     }
     
