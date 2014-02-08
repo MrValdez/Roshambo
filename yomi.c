@@ -266,15 +266,15 @@ struct database* trainingProgram(struct database* db)
     // neutral game
     newSituation = createSituation(db);
     newSituation->chosenMove = rock;
-    createYomiLayers(db, newSituation, paper);
+    createYomiLayers(db, newSituation, wildcard);
 
     newSituation = createSituation(db);
     newSituation->chosenMove = paper;
-    createYomiLayers(db, newSituation, scissors);
+    createYomiLayers(db, newSituation, wildcard);
      
     newSituation = createSituation(db);
     newSituation->chosenMove = scissors;
-    createYomiLayers(db, newSituation, rock);
+    createYomiLayers(db, newSituation, wildcard);
     
 /*
     // counter situations
