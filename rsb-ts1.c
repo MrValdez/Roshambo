@@ -42,12 +42,12 @@
 #define trials    1000       /* number of turns per match */
 
 //#define fw        4          /* field width for printed numbers */
-#define verbose1  1          /* print result of each trial */
+#define verbose1  0          /* print result of each trial */
 #define verbose2  0          /* print match histories */
 #define verbose3  1          /* print result of each match */
 
 // My Changes
-#define players   6          /* number of players in the tournament */
+#define players   8         /* number of players in the tournament */
 //#define players   29          /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 
@@ -82,7 +82,7 @@ void bzero(short int *foo, int size)
 }
 int srandom()
 {
-  return 4;
+  return rand();
 }
 //************************************
 
@@ -5594,23 +5594,14 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     crosstable[i].pname = yomi;
     initYomi();
 
-#ifdef Comment_Block  /* use these to comment out a block of players */
-    i++;  /* nuthin' beats rock */
-    strcpy(crosstable[i].name, "Good Ole Rock");
-    crosstable[i].pname = rockbot;
-
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
-#endif /* end of Comment_Block -- be sure to change the #define players value */
-
-    i++;  /* rotate r -> p -> s */
-    strcpy(crosstable[i].name, "Rotate R-P-S");
-    crosstable[i].pname = rotatebot;
 
     i++;  /* beat opponent's last move */
     strcpy(crosstable[i].name, "Beat The Last Move");
     crosstable[i].pname = copybot;
+
+    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
+    strcpy(crosstable[i].name, "R-P-S 20-20-60");
+    crosstable[i].pname = r226bot;
 
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");
@@ -5619,6 +5610,14 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* beat the most frequent opponent choice */
     strcpy(crosstable[i].name, "Beat Frequent Pick");
     crosstable[i].pname = freqbot2;
+
+    i++;  /* nuthin' beats rock */
+    strcpy(crosstable[i].name, "Good Ole Rock");
+    crosstable[i].pname = rockbot;
+
+    i++;  /* rotate r -> p -> s */
+    strcpy(crosstable[i].name, "Rotate R-P-S");
+    crosstable[i].pname = rotatebot;
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* choose according to the digits of Pi */
