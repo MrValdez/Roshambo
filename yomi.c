@@ -217,7 +217,7 @@ sPersonality* developPersonality()
     Personality->initialRespectOnOpponent = 10;
     Personality->initialDisrespectOnOpponent = 10;
     Personality->respectModifier = 10;
-    Personality->disrespectModifier = 10;
+    Personality->disrespectModifier = 5;
     Personality->respectTreshold = 20;
 
     return Personality;
@@ -865,10 +865,17 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     return considerResponse;
 }
 
-situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumber)
+situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumber)
 {   
     // Check if the Yomi AI should respect the opponent on current situation
-    if (chosenResponse->enemyRespect >= personality->respectTreshold 
+    int respectTresholdForLayer;
+    
+    if (layerNumber > 1) 
+        respectTresholdForLayer = personality->respectTreshold * (layerNumber - 1);
+    else
+        respectTresholdForLayer = personality->respectTreshold;
+    
+    if (chosenResponse->enemyRespect >= respectTresholdForLayer 
         //chosenResponse->successRate <= 0
         )
     {
@@ -899,7 +906,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
             chosenResponse = enemyChoice;
 
 #ifdef DEBUG4   
-            printf("Situation for enemy (Yomi layer %i): ", passNumber);
+            printf("Situation for enemy (Yomi layer %i): ", layerNumber);
             debugPrintSituation(enemyChoice->situation, enemyChoice->situationSize);
             printf("\n Move with layer: %i\n", enemyChoice->chosenMove);
 #endif
@@ -912,7 +919,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
             
                 chosenResponse = yomiLayer2;
 #ifdef DEBUG4   
-                printf("Situation for our counter (Yomi Layer %i): ", passNumber + 1);
+                printf("Situation for our counter (Yomi Layer %i): ", layerNumber + 1);
                 debugPrintSituation(chosenResponse->situation, chosenResponse->situationSize);
                 printf("\n Move with layer: %i\n", enemyChoice->chosenMove);
                 printf("\n");
@@ -937,7 +944,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int passNumbe
 situation* applyYomi(database* db, situation* chosenResponse)
 {    
     chosenResponse = checkYomiLayer(db, chosenResponse, 1);     // Yomi layer 1
-    //chosenResponse = checkYomiLayer(db, chosenResponse, 3);     // Yomi layer 3
+    chosenResponse = checkYomiLayer(db, chosenResponse, 3);     // Yomi layer 3
 }
 
 situation* selectSituation(database* db, int currentTurn)
