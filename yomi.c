@@ -142,7 +142,7 @@ void addCounter(situation* currentSituation, situation* foundCounter)
 // Find a situation string in the database and return it.
 // if move == wildcard, we don't check the move
 // todo: its possible to have multiple situations found. return a list
-situation* findSituation(database* db, char* Situation, int situationSize, int move)
+situation* findSituation(database* db, int* Situation, int situationSize, int move)
 {    
     situation* iterSituation;
     int i, j;    
@@ -379,10 +379,14 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
 {
     if (oppMove == wildcard && previousYomiLayer != null)
         oppMove = previousYomiLayer->chosenMove;
+        
+    int winningMove = (oppMove + 1) % 3;
     
     //todo: add wildcard prediction to findcounter
     //situation* newYomiLayer = findCounter(db, previousYomiLayer);
-    situation* newYomiLayer = findSituation(db, previousYomiLayer->situation, previousYomiLayer->situationSize, oppMove);
+    //situation* newYomiLayer = findSituation(db, previousYomiLayer->situation, previousYomiLayer->situationSize, previousYomiLayer->chosenMove);
+    
+    situation* newYomiLayer = previousYomiLayer;
 
     if (newYomiLayer != null && newYomiLayer->counterSize)
         newYomiLayer = newYomiLayer->counter[0];
@@ -391,7 +395,7 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
 
     //situation* newYomiLayer = null;    
     
-    if (newYomiLayer == null || newYomiLayer->chosenMove != oppMove)
+    if (newYomiLayer == null || newYomiLayer->chosenMove != winningMove)
     {
 #ifdef DEBUG1
         printf("Creating new situation for yomi layer %i\n", layerNumber);
@@ -403,7 +407,7 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         
         //choose a move that beats the previous layer.
         //todo: very roshambo specific.
-        newYomiLayer->chosenMove = (oppMove + 1) % 3; 
+        newYomiLayer->chosenMove = winningMove; 
         
         int i = 0;
         for (i = 0; i < previousYomiLayer->situationSize; i++)
@@ -440,6 +444,12 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         }
         
         addCounter(previousYomiLayer, newYomiLayer);
+    }
+    else
+    {
+#ifdef DEBUG1
+        printf("Situation found in database: ");
+#endif
     }
     
 #ifdef DEBUG1
@@ -708,7 +718,7 @@ int* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
         int startTurn = currentTurn > 6 ? currentTurn - 6 : 0;
         int maxTurn = currentTurn;
         *currentSituationSize = (maxTurn - startTurn) * 2;
-        currentSituation = (char*) malloc (sizeof(int*) * (*currentSituationSize));
+        currentSituation = (int*) malloc (sizeof(int*) * (*currentSituationSize));
                 
         j = 0;
         for (i = startTurn; i < maxTurn; i++)
