@@ -15,7 +15,7 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-#define DEBUG
+/*#define DEBUG
 #define DEBUG1
 #define DEBUG2
 #define DEBUG3
@@ -218,7 +218,7 @@ sPersonality* developPersonality()
     Personality->initialDisrespectOnOpponent = 10;
     Personality->respectModifier = 10;
     Personality->disrespectModifier = 10;
-    Personality->respectTreshold = 10;
+    Personality->respectTreshold = 20;
 
     return Personality;
 }
@@ -310,23 +310,6 @@ struct database* trainingProgram(struct database* db)
     createYomiLayers(db, newSituation2, wildcard);
     createYomiLayers(db, newSituation3, wildcard);
     
-/*
-    // counter situations
-    newSituation = createSituation(db);
-    newSituation->chosenMove = rock;
-    newSituation->situation[0] = scissors;
-    newSituation->situationSize = 1;
-
-    newSituation = createSituation(db);
-    newSituation->chosenMove = paper;
-    newSituation->situation[0] = rock;
-    newSituation->situationSize = 1;
-     
-    newSituation = createSituation(db);
-    newSituation->chosenMove = scissors;
-    newSituation->situation[0] = paper;
-    newSituation->situationSize = 1;
-*/
     return db;
 }
 
@@ -1037,9 +1020,9 @@ situation* selectSituation(database* db, int currentTurn)
                 considerResponse = 
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)/*
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true)*/;
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true);
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
