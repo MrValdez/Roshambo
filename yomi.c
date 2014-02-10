@@ -15,7 +15,7 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-/*#define DEBUG
+#define DEBUG
 #define DEBUG1
 #define DEBUG2
 #define DEBUG3
@@ -49,6 +49,10 @@ typedef struct sPersonality
     float respectModifier;
     float disrespectModifier;
     int respectTreshold;
+    
+    int currentRespectOnEnemy;
+    int respectOnEnemyTreshold;
+    
 } sPersonality;
 
 typedef struct situation
@@ -220,6 +224,9 @@ sPersonality* developPersonality()
     Personality->disrespectModifier = 5;
     Personality->respectTreshold = 20;
 
+    Personality->currentRespectOnEnemy = 0;
+    Personality->respectOnEnemyTreshold = 30;
+    
     return Personality;
 }
 
@@ -519,8 +526,8 @@ void createYomiLayers(database* db, situation* currentSituation, int oppMove)
     situation* yomiLayer4 = 
         createOneYomiLayer(db, 4, yomiLayer3, wildcard);     
     
-    //yomiLayer5 is the same as layer 2, so we loop this back.
-    addCounter(yomiLayer4, yomiLayer2);
+    //yomiLayer5 is the same as layer 1, so we loop this back.
+    addCounter(yomiLayer4, yomiLayer1);
 
 #ifdef DEBUG1
     printf("\n");
@@ -576,6 +583,9 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     {
         // record the situation in the database where we received a lost.
         currentSituation->successRate -= 10;
+        
+        // increase our respect for the enemy
+        personality->currentRespectOnEnemy += 10;
         
         if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
             currentSituation->enemyRespect = personality->initialRespectOnOpponent;
@@ -822,6 +832,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
         if (justCheckEnemyMoves && (j % 2 == 0))
         {
 #ifdef DEBUG2
+            // Ignoring our previous move in case our enemy is doing a pattern and ignoring our own move
             printf ("Ignoring AI's previous move: %i\n", possibleResponse->situation[j]);
 #endif
             continue;
@@ -875,8 +886,14 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
     else
         respectTresholdForLayer = personality->respectTreshold;
     
-    if (chosenResponse->enemyRespect >= respectTresholdForLayer 
+    // Do we respect our enemy to apply yomi?
+    bool respectEnemy = personality->currentRespectOnEnemy >= personality->respectOnEnemyTreshold;
+    respectEnemy= false;
+    
+    
+    if (chosenResponse->enemyRespect >= respectTresholdForLayer ||
         //chosenResponse->successRate <= 0
+        respectEnemy 
         )
     {
 #ifdef DEBUG4
@@ -1068,18 +1085,15 @@ situation* selectSituation(database* db, int currentTurn)
     }
    
     //3.
-    {
-        
+    {        
         if (responsesCount)
         {            
             situation* current = null;
 
             {
+                // Sort by rank
                 situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
-                /////////////////////
-                // Sort by more defined situations
-                
-                // find max rankThisTurn
+
                 int i, sortedIndex = 0;
                 int max = 0;
                 for (i = 0; i < responsesCount; i++)
@@ -1104,6 +1118,35 @@ situation* selectSituation(database* db, int currentTurn)
                 
                 responses = sortedResponses;
             }
+
+            {
+                // Sort by more defined situations
+                situation** sortedResponses = (situation**) malloc (sizeof(situation**) * responsesCount);
+                
+                int i, sortedIndex = 0;
+                int max = 0;
+                for (i = 0; i < responsesCount; i++)
+                {
+                    current = responses[i];
+
+                    if (current->situationSize > max)
+                        max = current->situationSize;
+                }
+
+                for (; max >= 0; max--)
+                {
+                    for (i = 0; i < responsesCount; i++)
+                    {
+                        current = responses[i];
+                        if (current->situationSize == max)
+                        {
+                            sortedResponses[sortedIndex++] = current;
+                        }
+                    }
+                }
+                
+                responses = sortedResponses;
+            }               
 
             {
                 /////////////////////
