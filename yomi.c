@@ -18,6 +18,7 @@ extern int opp_history[];
 #define DEBUG
 #define DEBUG1
 #define DEBUG2
+//#define DEBUG2_VERBOSE
 #define DEBUG3
 #define DEBUG4
 #define DEBUG5
@@ -219,9 +220,9 @@ sPersonality* developPersonality()
     Personality->successRateTreshold = 0;
     
     Personality->initialRespectOnOpponent = 10;
-    Personality->initialDisrespectOnOpponent = 10;
+    Personality->initialDisrespectOnOpponent = -10;
     Personality->respectModifier = 10;
-    Personality->disrespectModifier = 5;
+    Personality->disrespectModifier = -5;
     Personality->respectTreshold = 20;
 
     Personality->currentRespectOnEnemy = 0;
@@ -440,11 +441,11 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         }
         
         // layer 1 is an enemy prediction
-        if (layerNumber == 1)
+/*        if (layerNumber == 1)
         {
             newYomiLayer->enemyRespect = personality->initialRespectOnOpponent;   //todo: should be personality value
         }
-        else
+        else*/
         {
             // other layers are basically new scenarios
             newYomiLayer->enemyRespect = UNINITIALIZED_VALUE;
@@ -526,8 +527,8 @@ void createYomiLayers(database* db, situation* currentSituation, int oppMove)
     situation* yomiLayer4 = 
         createOneYomiLayer(db, 4, yomiLayer3, wildcard);     
     
-    //yomiLayer5 is the same as layer 1, so we loop this back.
-    addCounter(yomiLayer4, yomiLayer1);
+    //yomiLayer5 is the same as layer 2, so we loop this back.
+    addCounter(yomiLayer4, yomiLayer2);
 
 #ifdef DEBUG1
     printf("\n");
@@ -577,7 +578,7 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
         if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
             currentSituation->enemyRespect = personality->initialDisrespectOnOpponent;
         else
-            currentSituation->enemyRespect -= personality->disrespectModifier;
+            currentSituation->enemyRespect += personality->disrespectModifier;
     }
     else
     {
@@ -626,6 +627,8 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     }
 
     // limit from -100 to +100
+    personality->currentRespectOnEnemy = personality->currentRespectOnEnemy > 100 ? 100 : personality->currentRespectOnEnemy;
+    personality->currentRespectOnEnemy = personality->currentRespectOnEnemy < -100 ? -100 : personality->currentRespectOnEnemy;
     currentSituation->successRate = currentSituation->successRate > 100 ? 100 : currentSituation->successRate;
     currentSituation->successRate = currentSituation->successRate < -100 ? -100 : currentSituation->successRate;
     currentSituation->enemyRespect = currentSituation->enemyRespect > 100 ? 100 : currentSituation->enemyRespect;
@@ -762,7 +765,7 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
     if (possibleResponse->situationSize != currentSituationSize)
         return false;
 
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
     printf("  Checking if both simulations are equal\n");
 #endif
 
@@ -772,13 +775,13 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
         if ((possibleResponse->situation[i] != currentSituation[i]) &&
             (possibleResponse->situation[i] != wildcard))
         {
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
             printf("  Both situations are not equal\n");
 #endif
             return false;
         }
 }
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
     printf("  Both situations are equal\n");
 #endif
 
@@ -789,31 +792,19 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
 
 //justCheckEnemyMoves: if true, we only check the enemy's moves and we ignore our own moves. This is here in case the enemy
 //                     is not predicting our AI.
-bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize, bool justCheckEnemyMoves)
+bool compareSituation_ToLastTurn_Check(situation* possibleResponse, int* currentSituation, int currentSituationSize, bool justCheckEnemyMoves, int offset, bool futureSituation)
 {
     ////////////////////////////
     // Compare to last turn
     ////////////////////////////
     bool considerResponse = true;
 
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
     printf("Checking Last Turn:\n--=\n");
 #endif      
-    int j,k, offset;
+    int j,k;
 
-    // we might get possible responses that are smaller than the current situation.
-    // in this case, we have to compare the possible response to the end of the current situation.
-    // by doing this, we can also consider situations that are small but don't have much history
-    offset = currentSituationSize - possibleResponse->situationSize;
-    
-    // if the possible response has an odd length, we align accordingly
-    bool futureSituation = possibleResponse->situationSize % 2 == 1;
-    if (futureSituation)
-        offset -= 1;
-    if (offset < 0)
-        offset = 0;
-
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
     if (offset)
     {
         printf("\nComparing the ff situations (offset: %i): \n", offset);
@@ -831,7 +822,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     {
         if (justCheckEnemyMoves && (j % 2 == 0))
         {
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
             // Ignoring our previous move in case our enemy is doing a pattern and ignoring our own move
             printf ("Ignoring AI's previous move: %i\n", possibleResponse->situation[j]);
 #endif
@@ -841,17 +832,44 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
         if (possibleResponse->situation[j] != currentSituation[k] &&
             possibleResponse->situation[j] != wildcard)
         {
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
             printf("Situation not the same\n");
 #endif
             considerResponse = false;
             break;
         }
     }
-        
+}
+
+bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize)
+{
+    int offset = 0;
+    bool futureSituation;
+
+    // we might get possible responses that are smaller than the current situation.
+    // in this case, we have to compare the possible response to the end of the current situation.
+    // by doing this, we can also consider situations that are small but don't have much history
+    offset = currentSituationSize - possibleResponse->situationSize;
+    
+    // if the possible response has an odd length, we align accordingly
+    futureSituation = possibleResponse->situationSize % 2 == 1;
+
+    if (futureSituation)
+        offset -= 1;
+    if (offset < 0)
+        offset = 0;
+
+    bool CheckBothHistory = compareSituation_ToLastTurn_Check(possibleResponse, currentSituation, currentSituationSize, false, offset, futureSituation);
+    bool justCheckEnemyMoves = compareSituation_ToLastTurn_Check(possibleResponse, currentSituation, currentSituationSize, true, offset, futureSituation);
+    //justCheckEnemyMoves = false;
+    
+    bool considerResponse = CheckBothHistory || justCheckEnemyMoves;
+    
     if (considerResponse == true)
     {
 #ifdef DEBUG2
+        int j,k;
+        
         for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
         {
             printf("%i == ", possibleResponse->situation[j]);
@@ -868,9 +886,22 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
             // if we offset, it means we are doing a prediction.
             // (uunahan na natin ang kalaban)
             // so we rank the next layer.
-            possibleResponse->counter[0]->rankThisTurn += 50;
+
+            int predictionModifier = 50;
+
+            if (CheckBothHistory == false && justCheckEnemyMoves == true)
+            {
+                // we see a pattern with the enemy's movement (which we won't see if we don't look for patterns)
+                // we don't give this a big rank for this because its possible that the pattern is a trap
+                // todo: add a personality for likelihood of responding to possible baits.
+                predictionModifier *= 0.5;
+            }
+            
+            possibleResponse->counter[0]->rankThisTurn += predictionModifier;
+
             return false;
         }
+        
     }
     
     return considerResponse;
@@ -880,24 +911,25 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
 {   
     // Check if the Yomi AI should respect the opponent on current situation
     int respectTresholdForLayer;
+    int enemyRespect = chosenResponse->enemyRespect;
     
     if (layerNumber > 1) 
-        respectTresholdForLayer = personality->respectTreshold * (layerNumber - 1);
+    {
+        respectTresholdForLayer = personality->respectTreshold * (layerNumber - 1);        
+//        enemyRespect = personality->currentRespectOnEnemy * 0.25 + enemyRespect * 0.75;  // Do we respect our enemy to apply yomi?
+    }
     else
+    {
         respectTresholdForLayer = personality->respectTreshold;
-    
-    // Do we respect our enemy to apply yomi?
-    bool respectEnemy = personality->currentRespectOnEnemy >= personality->respectOnEnemyTreshold;
-    respectEnemy= false;
-    
-    
-    if (chosenResponse->enemyRespect >= respectTresholdForLayer ||
+//        enemyRespect = personality->currentRespectOnEnemy * 0.30 + enemyRespect * 0.70;  // Do we respect our enemy to apply yomi?
+    }
+        
+    if (enemyRespect >= respectTresholdForLayer
         //chosenResponse->successRate <= 0
-        respectEnemy 
         )
     {
 #ifdef DEBUG4
-        printf("Respecting the opponent to counter move (situation's respect value: %i >= %i)\n", chosenResponse->enemyRespect, personality->respectTreshold);
+        printf("Respecting the opponent will counter specific situation (situation's respect value: %i >= %i)\n", enemyRespect, personality->respectTreshold);
 #endif
 
         // We respect that our opponent will counter our move. So we select their counter (yomi layer 1)
@@ -1054,9 +1086,7 @@ situation* selectSituation(database* db, int currentTurn)
                 considerResponse = 
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, false)
-                    ||
-                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize, true);
+                    compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize);
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
