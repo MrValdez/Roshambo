@@ -15,9 +15,9 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-#define DEBUG
+/*#define DEBUG
 #define DEBUG1
-#define DEBUG2
+/*#define DEBUG2
 //#define DEBUG2_VERBOSE
 #define DEBUG3
 #define DEBUG4
@@ -42,6 +42,8 @@ The Scenario Aanalysis program will rank each move of its effectiveness, given a
 // In theory, changing just the personality should change the behavior of the AI
 typedef struct sPersonality
 {
+    int memorySize;         // the number of history the AI would consider
+    
     int successRateTreshold; // the minimum amount of success rate we would consider
 
     // See onrespect section
@@ -217,6 +219,7 @@ sPersonality* developPersonality()
     sPersonality *Personality = (sPersonality*) malloc(sizeof(sPersonality));
 
     // Dummy data
+    Personality->memorySize = 3;                // 3 seems to be the best so far. possibly change personality for longer history?
     Personality->successRateTreshold = 0;
     
     Personality->initialRespectOnOpponent = 10;
@@ -726,9 +729,9 @@ int* evaluateCurrentSituation(int currentTurn, int* currentSituationSize)
     else
     {
         // Situations for Roshambo is alternation of player moves and enemy moves
-        // Maximum situation size for Roshambo is 6 turns
+        // Maximum situation size for Roshambo depends on the personality
         int i, j;
-        int startTurn = currentTurn > 6 ? currentTurn - 6 : 0;
+        int startTurn = currentTurn > (personality->memorySize * 2) ? currentTurn - (personality->memorySize * 2): 0;
         int maxTurn = currentTurn;
         *currentSituationSize = (maxTurn - startTurn) * 2;
         currentSituation = (int*) malloc (sizeof(int*) * (*currentSituationSize));
@@ -805,7 +808,7 @@ bool compareSituation_ToLastTurn_Check(situation* possibleResponse, int* current
 {
     ////////////////////////////
     // Compare to last turn
-    ////////////////////////////
+    ////////////////////////////        
     bool considerResponse = true;
 
     int j,k;
@@ -894,7 +897,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
 #ifdef DEBUG2
         printf("Situation similar to last turn");
         if (justCheckEnemyMoves ^ CheckBothHistory)
-            printf(" (with only enemy moves are checked)");
+            printf(" (when only enemy moves are checked)");
         printf("\n");
 #endif
         if (futureSituation == false)
