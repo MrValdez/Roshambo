@@ -15,7 +15,7 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-#define DEBUG
+/*#define DEBUG
 #define DEBUG1
 #define DEBUG2
 //#define DEBUG2_VERBOSE
@@ -659,9 +659,9 @@ int yomi()
     opp_history[opp_history[0]];     // opponent's previous move
     
     // Initialize database
-/*    if (currentTurn == 0)
+    if (currentTurn == 0)
         initYomi();
-*/
+
     /*
     // 1. Evaluate current situation.
             Situations can exist multiple times but with different moves. 
