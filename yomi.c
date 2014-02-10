@@ -15,7 +15,7 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-/*#define DEBUG
+#define DEBUG
 #define DEBUG1
 #define DEBUG2
 //#define DEBUG2_VERBOSE
@@ -765,29 +765,38 @@ bool compareSituation_Equal(situation* possibleResponse, int* currentSituation, 
     if (possibleResponse->situationSize != currentSituationSize)
         return false;
 
-#ifdef DEBUG2_VERBOSE
-    printf("  Checking if both simulations are equal\n");
-#endif
 
     int i;
+    bool isEqual = true;
     for (i = 0; i < currentSituationSize; i++)
-{
+    {
         if ((possibleResponse->situation[i] != currentSituation[i]) &&
             (possibleResponse->situation[i] != wildcard))
         {
-#ifdef DEBUG2_VERBOSE
-            printf("  Both situations are not equal\n");
-#endif
-            return false;
+            isEqual = false;
+            break;
         }
-}
+    }
+
 #ifdef DEBUG2_VERBOSE
-    printf("  Both situations are equal\n");
+    printf("Checking if both simulations are equal\n--=");
+#endif
+    
+    if (isEqual)
+    {
+#ifdef DEBUG2_VERBOSE
+        printf("  Both situations are equal\n");
 #endif
 
-    possibleResponse->rankThisTurn += 50;
-
-    return true;
+        possibleResponse->rankThisTurn += 50;
+    }
+    else
+    {
+#ifdef DEBUG2_VERBOSE
+        printf("  Both situations are not equal\n");
+#endif
+    }
+    return isEqual;
 }
 
 //justCheckEnemyMoves: if true, we only check the enemy's moves and we ignore our own moves. This is here in case the enemy
@@ -799,23 +808,7 @@ bool compareSituation_ToLastTurn_Check(situation* possibleResponse, int* current
     ////////////////////////////
     bool considerResponse = true;
 
-#ifdef DEBUG2_VERBOSE
-    printf("Checking Last Turn:\n--=\n");
-#endif      
     int j,k;
-
-#ifdef DEBUG2_VERBOSE
-    if (offset)
-    {
-        printf("\nComparing the ff situations (offset: %i): \n", offset);
-        for (j = 0; j < offset; j++)
-            printf(" ");
-        debugPrintSituation(possibleResponse->situation, possibleResponse->situationSize);
-        printf("\n");
-        debugPrintSituation(currentSituation, currentSituationSize);
-        printf("\n");   
-    } 
-#endif
 
     considerResponse = true;
     for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
@@ -832,19 +825,33 @@ bool compareSituation_ToLastTurn_Check(situation* possibleResponse, int* current
         if (possibleResponse->situation[j] != currentSituation[k] &&
             possibleResponse->situation[j] != wildcard)
         {
-#ifdef DEBUG2_VERBOSE
-            printf("Situation not the same\n");
-#endif
             considerResponse = false;
             break;
         }
     }
+
+#ifdef DEBUG2
+    if (considerResponse && offset)
+    {
+        printf("\nComparing the ff situations (offset: %i): \n", offset);
+        for (j = 0; j < offset; j++)
+            printf(" ");
+        debugPrintSituation(possibleResponse->situation, possibleResponse->situationSize);
+        printf("\n");
+        debugPrintSituation(currentSituation, currentSituationSize);
+        printf("\n");   
+    } 
+#endif
     
     return considerResponse;
 }
 
 bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize)
 {
+#ifdef DEBUG2_VERBOSE
+    printf("Checking Last Turn:\n--=\n");
+#endif      
+
     int offset = 0;
     bool futureSituation;
 
@@ -867,9 +874,15 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
     
     bool considerResponse = CheckBothHistory || justCheckEnemyMoves;
     
-    if (considerResponse == true)
+    if (considerResponse == false)
     {
-#ifdef DEBUG2
+#ifdef DEBUG2_VERBOSE
+        printf("Situation not the same\n");
+#endif
+    }
+    else
+    {
+#ifdef DEBUG2_VERBOSE
         int j,k;
         
         for (j = 0, k = offset; j < possibleResponse->situationSize && k < currentSituationSize; j++, k++)
@@ -877,7 +890,12 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
             printf("%i == ", possibleResponse->situation[j]);
             printf("%i\n", currentSituation[k]);
         }
-        printf("Situation similar to last turn\n");
+#endif
+#ifdef DEBUG2
+        printf("Situation similar to last turn");
+        if (justCheckEnemyMoves ^ CheckBothHistory)
+            printf(" (with only enemy moves are checked)");
+        printf("\n");
 #endif
         if (futureSituation == false)
         {
@@ -901,6 +919,11 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
             
             possibleResponse->counter[0]->rankThisTurn += predictionModifier;
 
+#ifdef DEBUG2
+            printf("--= Using a prediction. \nAdding rank to situation: ");
+            debugPrintSituation(possibleResponse->counter[0]->situation, possibleResponse->counter[0]->situationSize);
+            printf("\n");
+#endif
             return false;
         }
         
