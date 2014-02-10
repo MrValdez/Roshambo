@@ -839,6 +839,8 @@ bool compareSituation_ToLastTurn_Check(situation* possibleResponse, int* current
             break;
         }
     }
+    
+    return considerResponse;
 }
 
 bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituation, int currentSituationSize)
@@ -1087,6 +1089,7 @@ situation* selectSituation(database* db, int currentTurn)
                     compareSituation_Equal(possibleResponse, currentSituation, currentSituationSize)
                     ||
                     compareSituation_ToLastTurn(possibleResponse, currentSituation, currentSituationSize);
+
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
