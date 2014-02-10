@@ -1090,7 +1090,9 @@ situation* selectSituation(database* db, int currentTurn)
 #ifdef DEBUG2
                 if (considerResponse)
                     printf("=Situation considered=\n\n");
-                else
+#endif
+#ifdef DEBUG2_VERBOSE
+                if (considerResponse == false)
                     printf("=Situation not considered=\n\n");
 #endif
             }
