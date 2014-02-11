@@ -1,6 +1,7 @@
-/*todo: remove duplicates when creating new situations
-        make sure that our assumption for the offset for odd situations are correct
+
+/*todo: make sure that our assumption for the offset for odd situations are correct
 */
+
 // RoShamBo Tournament Test Suite structures
 
 #define rock        0
@@ -15,12 +16,13 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-/*#define DEBUG
+#define DEBUG
 #define DEBUG1
 /*#define DEBUG2
 //#define DEBUG2_VERBOSE
 #define DEBUG3
 #define DEBUG4
+*/
 #define DEBUG5
 ///*/   
 
@@ -46,6 +48,9 @@ typedef struct sPersonality
     
     int successRateTreshold; // the minimum amount of success rate we would consider
 
+    int layer1CounterSuccessRateModifier; // how high we rate a counter that we find when creating the first yomi layer
+    int deepLayerSuccessRateModifier; // how high we rate a counter that we find when creating the deeper yomi layers (layer 2 onwards)
+
     // See onrespect section
     int initialRespectOnOpponent;     
     int initialDisrespectOnOpponent;
@@ -53,8 +58,12 @@ typedef struct sPersonality
     float disrespectModifier;
     int respectTreshold;
     
-    int currentRespectOnEnemy;
-    int respectOnEnemyTreshold;
+    // the higher this is, the more likely the opponent is going to do something risky (in roshambo, this means
+    // using a higher yomi layer). We keep track of this and if this gets too high, we stay in lower layers.
+    // todo: for other games, is this better as a situation assessment?
+    int currentEnemyRiskAssessment;       
+    int enemyRiskModifier;
+    int enemyRiskTreshold;
     
 } sPersonality;
 
@@ -66,7 +75,7 @@ typedef struct situation
     int situation[1000];       // a struct to determine the situation. game dependent
     
     int successRate;        // Can go up or down if the AI wins or lose a turn, respectively. Default: 0
-    int successRateAsCounter;  // refers to how likely this will be used as a counter move (higher yomi layer)
+    int counterPotential;  // refers to how likely this will be used as a counter move (higher yomi layer)
 
     int rankThisTurn; //goes up and down depending on score given by situation comparisions. reset every turn.
     
@@ -191,7 +200,7 @@ situation *createSituation(database* db)
     newSituation->situationSize = 0;
 
     newSituation->successRate = 0;
-    newSituation->successRateAsCounter = 0;
+    newSituation->counterPotential = 0;
     newSituation->enemyRespect = UNINITIALIZED_VALUE;
 
     newSituation->counterSize = 0;
@@ -221,6 +230,9 @@ sPersonality* developPersonality()
     // Dummy data
     Personality->memorySize = 3;                // 3 seems to be the best so far. possibly change personality for longer history?
     Personality->successRateTreshold = 0;
+
+    Personality->layer1CounterSuccessRateModifier = 50;
+    Personality->deepLayerSuccessRateModifier = 0;
     
     Personality->initialRespectOnOpponent = 10;
     Personality->initialDisrespectOnOpponent = -10;
@@ -228,8 +240,9 @@ sPersonality* developPersonality()
     Personality->disrespectModifier = -5;
     Personality->respectTreshold = 20;
 
-    Personality->currentRespectOnEnemy = 0;
-    Personality->respectOnEnemyTreshold = 30;
+    Personality->currentEnemyRiskAssessment = 0; 
+    Personality->enemyRiskModifier = 10;
+    Personality->enemyRiskTreshold = 30;
     
     return Personality;
 }
@@ -283,7 +296,6 @@ void debugShow(database* db)
 
 void debugPrintSituation(int* situation, int size)
 {
-#ifdef DEBUG
     int i;
     for (i = 0; i < size; i++)
     {
@@ -300,7 +312,6 @@ void debugPrintSituation(int* situation, int size)
             }*/
         }
     }
-#endif
 }
 
 // Game dependent
@@ -324,6 +335,7 @@ struct database* trainingProgram(struct database* db)
     return db;
 }
 
+//todo: add wildcard prediction to findcounter
 situation* findCounter(database* db, situation *attackingSituation)
 {
     int moveToCounterSituation = (attackingSituation->chosenMove + 1) % 3; //todo: roshambo specific.
@@ -391,22 +403,17 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
     if (oppMove == wildcard && previousYomiLayer != null)
         oppMove = previousYomiLayer->chosenMove;
         
+    //todo: roshambo specific.
     int winningMove = (oppMove + 1) % 3;
-    
-    //todo: add wildcard prediction to findcounter
-    //situation* newYomiLayer = findCounter(db, previousYomiLayer);
-    //situation* newYomiLayer = findSituation(db, previousYomiLayer->situation, previousYomiLayer->situationSize, previousYomiLayer->chosenMove);
-    
-    situation* newYomiLayer = previousYomiLayer;
+        
+    situation* newYomiLayer;
 
-    if (newYomiLayer != null && newYomiLayer->counterSize)
-        newYomiLayer = newYomiLayer->counter[0];
+    if (previousYomiLayer != null && previousYomiLayer->counterSize)
+        newYomiLayer = previousYomiLayer->counter[0];            //todo: add code for multiple counters
     else
         newYomiLayer = null;
-
-    //situation* newYomiLayer = null;    
     
-    if (newYomiLayer == null || newYomiLayer->chosenMove != winningMove)
+    if (newYomiLayer == null || newYomiLayer->chosenMove != winningMove /* || checkHowSimilarLayerIsToSituation*/)
     {
 #ifdef DEBUG1
         printf("Creating new situation for yomi layer %i\n", layerNumber);
@@ -417,7 +424,6 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         newYomiLayer = createSituation(db);
         
         //choose a move that beats the previous layer.
-        //todo: very roshambo specific.
         newYomiLayer->chosenMove = winningMove; 
         
         int i = 0;
@@ -436,11 +442,11 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         // Layer 1 and 2 have a higher initial counter success rate than layer 3 and 4
         if (layerNumber <= 2)
         {
-            newYomiLayer->successRateAsCounter += 50;    //todo: should be personality value
+            newYomiLayer->counterPotential += personality->layer1CounterSuccessRateModifier;
         }
         else
         {
-            newYomiLayer->successRateAsCounter = 0;    //todo: should be personality value
+            newYomiLayer->counterPotential = personality->deepLayerSuccessRateModifier;
         }
         
         // layer 1 is an enemy prediction
@@ -468,27 +474,7 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
     debugPrintSituation(newYomiLayer->situation, newYomiLayer->situationSize);
     printf(")\n Chosen move: %i.\n", newYomiLayer->chosenMove);
 #endif
-/*
-    //check if yomiLayer1 has yomiLayer2 as its counter. If not, add it
-    bool isInCounterList = false;
-    int i;
-    for (i = 0; i < previousYomiLayer->counterSize; i++)
-    {
-        if (previousYomiLayer->counter[i] == newYomiLayer)
-        {
-            isInCounterList = true;
-            break;
-        }
-    }
-    
-    if (isInCounterList == false)
-    {
-#ifdef DEBUG1      
-        printf("adding yomi layer %i as counter to yomi layer %i\n", layerNumber, layerNumber - 1);
-#endif            
-        addCounter(previousYomiLayer, newYomiLayer);
-    }
- */   
+
     return newYomiLayer;
 }
 
@@ -530,7 +516,7 @@ void createYomiLayers(database* db, situation* currentSituation, int oppMove)
     situation* yomiLayer4 = 
         createOneYomiLayer(db, 4, yomiLayer3, wildcard);     
     
-    //yomiLayer5 is the same as layer 2, so we loop this back.
+    //yomiLayer4 is the same as layer 1, so we add layer 2 as counter.
     addCounter(yomiLayer4, yomiLayer2);
 
 #ifdef DEBUG1
@@ -589,7 +575,7 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
         currentSituation->successRate -= 10;
         
         // increase our respect for the enemy
-        personality->currentRespectOnEnemy += 10;
+        personality->currentEnemyRiskAssessment += personality->enemyRiskModifier;
         
         if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
             currentSituation->enemyRespect = personality->initialRespectOnOpponent;
@@ -630,22 +616,12 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     }
 
     // limit from -100 to +100
-    personality->currentRespectOnEnemy = personality->currentRespectOnEnemy > 100 ? 100 : personality->currentRespectOnEnemy;
-    personality->currentRespectOnEnemy = personality->currentRespectOnEnemy < -100 ? -100 : personality->currentRespectOnEnemy;
+    personality->currentEnemyRiskAssessment = personality->currentEnemyRiskAssessment > 100 ? 100 : personality->currentEnemyRiskAssessment;
+    personality->currentEnemyRiskAssessment = personality->currentEnemyRiskAssessment < -100 ? -100 : personality->currentEnemyRiskAssessment;
     currentSituation->successRate = currentSituation->successRate > 100 ? 100 : currentSituation->successRate;
     currentSituation->successRate = currentSituation->successRate < -100 ? -100 : currentSituation->successRate;
     currentSituation->enemyRespect = currentSituation->enemyRespect > 100 ? 100 : currentSituation->enemyRespect;
     currentSituation->enemyRespect = currentSituation->enemyRespect < -100 ? -100 : currentSituation->enemyRespect;
-
-    
-    // find the counter that the opponent used
-    // todo: we could have multiple situations where the move is used. gather all of them and predict which
-    int i;
-    for (i = 0; i < currentSituation->counterSize; i++)
-    {
-        situation *counter = currentSituation->counter[i];
-        counter->successRateAsCounter += 1;
-    } 
     
 #ifdef DEBUG1
     printf("======================\n\n");
@@ -688,10 +664,7 @@ int yomi()
 
 #ifdef DEBUG
     if (currentTurn > 0)
-    {
-        getch();
-        printf("\n=========BEGIN TURN #%i========\n", currentTurn);
-    }
+        printf("\n");
 #endif
 
     // 5. (Because of how the test suite works, 5 is run first to check the previous turn
@@ -702,6 +675,14 @@ int yomi()
         int lastOppMove = opp_history[lastTurn];
         evaluateTurn(db, lastTurn, lastPlayerMove, lastOppMove);
     }
+
+#ifdef DEBUG
+    if (currentTurn > 0)
+    {
+        getch();
+        printf("\n=========BEGIN TURN #%i========\n", currentTurn);
+    }
+#endif
 
     // 1 to 5
     lastSituationSelected = selectSituation(db, currentTurn);
@@ -944,12 +925,12 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
     if (layerNumber > 1) 
     {
         respectTresholdForLayer = personality->respectTreshold * (layerNumber - 1);        
-//        enemyRespect = personality->currentRespectOnEnemy * 0.25 + enemyRespect * 0.75;  // Do we respect our enemy to apply yomi?
+//        enemyRespect = personality->currentEnemyRiskAssessment * 0.25 + enemyRespect * 0.75;  // Do we respect our enemy to apply yomi?
     }
     else
     {
         respectTresholdForLayer = personality->respectTreshold;
-//        enemyRespect = personality->currentRespectOnEnemy * 0.30 + enemyRespect * 0.70;  // Do we respect our enemy to apply yomi?
+//        enemyRespect = personality->currentEnemyRiskAssessment * 0.30 + enemyRespect * 0.70;  // Do we respect our enemy to apply yomi?
     }
         
     if (enemyRespect >= respectTresholdForLayer
@@ -964,21 +945,10 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
         if (chosenResponse->counterSize)
         {
             situation *enemyChoice;
-            int currentSuccessRateAsCounter = -1000;
+            int currentcounterPotential = -1000;
             int i;
 
-            // Yomi Layer 1
-/*            // in case of multiple counters, evaluate what are more likely to be chosen based on successRateAsCounter.
-            // todo: make this into a list
-            for (i = 0; i < chosenResponse->counterSize; i++)
-            {
-                if (chosenResponse->counter[i]->successRateAsCounter > currentSuccessRateAsCounter)
-                {
-                    enemyChoice = chosenResponse->counter[i];
-                    currentSuccessRateAsCounter = enemyChoice->successRateAsCounter;
-                }
-            }*/
-
+            //todo: in case of multiple counters, evaluate each one
             enemyChoice = chosenResponse->counter[0];
             chosenResponse = enemyChoice;
 
@@ -987,21 +957,6 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
             debugPrintSituation(enemyChoice->situation, enemyChoice->situationSize);
             printf("\n Move with layer: %i\n", enemyChoice->chosenMove);
 #endif
-
-/*            // Now that we have the enemy's yomi layer 1, we look for our counter (Yomi layer 2)
-            if (enemyChoice->counterSize)
-            {
-                // todo: make this into a list
-                situation *yomiLayer2 = enemyChoice->counter[0];
-            
-                chosenResponse = yomiLayer2;
-#ifdef DEBUG4   
-                printf("Situation for our counter (Yomi Layer %i): ", layerNumber + 1);
-                debugPrintSituation(chosenResponse->situation, chosenResponse->situationSize);
-                printf("\n Move with layer: %i\n", enemyChoice->chosenMove);
-                printf("\n");
-#endif
-            }*/            
         }
         else
         {
