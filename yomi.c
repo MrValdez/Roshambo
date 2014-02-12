@@ -16,13 +16,13 @@ extern int opp_history[];
 #define null            0
 #define maxYomiLayer    4
 
-#define DEBUG
+/*#define DEBUG
 #define DEBUG1
 /*#define DEBUG2
 //#define DEBUG2_VERBOSE
 #define DEBUG3
 #define DEBUG4
-*/
+
 #define DEBUG5
 ///*/   
 
@@ -58,10 +58,10 @@ typedef struct sPersonality
     float disrespectModifier;
     int respectTreshold;
     
-    // the higher this is, the more likely the opponent is going to do something risky (in roshambo, this means
-    // using a higher yomi layer). We keep track of this and if this gets too high, we stay in lower layers.
+    // a positive enemy respect value means that the enemy has a tendency to go on higher yomi layer. So the AI should play safe.
+    // a negative enemy respect value means that the enemy has a tendency to play on a lower yomi layer. So the AI should play aggresively
     // todo: for other games, is this better as a situation assessment?
-    int currentEnemyRiskAssessment;       
+    int currentEnemyRespect;       
     int enemyRiskModifier;
     int enemyRiskTreshold;
     
@@ -80,7 +80,7 @@ typedef struct situation
     int rankThisTurn; //goes up and down depending on score given by situation comparisions. reset every turn.
     
     #define UNINITIALIZED_VALUE -1000
-    int enemyRespect;       // See onrespect section
+    int enemyMoveRespect;       // See onrespect section
     
     int counterSize;
     struct situation** counter;
@@ -201,7 +201,7 @@ situation *createSituation(database* db)
 
     newSituation->successRate = 0;
     newSituation->counterPotential = 0;
-    newSituation->enemyRespect = UNINITIALIZED_VALUE;
+    newSituation->enemyMoveRespect = UNINITIALIZED_VALUE;
 
     newSituation->counterSize = 0;
     newSituation->counter = (situation**) malloc (sizeof(situation*));
@@ -240,7 +240,7 @@ sPersonality* developPersonality()
     Personality->disrespectModifier = -5;
     Personality->respectTreshold = 20;
 
-    Personality->currentEnemyRiskAssessment = 0; 
+    Personality->currentEnemyRespect = 0; 
     Personality->enemyRiskModifier = 10;
     Personality->enemyRiskTreshold = 30;
     
@@ -452,12 +452,12 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         // layer 1 is an enemy prediction
 /*        if (layerNumber == 1)
         {
-            newYomiLayer->enemyRespect = personality->initialRespectOnOpponent;   //todo: should be personality value
+            newYomiLayer->enemyMoveRespect = personality->initialRespectOnOpponent;   //todo: should be personality value
         }
         else*/
         {
             // other layers are basically new scenarios
-            newYomiLayer->enemyRespect = UNINITIALIZED_VALUE;
+            newYomiLayer->enemyMoveRespect = UNINITIALIZED_VALUE;
         }
         
         addCounter(previousYomiLayer, newYomiLayer);
@@ -532,7 +532,7 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     // If we won, 
     //  increase successRate
     //  If successRate is not 100, 
-    //   decrease enemyRespect by Personality.disrespectModifier
+    //   decrease enemyMoveRespect by Personality.disrespectModifier
     // If we lost,
     //  decrease successRate
     //  increase RespectModifier by Personality.respectModifier
@@ -564,10 +564,10 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
     {
         currentSituation->successRate += 10;
         
-        if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
-            currentSituation->enemyRespect = personality->initialDisrespectOnOpponent;
+        if (currentSituation->enemyMoveRespect == UNINITIALIZED_VALUE)
+            currentSituation->enemyMoveRespect = personality->initialDisrespectOnOpponent;
         else
-            currentSituation->enemyRespect += personality->disrespectModifier;
+            currentSituation->enemyMoveRespect += personality->disrespectModifier;
     }
     else
     {
@@ -575,19 +575,19 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
         currentSituation->successRate -= 10;
         
         // increase our respect for the enemy
-        personality->currentEnemyRiskAssessment += personality->enemyRiskModifier;
+        personality->currentEnemyRespect += personality->enemyRiskModifier;
         
-        if (currentSituation->enemyRespect == UNINITIALIZED_VALUE)
-            currentSituation->enemyRespect = personality->initialRespectOnOpponent;
+        if (currentSituation->enemyMoveRespect == UNINITIALIZED_VALUE)
+            currentSituation->enemyMoveRespect = personality->initialRespectOnOpponent;
         else
-            currentSituation->enemyRespect += personality->respectModifier;
+            currentSituation->enemyMoveRespect += personality->respectModifier;
 
 #ifdef DEBUG1
         printf("Lost. Updating situation ");
         debugPrintSituation(currentSituation->situation, currentSituation->situationSize);
         printf(":\n");
         printf(" Success rate:%i\n", currentSituation->successRate);
-        printf(" Enemy respect value:%i\n", currentSituation->enemyRespect);
+        printf(" Enemy move respect value:%i\n", currentSituation->enemyMoveRespect);
 #endif
 
         //todo: this is the training program
@@ -613,15 +613,45 @@ void evaluateTurn(database* db, int currentTurn, int playerMove, int oppMove)
             // create a new situation (if none exists) that is the counter to this turn's situation. 
             createYomiLayers(db, newSituation, oppMove);
         }
+
+if (0)
+        {
+            // find the situation that the opponent used. Increase the counterPotential of the opponent's situation
+            int currentSituationSize = 0;
+            int* currentSituation = evaluateCurrentSituation(currentTurn - 1, &currentSituationSize);
+
+        printf("232321Updating situation ");
+        debugPrintSituation(currentSituation, currentSituationSize);
+        printf(":\n");
+
+            int moveToBeatEnemy = (oppMove + 1) % 3;
+            situation* enemySituation = findSituation(db, currentSituation, currentSituationSize, moveToBeatEnemy);
+            if (enemySituation == null)
+            {
+    printf("NWEOREWR FOUND");getch();
+            }
+            else
+            {            
+                // todo: we could have multiple situations where the move is used. gather all of them and predict which
+                //       was the one the enemy choose.
+                int i;
+                for (i = 0; i < enemySituation->counterSize; i++)
+                {
+                    situation *counter = enemySituation->counter[i];
+                    counter->counterPotential += 10;
+                }
+            } 
+        }
+
     }
 
     // limit from -100 to +100
-    personality->currentEnemyRiskAssessment = personality->currentEnemyRiskAssessment > 100 ? 100 : personality->currentEnemyRiskAssessment;
-    personality->currentEnemyRiskAssessment = personality->currentEnemyRiskAssessment < -100 ? -100 : personality->currentEnemyRiskAssessment;
+    personality->currentEnemyRespect = personality->currentEnemyRespect > 100 ? 100 : personality->currentEnemyRespect;
+    personality->currentEnemyRespect = personality->currentEnemyRespect < -100 ? -100 : personality->currentEnemyRespect;
     currentSituation->successRate = currentSituation->successRate > 100 ? 100 : currentSituation->successRate;
     currentSituation->successRate = currentSituation->successRate < -100 ? -100 : currentSituation->successRate;
-    currentSituation->enemyRespect = currentSituation->enemyRespect > 100 ? 100 : currentSituation->enemyRespect;
-    currentSituation->enemyRespect = currentSituation->enemyRespect < -100 ? -100 : currentSituation->enemyRespect;
+    currentSituation->enemyMoveRespect = currentSituation->enemyMoveRespect > 100 ? 100 : currentSituation->enemyMoveRespect;
+    currentSituation->enemyMoveRespect = currentSituation->enemyMoveRespect < -100 ? -100 : currentSituation->enemyMoveRespect;
     
 #ifdef DEBUG1
     printf("======================\n\n");
@@ -920,25 +950,25 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
 {   
     // Check if the Yomi AI should respect the opponent on current situation
     int respectTresholdForLayer;
-    int enemyRespect = chosenResponse->enemyRespect;
+    int enemyMoveRespect = chosenResponse->enemyMoveRespect;
     
     if (layerNumber > 1) 
     {
         respectTresholdForLayer = personality->respectTreshold * (layerNumber - 1);        
-//        enemyRespect = personality->currentEnemyRiskAssessment * 0.25 + enemyRespect * 0.75;  // Do we respect our enemy to apply yomi?
+//        enemyMoveRespect = personality->currentEnemyRespect * 0.25 + enemyMoveRespect * 0.75;  // Do we respect our enemy to apply yomi?
     }
     else
     {
         respectTresholdForLayer = personality->respectTreshold;
-//        enemyRespect = personality->currentEnemyRiskAssessment * 0.30 + enemyRespect * 0.70;  // Do we respect our enemy to apply yomi?
+//        enemyMoveRespect = personality->currentEnemyRespect * 0.30 + enemyMoveRespect * 0.70;  // Do we respect our enemy to apply yomi?
     }
         
-    if (enemyRespect >= respectTresholdForLayer
+    if (enemyMoveRespect >= respectTresholdForLayer
         //chosenResponse->successRate <= 0
         )
     {
 #ifdef DEBUG4
-        printf("Respecting the opponent will counter specific situation (situation's respect value: %i >= %i)\n", enemyRespect, personality->respectTreshold);
+        printf("Respecting the opponent will counter specific situation (situation's respect value: %i >= %i)\n", enemyMoveRespect, personality->respectTreshold);
 #endif
 
         // We respect that our opponent will counter our move. So we select their counter (yomi layer 1)
@@ -1286,7 +1316,7 @@ situation* selectSituation(database* db, int currentTurn)
         if (originalResponse == responses[i])
             printf(" (chosen) ");
         printf("\n move: %i", responses[i]->chosenMove);
-        printf(" respect: %i", responses[i]->enemyRespect);
+        printf(" respect: %i", responses[i]->enemyMoveRespect);
         printf(" successRate: %i", responses[i]->successRate);
         printf(" rank: %i", responses[i]->rankThisTurn);
         printf("\n");
