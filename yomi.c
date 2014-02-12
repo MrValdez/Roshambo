@@ -953,7 +953,7 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
 {   
     // Check if the Yomi AI should respect the opponent on current situation
     int respectTresholdForLayer;
-    int enemyMoveRespect = chosenResponse->enemyMoveRespect;
+    int enemyMoveRespect = chosenResponse->enemyMoveRespect /*+ chosenResponse->counterPotential*/;
     
     if (layerNumber > 1) 
     {

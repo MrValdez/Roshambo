@@ -5609,14 +5609,14 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
 
-    i++;  /* never repeat the same move */
-    strcpy(crosstable[i].name, "Always Switchin'");
-    crosstable[i].pname = switchbot;
 
     i++;  /* beat the most frequent opponent choice */
     strcpy(crosstable[i].name, "Beat Frequent Pick");
     crosstable[i].pname = freqbot2;
 
+    i++;  /* never repeat the same move */
+    strcpy(crosstable[i].name, "Always Switchin'");
+    crosstable[i].pname = switchbot;
     i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
     strcpy(crosstable[i].name, "R-P-S 20-20-60");
     crosstable[i].pname = r226bot;
