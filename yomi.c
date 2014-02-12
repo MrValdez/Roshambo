@@ -400,11 +400,11 @@ const int false = 0;
 
 situation* createOneYomiLayer(database* db, int layerNumber, situation* previousYomiLayer, int oppMove)
 {
+
     if (oppMove == wildcard && previousYomiLayer != null)
-        oppMove = previousYomiLayer->chosenMove;
-        
-    //todo: roshambo specific.
-    int winningMove = (oppMove + 1) % 3;
+    {
+        oppMove = (previousYomiLayer->chosenMove + 1) % 3;
+    }
         
     situation* newYomiLayer;
 
@@ -412,6 +412,9 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         newYomiLayer = previousYomiLayer->counter[0];            //todo: add code for multiple counters
     else
         newYomiLayer = null;
+
+    //todo: roshambo specific.
+    int winningMove = (oppMove + 1) % 3;
     
     if (newYomiLayer == null || newYomiLayer->chosenMove != winningMove /* || checkHowSimilarLayerIsToSituation*/)
     {
@@ -423,7 +426,7 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         //copy situation from previous yomi layer and put in this layer but add the prediction flag for player's choice
         newYomiLayer = createSituation(db);
         
-        //choose a move that beats the previous layer.
+        //choose a move that beats the previous layer.      
         newYomiLayer->chosenMove = winningMove; 
         
         int i = 0;
@@ -928,7 +931,7 @@ bool compareSituation_ToLastTurn(situation* possibleResponse, int* currentSituat
                 // we see a pattern with the enemy's movement (which we won't see if we don't look for patterns)
                 // we don't give this a big rank for this because its possible that the pattern is a trap
                 // todo: add a personality for likelihood of responding to possible baits.
-                predictionModifier *= 0.5;
+                predictionModifier *= 0.75;
             }
             
             possibleResponse->counter[0]->rankThisTurn += predictionModifier;

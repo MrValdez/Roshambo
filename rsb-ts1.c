@@ -74,7 +74,8 @@ typedef struct {
 
 //********************************BUG FIXXXXXXX
 #undef maxrandom
-#define maxrandom ((float) RAND_MAX )
+//#define maxrandom ((float) RAND_MAX )
+#define maxrandom 32767.0
 
 long random()
 {
@@ -84,9 +85,9 @@ void bzero(short int *foo, int size)
 {
   memset(foo, 0, size);
 }
-long srandom()
+void srandom(unsigned int seed)
 {
-  return rand();
+  return srand(seed);
 }
 //************************************
 
@@ -107,7 +108,7 @@ int biased_roshambo (double prob_rock, double prob_paper)
    double throw;
 
    throw = random() / maxrandom;
-//   printf("\n %f %i %f", throw, random(), maxrandom); getch();
+   //printf("\n %f %i %i", throw, random(), RAND_MAX ); getch();
 
    if ( throw < prob_rock )                   { return(rock); }
    else if ( throw < prob_rock + prob_paper ) { return(paper); }
@@ -5596,9 +5597,9 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Yomi AI");
     crosstable[i].pname = yomi;
 
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
+    i++;  /* beat opponent's last move */
+    strcpy(crosstable[i].name, "Beat The Last Move");
+    crosstable[i].pname = copybot;
 
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
@@ -5608,10 +5609,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
 
-    i++;  /* beat opponent's last move */
-    strcpy(crosstable[i].name, "Beat The Last Move");
-    crosstable[i].pname = copybot;
-
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");
     crosstable[i].pname = switchbot;
@@ -5620,6 +5617,9 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Beat Frequent Pick");
     crosstable[i].pname = freqbot2;
 
+    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
+    strcpy(crosstable[i].name, "R-P-S 20-20-60");
+    crosstable[i].pname = r226bot;
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* choose according to the digits of Pi */
