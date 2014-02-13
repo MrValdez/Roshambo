@@ -18,7 +18,7 @@ extern int opp_history[];
 
 /*#define DEBUG
 #define DEBUG1
-/*#define DEBUG2
+#define DEBUG2
 //#define DEBUG2_VERBOSE
 #define DEBUG3
 #define DEBUG4
@@ -338,23 +338,14 @@ struct database* trainingProgram(struct database* db)
 //todo: add wildcard prediction to findcounter
 situation* findCounter(database* db, situation *attackingSituation)
 {
-    int moveToCounterSituation = (attackingSituation->chosenMove + 1) % 3; //todo: roshambo specific.
+    int moveToCounterSituation = (attackingSituation->chosenMove + 1) % 3;
     int i, j;
 
     for (i = 0; i < db->size; i++)
     {
         situation *currentSituation = db->situations[i];
         
-/*      do we need this?  
-        // we only check neutral moves
-        if (currentSituation->situationSize > 2)
-        {
-#ifdef DEBUG
-            printf("skipping move: %i\n", currentSituation->chosenMove);
-#endif
-            continue;
-        } */
-       if (currentSituation->situationSize > 0 &&
+        if (currentSituation->situationSize > 0 &&
             currentSituation->situationSize == attackingSituation->situationSize)
         {        
             // in roshambo, we only need to account for the last move in the situation
@@ -362,7 +353,8 @@ situation* findCounter(database* db, situation *attackingSituation)
             {
                 for (j = 0; j < currentSituation->counterSize; j++)
                 {
-                    //todo: what if we have multiple counters with the same response?
+                    //todo: what if we have multiple counters with the same response? 
+                    //answer: that's a bug. add a debug print
                     if (currentSituation->counter[j]->chosenMove == moveToCounterSituation)
                     {
                         return currentSituation->counter[j];
@@ -378,6 +370,7 @@ situation* findCounter(database* db, situation *attackingSituation)
             for (j = 0; j < currentSituation->counterSize; j++)
             {
                 //todo: what if we have multiple counters with the same response?
+                //answer: that's a bug. add a debug print
                 if (currentSituation->counter[j]->chosenMove == moveToCounterSituation)
                 {
                     return currentSituation->counter[j];
@@ -400,10 +393,17 @@ const int false = 0;
 
 situation* createOneYomiLayer(database* db, int layerNumber, situation* previousYomiLayer, int oppMove)
 {
+#ifdef DEBUG1
+        printf("prevmove %i\n", oppMove);
+#endif
 
+    int winningMove;
     if (oppMove == wildcard && previousYomiLayer != null)
     {
         oppMove = (previousYomiLayer->chosenMove + 1) % 3;
+#ifdef DEBUG1
+printf("SER %i  ", previousYomiLayer->chosenMove);
+#endif
     }
         
     situation* newYomiLayer;
@@ -413,9 +413,12 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
     else
         newYomiLayer = null;
 
-    //todo: roshambo specific.
-    int winningMove = (oppMove + 1) % 3;
-    
+    winningMove = (oppMove + 1) % 3;
+#ifdef DEBUG1
+    if (newYomiLayer)
+        printf("current chosen Move = %i vs \n", newYomiLayer->chosenMove);
+        printf("%i vs %i\n", oppMove, winningMove);
+#endif
     if (newYomiLayer == null || newYomiLayer->chosenMove != winningMove /* || checkHowSimilarLayerIsToSituation*/)
     {
 #ifdef DEBUG1
@@ -426,8 +429,12 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
         //copy situation from previous yomi layer and put in this layer but add the prediction flag for player's choice
         newYomiLayer = createSituation(db);
         
-        //choose a move that beats the previous layer.      
+        //choose the opponent's move as this situation's chosen move
+        newYomiLayer->chosenMove = oppMove; 
+        
+        /*//choose a move that beats the previous layer.      
         newYomiLayer->chosenMove = winningMove; 
+        */
         
         int i = 0;
         for (i = 0; i < previousYomiLayer->situationSize; i++)
@@ -439,7 +446,8 @@ situation* createOneYomiLayer(database* db, int layerNumber, situation* previous
 /*        if (layerNumber == 1)
             newYomiLayer->situation[i++] = wildcard;
 */       
-        newYomiLayer->situation[i++] = oppMove;     
+        //newYomiLayer->situation[i++] = oppMove;     
+        newYomiLayer->situation[i++] = previousYomiLayer->chosenMove;
         newYomiLayer->situationSize = i;
         
         // Layer 1 and 2 have a higher initial counter success rate than layer 3 and 4
@@ -671,9 +679,14 @@ int yomi()
     opp_history[opp_history[0]];     // opponent's previous move
     
     // Initialize database
-    if (currentTurn == 0)
+    static bool hasInit = 0;
+    if (hasInit == false && currentTurn == 0)
+    {
         initYomi();
-
+        
+        //Uncomment if we want to save data every game
+        //hasInit = true;
+    }
     /*
     // 1. Evaluate current situation.
             Situations can exist multiple times but with different moves. 
@@ -688,6 +701,7 @@ int yomi()
 
     database* db = YomiDatabase;        // Get the global database
     //debugShow(db);
+    
     //reset the rankThisTurn for all situations to zero
     int i;
     for (i = 0; i < db->size; i++)
@@ -982,9 +996,31 @@ situation* checkYomiLayer(database* db, situation* chosenResponse, int layerNumb
             int i;
 
             //todo: in case of multiple counters, evaluate each one
-            enemyChoice = chosenResponse->counter[0];
-            chosenResponse = enemyChoice;
+/*major todo
 
+if(0)//*/
+            for (i = 0; i < chosenResponse->counterSize; i++)
+            {
+// printf("FOUND");getch();
+                enemyChoice = chosenResponse->counter[i];
+                
+                // is the enemy's choice likely to be used?
+                float winningWeight = 0.4;              //todo: turn these into a personality.
+                float counterPotentialWeight = 0.6;
+                
+                int counterPotential = (enemyChoice->successRate * winningWeight) +
+                                       (enemyChoice->counterPotential * counterPotentialWeight);
+                
+                if (counterPotential > currentcounterPotential)
+                {
+                    counterPotential = currentcounterPotential;
+                    chosenResponse = enemyChoice;
+                }
+            }
+
+/*                enemyChoice = chosenResponse->counter[0];
+                chosenResponse = enemyChoice;
+  */          
 #ifdef DEBUG4   
             printf("Situation for enemy (Yomi layer %i): ", layerNumber);
             debugPrintSituation(enemyChoice->situation, enemyChoice->situationSize);
