@@ -657,21 +657,24 @@ if (0)
 #endif
 }
 
-
+// static int targetTurn = 1001;
+extern int yomiVariable1;
 int yomi()
 {
+    printf("%i", yomiVariable1);
+    getch();
    //return (biased_roshambo (1/3.0f, 1/3.0f) + 1) % 3;
     static int statR = 0;
     static int statP = 0;
     static int statS = 0;
-    int targetTurn = 1001;
-    static int doCheck = 30;
+    int targetTurn = yomiVariable1;
     static int denominator;
     static float rockProb;
     static float paperProb;
     static float targetRock;
     static float targetPaper;
     int currentTurn = my_history[0]; // number of games
+    static int doCheck = 30;
     
     if (currentTurn == 0)
     {

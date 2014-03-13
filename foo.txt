@@ -1,0 +1,1148 @@
+ Playing 1 tournaments with 1000 trials per match...
+
+ Yomi AI            vs Rotate R-P-S       
+situation for turn #0 is: 
+
+Possible responses found (sorted): 3
+response #0 situation: (chosen) 
+ move: 0 respect: -1000 successRate: 0
+response #1 situation:
+ move: 1 respect: -1000 successRate: 0
+response #2 situation:
+ move: 2 respect: -1000 successRate: 0
+Choice: 0
+=========END TURN #0========
+ p1 = 0, p2 = 0 tie!
+
+=========BEGIN TURN #1========
+Lost. Updating situation :
+ Success rate:-10
+ Enemy respect value:100
+
+situation for turn #0 is: 
+Yomi layer 0 ()
+ Chosen move: 0.
+
+
+Creating new situation for yomi layer 1
+Yomi layer 1 (_0)
+ Chosen move: 1.
+
+
+Creating new situation for yomi layer 2
+Yomi layer 2 (_01)
+ Chosen move: 2.
+
+
+Creating new situation for yomi layer 3
+Yomi layer 3 (_012)
+ Chosen move: 0.
+
+
+Creating new situation for yomi layer 4
+Yomi layer 4 (_0120)
+ Chosen move: 1.
+
+
+situation for turn #1 is: 00
+
+Comparing the ff situations: 
+_0
+00
+  Checking if both simulations are equal
+? == 0
+0 == 0
+  Both situations are equal
+=Situation considered=
+
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 1): _0
+Situation for our counter (Yomi Layer 2): _01
+ Chosen move: 2
+_01
+Possible responses found (sorted): 7
+response #0 situation:_0 (chosen) 
+ move: 1 respect: 100 successRate: 0
+response #1 situation:
+ move: 0 respect: 100 successRate: -10
+response #2 situation:
+ move: 1 respect: -1000 successRate: 0
+response #3 situation:
+ move: 2 respect: -1000 successRate: 0
+response #4 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #5 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #6 situation:1
+ move: 2 respect: -1000 successRate: 0
+
+Final yomi layer chosen:_01
+Choice: 2
+=========END TURN #1========
+ p1 = 2, p2 = 1 p1 wins!
+
+=========BEGIN TURN #2========
+
+situation for turn #2 is: 0021
+
+Comparing the ff situations: 
+_0
+0021
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_01
+0021
+=Situation considered=
+
+
+Comparing the ff situations: 
+_012
+0021
+  Checking if both simulations are equal
+? == 0
+0 == 0
+1 == 2
+=Situation considered=
+
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 1): 
+Situation for our counter (Yomi Layer 2): _0
+ Chosen move: 1
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 3): _0
+Situation for our counter (Yomi Layer 4): _01
+ Chosen move: 2
+_01
+Possible responses found (sorted): 6
+response #0 situation: (chosen) 
+ move: 0 respect: 100 successRate: -10
+response #1 situation:
+ move: 1 respect: -1000 successRate: 0
+response #2 situation:
+ move: 2 respect: -1000 successRate: 0
+response #3 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #4 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #5 situation:1
+ move: 2 respect: -1000 successRate: 0
+
+Final yomi layer chosen:_01
+Choice: 2
+=========END TURN #2========
+ p1 = 2, p2 = 2 tie!
+
+=========BEGIN TURN #3========
+Lost. Updating situation _01:
+ Success rate:0
+ Enemy respect value:20
+
+situation for turn #2 is: 0021
+new situation found. creating situation for 0021
+Yomi layer 0 (0021)
+ Chosen move: 2.
+
+
+Creating new situation for yomi layer 1
+Yomi layer 1 (0021_2)
+ Chosen move: 0.
+
+
+Creating new situation for yomi layer 2
+Yomi layer 2 (0021_20)
+ Chosen move: 1.
+
+
+Creating new situation for yomi layer 3
+Yomi layer 3 (0021_201)
+ Chosen move: 2.
+
+
+Creating new situation for yomi layer 4
+Yomi layer 4 (0021_2012)
+ Chosen move: 0.
+
+
+situation for turn #3 is: 002122
+
+Comparing the ff situations: 
+_0
+002122
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_01
+002122
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_012
+002122
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_0120
+002122
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021
+002122
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+Situation similar to last turn
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2
+002122
+  Checking if both simulations are equal
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+? == 2
+2 == 2
+  Both situations are equal
+=Situation considered=
+
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 1): 0021_2
+Situation for our counter (Yomi Layer 2): 0021_20
+ Chosen move: 1
+0021_20
+Possible responses found (sorted): 8
+response #0 situation:0021_2 (chosen) 
+ move: 0 respect: 100 successRate: 0
+response #1 situation:0021
+ move: 2 respect: -1000 successRate: 0
+response #2 situation:
+ move: 0 respect: 100 successRate: -10
+response #3 situation:
+ move: 1 respect: -1000 successRate: 0
+response #4 situation:
+ move: 2 respect: -1000 successRate: 0
+response #5 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #6 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #7 situation:1
+ move: 2 respect: -1000 successRate: 0
+
+Final yomi layer chosen:0021_20
+Choice: 1
+=========END TURN #3========
+ p1 = 1, p2 = 0 p1 wins!
+
+=========BEGIN TURN #4========
+
+situation for turn #4 is: 00212210
+
+Comparing the ff situations: 
+_0
+00212210
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_01
+00212210
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_012
+00212210
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_0120
+00212210
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021
+00212210
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+Situation similar to last turn
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2
+00212210
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_20
+00212210
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_201
+00212210
+  Checking if both simulations are equal
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+? == 2
+2 == 2
+0 == 1
+=Situation considered=
+
+0021
+Possible responses found (sorted): 7
+response #0 situation:0021 (chosen) 
+ move: 2 respect: -1000 successRate: 0
+response #1 situation:
+ move: 0 respect: 100 successRate: -10
+response #2 situation:
+ move: 1 respect: -1000 successRate: 0
+response #3 situation:
+ move: 2 respect: -1000 successRate: 0
+response #4 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #5 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #6 situation:1
+ move: 2 respect: -1000 successRate: 0
+Choice: 2
+=========END TURN #4========
+ p1 = 2, p2 = 1 p1 wins!
+
+=========BEGIN TURN #5========
+
+situation for turn #5 is: 0021221021
+
+Comparing the ff situations: 
+_0
+0021221021
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_01
+0021221021
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_012
+0021221021
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_0120
+0021221021
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021
+0021221021
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+Situation similar to last turn
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2
+0021221021
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_20
+0021221021
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_201
+0021221021
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2012
+0021221021
+=Situation considered=
+
+Respecting the opponent to counter move (situation's respect value: 30)
+20
+Situation for enemy (Yomi layer 1): 0021
+Situation for our counter (Yomi Layer 2): 0021_2
+ Chosen move: 0
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 3): 0021_2
+Situation for our counter (Yomi Layer 4): 0021_20
+ Chosen move: 1
+0021_20
+Possible responses found (sorted): 7
+response #0 situation:0021 (chosen) 
+ move: 2 respect: 30 successRate: 10
+response #1 situation:
+ move: 0 respect: 100 successRate: -10
+response #2 situation:
+ move: 1 respect: -1000 successRate: 0
+response #3 situation:
+ move: 2 respect: -1000 successRate: 0
+response #4 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #5 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #6 situation:1
+ move: 2 respect: -1000 successRate: 0
+
+Final yomi layer chosen:0021_20
+Choice: 1
+=========END TURN #5========
+ p1 = 1, p2 = 2 p2 wins!
+
+=========BEGIN TURN #6========
+Lost. Updating situation 0021_20:
+ Success rate:0
+ Enemy respect value:20
+
+situation for turn #5 is: 0021221021
+new situation found. creating situation for 0021221021
+Yomi layer 0 (0021221021)
+ Chosen move: 2.
+
+
+Creating new situation for yomi layer 1
+Yomi layer 1 (0021221021_2)
+ Chosen move: 0.
+
+
+Creating new situation for yomi layer 2
+Yomi layer 2 (0021221021_20)
+ Chosen move: 1.
+
+
+Creating new situation for yomi layer 3
+Yomi layer 3 (0021221021_201)
+ Chosen move: 2.
+
+
+Creating new situation for yomi layer 4
+Yomi layer 4 (0021221021_2012)
+ Chosen move: 0.
+
+
+situation for turn #6 is: 002122102112
+
+Comparing the ff situations: 
+_0
+002122102112
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_01
+002122102112
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_012
+002122102112
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_0120
+002122102112
+Checking Last Turn:
+--=
+-1 == 0
+Situation not the same
+-1 == 0
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021
+002122102112
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+Situation similar to last turn
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2
+002122102112
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_20
+002122102112
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_201
+002122102112
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2012
+002122102112
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+-1 == 2
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021221021
+002122102112
+Checking Last Turn:
+--=
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+2 == 2
+2 == 2
+1 == 1
+0 == 0
+2 == 2
+1 == 1
+Situation similar to last turn
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021221021_2
+002122102112
+  Checking if both simulations are equal
+0 == 0
+0 == 0
+2 == 2
+1 == 1
+2 == 2
+2 == 2
+1 == 1
+0 == 0
+2 == 2
+1 == 1
+? == 1
+2 == 2
+  Both situations are equal
+=Situation considered=
+
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 1): 0021221021_2
+Situation for our counter (Yomi Layer 2): 0021221021_20
+ Chosen move: 1
+0021221021_20
+Possible responses found (sorted): 9
+response #0 situation:0021221021_2 (chosen) 
+ move: 0 respect: 100 successRate: 0
+response #1 situation:0021
+ move: 2 respect: 30 successRate: 10
+response #2 situation:0021221021
+ move: 2 respect: -1000 successRate: 0
+response #3 situation:
+ move: 0 respect: 100 successRate: -10
+response #4 situation:
+ move: 1 respect: -1000 successRate: 0
+response #5 situation:
+ move: 2 respect: -1000 successRate: 0
+response #6 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #7 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #8 situation:1
+ move: 2 respect: -1000 successRate: 0
+
+Final yomi layer chosen:0021221021_20
+Choice: 1
+=========END TURN #6========
+ p1 = 1, p2 = 0 p1 wins!
+
+=========BEGIN TURN #7========
+
+situation for turn #7 is: 212210211210
+
+Comparing the ff situations: 
+_0
+212210211210
+Checking Last Turn:
+--=
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_01
+212210211210
+Checking Last Turn:
+--=
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_012
+212210211210
+Checking Last Turn:
+--=
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+_0120
+212210211210
+Checking Last Turn:
+--=
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 2
+Situation not the same
+-1 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021
+212210211210
+Checking Last Turn:
+--=
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2
+212210211210
+Checking Last Turn:
+--=
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_20
+212210211210
+Checking Last Turn:
+--=
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_201
+212210211210
+Checking Last Turn:
+--=
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021_2012
+212210211210
+Checking Last Turn:
+--=
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 1
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021221021
+212210211210
+Checking Last Turn:
+--=
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 0
+0 == 2
+Situation not the same
+0 == 2
+Situation not the same
+0 == 1
+Situation not the same
+0 == 1
+Situation not the same
+0 == 2
+Situation not the same
+=Situation considered=
+
+
+Comparing the ff situations: 
+0021221021_2
+212210211210
+  Checking if both simulations are equal
+0 == 2
+=Situation considered=
+
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 1): 
+Situation for our counter (Yomi Layer 2): _0
+ Chosen move: 1
+Respecting the opponent to counter move (situation's respect value: 100)
+20
+Situation for enemy (Yomi layer 3): _0
+Situation for our counter (Yomi Layer 4): _01
+ Chosen move: 2
+_01
+Possible responses found (sorted): 6
+response #0 situation: (chosen) 
+ move: 0 respect: 100 successRate: -10
+response #1 situation:
+ move: 1 respect: -1000 successRate: 0
+response #2 situation:
+ move: 2 respect: -1000 successRate: 0
+response #3 situation:2
+ move: 0 respect: -1000 successRate: 0
+response #4 situation:0
+ move: 1 respect: -1000 successRate: 0
+response #5 situation:1
+ move: 2 respect: -1000 successRate: 0
+
+Final yomi layer chosen:_01
+Choice: 2
+=========END TURN #7========
+ p1 = 2, p2 = 1 p1 wins!

@@ -6081,8 +6081,16 @@ void Play_Tournament (Player_Table crosstable[players+1])
     if (verbose2) { Print_T_Results (crosstable); }
 }
 
-int main() {
+int yomiVariable1;
 
+int main(int argc, char *argv[]) {
+   // YOMI CHANGES
+   yomiVariable1 = atoi(argv[1]);
+   if (yomiVariable1 == 0)
+       yomiVariable1 = 1;
+   //printf("%i", yomiVariable1);
+   ///////////////
+   
    int i;
    Player_Table crosstable[players+1];
 
