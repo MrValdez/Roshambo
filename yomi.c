@@ -661,8 +661,6 @@ if (0)
 extern int yomiVariable1;
 int yomi()
 {
-    printf("%i", yomiVariable1);
-    getch();
    //return (biased_roshambo (1/3.0f, 1/3.0f) + 1) % 3;
     static int statR = 0;
     static int statP = 0;
