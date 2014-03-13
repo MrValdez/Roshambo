@@ -47,7 +47,7 @@
 #define verbose3  1          /* print result of each match */
 
 // My Changes
-#define players   31         /* number of players in the tournament */
+#define players   29         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 
 /*  Full History Structure (global variables, accessible to the
@@ -5596,18 +5596,21 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* YOMI AI */
     strcpy(crosstable[i].name, "Yomi AI");
     crosstable[i].pname = yomi;
+    i++;  /* rotate r -> p -> s */
+    strcpy(crosstable[i].name, "Rotate R-P-S");
+    crosstable[i].pname = rotatebot;
+    i++;  /* nuthin' beats rock */
+    strcpy(crosstable[i].name, "Good Ole Rock");
+    crosstable[i].pname = rockbot;
+
+    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
+    strcpy(crosstable[i].name, "R-P-S 20-20-60");
+    crosstable[i].pname = r226bot;
 
     i++;  /* beat opponent's last move */
     strcpy(crosstable[i].name, "Beat The Last Move");
     crosstable[i].pname = copybot;
 
-    i++;  /* rotate r -> p -> s */
-    strcpy(crosstable[i].name, "Rotate R-P-S");
-    crosstable[i].pname = rotatebot;
-
-    i++;  /* nuthin' beats rock */
-    strcpy(crosstable[i].name, "Good Ole Rock");
-    crosstable[i].pname = rockbot;
 
 
     i++;  /* beat the most frequent opponent choice */
@@ -5617,9 +5620,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");
     crosstable[i].pname = switchbot;
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* choose according to the digits of Pi */
@@ -5687,10 +5687,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "MegaHAL");
     crosstable[i].pname = halbot;
 
-    i++;  /* Russ Williams (USA) */
-    strcpy(crosstable[i].name, "RussRocker4");
-    crosstable[i].pname = russrocker4;
-
     i++;  /* Jonathan Schaeffer (Can) */
     strcpy(crosstable[i].name, "Biopic");
     crosstable[i].pname = biopic;
@@ -5710,10 +5706,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* Jack van Rijswijk (Net) */
     strcpy(crosstable[i].name, "Boom");
     crosstable[i].pname = boom;
-
-    i++;  /* Rudi Cilibrasi (USA) */
-    strcpy(crosstable[i].name, "Shofar");
-    crosstable[i].pname = shofar;
 
     i++;  /* Dan Bothell, C Lebiere, R West (USA) */
     strcpy(crosstable[i].name, "ACT-R Lag2");
