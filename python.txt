@@ -1,0 +1,11 @@
+http://stackoverflow.com/questions/6016815/how-to-include-needed-c-library-using-gcc
+http://stackoverflow.com/questions/1013441/how-to-link-c-lib-against-python-for-embedding-under-windows
+http://www.rapidtables.com/code/linux/gcc/gcc-l.htm
+http://gcc.gnu.org/onlinedocs/gcc/Environment-Variables.html
+http://en.wikibooks.org/wiki/Python_Programming/Extending_with_C#Building_the_extension_module_with_GCC_for_Microsoft_Windows
+http://sebsauvage.net/python/mingw.html
+
+
+Python 3 port
+docs.python.org/py3k/extending/embedding.html#pure-embedding
+http://stackoverflow.com/questions/8229597/embedding-python
