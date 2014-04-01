@@ -12,22 +12,39 @@ void init()
     my_history[1] = 2;
 }
 
-static PyObject *
-rps_myhistory(PyObject *self, PyObject *args)
+#define MYHISTORY    0
+#define ENEMYHISTORY 1
+
+int getHistory(int history, PyObject *args)
 {
     int index;
     if (!PyArg_ParseTuple(args, "i", &index))
         return 0;	
-        
+
     if (index > my_history[0])
         return 0;
-        
-    return PyLong_FromLong(my_history[index]);
+
+    if (history == MYHISTORY)
+        return PyLong_FromLong(my_history[index]);
+    else if (history == ENEMYHISTORY)
+        return PyLong_FromLong(opp_history[index]);
+}
+
+static PyObject *
+rps_myhistory(PyObject *self, PyObject *args)
+{        
+    return getHistory(MYHISTORY, args);
+}
+
+static PyObject *
+rps_enemyhistory(PyObject *self, PyObject *args)
+{
+    return getHistory(ENEMYHISTORY, args);
 }
 
 static PyMethodDef rpsMethods[] = {
-    {"myhistory",  rps_myhistory, METH_VARARGS,
-     "Returns history"},
+    {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history. Index 0 returns current turn. Index 1 to trials contains the move used in that turn"},
+    {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history. Index 0 returns current turn. Index 1 to trials contains the move used in that turn"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
