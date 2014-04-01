@@ -42,7 +42,7 @@
 #define trials    1000       /* number of turns per match */
 
 //#define fw        4          /* field width for printed numbers */
-#define verbose1  0          /* print result of each trial */
+#define verbose1  1          /* print result of each trial */
 #define verbose2  0          /* print match histories */
 #define verbose3  1          /* print result of each match */
 
@@ -92,6 +92,7 @@ void srandom(unsigned int seed)
 //************************************
 
 extern int yomi();
+extern int python();
 
 int flip_biased_coin (double prob)
 {
@@ -5595,7 +5596,9 @@ void Init_Player_Table (Player_Table crosstable[players+1])
 
     i++;  /* YOMI AI */
     strcpy(crosstable[i].name, "Yomi AI");
-    crosstable[i].pname = yomi;
+    //crosstable[i].pname = yomi;
+    crosstable[i].pname = python;
+    
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
     crosstable[i].pname = rotatebot;
@@ -6082,9 +6085,15 @@ void Play_Tournament (Player_Table crosstable[players+1])
 }
 
 int yomiVariable1;
+int initPython(int argc, char *argv[]);
+void exitPython();
 
 int main(int argc, char *argv[]) {
    // YOMI CHANGES
+   int error = initPython(argc, argv);
+   if (error)
+       return 1;
+       
    yomiVariable1 = atoi(argv[1]);
    if (yomiVariable1 == 0)
        yomiVariable1 = 1;
@@ -6118,5 +6127,7 @@ int main(int argc, char *argv[]) {
    g_drawn++;
    Print_Match_Results (crosstable);
    */
+   
+   exitPython();
    return(0);
 }
