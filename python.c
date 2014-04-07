@@ -56,7 +56,7 @@ PyInit_rps(void)
     return PyModule_Create(&rpsModule);
 }
 
-PyObject *pModule, *pFunc;
+PyObject *pModule, *yomiFunc;
 int initPython(int argc, char *argv[])
 {
     PyObject *pName;
@@ -73,13 +73,14 @@ int initPython(int argc, char *argv[])
     pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     
-    if (pModule != NULL) {
-        pFunc = PyObject_GetAttrString(pModule, "yomi");
-        /* pFunc is a new reference */
-        if (!pFunc) {
+    if (pModule != NULL) {       
+        yomiFunc = PyObject_GetAttrString(pModule, "yomi");
+        /* yomiFunc is a new reference */
+        if (!yomiFunc) {
             if (PyErr_Occurred())
                 PyErr_Print();
             fprintf(stderr, "Cannot find function \"%s\"\n", argv[2]);
+            return 1;
         }
     }
     else {
@@ -91,19 +92,42 @@ int initPython(int argc, char *argv[])
     return 0;
 }
 
+int isVerbose()
+{
+    PyObject *pFunc = PyObject_GetAttrString(pModule, "isVerbose");
+    if (!pFunc) {
+        if (PyErr_Occurred())
+            PyErr_Print();
+        fprintf(stderr, "Cannot find function \"isVerbose\"");
+        return -1;
+    }
+    else
+    {
+        PyObject *pValue = PyObject_CallObject(pFunc, 0);
+        int result;
+        
+        if (pValue != NULL) {
+            result = PyLong_AsLong(pValue);
+            Py_DECREF(pValue);
+        }
+        
+        return result;
+    }
+}     
+
 int python()
 {
   int result = -1;
-  if (PyCallable_Check(pFunc)) 
+  if (PyCallable_Check(yomiFunc)) 
   {
-    PyObject *pValue = PyObject_CallObject(pFunc, 0);
+    PyObject *pValue = PyObject_CallObject(yomiFunc, 0);
 
     if (pValue != NULL) {
         result = PyLong_AsLong(pValue);
         Py_DECREF(pValue);
     }
     else {
-        Py_DECREF(pFunc);
+        Py_DECREF(yomiFunc);
         Py_DECREF(pModule);
         PyErr_Print();
         fprintf(stderr,"Call failed\n");
@@ -117,7 +141,7 @@ int python()
 
 void exitPython()
 {
-    Py_XDECREF(pFunc);
+    Py_XDECREF(yomiFunc);
     Py_DECREF(pModule);
 
     Py_Finalize();

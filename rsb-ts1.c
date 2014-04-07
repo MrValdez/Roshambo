@@ -42,9 +42,9 @@
 #define trials    1000       /* number of turns per match */
 
 //#define fw        4          /* field width for printed numbers */
-#define verbose1  1          /* print result of each trial */
-#define verbose2  0          /* print match histories */
-#define verbose3  1          /* print result of each match */
+int verbose1 = 1;          /* print result of each trial */
+int verbose2 = 0;          /* print match histories */
+int verbose3 = 1;          /* print result of each match */
 
 // My Changes
 #define players   29         /* number of players in the tournament */
@@ -6092,6 +6092,10 @@ int main(int argc, char *argv[]) {
    // YOMI CHANGES
    int error = initPython(argc, argv);
    if (error)
+       return 1;
+
+   verbose1 = isVerbose();
+   if (verbose1 == -1)
        return 1;
        
    yomiVariable1 = atoi(argv[1]);
