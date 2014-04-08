@@ -34,9 +34,32 @@ rps_enemyhistory(PyObject *self, PyObject *args)
     return getHistory(ENEMYHISTORY, args);
 }
 
+extern int biased_roshambo (double prob_rock, double prob_paper);
+
+static PyObject *
+rps_biased_roshambo(PyObject *self, PyObject *args)
+{
+    double prob_rock;
+    double prob_paper;
+    if (!PyArg_ParseTuple(args, "dd", &prob_rock, &prob_paper))     //d refers to double, not decimal
+    {
+        printf ("biasedRoshambo received invalid arguments");
+        exit(1);
+        return -1;  //todo: raise error	
+    }
+    
+    /*//debug
+    printf("%f %f", prob_rock, prob_paper);
+    getch();*/
+    
+    int result = biased_roshambo(prob_rock, prob_paper);
+    return PyLong_FromLong(result);
+}
+
 static PyMethodDef rpsMethods[] = {
     {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history. Index 0 returns current turn. Index 1 to trials contains the move used in that turn"},
     {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history. Index 0 returns current turn. Index 1 to trials contains the move used in that turn"},
+    {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
@@ -115,13 +138,33 @@ int isVerbose()
     }
 }     
 
+extern int yomiVariable1;
+
 int python()
 {
   int result = -1;
   if (PyCallable_Check(yomiFunc)) 
   {
-    PyObject *pValue = PyObject_CallObject(yomiFunc, 0);
+    PyObject *pValue;
+    
+    // Parse arguments
+    PyObject *pArgs = PyTuple_New(1);
+    
+    int index = 0;
+    pValue = PyLong_FromLong(yomiVariable1);
+    if (!pValue) {
+        Py_DECREF(pArgs);
+        Py_DECREF(pModule);
+        fprintf(stderr, "Cannot convert argument\n");
+        return -1;
+    }
+    PyTuple_SetItem(pArgs, index, pValue);
 
+    // Call the function
+    pValue = PyObject_CallObject(yomiFunc, pArgs);
+    Py_DECREF(pArgs);
+
+    // Checks
     if (pValue != NULL) {
         result = PyLong_AsLong(pValue);
         Py_DECREF(pValue);
