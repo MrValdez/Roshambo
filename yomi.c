@@ -657,11 +657,14 @@ if (0)
 #endif
 }
 
-#include "BestFrequentPick.c"
+#include "BeatFrequentPick.c"
 int yomi()
 {
     return BestFrequentPick();
     
+    int currentTurn = my_history[0]; // number of games
+    int oppMove = opp_history[currentTurn];
+
     my_history[my_history[0]];       // my previous move
 
     opp_history[0];                  // opponent's number of games

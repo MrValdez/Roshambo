@@ -7,7 +7,7 @@ extern int opp_history[];
 
 extern int yomiVariable1;
 
-void BestFrequentPick()
+int BestFrequentPick()
 {
    //return (biased_roshambo (1/3.0f, 1/3.0f) + 1) % 3;
     static int statR = 0;
