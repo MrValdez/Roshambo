@@ -1,67 +1,67 @@
 import rps
 from rps import biased_roshambo
 
-class Situation:
-    def __init__(self):
-        self.statR = 0
-        self.statP = 0
-        self.statS = 0
+statR = 0
+statP = 0
+statS = 0
 
-        self.denominator = 0
+denominator = 0
 
-        self.rockProb    = 0.0
-        self.paperProb   = 0.0
-        self.targetRock  = 0.0
-        self.targetPaper = 0.0
-
-situation = Situation()
+rockProb    = 0.0
+paperProb   = 0.0
+targetRock  = 0.0
+targetPaper = 0.0
 
 def yomi(targetTurn):
+    global statR, statP, statS
+    global denominator
+    global rockProb, paperProb, targetRock, targetPaper
+
     currentTurn = rps.myHistory(0)
     if (currentTurn == 0):
         #initialize
-        situation.statR = 0
-        situation.statP = 0
-        situation.statS = 0
-        situation.denominator = targetTurn
-        situation.rockProb = 1 / 3.0
-        situation.paperProb = 1 / 3.0
-        situation.targetRock = situation.rockProb * targetTurn
-        situation.targetPaper = situation.paperProb * targetTurn
+        statR = 0
+        statP = 0
+        statS = 0
+        denominator = targetTurn
+        rockProb = 1 / 3.0
+        paperProb = 1 / 3.0
+        targetRock = rockProb * targetTurn
+        targetPaper = paperProb * targetTurn
         return biased_roshambo (1 / 3.0, 1 / 3.0)
     
     oppMove = rps.enemyHistory(currentTurn)
     
     if (oppMove == 0):
-        situation.statR += 1
+        statR += 1
     if (oppMove == 1):
-        situation.statP += 1
+        statP += 1
     if (oppMove == 2):
-        situation.statS += 1
+        statS += 1
 
-    if (situation.denominator <= 0):
-        situation.rockProb = situation.statR / float(currentTurn)
-        situation.paperProb = situation.statP / float(currentTurn)
+    if (denominator <= 0):
+        rockProb = statR / float(currentTurn)
+        paperProb = statP / float(currentTurn)
         
-        situation.targetRock = situation.rockProb * (currentTurn + targetTurn)
-        situation.targetPaper = situation.paperProb * (currentTurn + targetTurn)
+        targetRock = rockProb * (currentTurn + targetTurn)
+        targetPaper = paperProb * (currentTurn + targetTurn)
         
-        situation.denominator = targetTurn
+        denominator = targetTurn
         
-    thisTurnRockProb = (situation.targetRock - situation.statR) / float(situation.denominator)
-    thisTurnPaperProb = (situation.targetPaper - situation.statP) / float(situation.denominator)
+    thisTurnRockProb = (targetRock - statR) / float(denominator)
+    thisTurnPaperProb = (targetPaper - statP) / float(denominator)
         
     if (thisTurnRockProb <= 0 or thisTurnPaperProb <= 0 or thisTurnRockProb + thisTurnPaperProb >= 1.0):
-        situation.rockProb = situation.statR / float (currentTurn)
-        situation.paperProb = situation.statP / float (currentTurn)
+        rockProb = statR / float (currentTurn)
+        paperProb = statP / float (currentTurn)
         
-        situation.targetRock = situation.rockProb * (currentTurn + targetTurn)
-        situation.targetPaper = situation.paperProb * (currentTurn + targetTurn)
+        targetRock = rockProb * (currentTurn + targetTurn)
+        targetPaper = paperProb * (currentTurn + targetTurn)
         
         denominator = targetTurn
 
-        thisTurnRockProb = (situation.targetRock - situation.statR) / float(situation.denominator)
-        thisTurnPaperProb = (situation.targetPaper - situation.statP) / float(situation.denominator)
+        thisTurnRockProb = (targetRock - statR) / float(denominator)
+        thisTurnPaperProb = (targetPaper - statP) / float(denominator)
 
     thisTurnRockProb = min(0, thisTurnRockProb)
     thisTurnPaperProb = min(0, thisTurnPaperProb)
@@ -71,7 +71,7 @@ def yomi(targetTurn):
  #   printf("thisTurnRockProb, thisTurnPaperProb: %f %f\n\n", thisTurnRockProb, thisTurnPaperProb);getch();
  #  */
  
-    situation.denominator -= 1
+    denominator -= 1
     return (biased_roshambo (thisTurnRockProb, thisTurnPaperProb) + 1) % 3
 
 def SkeletonAI():
