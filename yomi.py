@@ -12,6 +12,8 @@ paperProb   = 0.0
 targetRock  = 0.0
 targetPaper = 0.0
 
+Debug = False
+
 def yomi(targetTurn):
     global statR, statP, statS
     global denominator
@@ -43,34 +45,40 @@ def yomi(targetTurn):
         rockProb = statR / float(currentTurn)
         paperProb = statP / float(currentTurn)
         
-        targetRock = rockProb * (currentTurn + targetTurn)
-        targetPaper = paperProb * (currentTurn + targetTurn)
+        targetRock = float(rockProb * (currentTurn + targetTurn))
+        targetPaper = float(paperProb * (currentTurn + targetTurn))
         
         denominator = targetTurn
         
-    thisTurnRockProb = (targetRock - statR) / float(denominator)
-    thisTurnPaperProb = (targetPaper - statP) / float(denominator)
+    thisTurnRockProb = float((targetRock - statR) / float(denominator))
+    thisTurnPaperProb = float((targetPaper - statP) / float(denominator))
+    
+    if Debug:
+        print("thisTurnRockProb, thisTurnPaperProb: %f %f" % (thisTurnRockProb, thisTurnPaperProb))
         
     if (thisTurnRockProb <= 0 or thisTurnPaperProb <= 0 or thisTurnRockProb + thisTurnPaperProb >= 1.0):
         rockProb = statR / float (currentTurn)
         paperProb = statP / float (currentTurn)
         
-        targetRock = rockProb * (currentTurn + targetTurn)
-        targetPaper = paperProb * (currentTurn + targetTurn)
+        targetRock = float(rockProb * (currentTurn + targetTurn))
+        targetPaper = float(paperProb * (currentTurn + targetTurn))
         
         denominator = targetTurn
 
-        thisTurnRockProb = (targetRock - statR) / float(denominator)
-        thisTurnPaperProb = (targetPaper - statP) / float(denominator)
+        thisTurnRockProb = float((targetRock - statR) / float(denominator))
+        thisTurnPaperProb = float((targetPaper - statP) / float(denominator))
 
-    thisTurnRockProb = min(0, thisTurnRockProb)
-    thisTurnPaperProb = min(0, thisTurnPaperProb)
+    thisTurnRockProb = 0 if thisTurnRockProb < 0 else thisTurnRockProb
+    thisTurnPaperProb = 0 if thisTurnPaperProb < 0 else thisTurnPaperProb
     
- #    /*    printf("statR, targetRock: %i %f\n ", statR, targetRock);
- #   printf("denominator: %i  \n", denominator);
- #   printf("thisTurnRockProb, thisTurnPaperProb: %f %f\n\n", thisTurnRockProb, thisTurnPaperProb);getch();
- #  */
- 
+    if Debug:
+        # Debug
+        print("statR, targetRock: %i %f" % (statR, targetRock));
+        print("statP, targetPaper: %i %f" % (statP, targetPaper));
+        print("currentTurn, denominator: %i %i" % (currentTurn, denominator))
+        print("thisTurnRockProb, thisTurnPaperProb: %f %f\n" % (thisTurnRockProb, thisTurnPaperProb))
+        #input()
+        
     denominator -= 1
     return (biased_roshambo (thisTurnRockProb, thisTurnPaperProb) + 1) % 3
 

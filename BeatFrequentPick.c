@@ -7,9 +7,10 @@ extern int opp_history[];
 
 extern int yomiVariable1;
 
-int BestFrequentPick()
+int Debug = 0;
+
+int BeatFrequentPick()
 {
-   //return (biased_roshambo (1/3.0f, 1/3.0f) + 1) % 3;
     static int statR = 0;
     static int statP = 0;
     static int statS = 0;
@@ -56,14 +57,17 @@ int BestFrequentPick()
         
     float thisTurnRockProb = (targetRock - statR) / (float) (denominator);
     float thisTurnPaperProb = (targetPaper - statP) / (float) (denominator);
+    
+    if (Debug)
+        printf("thisTurnRockProb, thisTurnPaperProb: %f %f\n", thisTurnRockProb, thisTurnPaperProb);
         
     if (thisTurnRockProb <= 0 || thisTurnPaperProb <= 0 || thisTurnRockProb + thisTurnPaperProb >= 1.0f)
     {
         rockProb = statR / (float) currentTurn;
         paperProb = statP / (float) currentTurn;
         
-        targetRock = rockProb * (currentTurn + targetTurn);
-        targetPaper = paperProb * (currentTurn + targetTurn);
+        targetRock = (float) rockProb * (currentTurn + targetTurn);     //qwqw
+        targetPaper = (float) paperProb * (currentTurn + targetTurn);   //qwqwq
         
         denominator = targetTurn;
 
@@ -73,10 +77,16 @@ int BestFrequentPick()
 
     thisTurnRockProb = thisTurnRockProb < 0 ? 0 : thisTurnRockProb; 
     thisTurnPaperProb = thisTurnPaperProb < 0 ? 0 : thisTurnPaperProb; 
-     /*    printf("statR, targetRock: %i %f\n ", statR, targetRock);
-    printf("denominator: %i  \n", denominator);
-    printf("thisTurnRockProb, thisTurnPaperProb: %f %f\n\n", thisTurnRockProb, thisTurnPaperProb);getch();
-   */
+ 
+    if (Debug)
+    {
+        printf("statR, targetRock: %i %f\n", statR, targetRock);
+        printf("statP, targetPaper: %i %f\n", statP, targetPaper);
+        printf("currentTurn, denominator: %i %i\n", currentTurn, denominator);
+        printf("thisTurnRockProb, thisTurnPaperProb: %f %f\n\n", thisTurnRockProb, thisTurnPaperProb);
+        //getch();
+    }
+    
     denominator--;
     return (biased_roshambo (thisTurnRockProb, thisTurnPaperProb) + 1) % 3;
 }

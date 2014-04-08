@@ -109,7 +109,8 @@ int biased_roshambo (double prob_rock, double prob_paper)
    double throw;
 
    throw = random() / maxrandom;
-   //printf("\n %f %i %i", throw, random(), RAND_MAX ); getch();
+   //printf("\n %f %f %f %i", prob_rock, prob_paper, throw, RAND_MAX ); getch();
+   //printf("%f\n", throw );
 
    if ( throw < prob_rock )                   { return(rock); }
    else if ( throw < prob_rock + prob_paper ) { return(paper); }
@@ -5791,7 +5792,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
 int Play_Match ( int(*player1)(), int(*player2)() )
 {
     /* play a match between two RoShamBo players */
-
     int i, j, p1, p2, p1total, p2total, ties;
     int p1hist[trials+1], p2hist[trials+1];
 
@@ -6102,6 +6102,7 @@ int main(int argc, char *argv[]) {
    if (yomiVariable1 == 0)
        yomiVariable1 = 1;
    //printf("%i", yomiVariable1);
+   printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
    ///////////////
    
    int i;

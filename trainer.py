@@ -7,7 +7,7 @@ for variable in range(0, 1000):
     #print (filename)
     
     with open(filename, "w") as f:
-        output = subprocess.check_output(["a.exe", str(variable)], universal_newlines = True)
+        output = subprocess.check_output(["go.exe", str(variable)], universal_newlines = True)
         stdout = str(output)
         f.write(stdout)
     

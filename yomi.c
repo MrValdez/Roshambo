@@ -660,7 +660,7 @@ if (0)
 #include "BeatFrequentPick.c"
 int yomi()
 {
-    return BestFrequentPick();
+    return BeatFrequentPick();
     
     int currentTurn = my_history[0]; // number of games
     int oppMove = opp_history[currentTurn];

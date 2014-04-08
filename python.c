@@ -48,11 +48,13 @@ rps_biased_roshambo(PyObject *self, PyObject *args)
         return -1;  //todo: raise error	
     }
     
+    int result = biased_roshambo(prob_rock, prob_paper);
+    
     /*//debug
     printf("%f %f", prob_rock, prob_paper);
-    getch();*/
+    printf("result%i", result);
+    getch();//*/
     
-    int result = biased_roshambo(prob_rock, prob_paper);
     return PyLong_FromLong(result);
 }
 
