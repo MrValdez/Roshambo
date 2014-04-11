@@ -1,6 +1,6 @@
 import rps
-Debug = True
 Debug = False
+Debug = True
 
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
@@ -41,7 +41,6 @@ class SituationDB:
         The format for the tuple is: (situation, rank).
         """
         possibleSituations = []
-        perception = RemoveNoiseInSituation(perception)
         
         if Debug:
             print ("Current perception on the world: %s" % (perception))
@@ -95,27 +94,10 @@ def RemoveNoiseInSituation(situationData):
 
     return situationData
 
-def Evaluator(turn):
-    global GameHistory
-    
-    myMove = rps.myHistory(turn)
-    data = GameHistory.get()
-    data = data[turn:]
-    data = RemoveNoiseInSituation(data)
-    currentSituationData = data
-    
-    situation = Situation(myMove, currentSituationData)
-    return situation
-    
-def EvaluateLastTurn():
-    previousTurn = rps.getTurn() - 1
-    return Evaluator(previousTurn)
-
 def EvaluateThisTurn():
-    global GameHistory
-    return GameHistory.get()
-    currentTurn = rps.getTurn()
-    return Evaluator(currentTurn)
+    data = GameHistory.get()
+    data = RemoveNoiseInSituation(data)
+    return data
 
 # global variables
 GameHistory = GameHistory()
@@ -165,7 +147,6 @@ def yomi(a):
         GameHistory.add(enemyMove)       # In other games, game history might be different        
         
     situation = EvaluateThisTurn()
-    if Debug: print ("Current game situation: %s" % (situation.get()))
     possibleSituations = DB.find(situation)
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
