@@ -5,9 +5,8 @@ Debug = True
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
 # 2. Find current situation in database.
-#    todo Ignore situations with low success rate
 #    todo Use different checks to consider if situation is in play
-# 3. todo Rank situations.
+# 3. Rank situations.
 # 4. todo Apply yomi. Choose move based on situation and opponent variables (likelihood of countering, etc).
 # 5. Update situation chosen by outcome of turn.
 #    todo Flag this as new for farther training
@@ -133,6 +132,22 @@ def experimentNewMove(ClosestFamiliarSituations = None):
     
     return rps.biased_roshambo(statR / float(total), statP / float(total));
 
+def sortRanking(RankingList):
+    """
+    Sort a ranking list (a tuple of (rank, situation)) with the higher ranking at top.
+    Returns the sorted list
+    """
+    RankingList.sort(key = lambda x: len(x[1].data), reverse=True)     # sort by length of situation (secondary key)
+    RankingList.sort(key = lambda x: x[0], reverse=True)     # sort by ranking (primary key)
+    
+    if Debug: 
+        print ("\nRank  Move Situation")
+        for foundSituation in RankingList:
+            rank, situation = foundSituation
+            print ("%s: %s %s" % (str(rank).ljust(4), str(situation.move).ljust(4), situation.data))
+    
+    return RankingList
+
 # global variables
 GameHistory = GameHistory()
 DB = SituationDB()
@@ -186,22 +201,19 @@ def play(a):
         
     situation = EvaluateThisTurn()
     possibleSituations = DB.find(situation)
+    possibleSituations = sortRanking(possibleSituations)
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
         # let's choose using ranking
-        possibleSituations.sort(key = lambda x: len(x[1].data), reverse=True)     # sort by length of situation (secondary key)
-        possibleSituations.sort(key = lambda x: x[0], reverse=True)     # sort by ranking (primary key)
         
-        if Debug: 
-            print ("\nRank  Move Situation")
-            for foundSituation in possibleSituations:
-                rank, situation = foundSituation
-                print ("%s: %s %s" % (str(rank).ljust(4), str(situation.move).ljust(4), situation.data))
-        
+        todo: add code to "forget" low ranking situations
+        todo: apply yomi ranking modifier
+        todo: one last sort
+
         # if we are not confident with our plays based on the current situation, we experiment with a new move
         tolerance = 0 #todo: make this a personality
         if possibleSituations[0][0] < tolerance:    #[0][0] refers to the highest ranking tuple, and returns its rank
-            move = experimentNewMove(possibleSituations)
+            move = experimentNewMove(possibleSituations)    # pass all the situations found so we can take them into account (basically, remember what we forgot)
         else:
             move = possibleSituations[0][1].move
     else:
