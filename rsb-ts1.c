@@ -49,6 +49,7 @@ int verbose3 = 1;          /* print result of each match */
 // My Changes
 #define players   29         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
+int usePython = 1;
 
 /*  Full History Structure (global variables, accessible to the
                             current player during each match)
@@ -109,8 +110,13 @@ int biased_roshambo (double prob_rock, double prob_paper)
    double throw;
 
    throw = random() / maxrandom;
-   //printf("\n %f %f %f %i", prob_rock, prob_paper, throw, RAND_MAX ); getch();
-   //printf("%f\n", throw );
+   
+   /*//printf("\n %f %f %f %i", prob_rock, prob_paper, throw, RAND_MAX ); 
+   prob_rock = ((int)(prob_rock * 1000)) / 1000.0f;
+   prob_paper = ((int)(prob_paper * 1000)) / 1000.0f;
+   printf("\n%f", throw );
+   printf("\n %f %f %f %i", prob_rock, prob_paper, throw, RAND_MAX ); 
+   //getch();*/   
 
    if ( throw < prob_rock )                   { return(rock); }
    else if ( throw < prob_rock + prob_paper ) { return(paper); }
@@ -5597,8 +5603,10 @@ void Init_Player_Table (Player_Table crosstable[players+1])
 
     i++;  /* YOMI AI */
     strcpy(crosstable[i].name, "Yomi AI");
-    //crosstable[i].pname = yomi;
-    crosstable[i].pname = python;
+    if (usePython)
+        crosstable[i].pname = python;
+    else
+        crosstable[i].pname = yomi;
     
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
@@ -6090,6 +6098,7 @@ void exitPython();
 
 int main(int argc, char *argv[]) {
    // YOMI CHANGES
+   // go.exe [training variable] [use python (0,1)]
    int error = initPython(argc, argv);
    if (error)
        return 1;
@@ -6102,7 +6111,11 @@ int main(int argc, char *argv[]) {
    if (yomiVariable1 == 0)
        yomiVariable1 = 1;
    //printf("%i", yomiVariable1);
-   printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
+
+   if (argc > 2)
+       usePython = atoi(argv[2]);
+   if (usePython)
+       printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
    ///////////////
    
    int i;
