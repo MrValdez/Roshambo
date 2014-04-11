@@ -1,4 +1,5 @@
 @echo off
+rem The purpose of this script is to compare between the c and py program. There has been a floating difference between the two.
 call compile.bat > temp/py1.txt
 echo done compiling
 

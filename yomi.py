@@ -1,15 +1,18 @@
 import BeatFrequentPick
 
 def yomi(targetTurn):
-    return BeatFrequentPick.move(targetTurn)
+    #return BeatFrequentPick.move(targetTurn)
+    return 0
 
 def SkeletonAI():
+    """ This is the most basic AI that shows the functions used """
     currentTurn = rps.myHistory(0)
-    myMoveLastTurn = rps.myHistory(turn)
-    enemyMoveLastTurn = rps.enemyHistory(turn)
     
-    #input()
-    return (rps.enemyHistory(turn) + 1) % 3
+    if currentTurn:
+        myMoveLastTurn = rps.myHistory(currentTurn - 1)
+        enemyMoveLastTurn = rps.enemyHistory(currentTurn - 1)
+    
+    return (rps.enemyHistory(currentTurn) + 1) % 3
     
 def isVerbose():
     """If True is returned, print the result of each trial."""
