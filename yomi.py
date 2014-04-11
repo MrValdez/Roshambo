@@ -7,10 +7,28 @@ Debug = True
 # 2. Find current situation in database.
 #    todo Use different checks to consider if situation is in play
 # 3. Rank situations.
-# 4. todo Apply yomi. Choose move based on situation and opponent variables (likelihood of countering, etc).
+#    todo Add personality in ranking
+# 4. Apply yomi. 
+#    todo Choose move based on situation and opponent variables (likelihood of countering, etc).
 # 5. Update situation chosen by outcome of turn.
 #    todo Flag this as new for farther training
 
+def checkWinner(p1, p2):
+    """
+    Returns True if p1 wins.
+    Returns False if p2 wins.
+    Returns None if its a tie
+    """
+    if p1 == p2:
+        return None
+        
+    if (p1 == 0 and p2 == 2) or \
+       (p1 == 1 and p2 == 0) or \
+       (p1 == 2 and p2 == 1):
+       return True
+       
+    return False
+    
 class Situation:
     def __init__(self, move, situationData):
         self.data = situationData   # the data that describes the current situation
@@ -44,7 +62,7 @@ class SituationDB:
                if Debug: print ("Found")
                return situation, True
         return needle, False
-    def find(self, perception):
+    def find(self, currentSituation):
         """ 
         Look into the database for situations that is currently perceived by the system.
         Returns a list of tuples of possible situations. 
@@ -53,33 +71,52 @@ class SituationDB:
         possibleSituations = []
         
         if Debug:
-            print ("Current perception on the world: %s" % (perception))
+            print ("Current situation of the world: %s" % (currentSituation))
             
         for situation in self.Database:
             situationSize = len(situation.data)
-            # check the last 5 turns
-            #for i in range(1, 5):
-            for i in range(1):
-                # find exact matches
-                if Debug: print ("Comparing situation in database (move %i): %s" % (situation.move, situation.data))
+            
+            if Debug: print ("Comparing situation in database (move %i): %s" % (situation.move, situation.data))
+                        
+            # find exact matches
+            if situation.data == currentSituation[-situationSize:]:
+                if Debug: print (" ...exact situation match")
                 
-                #if i >= len(perception) or i >= len(situation.data):
-                #    break
+                rank = 0
+                if situation.successRate > 0:
+                    rank += 100
+                else:
+                    rank += -100
+                result = (rank, situation)
+                possibleSituations.append(result)
+                continue
+
+            if len(currentSituation) == 0 or len(situation.data) == 0:
+                continue
+
+            # find matches where the AI's moves are ignored. 
+            # This is to detect opponents that are following a pattern
+            matchFound = True
+            j = len(situation.data) - 1
+            
+            for i in range(len(currentSituation) - 1, len(currentSituation) - len(situation.data), -2):
+                if currentSituation[i] != situation.data[j]:
+                    matchFound = False
+                    break
+                j -= 2
                 
-                if situation.data == perception[-situationSize:]:
-                    rank = 0
-                    if situation.successRate > 0:
-                        rank = 100
-                    else:
-                        rank = -100
-                    result = (rank, situation)
-                    possibleSituations.append(result)
-                    if Debug: print (" ...situation match")
+            if matchFound:
+                if Debug: print (" ...opponent pattern found")
                 
-                # matches with just opponent's moves
-                if False:                                                           
-                    pass
-        
+                rank = 0
+                if situation.successRate > 0:
+                    rank += 100
+                else:
+                    rank += -100
+                result = (rank, situation)
+                possibleSituations.append(result)
+                continue
+                    
         return possibleSituations
 
 class GameHistory:
@@ -137,6 +174,9 @@ def sortRanking(RankingList):
     Sort a ranking list (a tuple of (rank, situation)) with the higher ranking at top.
     Returns the sorted list
     """
+    if len(RankingList) == 0:
+        return RankingList
+        
     RankingList.sort(key = lambda x: len(x[1].data), reverse=True)     # sort by length of situation (secondary key)
     RankingList.sort(key = lambda x: x[0], reverse=True)     # sort by ranking (primary key)
     
@@ -153,9 +193,10 @@ def applyYomi(possibleSituations):
     Read each situation and decide if the AI wants to apply Yomi or not.
     On situations where Yomi is applied, change the situation for the next Yomi layer
     Apply the new situation's rank depending on the AI personality.
-    Returns a new list of possibleSituations.
+    Returns (list of possibleSituations, True if yomi is applied).
     """
-    return possibleSituations
+    isYomiApplied = False
+    return possibleSituations, isYomiApplied
 
 # global variables
 GameHistory = GameHistory()
@@ -171,6 +212,7 @@ def play(a):
     #return BeatFrequentPickAI(a)
     
     global Debug
+    
     currentTurn = rps.getTurn()
     move = 0
     
@@ -178,6 +220,8 @@ def play(a):
         init()
         
     if currentTurn > 0:
+        if Debug: input(">")
+        
         myMove = rps.myHistory(currentTurn)
         enemyMove = rps.enemyHistory(currentTurn)
         global DB
@@ -188,21 +232,39 @@ def play(a):
         # update our game history.
         # store the situation last turn and our move
         perceptionLastTurn = EvaluateThisTurn()
-        situationLastTurn = Situation(myMove, perceptionLastTurn)            
+        situationLastTurn = Situation(myMove, perceptionLastTurn)
         
         #check if the situation exists already and use that instead
         situationLastTurn, isDuplicate = DB.findDuplicate(situationLastTurn)
         
         # update the victory condition 
-        if (myMove == 0 and enemyMove == 2) or \
-           (myMove == 1 and enemyMove == 0) or \
-           (myMove == 2 and enemyMove == 1):
+        if checkWinner(myMove, enemyMove):
             situationLastTurn.winCondition()
         else:
             situationLastTurn.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
+        
         if isDuplicate == False:
             DB.add(situationLastTurn)
-            if Debug: print ("Saved last turn situation into database: %s move %i" % (situationLastTurn.data, situationLastTurn.move))
+            if Debug: print ("Saved last turn situation into database: %s (move %i)" % (situationLastTurn.data, situationLastTurn.move))
+        
+        #create situation from opponent's POV
+        situationOpponentPOV = Situation(enemyMove, perceptionLastTurn)
+        situationLastTurn, isDuplicate = DB.findDuplicate(situationOpponentPOV)
+        if checkWinner(myMove, enemyMove):
+            situationOpponentPOV.winCondition()
+            # the opponent won with this move, so we increase the next layer's counter potential 
+            # (we are anticipating that the enemy will use this again)
+            #situationOpponentPOV.successRate += -20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
+        else:
+            situationOpponentPOV.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
+            # the opponent lost with this move, so we decrease the next layer's counter potential 
+            # (we are anticipating that the enemy will not use this again)
+            #situationOpponentPOV.successRate += 20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
+        if isDuplicate == False:    
+            DB.add(situationOpponentPOV)
+            if Debug: print ("Saved last turn situation from opponent's point of view: %s (move %i)" % (situationOpponentPOV.data, situationOpponentPOV.move))
+            
+        if Debug: print("----\n")
         
         global GameHistory
         GameHistory.add(myMove)          # Game history is alternation between ai and enemy moves
@@ -214,10 +276,14 @@ def play(a):
     if len(possibleSituations):
         # we've found situations in the past that is similar to the current situation.
         # let's choose using ranking
-        possibleSituations = applyYomi(possibleSituations)
+        possibleSituations, isYomiApplied = applyYomi(possibleSituations)
         
-        # one last sort after yomi changes
-        possibleSituations = sortRanking(possibleSituations)
+        if isYomiApplied:
+            # one last sort after yomi changes
+            if Debug: print ("Resorting because of Yomi changes")
+            
+            possibleSituations = sortRanking(possibleSituations)
+            
 
         # if we are not confident with our plays based on the current situation, we experiment with a new move
         tolerance = 0 #todo: make this a personality
@@ -231,7 +297,6 @@ def play(a):
         if Debug: print ("new situation encountered")
         move = experimentNewMove(None)
     
-    if Debug: input(">")
     return move
 
 def SkeletonAI():
