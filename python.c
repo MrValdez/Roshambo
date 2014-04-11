@@ -6,7 +6,7 @@ def yomi():
 
 def SkeletonAI():
     """ This is the most basic AI that shows the functions used """
-    currentTurn = rps.myHistory(0)
+    currentTurn = rps.getTurn()
     
     if currentTurn:
         myMoveLastTurn = rps.myHistory(currentTurn - 1)
@@ -30,12 +30,20 @@ extern int opp_history[];
 
 int getHistory(int history, PyObject *args)
 {
+    // getHistory starts with 1 index
+    
     int index;
     if (!PyArg_ParseTuple(args, "i", &index))
         return 0;	
 
-    if (index > my_history[0])
-        return 0;
+    if (index == 0)                     // returns -1. getTurn() should be used to get current turn
+        return PyLong_FromLong(-1);
+        
+    if (index > my_history[0])          // returns -1. cannot get the history from the future (can also contain garbage)
+        return PyLong_FromLong(-1);
+
+    if (index < 0)                      // returns -1.
+        return PyLong_FromLong(-1);
 
     if (history == MYHISTORY)
         return PyLong_FromLong(my_history[index]);
@@ -53,6 +61,12 @@ static PyObject *
 rps_enemyhistory(PyObject *self, PyObject *args)
 {
     return getHistory(ENEMYHISTORY, args);
+}
+
+static PyObject *
+rps_getTurn(PyObject *self, PyObject *args)
+{
+    return PyLong_FromLong(my_history[0]);
 }
 
 extern int biased_roshambo (double prob_rock, double prob_paper);
@@ -80,8 +94,9 @@ rps_biased_roshambo(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef rpsMethods[] = {
-    {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history. Index 0 returns current turn. Index 1 to trials contains the move used in that turn"},
-    {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history. Index 0 returns current turn. Index 1 to trials contains the move used in that turn"},
+    {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1."},
+    {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1."},
+    {"getTurn",  rps_getTurn, METH_VARARGS, "Returns current turn."},
     {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
