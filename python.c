@@ -9,8 +9,8 @@ def SkeletonAI():
     currentTurn = rps.getTurn()
     
     if currentTurn:
-        myMoveLastTurn = rps.myHistory(currentTurn - 1)
-        enemyMoveLastTurn = rps.enemyHistory(currentTurn - 1)
+        myMoveLastTurn = rps.myHistory(currentTurn)
+        enemyMoveLastTurn = rps.enemyHistory(currentTurn)
     
     return (rps.enemyHistory(currentTurn) + 1) % 3
 
