@@ -119,7 +119,7 @@ def init():
     GameHistory.reset()
     DB.reset()
     
-def yomi(a):
+def play(a):
     #return SkeletonAI()
     #return BeatFrequentPickAI(a)
     
@@ -194,5 +194,5 @@ def isVerbose():
     
 def BeatFrequentPickAI(a):
     import BeatFrequentPick
-    return BeatFrequentPick.move(a)
+    return BeatFrequentPick.play(a)
     

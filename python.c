@@ -135,12 +135,12 @@ int initPython(int argc, char *argv[])
     Py_DECREF(pName);
     
     if (pModule != NULL) {       
-        yomiFunc = PyObject_GetAttrString(pModule, "yomi");
+        yomiFunc = PyObject_GetAttrString(pModule, "play");
         /* yomiFunc is a new reference */
         if (!yomiFunc) {
             if (PyErr_Occurred())
                 PyErr_Print();
-            fprintf(stderr, "Cannot find function \"%s\"\n", argv[2]);
+            fprintf(stderr, "Cannot find function Play\n");
             return 1;
         }
     }

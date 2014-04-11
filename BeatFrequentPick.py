@@ -14,7 +14,7 @@ targetPaper = 0.0
 
 Debug = False
 
-def move(targetTurn):
+def play(targetTurn):
     global statR, statP, statS
     global denominator
     global rockProb, paperProb, targetRock, targetPaper
