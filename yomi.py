@@ -62,13 +62,17 @@ class SituationDB:
             #for i in range(1, 5):
             for i in range(1):
                 # find exact matches
-                if Debug: print ("Comparing situation in database: %s" % (situation.data))
+                if Debug: print ("Comparing situation in database (move %i): %s" % (situation.move, situation.data))
                 
                 #if i >= len(perception) or i >= len(situation.data):
                 #    break
                 
                 if situation.data == perception[-situationSize:]:
-                    rank = 100
+                    rank = 0
+                    if situation.successRate > 0:
+                        rank = 100
+                    else:
+                        rank = -100
                     result = (rank, situation)
                     possibleSituations.append(result)
                     if Debug: print (" ...situation match")
@@ -107,6 +111,27 @@ def EvaluateThisTurn():
     data = GameHistory.get()
     data = RemoveNoiseInSituation(data)
     return data
+
+def experimentNewMove(ClosestFamiliarSituations = None):
+    """ 
+    This function's purpose is to use a move since either we have seen this situation for the first time
+    or our previous options have failed.
+    ClosestFamiliarSituations holds either None or a list of tuple of (rank, situation) that may or may not be useful
+    in determining what our best move is (for example, if we notice rocks have a slightly higher chance of winning, we try that move)
+    This function returns a move. 
+    """
+    if ClosestFamiliarSituations == None:
+        return rps.biased_roshambo (1 / 3.0, 1 / 3.0)       # choose one at random
+    
+    statR, statP, statS = 0, 0, 0
+    total = 0
+    for rank, situation in ClosestFamiliarSituations:
+        if situation.move == 0: statR += 1
+        if situation.move == 1: statP += 1
+        if situation.move == 2: statS += 1
+        total += 1
+    
+    return rps.biased_roshambo(statR / float(total), statP / float(total));
 
 # global variables
 GameHistory = GameHistory()
@@ -163,13 +188,25 @@ def play(a):
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
         # let's choose using ranking
-        if Debug: print (possibleSituations)
         possibleSituations.sort(key = lambda x: x[0], reverse=True)
-        pass
+        
+        if Debug: 
+            print ("\nRank  Move Situation")
+            for foundSituation in possibleSituations:
+                rank, situation = foundSituation
+                print ("%s: %s %s" % (str(rank).ljust(4), str(situation.move).ljust(4), situation.data))
+        
+        # if we are not confident with our plays based on the current situation, we experiment with a new move
+        tolerance = 0 #todo: make this a personality
+        if possibleSituations[0][0] < tolerance:    #[0][0] refers to the highest ranking tuple, and returns its rank
+            move = experimentNewMove(possibleSituations)
+        else:
+            move = possibleSituations[0][1].move
     else:
         # we cannot find a situation in the past.
+        # so we experiment a new move
         if Debug: print ("new situation encountered")
-        pass
+        move = experimentNewMove(None)
     
     if Debug: input(">")
     return move
@@ -191,7 +228,7 @@ def SkeletonAI():
     
 def isVerbose():
     """If True is returned, print the result of each trial."""
-    return False
+    return True
     
 def BeatFrequentPickAI(a):
     import BeatFrequentPick
