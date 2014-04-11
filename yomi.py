@@ -1,6 +1,6 @@
 import rps
-Debug = False
 Debug = True
+Debug = False
 
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
@@ -41,24 +41,29 @@ class SituationDB:
         The format for the tuple is: (situation, rank).
         """
         possibleSituations = []
+        perception = RemoveNoiseInSituation(perception)
         
         if Debug:
             print ("Current perception on the world: %s" % (perception))
             
         for situation in self.Database:
+            situationSize = len(situation.data)
             # check the last 5 turns
-            for i in range(1, 5):
+            #for i in range(1, 5):
+            for i in range(1):
                 # find exact matches
                 if Debug:
-                    print ("Checking situation: %s" % (situation.data))                   
+                    print ("Comparing situation in database: %s" % (situation.data))
                 
-                if i >= len(perception) or i >= len(situation.data):
-                    break
+                #if i >= len(perception) or i >= len(situation.data):
+                #    break
                 
-                if len(perception) < i and situation.data == perception[-i:]:
+                if len(perception) < i and situation.data == perception[-situationSize:]:
                     rank = 100
                     result = (situation, rank)
                     possibleSituations.append(result)
+                    if Debug:
+                        print (" ...situation match")
                 
                 # matches with just opponent's moves
                 if False:                                                           
@@ -107,6 +112,8 @@ def EvaluateLastTurn():
     return Evaluator(previousTurn)
 
 def EvaluateThisTurn():
+    global GameHistory
+    return GameHistory.get()
     currentTurn = rps.getTurn()
     return Evaluator(currentTurn)
 
@@ -134,37 +141,35 @@ def yomi(a):
         myMove = rps.myHistory(currentTurn)
         enemyMove = rps.enemyHistory(currentTurn)
 
-        # game has already taken one turn
-        # store the situation of the last turn into our database
-        # update our game history.        
+        # game has already taken at least one turn
+        # store the situation of the last turn into our database. Note that we did this before updating the game history, so 
+        #  EvaluateThisTurn() still refers to the last turn
+        # update our game history.
         global DB
         # store the situation last turn and our move
-        perceptionLastTurn = GameHistory.get()
-        perceptionLastTurn = RemoveNoiseInSituation(perceptionLastTurn)
-        situationLastTurn = Situation(rps.myHistory(currentTurn), perceptionLastTurn)    
+        perceptionLastTurn = EvaluateThisTurn()
+        situationLastTurn = Situation(myMove, perceptionLastTurn)            
         #todo: check if the situation exists already and use that instead
         # update the victory condition 
         if (myMove == 0 and enemyMove == 2) or \
            (myMove == 1 and enemyMove == 0) or \
            (myMove == 2 and enemyMove == 1):
-            print ("win")
             situationLastTurn.winCondition()
         else:
-            print ("lost")
             situationLastTurn.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
         DB.add(situationLastTurn)  
-        if Debug: print ("last turn situation: %s" % (situationLastTurn.data))
+        if Debug: print ("Saved last turn situation into database: %s move %i" % (situationLastTurn.data, situationLastTurn.move))
         
         global GameHistory
         GameHistory.add(myMove)          # Game history is alternation between ai and enemy moves
-        GameHistory.add(enemyMove)       # In other games, game history might be different
-        
-        if Debug: print ("Current game situation: %s" % (GameHistory.get()))
+        GameHistory.add(enemyMove)       # In other games, game history might be different        
         
     situation = EvaluateThisTurn()
-    possibleSituations = DB.find(situation.data)
+    if Debug: print ("Current game situation: %s" % (situation.get()))
+    possibleSituations = DB.find(situation)
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
+        # let's choose that ranks high
         pass
     else:
         # we cannot find a situation in the past.
