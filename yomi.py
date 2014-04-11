@@ -1,6 +1,6 @@
 import rps
-Debug = True
 Debug = False
+Debug = True
 
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
@@ -34,27 +34,28 @@ class SituationDB:
         self.Database.clear()
     def add(self, situation):
         self.Database.append(situation)
-    def find(self, needle):
+    def find(self, perception):
         """ 
+        Look into the database for situations that is currently perceived by the system.
         Returns a list of tuples of possible situations. 
         The format for the tuple is: (situation, rank).
         """
         possibleSituations = []
-        needleSize = len(needle)
+        
+        if Debug:
+            print ("Current perception on the world: %s" % (perception))
+            
         for situation in self.Database:
             # check the last 5 turns
             for i in range(1, 5):
                 # find exact matches
                 if Debug:
-                    print ("SE")
-                    print (i)
-                    print (situation.data)
-                    print (situation.data[-i:])                    
+                    print ("Checking situation: %s" % (situation.data))                   
                 
-                if i >= needleSize or i >= len(situation.data):
+                if i >= len(perception) or i >= len(situation.data):
                     break
-                    
-                if needleSize < i and situation.data[-i:] == needle:
+                
+                if len(perception) < i and situation.data == perception[-i:]:
                     rank = 100
                     result = (situation, rank)
                     possibleSituations.append(result)
@@ -83,13 +84,10 @@ def RemoveNoiseInSituation(situationData):
     Some AI might only look at the last 5 turns. 
     Some games would have extra data that are not helpful or not evaluated in the current situation"""
 
-    # we are only looking at the last 5 turns. Multiplied by 2 to also both the player's and the enemy's moves.
+    # we are only looking at the last 5 turns. Multiplied by 2 to include both the player's and the enemy's moves.
     turns = 5 * 2
-    if len(situationData) > turns:
-        turns = len(situationData)
-        
     situationData = situationData[-turns:]
-        
+
     return situationData
 
 def Evaluator(turn):
@@ -97,7 +95,8 @@ def Evaluator(turn):
     
     myMove = rps.myHistory(turn)
     data = GameHistory.get()
-    #data = RemoveNoiseInSituation(data)
+    data = data[turn:]
+    data = RemoveNoiseInSituation(data)
     currentSituationData = data
     
     situation = Situation(myMove, currentSituationData)
@@ -132,20 +131,36 @@ def yomi(a):
         init()
         
     if currentTurn > 0:
-        # game has already taken one turn
-        # update our game history
-        # store the situation last turn into our database
-        global GameHistory
-        GameHistory.add(rps.myHistory(currentTurn))          # Game history is alternation between ai and enemy moves
-        GameHistory.add(rps.enemyHistory(currentTurn))       # In other games, game history might be different
-        
-        if Debug: print (GameHistory.get())
-        
-        global DB
-        situationLastTurn = EvaluateLastTurn()
-        if Debug: print (situationLastTurn)
-        DB.add(situationLastTurn)
+        myMove = rps.myHistory(currentTurn)
+        enemyMove = rps.enemyHistory(currentTurn)
 
+        # game has already taken one turn
+        # store the situation of the last turn into our database
+        # update our game history.        
+        global DB
+        # store the situation last turn and our move
+        perceptionLastTurn = GameHistory.get()
+        perceptionLastTurn = RemoveNoiseInSituation(perceptionLastTurn)
+        situationLastTurn = Situation(rps.myHistory(currentTurn), perceptionLastTurn)    
+        #todo: check if the situation exists already and use that instead
+        # update the victory condition 
+        if (myMove == 0 and enemyMove == 2) or \
+           (myMove == 1 and enemyMove == 0) or \
+           (myMove == 2 and enemyMove == 1):
+            print ("win")
+            situationLastTurn.winCondition()
+        else:
+            print ("lost")
+            situationLastTurn.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
+        DB.add(situationLastTurn)  
+        if Debug: print ("last turn situation: %s" % (situationLastTurn.data))
+        
+        global GameHistory
+        GameHistory.add(myMove)          # Game history is alternation between ai and enemy moves
+        GameHistory.add(enemyMove)       # In other games, game history might be different
+        
+        if Debug: print ("Current game situation: %s" % (GameHistory.get()))
+        
     situation = EvaluateThisTurn()
     possibleSituations = DB.find(situation.data)
     if len(possibleSituations):
