@@ -189,7 +189,8 @@ def play(a):
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
         # let's choose using ranking
-        possibleSituations.sort(key = lambda x: x[0], reverse=True)
+        possibleSituations.sort(key = lambda x: len(x[1].data), reverse=True)     # sort by length of situation (secondary key)
+        possibleSituations.sort(key = lambda x: x[0], reverse=True)     # sort by ranking (primary key)
         
         if Debug: 
             print ("\nRank  Move Situation")
