@@ -5,12 +5,12 @@ Debug = True
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
 # 2. Find current situation in database.
-#    Ignore situations with low success rate
-#    Use different checks to consider if situation is in play
-# 3. Rank situations.
-# 4. Apply yomi. Choose move based on situation and opponent variables (likelihood of countering, etc).
+#    todo Ignore situations with low success rate
+#    todo Use different checks to consider if situation is in play
+# 3. todo Rank situations.
+# 4. todo Apply yomi. Choose move based on situation and opponent variables (likelihood of countering, etc).
 # 5. Update situation chosen by outcome of turn.
-#    Flag this as new for farther training
+#    todo Flag this as new for farther training
 
 class Situation:
     def __init__(self, move, situationData):
@@ -34,6 +34,17 @@ class SituationDB:
         self.Database.clear()
     def add(self, situation):
         self.Database.append(situation)
+    def findDuplicate(self, needle):
+        """
+        Look for an exact duplicate of needle and return the duplicate. 
+        If no duplicate is found, return the needle.
+        """
+        for situation in self.Database:
+            if situation.data == needle.data and    \
+               situation.move == needle.move:
+               print ("Found")
+               return situation
+        return needle
     def find(self, perception):
         """ 
         Look into the database for situations that is currently perceived by the system.
@@ -122,16 +133,19 @@ def yomi(a):
     if currentTurn > 0:
         myMove = rps.myHistory(currentTurn)
         enemyMove = rps.enemyHistory(currentTurn)
+        global DB
 
         # game has already taken at least one turn
         # store the situation of the last turn into our database. Note that we did this before updating the game history, so 
         #  EvaluateThisTurn() still refers to the last turn
         # update our game history.
-        global DB
         # store the situation last turn and our move
         perceptionLastTurn = EvaluateThisTurn()
         situationLastTurn = Situation(myMove, perceptionLastTurn)            
-        #todo: check if the situation exists already and use that instead
+        
+        #check if the situation exists already and use that instead
+        situationLastTurn = DB.findDuplicate(situationLastTurn)
+        
         # update the victory condition 
         if (myMove == 0 and enemyMove == 2) or \
            (myMove == 1 and enemyMove == 0) or \
@@ -150,7 +164,7 @@ def yomi(a):
     possibleSituations = DB.find(situation)
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
-        # let's choose that ranks high
+        # let's choose using ranking
         pass
     else:
         # we cannot find a situation in the past.
