@@ -36,15 +36,15 @@ class SituationDB:
         self.Database.append(situation)
     def findDuplicate(self, needle):
         """
-        Look for an exact duplicate of needle and return the duplicate. 
-        If no duplicate is found, return the needle.
+        Look for an exact duplicate of needle and return the duplicate and True. 
+        If no duplicate is found, return the needle and False.
         """
         for situation in self.Database:
             if situation.data == needle.data and    \
                situation.move == needle.move:
                if Debug: print ("Found")
-               return situation
-        return needle
+               return situation, True
+        return needle, False
     def find(self, perception):
         """ 
         Look into the database for situations that is currently perceived by the system.
@@ -167,7 +167,7 @@ def play(a):
         situationLastTurn = Situation(myMove, perceptionLastTurn)            
         
         #check if the situation exists already and use that instead
-        situationLastTurn = DB.findDuplicate(situationLastTurn)
+        situationLastTurn, isDuplicate = DB.findDuplicate(situationLastTurn)
         
         # update the victory condition 
         if (myMove == 0 and enemyMove == 2) or \
@@ -176,8 +176,9 @@ def play(a):
             situationLastTurn.winCondition()
         else:
             situationLastTurn.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
-        DB.add(situationLastTurn)  
-        if Debug: print ("Saved last turn situation into database: %s move %i" % (situationLastTurn.data, situationLastTurn.move))
+        if isDuplicate == False:
+            DB.add(situationLastTurn)
+            if Debug: print ("Saved last turn situation into database: %s move %i" % (situationLastTurn.data, situationLastTurn.move))
         
         global GameHistory
         GameHistory.add(myMove)          # Game history is alternation between ai and enemy moves
@@ -228,7 +229,8 @@ def SkeletonAI():
     
 def isVerbose():
     """If True is returned, print the result of each trial."""
-    return True
+    global Debug
+    return Debug
     
 def BeatFrequentPickAI(a):
     import BeatFrequentPick
