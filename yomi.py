@@ -42,14 +42,14 @@ class SituationDB:
         for situation in self.Database:
             if situation.data == needle.data and    \
                situation.move == needle.move:
-               print ("Found")
+               if Debug: print ("Found")
                return situation
         return needle
     def find(self, perception):
         """ 
         Look into the database for situations that is currently perceived by the system.
         Returns a list of tuples of possible situations. 
-        The format for the tuple is: (situation, rank).
+        The format for the tuple is: (rank, situation).
         """
         possibleSituations = []
         
@@ -62,18 +62,16 @@ class SituationDB:
             #for i in range(1, 5):
             for i in range(1):
                 # find exact matches
-                if Debug:
-                    print ("Comparing situation in database: %s" % (situation.data))
+                if Debug: print ("Comparing situation in database: %s" % (situation.data))
                 
                 #if i >= len(perception) or i >= len(situation.data):
                 #    break
                 
-                if len(perception) < i and situation.data == perception[-situationSize:]:
+                if situation.data == perception[-situationSize:]:
                     rank = 100
-                    result = (situation, rank)
+                    result = (rank, situation)
                     possibleSituations.append(result)
-                    if Debug:
-                        print (" ...situation match")
+                    if Debug: print (" ...situation match")
                 
                 # matches with just opponent's moves
                 if False:                                                           
@@ -165,9 +163,12 @@ def play(a):
     if len(possibleSituations):
         # we find situations in the past that is similar to the current situation.
         # let's choose using ranking
+        if Debug: print (possibleSituations)
+        possibleSituations.sort(key = lambda x: x[0], reverse=True)
         pass
     else:
         # we cannot find a situation in the past.
+        if Debug: print ("new situation encountered")
         pass
     
     if Debug: input(">")
