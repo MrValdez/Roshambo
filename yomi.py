@@ -2,12 +2,15 @@ import rps
 Debug = False
 Debug = True
 
+# todo: add yomi layers to situations
+
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
 # 2. Find current situation in database.
-#    todo Use different checks to consider if situation is in play
+#     Use different checks to consider if situation is in play.
+#    todo Each check has different ranking depending on the AI's personality
 # 3. Rank situations.
-#    todo Add personality in ranking
+#    todo Add personality to ranking (preferences)
 # 4. Apply yomi. 
 #    todo Choose move based on situation and opponent variables (likelihood of countering, etc).
 # 5. Update situation chosen by outcome of turn.
@@ -36,7 +39,9 @@ class Situation:
         self.successRate = 0        # goes up or down when the opponent wins or loses
         self.counterPotential = 0   # todo: refers to how likely this will be used as a counter
 
-        #self.enemyRespect          # see onrespect section
+        #self.enemyRespect          # todo: see onrespect section
+        
+        self.nextLayer = None
     def winCondition(self):
         """ Call this function if the AI wins"""
         self.successRate += 1 # todo: Personality.
@@ -59,8 +64,8 @@ class SituationDB:
         for situation in self.Database:
             if situation.data == needle.data and    \
                situation.move == needle.move:
-               if Debug: print ("Found")
                return situation, True
+               
         return needle, False
     def find(self, currentSituation):
         """ 
@@ -76,7 +81,7 @@ class SituationDB:
         for situation in self.Database:
             situationSize = len(situation.data)
             
-            if Debug: print ("Comparing situation in database (move %i): %s" % (situation.move, situation.data))
+            if Debug: print ("Comparing situation in database: (move %i) %s" % (situation.move, situation.data))
                         
             # find exact matches
             if situation.data == currentSituation[-situationSize:]:
@@ -132,6 +137,51 @@ class GameHistory:
     def get(self):
         return self.history
 
+def saveSituationLastTurn():
+    """
+    This is called after each players chooses a move and before updating the current turn's situation.
+    Evaluate the last turn and the moves played. 
+    If there's duplicate, use that. Else, add the new situation to the database
+    Do this for the player and the opponent
+    """
+    global DB
+    currentTurn = rps.getTurn()
+    myMove = rps.myHistory(currentTurn)
+    enemyMove = rps.enemyHistory(currentTurn)
+
+    perceptionLastTurn = EvaluateThisTurn()
+    situationLastTurn = Situation(myMove, perceptionLastTurn)
+    
+    #check if the situation exists already and use that instead
+    situationLastTurn, isDuplicate = DB.findDuplicate(situationLastTurn)
+    
+    # update the victory condition 
+    if checkWinner(myMove, enemyMove):
+        situationLastTurn.winCondition()
+    else:
+        situationLastTurn.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
+    
+    if isDuplicate == False:
+        DB.add(situationLastTurn)
+        if Debug: print ("Saved last turn situation into database: %s (move %i)" % (situationLastTurn.data, situationLastTurn.move))
+    
+    #create situation from opponent's POV
+    situationOpponentPOV = Situation(enemyMove, perceptionLastTurn)
+    situationLastTurn, isDuplicate = DB.findDuplicate(situationOpponentPOV)
+    if checkWinner(enemyMove, myMove):
+        situationOpponentPOV.winCondition()
+        # the opponent won with this move, so we increase the next layer's counter potential 
+        # (we are anticipating that the enemy will use this again)
+        #situationOpponentPOV.successRate += -20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
+    else:
+        situationOpponentPOV.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
+        # the opponent lost with this move, so we decrease the next layer's counter potential 
+        # (we are anticipating that the enemy will not use this again)
+        #situationOpponentPOV.successRate += 20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
+    if isDuplicate == False:    
+        DB.add(situationOpponentPOV)
+        if Debug: print ("Saved last turn situation from opponent's point of view: %s (move %i)" % (situationOpponentPOV.data, situationOpponentPOV.move))
+            
 def RemoveNoiseInSituation(situationData):
     """ This function removes the noise in the situation. This is dependent on the AI's personality as well as the game.
     Some AI might only look at the last 5 turns. 
@@ -221,52 +271,19 @@ def play(a):
         
     if currentTurn > 0:
         if Debug: input(">")
-        
-        myMove = rps.myHistory(currentTurn)
-        enemyMove = rps.enemyHistory(currentTurn)
-        global DB
-
+                
         # game has already taken at least one turn
         # store the situation of the last turn into our database. Note that we did this before updating the game history, so 
-        #  EvaluateThisTurn() still refers to the last turn
-        # update our game history.
-        # store the situation last turn and our move
-        perceptionLastTurn = EvaluateThisTurn()
-        situationLastTurn = Situation(myMove, perceptionLastTurn)
-        
-        #check if the situation exists already and use that instead
-        situationLastTurn, isDuplicate = DB.findDuplicate(situationLastTurn)
-        
-        # update the victory condition 
-        if checkWinner(myMove, enemyMove):
-            situationLastTurn.winCondition()
-        else:
-            situationLastTurn.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
-        
-        if isDuplicate == False:
-            DB.add(situationLastTurn)
-            if Debug: print ("Saved last turn situation into database: %s (move %i)" % (situationLastTurn.data, situationLastTurn.move))
-        
-        #create situation from opponent's POV
-        situationOpponentPOV = Situation(enemyMove, perceptionLastTurn)
-        situationLastTurn, isDuplicate = DB.findDuplicate(situationOpponentPOV)
-        if checkWinner(myMove, enemyMove):
-            situationOpponentPOV.winCondition()
-            # the opponent won with this move, so we increase the next layer's counter potential 
-            # (we are anticipating that the enemy will use this again)
-            #situationOpponentPOV.successRate += -20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
-        else:
-            situationOpponentPOV.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
-            # the opponent lost with this move, so we decrease the next layer's counter potential 
-            # (we are anticipating that the enemy will not use this again)
-            #situationOpponentPOV.successRate += 20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
-        if isDuplicate == False:    
-            DB.add(situationOpponentPOV)
-            if Debug: print ("Saved last turn situation from opponent's point of view: %s (move %i)" % (situationOpponentPOV.data, situationOpponentPOV.move))
-            
+        #  when calling EvaluateThisTurn() in the UpdateDatabase(), it still refers to the last turn
+        saveSituationLastTurn()
+
         if Debug: print("----\n")
         
+        # update the game history and situation        
         global GameHistory
+        myMove = rps.myHistory(currentTurn)
+        enemyMove = rps.enemyHistory(currentTurn)
+        
         GameHistory.add(myMove)          # Game history is alternation between ai and enemy moves
         GameHistory.add(enemyMove)       # In other games, game history might be different        
         
@@ -280,7 +297,7 @@ def play(a):
         
         if isYomiApplied:
             # one last sort after yomi changes
-            if Debug: print ("Resorting because of Yomi changes")
+            if Debug: print ("Re-sorting because of Yomi changes")
             
             possibleSituations = sortRanking(possibleSituations)
             
