@@ -148,6 +148,15 @@ def sortRanking(RankingList):
     
     return RankingList
 
+def applyYomi(possibleSituations):
+    """
+    Read each situation and decide if the AI wants to apply Yomi or not.
+    On situations where Yomi is applied, change the situation for the next Yomi layer
+    Apply the new situation's rank depending on the AI personality.
+    Returns a new list of possibleSituations.
+    """
+    return possibleSituations
+
 # global variables
 GameHistory = GameHistory()
 DB = SituationDB()
@@ -203,16 +212,16 @@ def play(a):
     possibleSituations = DB.find(situation)
     possibleSituations = sortRanking(possibleSituations)
     if len(possibleSituations):
-        # we find situations in the past that is similar to the current situation.
+        # we've found situations in the past that is similar to the current situation.
         # let's choose using ranking
+        possibleSituations = applyYomi(possibleSituations)
         
-        todo: add code to "forget" low ranking situations
-        todo: apply yomi ranking modifier
-        todo: one last sort
+        # one last sort after yomi changes
+        possibleSituations = sortRanking(possibleSituations)
 
         # if we are not confident with our plays based on the current situation, we experiment with a new move
         tolerance = 0 #todo: make this a personality
-        if possibleSituations[0][0] < tolerance:    #[0][0] refers to the highest ranking tuple, and returns its rank
+        if possibleSituations[0][0] < tolerance:            # [0][0] refers to the highest ranking tuple, and returns its rank
             move = experimentNewMove(possibleSituations)    # pass all the situations found so we can take them into account (basically, remember what we forgot)
         else:
             move = possibleSituations[0][1].move
