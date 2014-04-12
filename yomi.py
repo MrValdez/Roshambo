@@ -150,9 +150,11 @@ def saveSituationLastTurn():
     enemyMove = rps.enemyHistory(currentTurn)
 
     perceptionLastTurn = EvaluateThisTurn()
+    
+    # create situation from AI's POV
     situationLastTurn = Situation(myMove, perceptionLastTurn)
     
-    #check if the situation exists already and use that instead
+    # check if the situation exists already and use that instead
     situationLastTurn, isDuplicate = DB.findDuplicate(situationLastTurn)
     
     # update the victory condition 
@@ -165,19 +167,21 @@ def saveSituationLastTurn():
         DB.add(situationLastTurn)
         if Debug: print ("Saved last turn situation into database: %s (move %i)" % (situationLastTurn.data, situationLastTurn.move))
     
-    #create situation from opponent's POV
+    # create situation from opponent's POV (same sequence as above except we also increase its counter rate
     situationOpponentPOV = Situation(enemyMove, perceptionLastTurn)
     situationLastTurn, isDuplicate = DB.findDuplicate(situationOpponentPOV)
+ 
     if checkWinner(enemyMove, myMove):
         situationOpponentPOV.winCondition()
         # the opponent won with this move, so we increase the next layer's counter potential 
         # (we are anticipating that the enemy will use this again)
-        #situationOpponentPOV.successRate += -20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
+        #situationOpponentPOV.counterPotential += 20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
     else:
         situationOpponentPOV.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
         # the opponent lost with this move, so we decrease the next layer's counter potential 
         # (we are anticipating that the enemy will not use this again)
-        #situationOpponentPOV.successRate += 20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
+        #situationOpponentPOV.counterPotential += -20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
+ 
     if isDuplicate == False:    
         DB.add(situationOpponentPOV)
         if Debug: print ("Saved last turn situation from opponent's point of view: %s (move %i)" % (situationOpponentPOV.data, situationOpponentPOV.move))
@@ -188,6 +192,7 @@ def RemoveNoiseInSituation(situationData):
     Some games would have extra data that are not helpful or not evaluated in the current situation"""
 
     # we are only looking at the last 5 turns. Multiplied by 2 to include both the player's and the enemy's moves.
+    # todo: make this into a personality
     turns = 5 * 2
     situationData = situationData[-turns:]
 
@@ -289,10 +294,10 @@ def play(a):
         
     situation = EvaluateThisTurn()
     possibleSituations = DB.find(situation)
-    possibleSituations = sortRanking(possibleSituations)
     if len(possibleSituations):
         # we've found situations in the past that is similar to the current situation.
         # let's choose using ranking
+        possibleSituations = sortRanking(possibleSituations)
         possibleSituations, isYomiApplied = applyYomi(possibleSituations)
         
         if isYomiApplied:
@@ -301,18 +306,20 @@ def play(a):
             
             possibleSituations = sortRanking(possibleSituations)
             
-
+        highestRanking = possibleSituations[0]              # highestRanking is a tuple that contains (ranking, situation class)
+        
         # if we are not confident with our plays based on the current situation, we experiment with a new move
         tolerance = 0 #todo: make this a personality
-        if possibleSituations[0][0] < tolerance:            # [0][0] refers to the highest ranking tuple, and returns its rank
-            move = experimentNewMove(possibleSituations)    # pass all the situations found so we can take them into account (basically, remember what we forgot)
+        if highestRanking[0] < tolerance:
+            move = experimentNewMove(possibleSituations)    # pass all the situations found so we can take them into account when experimenting
         else:
-            move = possibleSituations[0][1].move
+            move = highestRanking[1].move
     else:
         # we cannot find a situation in the past.
         # so we experiment a new move
-        if Debug: print ("new situation encountered")
         move = experimentNewMove(None)
+        
+        if Debug: print ("new situation encountered")
     
     return move
 
