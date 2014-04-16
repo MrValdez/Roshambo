@@ -34,14 +34,15 @@ class SituationDB:
     def __init__(self):
         self.reset()
     def reset(self):
-        self.FullSituation      = ""   # holds the player's and enemy's moves
+        self.FullSituation  = ""   # holds the player's and enemy's moves
         self.AISituation    = ""   # just the player's moves
-        self.EnemySituation     = ""   # just the enemy's moves
+        self.EnemySituation = ""   # just the enemy's moves
     def add(self, myMove, enemyMove):
         myMove = str(myMove)
         enemyMove = str(enemyMove)
-        self.FullSituation += myMove + enemyMove
-        self.AISituation += myMove
+        
+        self.FullSituation  += myMove + enemyMove
+        self.AISituation    += myMove
         self.EnemySituation += enemyMove
     def guessMove(self):
         rock = 1 / 3.0
@@ -53,8 +54,8 @@ class SituationDB:
                                memorySource = None)
     def predict(self, currentTurn):
         """
-        returns a move that the AI predicts the enemy will do.
-        todo: this predict should return a list of ranking moves
+        returns a list of memory fragments where we "remember" in our memory the current situation.
+        if we don't have a memory of the current situation, guess.
         """        
         def searchDB(DB):
             """ returns a list of index where we receive a memory hit """
@@ -66,14 +67,12 @@ class SituationDB:
             memoryFragment = DB[-n:]
             
             hits = []
-            found = -1
+            found = dbSize - n
             while True:
-                found = DB.find(memoryFragment, found + 1)
-                if found == -1 or found >= dbSize - n:
+                found = DB.rfind(memoryFragment, 0, found)
+                if found == -1:
                     break
                 hits.append(found)
-                
-            hits.reverse()      # lastest memories goes first
             return hits
         
         def CreatePredictions(DB):
@@ -108,8 +107,8 @@ class SituationDB:
             return [self.guessMove()]
         
         memoryFragments = []
-        memoryFragments.extend(CreatePredictions(self.FullSituation))
-        memoryFragments.extend(CreatePredictions(self.AISituation))
+        #memoryFragments.extend(CreatePredictions(self.FullSituation))
+        #memoryFragments.extend(CreatePredictions(self.AISituation))
         memoryFragments.extend(CreatePredictions(self.EnemySituation))
         
         if len(memoryFragments) == 0:
