@@ -6081,6 +6081,15 @@ void Play_Tournament (Player_Table crosstable[players+1])
             crosstable[i].result[j] += score;
             crosstable[j].result[i] -= score;
         }
+        
+        // YOMI CHANGES
+        if (i >= 1) 
+        {   
+            printf(" (playing the rest of the tournament)\n\n");
+            break;
+        }
+        // YOMI CHANGES
+
     }
 
     for (i = 1; i <= players; i++) {
@@ -6114,8 +6123,8 @@ int main(int argc, char *argv[]) {
 
    if (argc > 2)
        usePython = atoi(argv[2]);
-   if (usePython)
-       printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
+   
+   printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
    ///////////////
    
    int i;
