@@ -1,8 +1,20 @@
 import rps
-Debug = False
 Debug = True
+Debug = False
 
-# todo: add yomi layers to situations
+possible yomi: create the situations at the start of the game where it looks at all the options of the opponent. (game counter analysis)
+inspiration: pokemon gives you an idea on the pokeman list.
+	
+
+    Here is a better example using m, C1, C2, and C3.
+
+    I have my CB Salamence. It's pretty powerful, it KOs a lot of stuff. But you can counter my m, CB Salamence, with your C1, Skarmory. However, I am prepared for this. I have C2, Magneton. However, what if you have a C3, a Dugtrio? I now have the option of using m and predicting Dugtrio or predicting Skarmory and using C2.
+
+    By using m to counter Dugtrio, C3, it is in effect C4, but since it's main function is m, it won't really be considered C4. It's like closing a box by putting each edge over the edge just to the left of it, including the 4th edge over the first one. In this way each edge (or layer) covers (or counters) another one. 
+
+           
+
+# current todo: add yomi layers to situations
 
 # 1. Evaluate current situation.
 #     Situations can exist multiple times but with different moves. 
@@ -41,7 +53,7 @@ class Situation:
 
         #self.enemyRespect          # todo: see onrespect section
         
-        self.nextLayer = None
+        self.nextYomiLayer = []
     def winCondition(self):
         """ Call this function if the AI wins"""
         self.successRate += 1 # todo: Personality.
@@ -56,6 +68,7 @@ class SituationDB:
         self.Database.clear()
     def add(self, situation):
         self.Database.append(situation)
+        #print(len(self.Database))
     def findDuplicate(self, needle):
         """
         Look for an exact duplicate of needle and return the duplicate and True. 
@@ -76,54 +89,110 @@ class SituationDB:
         possibleSituations = []
         
         if Debug:
-            print ("Current situation of the world: %s" % (currentSituation))
+            print ("Current situation of the world:           %s\n" % (currentSituation))
             
         for situation in self.Database:
             situationSize = len(situation.data)
             
             if Debug: print ("Comparing situation in database: (move %i) %s" % (situation.move, situation.data))
-                        
-            # find exact matches
-            if situation.data == currentSituation[-situationSize:]:
-                if Debug: print (" ...exact situation match")
-                
-                rank = 0
-                if situation.successRate > 0:
-                    rank += 100
-                else:
-                    rank += -100
-                result = (rank, situation)
-                possibleSituations.append(result)
-                continue
-
-            if len(currentSituation) == 0 or len(situation.data) == 0:
-                continue
-
-            # find matches where the AI's moves are ignored. 
-            # This is to detect opponents that are following a pattern
-            matchFound = True
-            j = len(situation.data) - 1
             
-            for i in range(len(currentSituation) - 1, len(currentSituation) - len(situation.data), -2):
-                if currentSituation[i] != situation.data[j]:
-                    matchFound = False
-                    break
-                j -= 2
-                
-            if matchFound:
-                if Debug: print (" ...opponent pattern found")
-                
-                rank = 0
-                if situation.successRate > 0:
-                    rank += 100
-                else:
-                    rank += -100
-                result = (rank, situation)
-                possibleSituations.append(result)
-                continue
+            if situation.data.find("?") == -1:
+                if self._findExactMatch(currentSituation, situation.data):
+                    if Debug: print (" ...exact situation match")
                     
-        return possibleSituations
+                    rank = 0
+                    if situation.successRate > 0:
+                        rank += 100
+                    else:
+                        rank += -100
+                    result = (rank, situation)
+                    possibleSituations.append(result)
+                    continue
 
+                if len(currentSituation) == 0 or len(situation.data) == 0:
+                    continue
+
+                if self._findPatternMatch(currentSituation, situation.data):
+                    if Debug: print (" ...opponent pattern found")
+                    
+                    rank = 0
+                    if situation.successRate > 0:
+                        rank += 100
+                    else:
+                        rank += -100
+                    result = (rank, situation)
+                    possibleSituations.append(result)
+                    continue
+            else:
+                # the situation has a wildcard. So we see if we have anything in the database that fits the wildcards
+                if len(currentSituation) == 0:
+                    # when checking with a wildcard, make sure that the situation is not empty (neutral situation)
+                    continue
+                    
+                if self._findWildcardMatch(currentSituation, situation.data):
+                    if Debug: print (" ...exact situation match with wildcard")
+                    
+                    rank = 0
+                    if situation.successRate > 0:
+                        rank += 100
+                    else:
+                        rank += -100
+                    result = (rank, situation)
+                    possibleSituations.append(result)
+                    continue
+
+                if len(situation.data) == 0:
+                    continue
+
+                if self._findPatternMatch(currentSituation, situation.data):
+                    if Debug: print (" ...opponent pattern found with wildcard")
+                    
+                    rank = 0
+                    if situation.successRate > 0:
+                        rank += 100
+                    else:
+                        rank += -100
+                    result = (rank, situation)
+                    possibleSituations.append(result)
+                    continue                    
+        return possibleSituations
+    def _findExactMatch(self, currentSituation, situationData):
+        # find exact matches
+        lenSituationData = len(situationData)
+        if lenSituationData % 2 == 0:
+            # even lengths means its not a counter move
+            if situationData == currentSituation[-lenSituationData:]:
+                return True
+        else:
+            if situationData == currentSituation[-(lenSituationData + 1):-1]:
+                return True
+        return False
+    def _findWildcardMatch(self, currentSituation, situationData):
+        # find exact matches
+        i = 0
+        for s in currentSituation[-len(situationData):]:
+            if situationData[i] != "?" and s != situationData[i]:
+                return False
+            i += 1
+        return True
+    def _findPatternMatch(self, currentSituation, situationData):
+        # find matches where the AI's moves are ignored. 
+        # This is to detect opponents that are following a pattern
+        situationDataSize = len(situationData)
+        currentSituationSize = len(currentSituation)
+        if currentSituationSize < situationDataSize:
+            return False
+        
+        matchFound = True
+        j = situationDataSize - 1
+        for i in range(currentSituationSize - 1, currentSituationSize - situationDataSize, -2):
+            if currentSituation[i] != situationData[j]:
+                matchFound = False
+                break
+            j -= 2
+            
+        return matchFound
+        
 class GameHistory:
     def __init__(self):
         #self.history = []
@@ -166,25 +235,27 @@ def saveSituationLastTurn():
     if isDuplicate == False:
         DB.add(situationLastTurn)
         if Debug: print ("Saved last turn situation into database: %s (move %i)" % (situationLastTurn.data, situationLastTurn.move))
+        createYomiLayers(situationLastTurn)
     
     # create situation from opponent's POV (same sequence as above except we also increase its counter rate
     situationOpponentPOV = Situation(enemyMove, perceptionLastTurn)
-    situationLastTurn, isDuplicate = DB.findDuplicate(situationOpponentPOV)
+    situationOpponentPOV, isDuplicate = DB.findDuplicate(situationOpponentPOV)
  
     if checkWinner(enemyMove, myMove):
         situationOpponentPOV.winCondition()
         # the opponent won with this move, so we increase the next layer's counter potential 
         # (we are anticipating that the enemy will use this again)
-        #situationOpponentPOV.counterPotential += 20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
+        situationOpponentPOV.counterPotential += 20 # todo: turn this into a personality variable: respect. todo: mark this as something to train against
     else:
         situationOpponentPOV.loseCondition()   #todo: is it a good idea to have ties as a losing condition?        
         # the opponent lost with this move, so we decrease the next layer's counter potential 
         # (we are anticipating that the enemy will not use this again)
-        #situationOpponentPOV.counterPotential += -20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
- 
+        situationOpponentPOV.counterPotential += -20 # todo: turn this into a personality variable: disrespect. todo: mark this as something to train against
+     
     if isDuplicate == False:    
         DB.add(situationOpponentPOV)
         if Debug: print ("Saved last turn situation from opponent's point of view: %s (move %i)" % (situationOpponentPOV.data, situationOpponentPOV.move))
+        createYomiLayers(situationOpponentPOV)
             
 def RemoveNoiseInSituation(situationData):
     """ This function removes the noise in the situation. This is dependent on the AI's personality as well as the game.
@@ -194,6 +265,7 @@ def RemoveNoiseInSituation(situationData):
     # we are only looking at the last 5 turns. Multiplied by 2 to include both the player's and the enemy's moves.
     # todo: make this into a personality
     turns = 5 * 2
+    turns = 2 * 2
     situationData = situationData[-turns:]
 
     return situationData
@@ -232,16 +304,45 @@ def sortRanking(RankingList):
     if len(RankingList) == 0:
         return RankingList
         
-    RankingList.sort(key = lambda x: len(x[1].data), reverse=True)     # sort by length of situation (secondary key)
     RankingList.sort(key = lambda x: x[0], reverse=True)     # sort by ranking (primary key)
     
     if Debug: 
-        print ("\nRank  Move Situation")
+        print ("\nRank  Move Win Counter Situation")
         for foundSituation in RankingList:
             rank, situation = foundSituation
-            print ("%s: %s %s" % (str(rank).ljust(4), str(situation.move).ljust(4), situation.data))
+            rank = str(rank).rjust(4)
+            move = str(situation.move).rjust(2) + " "
+            win = str(situation.successRate).rjust(3) + " "
+            counter = str(situation.counterPotential).rjust(6) + " "
+            print ("%s: %s %s %s %s" % (rank, move, win, counter, situation.data))
     
     return RankingList
+
+def findCounter(move):
+    return (move + 1) % 3
+
+def createYomiLayers(yomi0):
+    def createOneLayer(situation, layerNumber):
+        newSituationData = situation.data + str(situation.move)     # The new situation is that there is a prediction from the opponent that we are playing the situation in our database.
+        nextYomiLayer = Situation(findCounter(situation.move), newSituationData)
+
+        nextYomiLayer, isDuplicate = DB.findDuplicate(nextYomiLayer)
+        
+        if isDuplicate == False:    
+            # add the new yomi prediction if it doesn't exist
+            situation.nextYomiLayer.append(nextYomiLayer)
+            DB.add(nextYomiLayer)
+            if Debug: print ("Saved yomi layer %i: %s (move %i)" % (layerNumber, nextYomiLayer.data, nextYomiLayer.move))
+        return nextYomiLayer
+
+    yomi1 = createOneLayer(yomi0, 1)
+    yomi2 = createOneLayer(yomi1, 2)
+    yomi3 = createOneLayer(yomi2, 3)
+    yomi3.nextYomiLayer.append(yomi0)
+    
+    yomi1.counterPotential += -20 #todo personality
+    yomi2.counterPotential += -10 #todo personality
+    yomi3.counterPotential += -0 #todo personality
 
 def applyYomi(possibleSituations):
     """
@@ -251,6 +352,16 @@ def applyYomi(possibleSituations):
     Returns (list of possibleSituations, True if yomi is applied).
     """
     isYomiApplied = False
+    
+    for rank, situation in possibleSituations:
+        tolerance = 0   # tolerance refers to how likely the AI is going to use a counter. todo: should be a personality
+        if situation.counterPotential > tolerance:
+            if Debug: print("Apply yomi layer %i to situation %s. New move is %i" % (-1, situation.data, (situation.move + 1) % 3))
+            nextYomiLayer = situation.nextYomiLayer[0]
+            newRank = 1000 # todo: modified by personality
+            possibleSituations.append((newRank, nextYomiLayer))
+            isYomiApplied = True
+        
     return possibleSituations, isYomiApplied
 
 # global variables
