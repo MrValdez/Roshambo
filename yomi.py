@@ -2,7 +2,9 @@ import rps
 Debug = True
 Debug = False
 
+# todo: values to experiment on:
 MemorySize = 4
+MemoryFragmentLimit = 3         # how many memories we need to remember
 
 class MemorySource:
     """
@@ -60,6 +62,8 @@ class SituationDB:
         def searchDB(DB):
             """ returns a list of index where we receive a memory hit """
             # get the last n turns where n is our memory size
+            global MemorySize, MemoryFragmentLimit
+            
             n = MemorySize
             dbSize = len(DB)
             if n > dbSize:
@@ -73,6 +77,8 @@ class SituationDB:
                 if found == -1:
                     break
                 hits.append(found)
+                if len(hits) >= MemoryFragmentLimit:
+                    break
             return hits
         
         def CreatePredictions(DB):
