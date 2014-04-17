@@ -6,6 +6,22 @@ Debug = False
 MemorySize = 4
 MemoryFragmentLimit = 3         # how many memories we need to remember
 
+def checkWinner(p1, p2):
+    """
+    Returns True if p1 wins.
+    Returns False if p2 wins.
+    Returns None if its a tie
+    """
+    if p1 == p2:
+        return None
+        
+    if (p1 == 0 and p2 == 2) or \
+       (p1 == 1 and p2 == 0) or \
+       (p1 == 2 and p2 == 1):
+       return True
+       
+    return False
+
 class MemorySource:
     """
     This class contains a set of boolean that declares where a memory was found
@@ -121,23 +137,110 @@ class SituationDB:
             return [self.guessMove()]
             
         return memoryFragments
+
+class Yomi():
+    def __init__(self):
+        self.reset()
         
-def applyYomi(memoryFragments):
-    finalMove = 0
-    for memory in memoryFragments:
-        move = memory.prediction
-        yomiLayer1 = (move + 1) % 3
-        yomiLayer2 = (move + 2) % 3
-        yomiLayer3 = (move + 3) % 3
-        finalMove = yomiLayer1
-    return finalMove
-                
+    def reset(self):
+        self.enemyYomiTendencies = [0, 0, 0, 0]         # Prefered move, first yomi layer, second yomi layer, third yomi layer
+        
+        # These are data from the last turn
+        self.prevPredictedEnemyMove = 0                 # This holds the move we've predicted the enemy will use
+        self.prevYomiLayer = 0                          # This holds the layer we used
+        
+        
+    def update(self, myMoveLastTurn, enemyMoveLastTurn):
+         # decay the yomi layers
+         for i in range(4):
+            self.enemyYomiTendencies[i] -= 0.1
+            
+         def updateEnemyYomiTendencies(layer, positiveModification = 1, negativeModification = 1):
+            if Debug: print("layer used: ", layer)
+            for i in range(4):
+                if i == layer:
+                    self.enemyYomiTendencies[i] += positiveModification
+                else:
+                    self.enemyYomiTendencies[i] -= negativeModification
+                    
+         if self.prevPredictedEnemyMove == enemyMoveLastTurn:   # enemy used their prefered move (layer 0)
+            if checkWinner(enemyMoveLastTurn, myMoveLastTurn):
+                updateEnemyYomiTendencies(3)                    # the enemy won, so they used layer 3 (a high risk move). Remember, layer 3 = layer 0
+            else:
+                updateEnemyYomiTendencies(0)
+                  
+         if self._getYomiLayerMove(self.prevPredictedEnemyMove, 1) == enemyMoveLastTurn:
+            updateEnemyYomiTendencies(1)
+         if self._getYomiLayerMove(self.prevPredictedEnemyMove, 2) == enemyMoveLastTurn:
+            updateEnemyYomiTendencies(2)
+         if Debug: print (self.prevPredictedEnemyMove, enemyMoveLastTurn)
+            
+    def _chooseEnemyYomiLayer(self):
+        expectedEnemyYomiLayer = None
+        
+        def isHighestTendencyLayer(index):
+            result = False
+            for i, val in enumerate(self.enemyYomiTendencies):
+                if i != index: continue
+                result = result and self.enemyYomiTendencies[index] > val
+            return result
+        
+        # check for highest tendencies
+        if isHighestTendencyLayer(0):
+            expectedEnemyYomiLayer = 0
+        elif isHighestTendencyLayer(1):
+            expectedEnemyYomiLayer = 1
+        elif isHighestTendencyLayer(2):
+            expectedEnemyYomiLayer = 2
+        elif isHighestTendencyLayer(3):
+            expectedEnemyYomiLayer = 3
+        else:
+            # multiple yomi layers has the same value. Let's choose randomly between them.
+            maxValue = max(self.enemyYomiTendencies)
+            count = self.enemyYomiTendencies.count(maxValue)
+            choice = rps.random() % count
+            
+            for i, val in enumerate(self.enemyYomiTendencies):
+                if val == maxValue:
+                    if choice == 0:
+                        expectedEnemyYomiLayer = i
+                        
+                        break
+                    choice -= 1            
+            
+        if expectedEnemyYomiLayer == None: #shouldn't happen
+            return 0      # default. We can't read the enemy's current yomi, so let's play safe and use layer 0
+        
+        return expectedEnemyYomiLayer + 1   # play at a higher layer. todo: we don't always want to do this.
+            
+    def _getYomiLayerMove(self, move, layer):
+        # returns the move at yomi layer
+        return (move + (layer)) % 3
+        
+    def applyYomi(self, memoryFragments):
+        enemyMove = 0
+        # select the move that we think the opponent favors
+        enemyMove = memoryFragments[0].prediction
+        self.prevPredictedEnemyMove = enemyMove
+        
+        # check if we should use yomi on the current prediction
+        enemyLayer = self._chooseEnemyYomiLayer()
+        if Debug: 
+            print(self.enemyYomiTendencies)
+            print("playing with yomi ", enemyLayer) 
+            input()
+        enemyMove = self._getYomiLayerMove(enemyMove, enemyLayer)
+        
+        return enemyMove
+
+yomi = Yomi()                
 situationDB = SituationDB()
 def init():
     situationDB.reset()
     
 def play(a):
     global situationDB
+    global enemyPersonality, playerPersonality
     currentTurn = rps.getTurn()
     
     if currentTurn == 0:
@@ -147,9 +250,11 @@ def play(a):
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         situationDB.add(myMoveLastTurn, enemyMoveLastTurn)
-
+        
+        yomi.update(myMoveLastTurn, enemyMoveLastTurn)
+        
     memoryFragments = situationDB.predict(currentTurn)
-    move = applyYomi(memoryFragments)
+    move = yomi.applyYomi(memoryFragments)
     
     return move
 
