@@ -70,6 +70,7 @@ rps_getTurn(PyObject *self, PyObject *args)
 }
 
 extern int biased_roshambo (double prob_rock, double prob_paper);
+extern long random ();
 
 static PyObject *
 rps_biased_roshambo(PyObject *self, PyObject *args)
@@ -93,11 +94,18 @@ rps_biased_roshambo(PyObject *self, PyObject *args)
     return PyLong_FromLong(result);
 }
 
+static PyObject *
+rps_random ()
+{
+    return PyLong_FromLong(random());
+}
+
 static PyMethodDef rpsMethods[] = {
     {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1."},
     {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1."},
     {"getTurn",  rps_getTurn, METH_VARARGS, "Returns current turn."},
     {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
+    {"random",  rps_random, METH_VARARGS, "Returns 0 to [maxrandom]."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
