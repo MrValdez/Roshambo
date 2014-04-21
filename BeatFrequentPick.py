@@ -12,6 +12,7 @@ paperProb   = 0.0
 targetRock  = 0.0
 targetPaper = 0.0
 
+Debug = True
 Debug = False
 
 def play(targetTurn):
@@ -19,7 +20,7 @@ def play(targetTurn):
     global denominator
     global rockProb, paperProb, targetRock, targetPaper
 
-    currentTurn = rps.myHistory(0)
+    currentTurn = rps.getTurn()
     if (currentTurn == 0):
         #initialize
         statR = 0
@@ -77,7 +78,7 @@ def play(targetTurn):
         print("statP, targetPaper: %i %f" % (statP, targetPaper));
         print("currentTurn, denominator: %i %i" % (currentTurn, denominator))
         print("thisTurnRockProb, thisTurnPaperProb: %f %f\n" % (thisTurnRockProb, thisTurnPaperProb))
-        #input()
+        input()
         
     denominator -= 1
     return (biased_roshambo (thisTurnRockProb, thisTurnPaperProb) + 1) % 3

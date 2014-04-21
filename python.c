@@ -37,13 +37,13 @@ int getHistory(int history, PyObject *args)
         return 0;	
 
     if (index == 0)                     // returns -1. getTurn() should be used to get current turn
-        return PyLong_FromLong(-1);
+        return PyLong_FromLong(-1);     // todo: raise errors
         
     if (index > my_history[0])          // returns -1. cannot get the history from the future (can also contain garbage)
-        return PyLong_FromLong(-1);
+        return PyLong_FromLong(-1);     // todo: raise errors
 
     if (index < 0)                      // returns -1.
-        return PyLong_FromLong(-1);
+        return PyLong_FromLong(-1);     // todo: raise errors
 
     if (history == MYHISTORY)
         return PyLong_FromLong(my_history[index]);
