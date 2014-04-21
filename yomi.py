@@ -1,6 +1,7 @@
+import BeatFrequentPick
 import rps
-Debug = False
 Debug = True
+Debug = False
 
 # todo: values to experiment on:
 MemorySize = 4
@@ -22,31 +23,19 @@ def checkWinner(p1, p2):
        
     return False
 
-class MemorySource:
-    """
-    This class contains a set of boolean that declares where a memory was found
-    """
-    def __init__(self, FullSituation = False, AISituation = False, EnemySituation = False):
-        self.FullSituation   = FullSituation
-        self.AISituation = AISituation 
-        self.EnemySituation  = EnemySituation
-        
-        if not (FullSituation or AISituation or EnemySituation):
-            raise "Memory fragment incomplete"
-
 class MemoryFragment:
     """ 
     This is a struct that holds the data for a memory fragment.
     prediction is our prediction on what will happen in the future as our memory tells us
     memoryPosition holds where in memory the fragment can be found
-    a set of boolean that declares where a specific memory was found
+    confidence tells how confident we are with the memory
     """
-    def __init__(self, prediction, memoryPosition, memorySource):
+    def __init__(self, prediction, memoryPosition, confidence):
         if type(prediction) == str:
             raise 'prediction should be type int'
         self.prediction      = prediction
         self.memoryPosition  = memoryPosition
-        self.memorySource    = memorySource
+        self.confidence      = confidence
 
 class SituationDB:
     def __init__(self):
@@ -66,10 +55,11 @@ class SituationDB:
         rock = 1 / 3.0
         paper = 1 / 3.0
         guess = rps.biased_roshambo (rock, paper)       # choose one at random
+        confidence = 0  #todo: personality
         
         return MemoryFragment(prediction = guess,
                                memoryPosition = None,
-                               memorySource = None)
+                               confidence = confidence)
     def predict(self, currentTurn):
         """
         returns a list of memory fragments where we "remember" in our memory the current situation.
@@ -108,19 +98,21 @@ class SituationDB:
                     else:
                         offset = 1
                     
+                    # todo: confidence should depend on a heuristics
+                    confidence = 0
                     if DB == self.FullSituation:
-                        memorySource = MemorySource(FullSituation = True)
+                        confidence = 100
                     elif DB == self.EnemySituation:
-                        memorySource = MemorySource(EnemySituation = True)
+                        confidence = 80
                     elif DB == self.AISituation:
-                        memorySource = MemorySource(AISituation = True)
+                        confidence = 80
                         
                     predictMove = DB[hit + offset]
                     predictMove = int(predictMove)
 
                     memory = MemoryFragment(prediction = predictMove,
                                             memoryPosition = hit,
-                                            memorySource = memorySource)
+                                            confidence = confidence)
                     predictions.append(memory)
         
             return predictions
@@ -242,6 +234,22 @@ class Yomi():
         
         return enemyMove
 
+def predict(a):
+    """ returns a list of memoryFragments that we think the opponet will choose """
+
+    currentTurn = rps.getTurn()
+    memoryFragments = situationDB.predict(currentTurn)
+    
+    bfpMove = BeatFrequentPick.play(a)
+    bfpFragment = MemoryFragment(prediction = bfpMove,
+                                 memoryPosition = None,
+                                 confidence = 100)
+
+    memoryFragments.append(bfpFragment)
+    memoryFragments.sort(key = lambda x : x.confidence, reverse = True)
+    return memoryFragments
+    
+
 yomi = Yomi()                
 situationDB = SituationDB()
 def init():
@@ -249,6 +257,7 @@ def init():
     yomi.reset()
     
 def play(a):
+#    return BeatFrequentPick.play(a)
     global situationDB
     global enemyPersonality, playerPersonality
     currentTurn = rps.getTurn()
@@ -263,7 +272,7 @@ def play(a):
         
         yomi.update(myMoveLastTurn, enemyMoveLastTurn)
         
-    memoryFragments = situationDB.predict(currentTurn)
+    memoryFragments = predict(a)
     move = yomi.applyYomi(memoryFragments)
     
     return move
