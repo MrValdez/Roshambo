@@ -140,6 +140,7 @@ class Yomi():
         # These are data from the last turn
         self.prevPredictedEnemyMove = 0                 # This holds the move we've predicted the enemy will use
         self.prevPredictedEnemyYomiLayer = 0 
+        self.prevAIYomiLayer = 0
         
     def update(self, myMoveLastTurn, enemyMoveLastTurn):
          # decay the yomi layers
@@ -147,7 +148,7 @@ class Yomi():
          #   self.enemyYomiTendencies[i] -= 0.1
             
          def updateEnemyYomiTendencies(layer, positiveModification = 1, negativeModification = -1):
-            if Debug: print("updating enemy's layer from lsat turn: ", layer)
+            if Debug: print("updating enemy's layer from last turn: ", layer)
             for i in range(len(self.enemyYomiTendencies)):
                 if i == layer:
                     self.enemyYomiTendencies[i] += positiveModification
@@ -168,15 +169,16 @@ class Yomi():
                     if layer < 0:
                         layer = len(self.enemyYomiTendencies) - 1
          
-         currentEnemyLayer = findMoveYomiLayer(enemyMoveLastTurn, self.prevPredictedEnemyMove, self.prevPredictedEnemyYomiLayer)
          if myMoveLastTurn == enemyMoveLastTurn:
             # its a tie
-            updateEnemyYomiTendencies(currentEnemyLayer, positiveModification = -0.5, negativeModification = -0.5)   #todo: personality
+            updateEnemyYomiTendencies(self.prevAIYomiLayer, positiveModification = -0.5, negativeModification = 0)   #todo: personality
          else:
+            currentEnemyLayer = findMoveYomiLayer(enemyMoveLastTurn, self.prevPredictedEnemyMove, self.prevPredictedEnemyYomiLayer)
+            #AIwins = checkWinner(myMoveLastTurn, enemyMoveLastTurn)
+            #if AIWins:
+            #else:
             updateEnemyYomiTendencies(currentEnemyLayer)   #todo: personality
-            
-            
-         if Debug: print (self.prevPredictedEnemyMove, enemyMoveLastTurn)
+
             
     def _chooseEnemyYomiLayer(self):
         expectedEnemyYomiLayer = None
@@ -210,9 +212,10 @@ class Yomi():
         
         self.prevPredictedEnemyYomiLayer = expectedEnemyYomiLayer
         
-        expectedEnemyYomiLayer = (expectedEnemyYomiLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.
+        AIYomiLayer = (expectedEnemyYomiLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.
+        self.prevAIYomiLayer = AIYomiLayer
         
-        return expectedEnemyYomiLayer
+        return AIYomiLayer
             
     def _getYomiLayerMove(self, move, layer):
         # returns the move at yomi layer
@@ -223,6 +226,7 @@ class Yomi():
         # select the move that we think the opponent favors
         enemyMove = memoryFragments[0].prediction
         self.prevPredictedEnemyMove = enemyMove
+        if Debug: print("predicting that enemy will use", enemyMove)
         
         # check if we should use yomi on the current prediction
         enemyLayer = self._chooseEnemyYomiLayer()
@@ -261,6 +265,8 @@ def play(a):
     global situationDB
     global enemyPersonality, playerPersonality
     currentTurn = rps.getTurn()
+    
+    if Debug: print("\n")
     
     if currentTurn == 0:
         init()
