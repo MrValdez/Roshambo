@@ -6144,10 +6144,14 @@ int main(int argc, char *argv[]) {
       /* Print_Match_Results (crosstable); */
    }
 
-   g_drawn = 50.6 / sqrt(tourneys);
-   printf(" Final results (draw value = %d):\n", g_drawn);
-   Print_Scaled_Results (crosstable);
-   Print_Match_Results (crosstable);
+   if (0)   // during development, we are not interested in our standing
+   {
+       g_drawn = 50.6 / sqrt(tourneys);
+       printf(" Final results (draw value = %d):\n", g_drawn);
+       
+       Print_Scaled_Results (crosstable);   
+       Print_Match_Results (crosstable);
+   }
    /* add one for luck (compare to last iteration)
    g_drawn++;
    Print_Match_Results (crosstable);
