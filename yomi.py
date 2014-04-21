@@ -1,6 +1,6 @@
 import rps
-Debug = True
 Debug = False
+Debug = True
 
 # todo: values to experiment on:
 MemorySize = 4
@@ -143,57 +143,61 @@ class Yomi():
         self.reset()
         
     def reset(self):
-        self.enemyYomiTendencies = [0, 0, 0, 0]         # Prefered move, first yomi layer, second yomi layer, third yomi layer
+        self.enemyYomiTendencies = [0, 0, 0]            # Prefered move, first yomi layer, second yomi layer, 
         
         # These are data from the last turn
         self.prevPredictedEnemyMove = 0                 # This holds the move we've predicted the enemy will use
-        self.prevYomiLayer = 0                          # This holds the layer we used
-        
+        self.prevPredictedEnemyYomiLayer = 0 
         
     def update(self, myMoveLastTurn, enemyMoveLastTurn):
          # decay the yomi layers
-         for i in range(4):
-            self.enemyYomiTendencies[i] -= 0.1
+         #for i in range(len(self.enemyYomiTendencies)):
+         #   self.enemyYomiTendencies[i] -= 0.1
             
-         def updateEnemyYomiTendencies(layer, positiveModification = 1, negativeModification = 1):
-            if Debug: print("layer used: ", layer)
-            for i in range(4):
+         def updateEnemyYomiTendencies(layer, positiveModification = 1, negativeModification = -1):
+            if Debug: print("updating enemy's layer from lsat turn: ", layer)
+            for i in range(len(self.enemyYomiTendencies)):
                 if i == layer:
                     self.enemyYomiTendencies[i] += positiveModification
                 else:
-                    self.enemyYomiTendencies[i] -= negativeModification
-                    
-         if self.prevPredictedEnemyMove == enemyMoveLastTurn:   # enemy used their prefered move (layer 0)
-            if checkWinner(enemyMoveLastTurn, myMoveLastTurn):
-                updateEnemyYomiTendencies(3)                    # the enemy won, so they used layer 3 (a high risk move). Remember, layer 3 = layer 0
-            else:
-                updateEnemyYomiTendencies(0)
-                  
-         if self._getYomiLayerMove(self.prevPredictedEnemyMove, 1) == enemyMoveLastTurn:
-            updateEnemyYomiTendencies(1)
-         if self._getYomiLayerMove(self.prevPredictedEnemyMove, 2) == enemyMoveLastTurn:
-            updateEnemyYomiTendencies(2)
+                    self.enemyYomiTendencies[i] += negativeModification            
+         
+         def findMoveYomiLayer(move, predictedMove, predictedLayer):
+            """ returns the layer that move can be found based on the move we predicted will be used """
+            layer = predictedLayer
+            while True:
+                if move == predictedMove:
+                    return layer
+                move -= 2
+                if move < 0:
+                    move += 3
+                    move = move % 3
+                    layer -= 1
+                    if layer < 0:
+                        layer = len(self.enemyYomiTendencies) - 1
+         
+         currentEnemyLayer = findMoveYomiLayer(enemyMoveLastTurn, self.prevPredictedEnemyMove, self.prevPredictedEnemyYomiLayer)
+         if myMoveLastTurn == enemyMoveLastTurn:
+            # its a tie
+            updateEnemyYomiTendencies(currentEnemyLayer, positiveModification = -0.5, negativeModification = -0.5)   #todo: personality
+         else:
+            updateEnemyYomiTendencies(currentEnemyLayer)   #todo: personality
+            
+            
          if Debug: print (self.prevPredictedEnemyMove, enemyMoveLastTurn)
             
     def _chooseEnemyYomiLayer(self):
         expectedEnemyYomiLayer = None
         
-        def isHighestTendencyLayer(index):
-            result = False
-            for i, val in enumerate(self.enemyYomiTendencies):
-                if i != index: continue
-                result = result and self.enemyYomiTendencies[index] > val
-            return result
-        
         # check for highest tendencies
-        if isHighestTendencyLayer(0):
-            expectedEnemyYomiLayer = 0
-        elif isHighestTendencyLayer(1):
-            expectedEnemyYomiLayer = 1
-        elif isHighestTendencyLayer(2):
-            expectedEnemyYomiLayer = 2
-        elif isHighestTendencyLayer(3):
-            expectedEnemyYomiLayer = 3
+        maxValue = max(self.enemyYomiTendencies)
+        count = self.enemyYomiTendencies.count(maxValue)
+
+        if count == 1:
+            # one yomi layer has the highest tendency. Get that layer
+            for i, val in enumerate(self.enemyYomiTendencies):
+                if maxValue == val:
+                    expectedEnemyYomiLayer = i
         else:
             # multiple yomi layers has the same value. Let's choose randomly between them.
             maxValue = max(self.enemyYomiTendencies)
@@ -207,15 +211,20 @@ class Yomi():
                         
                         break
                     choice -= 1            
+            if Debug: print ("Choosing at random. \nenemy's predicted layer: ", expectedEnemyYomiLayer)
             
         if expectedEnemyYomiLayer == None: #shouldn't happen
-            return 0      # default. We can't read the enemy's current yomi, so let's play safe and use layer 0
+            return 0      # default. We can't read the enemy's current yomi, so let's play safe and use layer 0 (todo: should use personal favorite)
         
-        return expectedEnemyYomiLayer + 1   # play at a higher layer. todo: we don't always want to do this.
+        self.prevPredictedEnemyYomiLayer = expectedEnemyYomiLayer
+        
+        expectedEnemyYomiLayer = (expectedEnemyYomiLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.
+        
+        return expectedEnemyYomiLayer
             
     def _getYomiLayerMove(self, move, layer):
         # returns the move at yomi layer
-        return (move + (layer)) % 3
+        return (move + (layer + 1)) % 3
         
     def applyYomi(self, memoryFragments):
         enemyMove = 0
@@ -237,6 +246,7 @@ yomi = Yomi()
 situationDB = SituationDB()
 def init():
     situationDB.reset()
+    yomi.reset()
     
 def play(a):
     global situationDB
@@ -277,7 +287,7 @@ def isVerbose():
     """If True is returned, print the result of each trial."""
     global Debug
     return Debug
-    
+        
 def BeatFrequentPickAI(a):
     import BeatFrequentPick
     return BeatFrequentPick.play(a)
