@@ -47,7 +47,7 @@ int verbose2 = 0;          /* print match histories */
 int verbose3 = 1;          /* print result of each match */
 
 // My Changes
-#define players   29         /* number of players in the tournament */
+#define players   23         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 int usePython = 1;
 
@@ -5591,6 +5591,13 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i = 0;  /* list of players in the tournament */
     strcpy(crosstable[i].name, "Player Name");
 
+    i++;  /* YOMI AI */
+    strcpy(crosstable[i].name, "Yomi AI");
+    if (usePython)
+        crosstable[i].pname = python;
+    else
+        crosstable[i].pname = yomi;
+
 #ifdef Comment_Block
     i++;  /* choose uniformly at random */
     strcpy(crosstable[i].name, "Random (Optimal)");
@@ -5599,14 +5606,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
 
-#endif /* end of Comment_Block -- be sure to change the #define players value */
-
-    i++;  /* YOMI AI */
-    strcpy(crosstable[i].name, "Yomi AI");
-    if (usePython)
-        crosstable[i].pname = python;
-    else
-        crosstable[i].pname = yomi;
     
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
@@ -5623,8 +5622,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Beat The Last Move");
     crosstable[i].pname = copybot;
 
-
-
     i++;  /* beat the most frequent opponent choice */
     strcpy(crosstable[i].name, "Beat Frequent Pick");
     crosstable[i].pname = freqbot2;
@@ -5632,6 +5629,7 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");
     crosstable[i].pname = switchbot;
+#endif /* end of Comment_Block -- be sure to change the #define players value */
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* choose according to the digits of Pi */
