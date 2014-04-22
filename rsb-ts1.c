@@ -45,6 +45,7 @@
 int verbose1 = 1;          /* print result of each trial */
 int verbose2 = 0;          /* print match histories */
 int verbose3 = 1;          /* print result of each match */
+int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
 #define players   23         /* number of players in the tournament */
@@ -5604,23 +5605,23 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     crosstable[i].pname = randbot;
 #endif 
 
-#ifdef Comment_Block  /* use these to comment out a block of players */
 
-    
+#ifdef Comment_Block  /* use these to comment out a block of players */    
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
     crosstable[i].pname = rotatebot;
+
     i++;  /* nuthin' beats rock */
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
 
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
-
     i++;  /* beat opponent's last move */
     strcpy(crosstable[i].name, "Beat The Last Move");
     crosstable[i].pname = copybot;
+
+    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
+    strcpy(crosstable[i].name, "R-P-S 20-20-60");
+    crosstable[i].pname = r226bot;
 
     i++;  /* beat the most frequent opponent choice */
     strcpy(crosstable[i].name, "Beat Frequent Pick");
@@ -6081,7 +6082,7 @@ void Play_Tournament (Player_Table crosstable[players+1])
         }
         
         // YOMI CHANGES
-        if (i >= 1) 
+        if (verbose4 == 0 && i >= 1) 
         {   
             printf(" (playing the rest of the tournament)\n\n");
             break;
@@ -6114,6 +6115,8 @@ int main(int argc, char *argv[]) {
    if (verbose1 == -1)
        return 1;
        
+   verbose4 = 0;// during development, we are not interested in our standing   
+   
    yomiVariable1 = atoi(argv[1]);
    if (yomiVariable1 == 0)
        yomiVariable1 = 1;
@@ -6144,14 +6147,14 @@ int main(int argc, char *argv[]) {
       /* Print_Match_Results (crosstable); */
    }
 
-   if (0)   // during development, we are not interested in our standing
+   if (verbose4)
    {
        g_drawn = 50.6 / sqrt(tourneys);
        printf(" Final results (draw value = %d):\n", g_drawn);
        
        Print_Scaled_Results (crosstable);   
        Print_Match_Results (crosstable);
-   }
+    }
    /* add one for luck (compare to last iteration)
    g_drawn++;
    Print_Match_Results (crosstable);
