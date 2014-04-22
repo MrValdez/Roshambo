@@ -156,22 +156,19 @@ class Yomi():
                     self.enemyYomiTendencies[i] += negativeModification            
          
          def findMoveYomiLayer(move, predictedMove, predictedLayer):
-            """ returns the layer that move can be found based on the move we predicted will be used """
-            layer = predictedLayer
+            """ returns the layer that a move can be found based on what our predicted move is """
+            layer = 0
             while True:
                 if move == predictedMove:
                     return layer
-                move -= 2
-                if move < 0:
-                    move += 3
-                    move = move % 3
-                    layer -= 1
-                    if layer < 0:
-                        layer = len(self.enemyYomiTendencies) - 1
+                move = (move + 2) % 3
+                layer += 1
+                if layer > len(self.enemyYomiTendencies):
+                    layer = layer = 0
          
          if myMoveLastTurn == enemyMoveLastTurn:
             # its a tie
-            updateEnemyYomiTendencies(self.prevAIYomiLayer, positiveModification = -0.5, negativeModification = 0)   #todo: personality
+            updateEnemyYomiTendencies(self.prevAIYomiLayer, positiveModification = +0.5, negativeModification = 0)   #todo: personality
          else:
             currentEnemyLayer = findMoveYomiLayer(enemyMoveLastTurn, self.prevPredictedEnemyMove, self.prevPredictedEnemyYomiLayer)
             #AIwins = checkWinner(myMoveLastTurn, enemyMoveLastTurn)
@@ -205,36 +202,36 @@ class Yomi():
                         
                         break
                     choice -= 1            
-            if Debug: print ("Choosing at random. \nenemy's predicted layer: ", expectedEnemyYomiLayer)
+            if Debug: print ("Choosing at random. Guesing enemy's predicted layer: ", expectedEnemyYomiLayer)
             
         if expectedEnemyYomiLayer == None: #shouldn't happen
             return 0      # default. We can't read the enemy's current yomi, so let's play safe and use layer 0 (todo: should use personal favorite)
         
         self.prevPredictedEnemyYomiLayer = expectedEnemyYomiLayer
         
-        AIYomiLayer = (expectedEnemyYomiLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.
-        self.prevAIYomiLayer = AIYomiLayer
-        
-        return AIYomiLayer
+        return expectedEnemyYomiLayer
             
     def _getYomiLayerMove(self, move, layer):
         # returns the move at yomi layer
-        return (move + (layer + 1)) % 3
+        return (move + layer) % 3
         
     def applyYomi(self, memoryFragments):
         enemyMove = 0
         # select the move that we think the opponent favors
         enemyMove = memoryFragments[0].prediction
         self.prevPredictedEnemyMove = enemyMove
-        if Debug: print("predicting that enemy will use", enemyMove)
+        if Debug: print("predicting that enemy will use move ", enemyMove)
         
         # check if we should use yomi on the current prediction
         enemyLayer = self._chooseEnemyYomiLayer()
         if Debug: 
             print(self.enemyYomiTendencies)
-            print("playing with yomi ", enemyLayer) 
+            print("predicting that the enemy will use layer ", enemyLayer) 
             input()
-        enemyMove = self._getYomiLayerMove(enemyMove, enemyLayer)
+        
+        AIYomiLayer = (enemyLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.      
+        self.prevAIYomiLayer = AIYomiLayer
+        enemyMove = self._getYomiLayerMove(enemyMove, AIYomiLayer)
         
         return enemyMove
 
@@ -244,7 +241,7 @@ def predict(a):
     currentTurn = rps.getTurn()
     memoryFragments = situationDB.predict(currentTurn)
     
-    bfpMove = BeatFrequentPick.play(a)
+    bfpMove = BeatFrequentPick.BFP(a)
     bfpFragment = MemoryFragment(prediction = bfpMove,
                                  memoryPosition = None,
                                  confidence = 100)
