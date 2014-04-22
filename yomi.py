@@ -167,8 +167,8 @@ class Yomi():
                     layer = layer = 0
          
          if myMoveLastTurn == enemyMoveLastTurn:
-            # its a tie
-            updateEnemyYomiTendencies(self.prevAIYomiLayer, positiveModification = +0.5, negativeModification = 0)   #todo: personality
+            # its a tie. so we suspect that the enemy just used the same layer as us.
+            updateEnemyYomiTendencies(self.prevAIYomiLayer, positiveModification = 1, negativeModification = -1)   #todo: personality
          else:
             currentEnemyLayer = findMoveYomiLayer(enemyMoveLastTurn, self.prevPredictedEnemyMove, self.prevPredictedEnemyYomiLayer)
             #AIwins = checkWinner(myMoveLastTurn, enemyMoveLastTurn)
@@ -231,9 +231,10 @@ class Yomi():
         
         AIYomiLayer = (enemyLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.      
         self.prevAIYomiLayer = AIYomiLayer
-        enemyMove = self._getYomiLayerMove(enemyMove, AIYomiLayer)
+        move = self._getYomiLayerMove(enemyMove, AIYomiLayer)
+        if Debug: print("Our chosen move to play is ", move)
         
-        return enemyMove
+        return move
 
 def predict(a):
     """ returns a list of memoryFragments that we think the opponet will choose """
@@ -258,7 +259,7 @@ def init():
     yomi.reset()
     
 def play(a):
-#    return BeatFrequentPick.play(a)
+    #return BeatFrequentPick.play(a)
     global situationDB
     global enemyPersonality, playerPersonality
     currentTurn = rps.getTurn()
