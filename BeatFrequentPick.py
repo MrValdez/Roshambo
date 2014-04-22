@@ -15,7 +15,7 @@ targetPaper = 0.0
 Debug = True
 Debug = False
 
-def play(targetTurn):
+def BFP(targetTurn):
     global statR, statP, statS
     global denominator
     global rockProb, paperProb, targetRock, targetPaper
@@ -81,4 +81,7 @@ def play(targetTurn):
         input()
         
     denominator -= 1
-    return (biased_roshambo (thisTurnRockProb, thisTurnPaperProb) + 1) % 3
+    return biased_roshambo (thisTurnRockProb, thisTurnPaperProb)
+
+def play(targetTurn):
+    return (BFP(targetTurn) + 1) % 3
