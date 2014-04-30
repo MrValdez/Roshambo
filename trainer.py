@@ -4,11 +4,11 @@ import subprocess
 filebase = "./results/"
 
 def main():
-    PlayTournament(1000)
+    #PlayTournament(1000)
     CreateCSV("results3.csv")
 
 def PlayTournament(size):
-    for argv in range(size):
+    for argv in range(1, size + 1):
         filename = filebase + "results %s.txt" % (str(argv).zfill(4))
         print ("Running %s..." % (filename), end='')
         
@@ -20,37 +20,57 @@ def PlayTournament(size):
         
         print("done")
 
-def CreateCSV(outputFilename = "results.csv"):
+def GetRank(text, header):
+    """
+    Get the rank under header.
+    Possible Headers:  Tournament results, Match results
+    """
+    headerStart = text.find(header)
+    found = text.find("Yomi AI", headerStart)
+    if found == -1:
+        raise exception("MAJOR PARSING ERROR. Yomi AI text not found.")
+        
+    end = text.find("Yomi AI", found)
+    start = end - 4
+    rank = str(text[start:end].strip())
+    
+    return rank
+
+def CreateCSV(outputFilename = "results"):
     """Create CSV by looking at the rank of the Yomi AI"""
-    csv = ""
-    ranks = []
+    csv = ["", ""]
     fileList = sorted(os.listdir(filebase))
     
-    print("VARIABLE    RANK")
+    prettyWidth = 18
+    print("%s  VARIABLE    RANK" % ("HEADER".ljust(prettyWidth)))
     for filename in fileList:
         if filename[-4:] != ".txt":
             print("%s is not txt file" % (filename))
         
-        variable = filename[-8:-4]]
-    
-        with open(filename) as f:
+        variable = filename[-8:-4]
+            
+        with open(filebase + filename) as f:
             # find the rank of the Yomi AI            
             text = f.read()
-            found = text.rfind("Yomi AI")
-            if found == -1:
-                print("MAJOR PARSING ERROR")
-                break
-                
-            start = text.rfind("\n", 0, found - 4)
-            end = text.find("Yomi AI", found)
-            
-            rank = str(text[start:end].strip())
-            ranks.append(rank)
-            
-            print (" %s        %s" % (variable, rank))            
-            csv += "%s,%s\n" % (variable, rank)
 
-    with open(outputFilename, "w") as f:
-        f.write(csv)
-        
-main()
+            header = "Match results"
+            rank = GetRank(text, header)
+            print ("%s]  %s        %s" % (header.ljust(prettyWidth), variable, rank))            
+            csv[0] += "%s,%s\n" % (variable, rank)
+            
+            header = "Tournament results"
+            rank = GetRank(text, header)
+            print ("%s]  %s        %s" % (header.ljust(prettyWidth), variable, rank))
+            csv[1] += "%s,%s\n" % (variable, rank)
+        return
+
+    file = "%s_%s.csv" % (outputFilename, "match")
+    with open(file, "w") as f:
+        f.write(csv[0])
+    
+    file = "%s_%s.csv" % (outputFilename, "tournament")
+    with open(file, "w") as f:
+        f.write(csv[1])
+      
+if __name__ == "__main__":
+    main()
