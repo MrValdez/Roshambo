@@ -1,11 +1,11 @@
 import os
 import subprocess
 
-filebase = "./results/"
+filebase = "./results_py/"
 
 def main():
-    #PlayTournament(1000)
-    CreateCSV("results3.csv")
+    PlayTournament(1000)
+    CreateCSV("results3")
 
 def PlayTournament(size):
     for argv in range(1, size + 1):
@@ -62,7 +62,7 @@ def CreateCSV(outputFilename = "results"):
             rank = GetRank(text, header)
             print ("%s]  %s        %s" % (header.ljust(prettyWidth), variable, rank))
             csv[1] += "%s,%s\n" % (variable, rank)
-        return
+        
 
     file = "%s_%s.csv" % (outputFilename, "match")
     with open(file, "w") as f:
