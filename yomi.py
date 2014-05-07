@@ -1,3 +1,4 @@
+#todo: check good ole rock against yomi. why is there a tie?
 import BeatFrequentPick
 import rps
 Debug = True
@@ -259,7 +260,7 @@ def init():
     yomi.reset()
     
 def play(a):
-    #return BeatFrequentPick.play(a)
+    return BeatFrequentPick.play(a)
     global situationDB
     global enemyPersonality, playerPersonality
     currentTurn = rps.getTurn()

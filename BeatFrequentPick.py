@@ -12,8 +12,8 @@ paperProb   = 0.0
 targetRock  = 0.0
 targetPaper = 0.0
 
-Debug = False
 Debug = True
+Debug = False
 
 def calculateProbThisTurn():
     global statR, statP, statS

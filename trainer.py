@@ -1,11 +1,11 @@
 import os
 import subprocess
 
-filebase = "./results_py/"
+filebase = "./results/results_from_py"
 
 def main():
     PlayTournament(1000)
-    CreateCSV("results3")
+    CreateCSV()
 
 def PlayTournament(size):
     for argv in range(1, size + 1):

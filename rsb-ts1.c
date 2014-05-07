@@ -48,7 +48,7 @@ int verbose3 = 1;          /* print result of each match */
 int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
-#define players   23         /* number of players in the tournament */
+#define players   30         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 int usePython = 1;
 
@@ -5600,28 +5600,30 @@ void Init_Player_Table (Player_Table crosstable[players+1])
         crosstable[i].pname = yomi;
 
 #ifdef Comment_Block
+#endif 
     i++;  /* choose uniformly at random */
     strcpy(crosstable[i].name, "Random (Optimal)");
     crosstable[i].pname = randbot;
-#endif 
 
+    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
+    strcpy(crosstable[i].name, "R-P-S 20-20-60");
+    crosstable[i].pname = r226bot;
 
 #ifdef Comment_Block  /* use these to comment out a block of players */    
+#endif /* end of Comment_Block -- be sure to change the #define players value */
+    i++;  /* nuthin' beats rock */
+    strcpy(crosstable[i].name, "Good Ole Rock");
+    crosstable[i].pname = rockbot;
+
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
     crosstable[i].pname = rotatebot;
 
-    i++;  /* nuthin' beats rock */
-    strcpy(crosstable[i].name, "Good Ole Rock");
-    crosstable[i].pname = rockbot;
 
     i++;  /* beat opponent's last move */
     strcpy(crosstable[i].name, "Beat The Last Move");
     crosstable[i].pname = copybot;
 
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
 
     i++;  /* beat the most frequent opponent choice */
     strcpy(crosstable[i].name, "Beat Frequent Pick");
@@ -5630,7 +5632,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");
     crosstable[i].pname = switchbot;
-#endif /* end of Comment_Block -- be sure to change the #define players value */
 
 #ifdef Comment_Block  /* use these to comment out a block of players */
     i++;  /* choose according to the digits of Pi */
@@ -6114,7 +6115,7 @@ int main(int argc, char *argv[]) {
    verbose1 = isVerbose();
    if (verbose1 == -1)
        return 1;
-       
+
    verbose4 = 0;// during development, we are not interested in our standing   
    
    yomiVariable1 = atoi(argv[1]);
