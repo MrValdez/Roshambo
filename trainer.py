@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-filebase = "./results/results_from_py"
+filebase = "./results/results_from_py/"
 
 def main():
     PlayTournament(1000)

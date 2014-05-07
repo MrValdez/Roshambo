@@ -6116,7 +6116,7 @@ int main(int argc, char *argv[]) {
    if (verbose1 == -1)
        return 1;
 
-   verbose4 = 0;// during development, we are not interested in our standing   
+   verbose4 = 1;// during development, we are not interested in our standing   
    
    yomiVariable1 = atoi(argv[1]);
    if (yomiVariable1 == 0)
