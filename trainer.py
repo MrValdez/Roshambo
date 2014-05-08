@@ -4,7 +4,7 @@ import subprocess
 filebase = "./results/results_from_py/"
 
 def main():
-    PlayTournament(1000)
+    #PlayTournament(1000)
     CreateCSV()
 
 def PlayTournament(size):
@@ -40,6 +40,7 @@ def CreateCSV(outputFilename = "results"):
     """Create CSV by looking at the rank of the Yomi AI"""
     csv = ["", ""]
     fileList = sorted(os.listdir(filebase))
+    best = [[0, 100], [0, 100]] #variable, rank
     
     prettyWidth = 18
     print("%s  VARIABLE    RANK" % ("HEADER".ljust(prettyWidth)))
@@ -57,13 +58,21 @@ def CreateCSV(outputFilename = "results"):
             rank = GetRank(text, header)
             print ("%s]  %s        %s" % (header.ljust(prettyWidth), variable, rank))            
             csv[0] += "%s,%s\n" % (variable, rank)
+            if int(rank) < best[0][1]:
+                best[0][0] = variable
+                best[0][1] = int(rank)
             
             header = "Tournament results"
             rank = GetRank(text, header)
             print ("%s]  %s        %s" % (header.ljust(prettyWidth), variable, rank))
             csv[1] += "%s,%s\n" % (variable, rank)
-        
+            if int(rank) < best[1][1]:
+                best[1][0] = variable
+                best[1][1] = int(rank)    
 
+    print ("\nBest Match Result      is variant %s with rank of %i" % (best[0][0], best[0][1]))
+    print ("\nBest Tournament Result is variant %s with rank of %i" % (best[1][0], best[1][1]))
+    
     file = "%s_%s.csv" % (outputFilename, "match")
     with open(file, "w") as f:
         f.write(csv[0])
