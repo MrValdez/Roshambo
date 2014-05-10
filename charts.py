@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import sys
 
-def Plot(filename, title):
+def Plot(filename, title, saveFigure = True):
     #num_datapoints = 1000
     #x_data = [x for x in range(0,num_datapoints)]
     #y_data = [random.randint(17,20) for i in range(0, num_datapoints)]
@@ -23,10 +23,16 @@ def Plot(filename, title):
     ax.set_xlabel("targetTurn")
     ax.set_ylabel("Ranking")
 
-    #fig.savefig("scatterplot.png")
-    fig.show()
+    if saveFigure:
+        figureName = str(filename).split(".")[0] + ".png"
+        fig.savefig(figureName)
+    else:
+        fig.show()
 
-    
-Plot("results_match.csv", "Match Results")    
-Plot("results_tournament.csv", "Tournament Results")    
-input("Press any key to continue")
+def startPlotting():
+    Plot("results_match.csv", "Match Results", False)
+    Plot("results_tournament.csv", "Tournament Results", False)    
+
+if __name__ == "__main__":
+    startPlotting()
+    input("Press any key to continue")

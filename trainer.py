@@ -1,11 +1,13 @@
 import os
 import subprocess
+import charts
 
 filebase = "./results/results_from_py/"
 
 def main():
     #PlayTournament(1000)
     CreateCSV()
+    charts.startPlotting()
 
 def PlayTournament(size):
     for argv in range(1, size + 1):
