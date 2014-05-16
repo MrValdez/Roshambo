@@ -1,11 +1,8 @@
 import matplotlib.pyplot as plt
+import numpy
 import sys
 
 def Plot(filename, title, saveFigure = True):
-    #num_datapoints = 1000
-    #x_data = [x for x in range(0,num_datapoints)]
-    #y_data = [random.randint(17,20) for i in range(0, num_datapoints)]
-
     with open(filename) as f:
         data = f.read().strip()
 
@@ -14,12 +11,25 @@ def Plot(filename, title, saveFigure = True):
     x_data = [s.split(',')[0] for s in data]
     y_data = [s.split(',')[1] for s in data]
 
-    fig = plt.figure(figsize=(5, 4))
+    # 5x4 inches
+    fig = plt.figure(figsize=(10, 6), dpi=80, frameon = False)
+
+    xMargin = 50
+    yMargin = 2
+    
+    plt.xlim(-xMargin,1000+xMargin)
+    plt.ylim(int(min(y_data)) - yMargin, int(max(y_data)) + yMargin)
+    
+    #plt.yticks(numpy.linspace(-1, 1, 5, endpoint=True))
+    
     ax = fig.add_subplot(1,1,1) # one row, one column, first plot
 
-    ax.scatter(x_data, y_data, color="red", marker="^")
-
-    ax.set_title(title)
+    #y_data = numpy.random.normal(5.0, 3.0, 1000)
+    y_data = numpy.array(y_data)
+    #ax.scatter(x_data, y_data, color="red", marker="^")
+    ax.plot(x_data, y_data, linewidth=1.0, linestyle="-")
+    
+    ax.set_title(title + "\n(lower is better)")
     ax.set_xlabel("targetTurn")
     ax.set_ylabel("Ranking")
 
@@ -30,9 +40,10 @@ def Plot(filename, title, saveFigure = True):
         fig.show()
 
 def startPlotting():
-    Plot("results_match.csv", "Match Results", False)
-    Plot("results_tournament.csv", "Tournament Results", False)    
+    Plot("results_match.csv", "Match Results", True)
+    Plot("results_tournament.csv", "Tournament Results", True)    
 
 if __name__ == "__main__":
     startPlotting()
     input("Press any key to continue")
+    plt.close(3)
