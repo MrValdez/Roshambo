@@ -53,7 +53,7 @@ def FindScore(bot, showAllResults):
     print ("")
     print ("Worst Score: %s  targetRank: %s\n %s" % (worstScore[1], worstScore[0], worstScore[2]))    
     print ("")
-    print ("Games won: %i. Games Lost: %i. Games tied: %i" % (gamesWon, gamesLost, gamesTied))
+    print ("Variants won: %i. Variants Lost: %i. Variants tied: %i" % (gamesWon, gamesLost, gamesTied))
 
 bot = "Iocaine"
 bot = "Rock"
@@ -63,5 +63,14 @@ showAllResults = False
 
 if len(sys.argv) >= 2: bot = sys.argv[1]
 if len(sys.argv) >= 3: showAllResults = True if int(sys.argv[2]) > 0 else False
+
+"""
+usage:
+python parseScore.py [bot partial name (case sensitive)] [show results? (value of 1 for true)]
+
+example usage:
+python parseScore.py Iocaine
+python parseScore.py 20-60 1
+"""
 
 FindScore (bot, showAllResults)
