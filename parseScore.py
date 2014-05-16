@@ -1,9 +1,11 @@
+import sys
 import os
 
 filebase = "./results/results_from_py/"
 
-def FindScore(bot, showAllResults = False):
+def FindScore(bot, showAllResults):
     """Get the best and worst score of a bot against Yomi AI"""
+    print ("Searching for %s" % bot)
     fileList = sorted(os.listdir(filebase))
     bestScore = [0, 0, ""] # "targetTurn", "score", "line"
     worstScore = [0, 1000, ""]
@@ -51,8 +53,15 @@ def FindScore(bot, showAllResults = False):
     print ("")
     print ("Worst Score: %s  targetRank: %s\n %s" % (worstScore[1], worstScore[0], worstScore[2]))    
     print ("")
-    print ("Games won: %i Games Lost: %i Games tied: %i" % (gamesWon, gamesTied, gamesLost))
+    print ("Games won: %i. Games Lost: %i. Games tied: %i" % (gamesWon, gamesLost, gamesTied))
 
-#FindScore("Iocaine")
-FindScore("Rock")
-#FindScore("20-60", True)
+bot = "Iocaine"
+bot = "Rock"
+bot = "20-60"
+bot = "Inocencio"
+showAllResults = False
+
+if len(sys.argv) >= 2: bot = sys.argv[1]
+if len(sys.argv) >= 3: showAllResults = True if int(sys.argv[2]) > 0 else False
+
+FindScore (bot, showAllResults)
