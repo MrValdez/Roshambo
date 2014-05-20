@@ -1,7 +1,7 @@
 import sys
 import os
 
-filebase = "./results/results_from_py/"
+filebase = "./results/"
 
 def FindScore(bot, showAllResults):
     """Get the best and worst score of a bot against Yomi AI"""
@@ -23,7 +23,7 @@ def FindScore(bot, showAllResults):
         with open(filebase + filename) as f:
             # find the rank of the Yomi AI            
             text = f.read()
-            found = text.find(bot)
+            found = text.upper().find(bot.upper())
             if found == -1:
                 print ("Warning: %s not found in %s" % (bot, filename))
                 continue
