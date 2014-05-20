@@ -13,8 +13,9 @@ def Plot(filename, title, saveFigure = True):
 
     # 5x4 inches
     fig = plt.figure(figsize=(10, 6), dpi=80, frameon = False)
+    fig.subplots_adjust(left=0.0, right=1.0, top=0.9, bottom=0.1, wspace=0, hspace=0)
 
-    xMargin = 50
+    xMargin = 30
     yMargin = 2
     
     plt.xlim(-xMargin,1000+xMargin)
@@ -27,7 +28,7 @@ def Plot(filename, title, saveFigure = True):
     #y_data = numpy.random.normal(5.0, 3.0, 1000)
     y_data = numpy.array(y_data)
     #ax.scatter(x_data, y_data, color="red", marker="^")
-    ax.plot(x_data, y_data, linewidth=1.0, linestyle="-")
+    ax.plot(x_data, y_data, "bo", linewidth=0.1, linestyle="-")
     
     ax.set_title(title + "\n(lower is better)")
     ax.set_xlabel("targetTurn")
@@ -36,6 +37,7 @@ def Plot(filename, title, saveFigure = True):
     if saveFigure:
         figureName = str(filename).split(".")[0] + ".png"
         fig.savefig(figureName)
+        print ("%s saved" % (figureName))
     else:
         fig.show()
 
