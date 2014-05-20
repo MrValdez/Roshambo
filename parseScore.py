@@ -1,12 +1,12 @@
 import sys
 import os
 
-filebase = "./results/"
+pathbase = "./results/"
 
 def FindScore(bot, showAllResults):
     """Get the best and worst score of a bot against Yomi AI"""
     print ("Searching for %s" % bot)
-    fileList = sorted(os.listdir(filebase))
+    fileList = sorted(os.listdir(pathbase))
     bestScore = [0, 0, ""] # "targetTurn", "score", "line"
     worstScore = [0, 1000, ""]
     
@@ -20,7 +20,7 @@ def FindScore(bot, showAllResults):
         
         variable = filename[-8:-4]
             
-        with open(filebase + filename) as f:
+        with open(pathbase + filename) as f:
             # find the rank of the Yomi AI            
             text = f.read()
             found = text.upper().find(bot.upper())

@@ -2,7 +2,7 @@ import os
 import subprocess
 import charts
 
-filebase = "./results/results_from_py/"
+pathbase = "./results/"
 
 def main():
     #PlayTournament(1000)
@@ -11,7 +11,7 @@ def main():
 
 def PlayTournament(size):
     for argv in range(1, size + 1):
-        filename = filebase + "results %s.txt" % (str(argv).zfill(4))
+        filename = pathbase + "results %s.txt" % (str(argv).zfill(4))
         print ("Running %s..." % (filename), end='')
         
         output = subprocess.check_output(["go.exe", str(argv)], universal_newlines = True)
@@ -41,7 +41,7 @@ def GetRank(text, header):
 def CreateCSV(outputFilename = "results"):
     """Create CSV by looking at the rank of the Yomi AI"""
     csv = ["", ""]
-    fileList = sorted(os.listdir(filebase))
+    fileList = sorted(os.listdir(pathbase))
     best = [[0, 100], [0, 100]] #variable, rank
     
     prettyWidth = 18
@@ -52,7 +52,7 @@ def CreateCSV(outputFilename = "results"):
         
         variable = filename[-8:-4]
             
-        with open(filebase + filename) as f:
+        with open(pathbase + filename) as f:
             # find the rank of the Yomi AI            
             text = f.read()
 
