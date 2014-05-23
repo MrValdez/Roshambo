@@ -1,0 +1,53 @@
+For the First RoShamBo Tournament Test Suite, the license can be found in the source code (duplicated here).
+
+All source code and results are licensed under the MIT License (can be found in this text document and at http://opensource.org/licenses/MIT).
+
+==================
+
+/*  First RoShamBo Tournament Test Suite   Darse Billings,  Oct 1999  */
+/*                                                 revised July 2000  */
+/*                                                                    */
+/*  This program may be used and modified freely, as long as the      */
+/*  original author credit is maintained.  There are no guarantees    */
+/*  of any kind.                                                      */
+/*                                                                    */
+/*  The RoShamBo player algorithms contained in this test suite have  */
+/*  been generously donated by their authors.  Entries for future     */
+/*  RoShamBo competitions may be based on these ideas, but credit     */
+/*  must be given to the original author.  Any entry deemed to be     */
+/*  too similar to an uncredited existing program will be rejected    */
+/*  without further consideration.                                    */
+/*                                                                    */
+/*  I am pleased to say that _all_ of the top contenders have been    */
+/*  released (except for RoShamBot, which is proprietary, and not     */
+/*  the author's to give).                                            */
+/*                                                                    */
+/*  Compile with the math library:  gcc rsb-ts1.c -lm                 */
+/*                                                                    */
+/*  Check the main web page for future versions of this program:      */
+/*                                                                    */
+/*        http://www.cs.ualberta.ca/~darse/rsbpc.html                 */
+
+==================
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Sony Valdez, Gener Siddayao, Proceso Fernandez
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
