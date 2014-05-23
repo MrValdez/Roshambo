@@ -98,9 +98,9 @@ def BFP(targetTurn):
             
         recompute(currentTurn, targetTurn)
         thisTurnRockProb, thisTurnPaperProb = calculateProbThisTurn()
-
-    thisTurnRockProb = 0 if thisTurnRockProb < 0 else thisTurnRockProb
-    thisTurnPaperProb = 0 if thisTurnPaperProb < 0 else thisTurnPaperProb
+        
+    #thisTurnRockProb = 0 if thisTurnRockProb < 0 else thisTurnRockProb
+    #thisTurnPaperProb = 0 if thisTurnPaperProb < 0 else thisTurnPaperProb
     
     if Debug and debugRecomputation:
         print("targetRock, targetPaper: %f %f" % (targetRock, targetPaper));
