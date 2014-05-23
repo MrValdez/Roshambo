@@ -89,7 +89,7 @@ def BFP(targetTurn):
         print("thisTurnRockProb, thisTurnPaperProb: %f %f" % (thisTurnRockProb, thisTurnPaperProb))
         debugRecomputation = False
         
-    if (thisTurnRockProb <= 0 or thisTurnPaperProb <= 0 or thisTurnRockProb + thisTurnPaperProb >= 1.0):
+    if (thisTurnRockProb < 0 or thisTurnPaperProb < 0 or thisTurnRockProb + thisTurnPaperProb > 1.0):
         if Debug:
             debugRecomputation = True
             print ("***********************")
