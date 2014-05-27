@@ -13,7 +13,7 @@ def Plot(filename, title, saveFigure = True):
 
     # 5x4 inches
     fig = plt.figure(figsize=(10, 6), dpi=80, frameon = False)
-    fig.subplots_adjust(left=0.05, right=1.0, top=0.9, bottom=0.1, wspace=0, hspace=0)
+    fig.subplots_adjust(left=0.05, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
 
     xMargin = 30
     yMargin = 2
@@ -30,8 +30,9 @@ def Plot(filename, title, saveFigure = True):
     #ax.scatter(x_data, y_data, color="red", marker="^")
     ax.plot(x_data, y_data, "b", linewidth=1.0, linestyle="-")
     
-    ax.set_title(title + "\n(lower is better)")
-    ax.set_xlabel("targetTurn")
+    #ax.set_title(title + "\n(lower is better)")
+    ax.set_title("(lower is better)")
+    ax.set_xlabel("targetPredictionSize")
     ax.set_ylabel("Ranking")
 
     if saveFigure:
