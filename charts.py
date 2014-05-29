@@ -31,7 +31,7 @@ def Plot(filename, title, saveFigure = True):
     ax.plot(x_data, y_data, "b", linewidth=1.0, linestyle="-")
     
     #ax.set_title(title + "\n(lower is better)")
-    ax.set_title("(lower is better)")
+    #ax.set_title("(lower is better)")
     ax.set_xlabel("targetPredictionSize")
     ax.set_ylabel("Ranking")
 

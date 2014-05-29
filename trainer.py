@@ -5,7 +5,7 @@ import charts
 pathbase = "./results/"
 
 def main():
-    #PlayTournament(1000)
+    PlayTournament(1000)
     CreateCSV()
     charts.startPlotting()
 
@@ -15,7 +15,6 @@ def PlayTournament(size):
         print ("Running %s..." % (filename), end='')
         
         output = subprocess.check_output(["go.exe", str(argv)], universal_newlines = True)
-      
         with open(filename, "w") as f:
             stdout = str(output)
             f.write(stdout)

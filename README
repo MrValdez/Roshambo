@@ -34,6 +34,7 @@ Here are the changes for the test suite. These modifications are necessary to al
 
 ##International RoShamBo Test Suite changes
   - not included in this revision's results: *Pi, Switch A Lot, Flat, Anti-Flat, Foxtrot, De Bruijn, Text, Anti-rotn, Copy-drift, Add-react, Add-drift*.
+  - One AI was changed for the purpose of this paper: shofar. Shofar, for some odd reason, is throwing an run-time exception. A quick debug shows that the python-c api is causing this problem. To complete the tournament, the assert (line 3055) has been commented. This will be returned later. (todo: solve this mystery)
   - total number of players has been changed.
   - *verbose1*, *verbose2*, *verbose3* and *verbose4* has been changed to int (originally constants). This allows them to be changed via Python.
   
