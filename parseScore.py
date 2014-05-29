@@ -14,6 +14,7 @@ def FindScore(bot, showAllResults):
     gamesTied = 0
     gamesLost = 0
     
+    
     for filename in fileList:
         if filename[-4:] != ".txt":
             print("%s is not txt file" % (filename))
@@ -48,12 +49,18 @@ def FindScore(bot, showAllResults):
             elif score < -50: gamesLost += 1
             else: gamesTied += 1
         
-    print ("")
-    print ("Best Score : %s  targetRank: %s\n %s" % (bestScore[1], bestScore[0], bestScore[2]))
-    print ("")
-    print ("Worst Score: %s  targetRank: %s\n %s" % (worstScore[1], worstScore[0], worstScore[2]))    
-    print ("")
-    print ("Variants won: %i. Variants Lost: %i. Variants tied: %i" % (gamesWon, gamesLost, gamesTied))
+    AInamesPos = bestScore[2].find("Match:")
+    if bestScore[2][:AInamesPos] != worstScore[2][:AInamesPos]:
+        print ("\n************ Warning: Best score AI does not match worst score AI. Use a longer search string")
+        print (bestScore[2])
+        print (worstScore[2])
+    else:
+        print ("")
+        print ("Best Score : %s  targetRank: %s\n %s" % (bestScore[1], bestScore[0], bestScore[2]))
+        print ("")
+        print ("Worst Score: %s  targetRank: %s\n %s" % (worstScore[1], worstScore[0], worstScore[2]))    
+        print ("")
+        print ("Variants won: %i. Variants Lost: %i. Variants tied: %i" % (gamesWon, gamesLost, gamesTied))
 
 bot = "Iocaine"
 bot = "Rock"
