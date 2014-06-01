@@ -6,7 +6,7 @@ pathbase = "./results/"
 def FindScore(bot, showAllResults):
     """Get the best and worst score of a bot against Yomi AI"""
     fileList = sorted(os.listdir(pathbase))
-    bestScore = [0, 0, ""] # "targetTurn", "score", "line"
+    bestScore = [0, -1000, ""] # "targetTurn", "score", "line"
     worstScore = [0, 1000, ""]
     
     gamesWon = 0
@@ -49,7 +49,7 @@ def FindScore(bot, showAllResults):
         
     AInamesPos = bestScore[2].find("Match:")
     if bestScore[2][:AInamesPos] != worstScore[2][:AInamesPos]:
-        return False, None, None
+        return False, None, None, None, None, None
     else:
         return True, bestScore, worstScore, gamesWon, gamesLost, gamesTied
         
