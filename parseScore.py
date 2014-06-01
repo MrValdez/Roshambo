@@ -71,16 +71,7 @@ showLatex = False
 
 if len(sys.argv) >= 2: bot = sys.argv[1] if int(sys.argv[1]) != 0 else None        # painful
 if len(sys.argv) >= 3: showAllResults = True if int(sys.argv[2]) > 0 else False
-if len(sys.argv) >= 4: showLatex = True if int(sys.argv[2]) > 0 else False
-"""
-usage:
-python parseScore.py [bot partial name (case insensitive)] [show results? (value of 1 for true)]
-
-example usage:
-python parseScore.py
-python parseScore.py Iocaine
-python parseScore.py 20-60 1
-"""
+if len(sys.argv) >= 4: showLatex = True if int(sys.argv[3]) > 0 else False
 
 if bot == None:
     bots = """Good Ole Rock
