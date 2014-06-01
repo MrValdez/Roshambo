@@ -105,7 +105,7 @@ The rps library contains the following test suite related functions:
  The **charts.startPlotting()** function will create the chart graphics. Refer to charts.py.
 
 ##parseScore.py
- Used to study how many points (wins-losts-ties) our bot got compared to another bot.
+ Used to study how many points (wins-losts-ties) our bot got compared to all the bots or against a specific bot.
 
  In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
   
@@ -114,11 +114,18 @@ The rps library contains the following test suite related functions:
   parseScore.py [botname] [show all results]
 ```
 
-  **[botname]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space, use part of the name to circumvent this.
+  **[botname]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space, use part of the name to circumvent this. If the value given is 0, this argument is ignored and all bots are printed (needed for [show latex] argument to work. A cleaner approach is to use something like Click library, but its overkill for this tool).
 
   **[show all results]** is optional. A value of 1 means the points gained from all variants are shown. Any other values gives the default behavior of not showing the results.
   
+  **[show latex output]** is optional. A value of 1 means that the code for a latex table is outputted instead. [botname] must be 0. to use. Please refer to the example on how to use. 
+  
 ###Example:
+  To show all the results against all bots:
+```shell
+   python parseScore.py
+```
+
   To show the results against the Iocaine bot:
 ```shell
    python parseScore.py Iocaine
@@ -132,6 +139,11 @@ The rps library contains the following test suite related functions:
   To show the results against the RPS 20-20-60 bot and show our bot's scores with different variants:
 ```shell
    python parseScore.py 20-60 1
+```
+
+  To show all the results against all bots with latex output:
+```shell
+   python parseScore.py 0 0 1
 ```
    
 ##charts.py
