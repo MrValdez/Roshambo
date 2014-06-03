@@ -7,34 +7,34 @@ statS = 0
 
 remainingPredictionSize = 0
 
-probRock    = 0.0
-probPaper   = 0.0
-predictionRock  = 0.0
-predictionPaper = 0.0
+probR = 0.0
+probP = 0.0
+predictionR = 0.0
+predictionP = 0.0
 
 Debug = True
-Debug = False
+#Debug = False
 
 def calculateProbThisTurn():
     global statR, statP, statS
     global remainingPredictionSize
-    global probRock, probPaper, predictionRock, predictionPaper
+    global probR, probP, predictionR, predictionP
 
-    thisTurnProbRock = float((predictionRock - statR) / float(remainingPredictionSize))
-    thisTurnProbPaper = float((predictionPaper - statP) / float(remainingPredictionSize))
+    thisTurnProbR = float((predictionR - statR) / float(remainingPredictionSize))
+    thisTurnProbP = float((predictionP - statP) / float(remainingPredictionSize))
     
-    return (thisTurnProbRock, thisTurnProbPaper)
+    return (thisTurnProbR, thisTurnProbP)
 
 def recomputeFutureProb(currentTurn, targetPredictionSize):
     global statR, statP, statS
     global remainingPredictionSize
-    global probRock, probPaper, predictionRock, predictionPaper
+    global probR, probP, predictionR, predictionP
 
-    probRock = statR / float (currentTurn)
-    probPaper = statP / float (currentTurn)
+    probR = statR / float (currentTurn)
+    probP = statP / float (currentTurn)
     
-    predictionRock = float(probRock * (currentTurn + targetPredictionSize))
-    predictionPaper = float(probPaper * (currentTurn + targetPredictionSize))
+    predictionR = float(probR * (currentTurn + targetPredictionSize))
+    predictionP = float(probP * (currentTurn + targetPredictionSize))
     
     remainingPredictionSize = targetPredictionSize
 
@@ -42,22 +42,22 @@ def recomputeFutureProb(currentTurn, targetPredictionSize):
 def BFP(targetPredictionSize):
     global statR, statP, statS
     global remainingPredictionSize
-    global probRock, probPaper, predictionRock, predictionPaper
+    global probR, probP, predictionR, predictionP
 
     currentTurn = rps.getTurn()
     if (currentTurn == 0):
         #initialize        
         statR, statP, statS = 0, 0, 0
         remainingPredictionSize = targetPredictionSize
-        probRock = 1 / 3.0
-        probPaper = 1 / 3.0
-        predictionRock = probRock * targetPredictionSize
-        predictionPaper = probPaper * targetPredictionSize
+        probR = 1 / 3.0
+        probP = 1 / 3.0
+        predictionR = probR * targetPredictionSize
+        predictionP = probP * targetPredictionSize
 
         if Debug:
             print("\n\nInitial data (Target Prediction Size %i):\n" % (targetPredictionSize))
             print("statR, statP:                         %i    %i" % (statR, statP));
-            print("predictionRock, predictionPaper:      %.2f %.2f" % (predictionRock, predictionPaper));
+            print("predictionR, predictionP:             %.2f %.2f" % (predictionR, predictionP));
             print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, remainingPredictionSize))
             print("Done init()\n")
 
@@ -80,39 +80,38 @@ def BFP(targetPredictionSize):
             
         recomputeFutureProb(currentTurn, targetPredictionSize)
         
-    thisTurnProbRock, thisTurnProbPaper = calculateProbThisTurn()
+    thisTurnProbR, thisTurnProbP = calculateProbThisTurn()
     
     if Debug:
         print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, remainingPredictionSize))
         print("statR, statP:                         %i    %i" % (statR, statP));
-        print("probR, probP:                         %.2f %.2f" % (probRock, probPaper));
-        print("predictionRock, predictionPaper:      %.2f %.2f" % (predictionRock, predictionPaper));
-        print("thisTurnProbRock, thisTurnProbPaper:  %.2f %.2f" % (thisTurnProbRock, thisTurnProbPaper))
+        print("probR, probP:                         %.2f %.2f" % (probR, probP));
+        print("predictionR, predictionP:             %.2f %.2f" % (predictionR, predictionP));
+        print("thisTurnProbR, thisTurnProbP:         %.2f %.2f" % (thisTurnProbR, thisTurnProbP))
         debugRecomputation = False
         
-    if (thisTurnProbRock < 0 or thisTurnProbPaper < 0 or thisTurnProbRock + thisTurnProbPaper > 1.0):
+    if (thisTurnProbR < 0 or thisTurnProbP < 0 or thisTurnProbR + thisTurnProbP > 1.0):
         if Debug:
             debugRecomputation = True
             print ("***********************")
-            print ("Recomputing because of", thisTurnProbRock <= 0, thisTurnProbPaper <= 0, thisTurnProbRock + thisTurnProbPaper >= 1.0)
+            print ("Recomputing because of", thisTurnProbR <= 0, thisTurnProbP <= 0, thisTurnProbR + thisTurnProbP >= 1.0)
+            print ("***********************")
             
         recomputeFutureProb(currentTurn, targetPredictionSize)
-        thisTurnProbRock, thisTurnProbPaper = calculateProbThisTurn()
+        thisTurnProbR, thisTurnProbP = calculateProbThisTurn()
 
-    #thisTurnProbRock = 0 if thisTurnProbRock < 0 else thisTurnProbRock
-    #thisTurnProbPaper = 0 if thisTurnProbPaper < 0 else thisTurnProbPaper
+    #thisTurnProbR = 0 if thisTurnProbR < 0 else thisTurnProbR
+    #thisTurnProbP = 0 if thisTurnProbP < 0 else thisTurnProbP
     
     if Debug and debugRecomputation:
-        print("New recomputation:")
-        print("predictionRock, predictionPaper:      %.2f %.2f" % (predictionRock, predictionPaper));
-        print("thisTurnProbRock, thisTurnProbPaper:  %.2f %.2f\n" % (thisTurnProbRock, thisTurnProbPaper))
-        input()
+        print("predictionR, predictionP:             %.2f %.2f" % (predictionR, predictionP));
+        print("thisTurnProbR, thisTurnProbP:         %.2f %.2f\n" % (thisTurnProbR, thisTurnProbP))
     
     if Debug:
         input()
         
     remainingPredictionSize -= 1
-    return biased_roshambo (thisTurnProbRock, thisTurnProbPaper)
+    return biased_roshambo (thisTurnProbR, thisTurnProbP)
 
 def play(targetPredictionSize):
     move = BFP(targetPredictionSize)
