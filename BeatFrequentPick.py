@@ -13,7 +13,7 @@ predictionRock  = 0.0
 predictionPaper = 0.0
 
 Debug = True
-Debug = False
+#Debug = False
 
 def calculateProbThisTurn():
     global statR, statP, statS
@@ -54,11 +54,11 @@ def BFP(targetPredictionSize):
         predictionPaper = paperProb * targetPredictionSize
 
         if Debug:
-            print("\n\nInitial data (Target Turn %i):\n" % (targetPredictionSize))
-            print("statR, statP: %i %i" % (statR, statP));
-            print("predictionRock, predictionPaper: %f %f" % (predictionRock, predictionPaper));
-            print("currentTurn, remainingPredictionSize: %i %i" % (currentTurn, remainingPredictionSize))
-            input()
+            print("\n\nInitial data (Target Prediction Size %i):\n" % (targetPredictionSize))
+            print("statR, statP:                         %i    %i" % (statR, statP));
+            print("predictionRock, predictionPaper:      %.2f %.2f" % (predictionRock, predictionPaper));
+            print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, remainingPredictionSize))
+            print("Done init()\n")
 
         return biased_roshambo (1 / 3.0, 1 / 3.0)
     
@@ -82,11 +82,11 @@ def BFP(targetPredictionSize):
     thisTurnRockProb, thisTurnPaperProb = calculateProbThisTurn()
     
     if Debug:
-        print("currentTurn, remainingPredictionSize: %i %i" % (currentTurn, remainingPredictionSize))
-        print("statR, statP: %i %i" % (statR, statP));
-        print("probR, probP:                        %f %f" % (rockProb, paperProb));
-        print("predictionRock, predictionPaper:             %f %f" % (predictionRock, predictionPaper));
-        print("thisTurnRockProb, thisTurnPaperProb: %f %f" % (thisTurnRockProb, thisTurnPaperProb))
+        print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, remainingPredictionSize))
+        print("statR, statP:                         %i    %i" % (statR, statP));
+        print("probR, probP:                         %.2f %.2f" % (rockProb, paperProb));
+        print("predictionRock, predictionPaper:      %.2f %.2f" % (predictionRock, predictionPaper));
+        print("thisTurnRockProb, thisTurnPaperProb:  %.2f %.2f" % (thisTurnRockProb, thisTurnPaperProb))
         debugRecomputation = False
         
     if (thisTurnRockProb < 0 or thisTurnPaperProb < 0 or thisTurnRockProb + thisTurnPaperProb > 1.0):
@@ -103,8 +103,8 @@ def BFP(targetPredictionSize):
     #thisTurnPaperProb = 0 if thisTurnPaperProb < 0 else thisTurnPaperProb
     
     if Debug and debugRecomputation:
-        print("predictionRock, predictionPaper: %f %f" % (predictionRock, predictionPaper));
-        print("thisTurnRockProb, thisTurnPaperProb: %f %f\n" % (thisTurnRockProb, thisTurnPaperProb))
+        print("predictionRock, predictionPaper:      %.2f %.2f" % (predictionRock, predictionPaper));
+        print("thisTurnRockProb, thisTurnPaperProb:  %.2f %.2f\n" % (thisTurnRockProb, thisTurnPaperProb))
     
     if Debug:
         input()
