@@ -69,7 +69,7 @@ bot = None
 showAllResults = False
 showLatex = False
 
-if len(sys.argv) >= 2: bot = sys.argv[1] if int(sys.argv[1]) != 0 else None        # painful
+if len(sys.argv) >= 2: bot = None if sys.argv[1].isdigit() and (int(sys.argv[1]) == 0) else sys.argv[1]         # painful
 if len(sys.argv) >= 3: showAllResults = True if int(sys.argv[2]) > 0 else False
 if len(sys.argv) >= 4: showLatex = True if int(sys.argv[3]) > 0 else False
 
