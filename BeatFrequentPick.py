@@ -13,7 +13,7 @@ predictionR = 0.0
 predictionP = 0.0
 
 Debug = True
-#Debug = False
+Debug = False
 
 def calculateProbThisTurn():
     global statR, statP, statS
@@ -100,8 +100,10 @@ def BFP(targetPredictionSize):
         recomputeFutureProb(currentTurn, targetPredictionSize)
         thisTurnProbR, thisTurnProbP = calculateProbThisTurn()
 
-    #thisTurnProbR = 0 if thisTurnProbR < 0 else thisTurnProbR
-    #thisTurnProbP = 0 if thisTurnProbP < 0 else thisTurnProbP
+    # These two checks will never be True as proven by studying the algorithm. 
+    # But in the interest of keeping this program bug free (and for the sanity of the coder), they are added
+    thisTurnProbR = 0 if thisTurnProbR < 0 else thisTurnProbR
+    thisTurnProbP = 0 if thisTurnProbP < 0 else thisTurnProbP
     
     if Debug and debugRecomputation:
         print("predictionR, predictionP:             %.2f %.2f" % (predictionR, predictionP));

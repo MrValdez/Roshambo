@@ -657,7 +657,13 @@ if (0)
 #endif
 }
 
-#include "BeatFrequentPick.c"
+// #include "BeatFrequentPick.c"
+int BeatFrequentPick()
+{
+    // todo: remove dependency on bfp.c
+    return 0;
+}
+
 int yomi()
 {
     return BeatFrequentPick();
