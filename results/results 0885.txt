@@ -116,7 +116,7 @@
  R-P-S 20-20-60     vs Piedra              Match: -407 (204+ 611- 185=)
  R-P-S 20-20-60     vs Mixed Strategy      Match: -421 (193+ 614- 193=)
  R-P-S 20-20-60     vs Multi-strategy      Match: -395 (199+ 594- 207=)
- R-P-S 20-20-60     vs Inocencio           Match: -372 (202+ 574- 224=)
+ R-P-S 20-20-60     vs Inocencio           Match: -372 (203+ 575- 222=)
  R-P-S 20-20-60     vs Peterbot            Match: -391 (199+ 590- 211=)
  R-P-S 20-20-60     vs Bugbrain            Match: -208 (255+ 463- 282=)
  R-P-S 20-20-60     vs Knucklehead         Match:  -57 (304+ 361- 335=)

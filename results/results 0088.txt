@@ -647,311 +647,311 @@
  MegaHAL            vs Piedra              Match:   42 (367+ 325- 308=)
  MegaHAL            vs Mixed Strategy      Match:   90 (419+ 329- 252=)
  MegaHAL            vs Multi-strategy      Match:  144 (426+ 282- 292=)
- MegaHAL            vs Inocencio           Match:  189 (476+ 287- 237=)
- MegaHAL            vs Peterbot            Match:  904 (944+  40-  16=)
- MegaHAL            vs Bugbrain            Match:   24 (368+ 344- 288=)
- MegaHAL            vs Knucklehead         Match:  371 (571+ 200- 229=)
- RussRocker4        vs Biopic              Match:   15 (361+ 346- 293=)
- RussRocker4        vs Simple Modeller     Match:   20 (364+ 344- 292=)
- RussRocker4        vs Simple Predictor    Match:   84 (430+ 346- 224=)
- RussRocker4        vs Robertot            Match:   45 (415+ 370- 215=)
- RussRocker4        vs Boom                Match:   49 (355+ 306- 339=)
- RussRocker4        vs Shofar              Match:  -22 (324+ 346- 330=)
- RussRocker4        vs ACT-R Lag2          Match:  -24 (359+ 383- 258=)
- RussRocker4        vs Majikthise          Match:  -36 (303+ 339- 358=)
- RussRocker4        vs Vroomfondel         Match:   -9 (339+ 348- 313=)
- RussRocker4        vs Granite             Match:  134 (504+ 370- 126=)
- RussRocker4        vs Marble              Match:  181 (514+ 333- 153=)
- RussRocker4        vs ZQ Bot              Match:  156 (513+ 357- 130=)
- RussRocker4        vs Sweet Rocky         Match:   68 (390+ 322- 288=)
- RussRocker4        vs Piedra              Match:   63 (389+ 326- 285=)
- RussRocker4        vs Mixed Strategy      Match:    9 (346+ 337- 317=)
- RussRocker4        vs Multi-strategy      Match:  276 (511+ 235- 254=)
- RussRocker4        vs Inocencio           Match:  113 (467+ 354- 179=)
- RussRocker4        vs Peterbot            Match:  925 (954+  29-  17=)
- RussRocker4        vs Bugbrain            Match:    0 (355+ 355- 290=)
- RussRocker4        vs Knucklehead         Match:  463 (643+ 180- 177=)
- Biopic             vs Simple Modeller     Match:   14 (353+ 339- 308=)
- Biopic             vs Simple Predictor    Match:   11 (362+ 351- 287=)
- Biopic             vs Robertot            Match:   26 (373+ 347- 280=)
- Biopic             vs Boom                Match:  -21 (322+ 343- 335=)
- Biopic             vs Shofar              Match:   -8 (334+ 342- 324=)
- Biopic             vs ACT-R Lag2          Match:   46 (385+ 339- 276=)
- Biopic             vs Majikthise          Match:  -40 (315+ 355- 330=)
- Biopic             vs Vroomfondel         Match:   13 (354+ 341- 305=)
- Biopic             vs Granite             Match:   93 (428+ 335- 237=)
- Biopic             vs Marble              Match:  100 (440+ 340- 220=)
- Biopic             vs ZQ Bot              Match:  118 (452+ 334- 214=)
- Biopic             vs Sweet Rocky         Match:   42 (363+ 321- 316=)
- Biopic             vs Piedra              Match:   16 (356+ 340- 304=)
- Biopic             vs Mixed Strategy      Match:  -11 (336+ 347- 317=)
- Biopic             vs Multi-strategy      Match:  241 (493+ 252- 255=)
- Biopic             vs Inocencio           Match:  137 (443+ 306- 251=)
- Biopic             vs Peterbot            Match:  997 (997+   0-   3=)
- Biopic             vs Bugbrain            Match:   -8 (346+ 354- 300=)
- Biopic             vs Knucklehead         Match:  518 (663+ 145- 192=)
- Simple Modeller    vs Simple Predictor    Match:  238 (514+ 276- 210=)
- Simple Modeller    vs Robertot            Match:  -21 (338+ 359- 303=)
- Simple Modeller    vs Boom                Match:   30 (343+ 313- 344=)
- Simple Modeller    vs Shofar              Match:  -14 (322+ 336- 342=)
- Simple Modeller    vs ACT-R Lag2          Match:  -24 (329+ 353- 318=)
- Simple Modeller    vs Majikthise          Match:   -8 (330+ 338- 332=)
- Simple Modeller    vs Vroomfondel         Match:   16 (335+ 319- 346=)
- Simple Modeller    vs Granite             Match:  109 (424+ 315- 261=)
- Simple Modeller    vs Marble              Match:  137 (431+ 294- 275=)
- Simple Modeller    vs ZQ Bot              Match:  328 (532+ 204- 264=)
- Simple Modeller    vs Sweet Rocky         Match:   69 (380+ 311- 309=)
- Simple Modeller    vs Piedra              Match:    2 (333+ 331- 336=)
- Simple Modeller    vs Mixed Strategy      Match:  102 (402+ 300- 298=)
- Simple Modeller    vs Multi-strategy      Match:  219 (475+ 256- 269=)
- Simple Modeller    vs Inocencio           Match:  743 (856+ 113-  31=)
- Simple Modeller    vs Peterbot            Match:  887 (926+  39-  35=)
- Simple Modeller    vs Bugbrain            Match:    4 (330+ 326- 344=)
- Simple Modeller    vs Knucklehead         Match:  225 (473+ 248- 279=)
- Simple Predictor   vs Robertot            Match:   12 (372+ 360- 268=)
- Simple Predictor   vs Boom                Match:    0 (338+ 338- 324=)
- Simple Predictor   vs Shofar              Match:  -32 (337+ 369- 294=)
- Simple Predictor   vs ACT-R Lag2          Match:  -73 (316+ 389- 295=)
- Simple Predictor   vs Majikthise          Match:  -22 (332+ 354- 314=)
- Simple Predictor   vs Vroomfondel         Match:  -21 (320+ 341- 339=)
- Simple Predictor   vs Granite             Match:  -35 (381+ 416- 203=)
- Simple Predictor   vs Marble              Match:  -55 (357+ 412- 231=)
- Simple Predictor   vs ZQ Bot              Match:  146 (563+ 417-  20=)
- Simple Predictor   vs Sweet Rocky         Match:   43 (374+ 331- 295=)
- Simple Predictor   vs Piedra              Match:   95 (403+ 308- 289=)
- Simple Predictor   vs Mixed Strategy      Match:   70 (410+ 340- 250=)
- Simple Predictor   vs Multi-strategy      Match:  179 (456+ 277- 267=)
- Simple Predictor   vs Inocencio           Match:  277 (561+ 284- 155=)
- Simple Predictor   vs Peterbot            Match:  303 (596+ 293- 111=)
- Simple Predictor   vs Bugbrain            Match:   66 (385+ 319- 296=)
- Simple Predictor   vs Knucklehead         Match:  304 (548+ 244- 208=)
- Robertot           vs Boom                Match:   29 (347+ 318- 335=)
- Robertot           vs Shofar              Match:   24 (345+ 321- 334=)
- Robertot           vs ACT-R Lag2          Match:  -57 (339+ 396- 265=)
- Robertot           vs Majikthise          Match:  -24 (326+ 350- 324=)
- Robertot           vs Vroomfondel         Match:   34 (371+ 337- 292=)
- Robertot           vs Granite             Match:   51 (441+ 390- 169=)
- Robertot           vs Marble              Match:   56 (436+ 380- 184=)
- Robertot           vs ZQ Bot              Match:  107 (479+ 372- 149=)
- Robertot           vs Sweet Rocky         Match:   40 (389+ 349- 262=)
- Robertot           vs Piedra              Match:   15 (357+ 342- 301=)
- Robertot           vs Mixed Strategy      Match:  -29 (332+ 361- 307=)
- Robertot           vs Multi-strategy      Match:  253 (492+ 239- 269=)
- Robertot           vs Inocencio           Match:   14 (397+ 383- 220=)
- Robertot           vs Peterbot            Match:  338 (561+ 223- 216=)
- Robertot           vs Bugbrain            Match:    6 (335+ 329- 336=)
- Robertot           vs Knucklehead         Match:  409 (587+ 178- 235=)
- Boom               vs Shofar              Match:  -15 (307+ 322- 371=)
- Boom               vs ACT-R Lag2          Match:  -40 (316+ 356- 328=)
- Boom               vs Majikthise          Match:  -19 (340+ 359- 301=)
- Boom               vs Vroomfondel         Match:  -33 (321+ 354- 325=)
- Boom               vs Granite             Match:  102 (397+ 295- 308=)
- Boom               vs Marble              Match:  -19 (347+ 366- 287=)
- Boom               vs ZQ Bot              Match:   65 (395+ 330- 275=)
- Boom               vs Sweet Rocky         Match:   54 (351+ 297- 352=)
- Boom               vs Piedra              Match:   27 (367+ 340- 293=)
- Boom               vs Mixed Strategy      Match:    2 (345+ 343- 312=)
- Boom               vs Multi-strategy      Match:  313 (542+ 229- 229=)
- Boom               vs Inocencio           Match:   87 (394+ 307- 299=)
- Boom               vs Peterbot            Match:  441 (607+ 166- 227=)
- Boom               vs Bugbrain            Match:  -27 (313+ 340- 347=)
- Boom               vs Knucklehead         Match:  433 (609+ 176- 215=)
- Shofar             vs ACT-R Lag2          Match:  -23 (317+ 340- 343=)
- Shofar             vs Majikthise          Match:   42 (355+ 313- 332=)
- Shofar             vs Vroomfondel         Match:   12 (332+ 320- 348=)
- Shofar             vs Granite             Match:   56 (375+ 319- 306=)
- Shofar             vs Marble              Match:   33 (365+ 332- 303=)
- Shofar             vs ZQ Bot              Match:   26 (361+ 335- 304=)
- Shofar             vs Sweet Rocky         Match:   48 (368+ 320- 312=)
- Shofar             vs Piedra              Match:   30 (376+ 346- 278=)
- Shofar             vs Mixed Strategy      Match:   72 (384+ 312- 304=)
- Shofar             vs Multi-strategy      Match:  156 (407+ 251- 342=)
- Shofar             vs Inocencio           Match:   60 (380+ 320- 300=)
- Shofar             vs Peterbot            Match:   70 (345+ 275- 380=)
- Shofar             vs Bugbrain            Match:    0 (341+ 341- 318=)
- Shofar             vs Knucklehead         Match:   94 (392+ 298- 310=)
- ACT-R Lag2         vs Majikthise          Match:   52 (366+ 314- 320=)
- ACT-R Lag2         vs Vroomfondel         Match:  -36 (318+ 354- 328=)
- ACT-R Lag2         vs Granite             Match:   75 (471+ 396- 133=)
- ACT-R Lag2         vs Marble              Match:  106 (477+ 371- 152=)
- ACT-R Lag2         vs ZQ Bot              Match:   91 (440+ 349- 211=)
- ACT-R Lag2         vs Sweet Rocky         Match:   39 (371+ 332- 297=)
- ACT-R Lag2         vs Piedra              Match:   40 (378+ 338- 284=)
- ACT-R Lag2         vs Mixed Strategy      Match:   27 (369+ 342- 289=)
- ACT-R Lag2         vs Multi-strategy      Match:  318 (564+ 246- 190=)
- ACT-R Lag2         vs Inocencio           Match:  709 (837+ 128-  35=)
- ACT-R Lag2         vs Peterbot            Match:   64 (392+ 328- 280=)
- ACT-R Lag2         vs Bugbrain            Match:   18 (343+ 325- 332=)
- ACT-R Lag2         vs Knucklehead         Match:  491 (662+ 171- 167=)
- Majikthise         vs Vroomfondel         Match:   21 (351+ 330- 319=)
- Majikthise         vs Granite             Match:   72 (386+ 314- 300=)
- Majikthise         vs Marble              Match:   53 (406+ 353- 241=)
- Majikthise         vs ZQ Bot              Match:    1 (382+ 381- 237=)
- Majikthise         vs Sweet Rocky         Match:   71 (402+ 331- 267=)
- Majikthise         vs Piedra              Match:   34 (374+ 340- 286=)
- Majikthise         vs Mixed Strategy      Match:   42 (373+ 331- 296=)
- Majikthise         vs Multi-strategy      Match:  159 (442+ 283- 275=)
- Majikthise         vs Inocencio           Match:   90 (410+ 320- 270=)
- Majikthise         vs Peterbot            Match:  -17 (325+ 342- 333=)
- Majikthise         vs Bugbrain            Match:  -35 (318+ 353- 329=)
- Majikthise         vs Knucklehead         Match:  235 (489+ 254- 257=)
- Vroomfondel        vs Granite             Match:   11 (365+ 354- 281=)
- Vroomfondel        vs Marble              Match:   11 (367+ 356- 277=)
- Vroomfondel        vs ZQ Bot              Match:   49 (399+ 350- 251=)
- Vroomfondel        vs Sweet Rocky         Match:   24 (364+ 340- 296=)
- Vroomfondel        vs Piedra              Match:   34 (371+ 337- 292=)
- Vroomfondel        vs Mixed Strategy      Match:   56 (374+ 318- 308=)
- Vroomfondel        vs Multi-strategy      Match:  193 (461+ 268- 271=)
- Vroomfondel        vs Inocencio           Match:   53 (372+ 319- 309=)
- Vroomfondel        vs Peterbot            Match:  -35 (309+ 344- 347=)
- Vroomfondel        vs Bugbrain            Match:    3 (333+ 330- 337=)
- Vroomfondel        vs Knucklehead         Match:  261 (500+ 239- 261=)
- Granite            vs Marble              Match:   10 (494+ 484-  22=)
- Granite            vs ZQ Bot              Match:   34 (503+ 469-  28=)
- Granite            vs Sweet Rocky         Match:   75 (382+ 307- 311=)
- Granite            vs Piedra              Match:   29 (413+ 384- 203=)
- Granite            vs Mixed Strategy      Match:   35 (418+ 383- 199=)
- Granite            vs Multi-strategy      Match:  248 (510+ 262- 228=)
- Granite            vs Inocencio           Match:  658 (825+ 167-   8=)
- Granite            vs Peterbot            Match:  951 (969+  18-  13=)
- Granite            vs Bugbrain            Match:  -59 (334+ 393- 273=)
- Granite            vs Knucklehead         Match:  251 (511+ 260- 229=)
- Marble             vs ZQ Bot              Match:   42 (484+ 442-  74=)
- Marble             vs Sweet Rocky         Match:   40 (403+ 363- 234=)
- Marble             vs Piedra              Match:   40 (426+ 386- 188=)
- Marble             vs Mixed Strategy      Match:   23 (403+ 380- 217=)
- Marble             vs Multi-strategy      Match:  228 (487+ 259- 254=)
- Marble             vs Inocencio           Match:  646 (819+ 173-   8=)
- Marble             vs Peterbot            Match:  842 (904+  62-  34=)
- Marble             vs Bugbrain            Match:  -88 (326+ 414- 260=)
- Marble             vs Knucklehead         Match:  328 (547+ 219- 234=)
- ZQ Bot             vs Sweet Rocky         Match:   27 (373+ 346- 281=)
- ZQ Bot             vs Piedra              Match:   12 (395+ 383- 222=)
- ZQ Bot             vs Mixed Strategy      Match:   27 (407+ 380- 213=)
- ZQ Bot             vs Multi-strategy      Match:  221 (494+ 273- 233=)
- ZQ Bot             vs Inocencio           Match:  -22 (394+ 416- 190=)
- ZQ Bot             vs Peterbot            Match:  916 (947+  31-  22=)
- ZQ Bot             vs Bugbrain            Match: -169 (329+ 498- 173=)
- ZQ Bot             vs Knucklehead         Match:  241 (512+ 271- 217=)
- Sweet Rocky        vs Piedra              Match:    3 (  4+   1- 995=)
- Sweet Rocky        vs Mixed Strategy      Match:   14 (373+ 359- 268=)
- Sweet Rocky        vs Multi-strategy      Match:   50 (427+ 377- 196=)
- Sweet Rocky        vs Inocencio           Match:  798 (895+  97-   8=)
- Sweet Rocky        vs Peterbot            Match:  106 (464+ 358- 178=)
- Sweet Rocky        vs Bugbrain            Match:  -33 (337+ 370- 293=)
- Sweet Rocky        vs Knucklehead         Match:  150 (446+ 296- 258=)
- Piedra             vs Mixed Strategy      Match:  -30 (367+ 397- 236=)
- Piedra             vs Multi-strategy      Match:  121 (427+ 306- 267=)
- Piedra             vs Inocencio           Match:  -43 (357+ 400- 243=)
- Piedra             vs Peterbot            Match:  313 (578+ 265- 157=)
- Piedra             vs Bugbrain            Match:  -49 (334+ 383- 283=)
- Piedra             vs Knucklehead         Match:  132 (456+ 324- 220=)
- Mixed Strategy     vs Multi-strategy      Match:   16 (359+ 343- 298=)
- Mixed Strategy     vs Inocencio           Match:  -46 (336+ 382- 282=)
- Mixed Strategy     vs Peterbot            Match:  159 (453+ 294- 253=)
- Mixed Strategy     vs Bugbrain            Match:  -38 (338+ 376- 286=)
- Mixed Strategy     vs Knucklehead         Match:  234 (498+ 264- 238=)
- Multi-strategy     vs Inocencio           Match:  -95 (379+ 474- 147=)
- Multi-strategy     vs Peterbot            Match:  500 (500+   0- 500=)
- Multi-strategy     vs Bugbrain            Match:  -71 (306+ 377- 317=)
- Multi-strategy     vs Knucklehead         Match:   22 (341+ 319- 340=)
- Inocencio          vs Peterbot            Match:  123 (435+ 312- 253=)
- Inocencio          vs Bugbrain            Match: -123 (311+ 434- 255=)
- Inocencio          vs Knucklehead         Match:  216 (491+ 275- 234=)
- Peterbot           vs Bugbrain            Match:  -82 (310+ 392- 298=)
- Peterbot           vs Knucklehead         Match:    2 (327+ 325- 348=)
- Bugbrain           vs Knucklehead         Match:  165 (447+ 282- 271=)
+ MegaHAL            vs Inocencio           Match:  179 (458+ 279- 263=)
+ MegaHAL            vs Peterbot            Match:  899 (937+  38-  25=)
+ MegaHAL            vs Bugbrain            Match:    8 (340+ 332- 328=)
+ MegaHAL            vs Knucklehead         Match:  398 (593+ 195- 212=)
+ RussRocker4        vs Biopic              Match:   43 (357+ 314- 329=)
+ RussRocker4        vs Simple Modeller     Match:  -20 (335+ 355- 310=)
+ RussRocker4        vs Simple Predictor    Match:   71 (402+ 331- 267=)
+ RussRocker4        vs Robertot            Match:   29 (376+ 347- 277=)
+ RussRocker4        vs Boom                Match:   21 (354+ 333- 313=)
+ RussRocker4        vs Shofar              Match:   43 (367+ 324- 309=)
+ RussRocker4        vs ACT-R Lag2          Match:   23 (372+ 349- 279=)
+ RussRocker4        vs Majikthise          Match:   30 (345+ 315- 340=)
+ RussRocker4        vs Vroomfondel         Match:   42 (372+ 330- 298=)
+ RussRocker4        vs Granite             Match:  116 (493+ 377- 130=)
+ RussRocker4        vs Marble              Match:  140 (507+ 367- 126=)
+ RussRocker4        vs ZQ Bot              Match:  186 (537+ 351- 112=)
+ RussRocker4        vs Sweet Rocky         Match:   47 (374+ 327- 299=)
+ RussRocker4        vs Piedra              Match:   72 (403+ 331- 266=)
+ RussRocker4        vs Mixed Strategy      Match:   49 (372+ 323- 305=)
+ RussRocker4        vs Multi-strategy      Match:  176 (449+ 273- 278=)
+ RussRocker4        vs Inocencio           Match:  140 (452+ 312- 236=)
+ RussRocker4        vs Peterbot            Match:  934 (961+  27-  12=)
+ RussRocker4        vs Bugbrain            Match:   -1 (339+ 340- 321=)
+ RussRocker4        vs Knucklehead         Match:  450 (631+ 181- 188=)
+ Biopic             vs Simple Modeller     Match:  -67 (300+ 367- 333=)
+ Biopic             vs Simple Predictor    Match:   75 (390+ 315- 295=)
+ Biopic             vs Robertot            Match:  -13 (343+ 356- 301=)
+ Biopic             vs Boom                Match:  -34 (326+ 360- 314=)
+ Biopic             vs Shofar              Match:   -2 (333+ 335- 332=)
+ Biopic             vs ACT-R Lag2          Match:  -18 (350+ 368- 282=)
+ Biopic             vs Majikthise          Match:  -27 (328+ 355- 317=)
+ Biopic             vs Vroomfondel         Match:  -36 (319+ 355- 326=)
+ Biopic             vs Granite             Match:  121 (463+ 342- 195=)
+ Biopic             vs Marble              Match:  157 (481+ 324- 195=)
+ Biopic             vs ZQ Bot              Match:   97 (426+ 329- 245=)
+ Biopic             vs Sweet Rocky         Match:   49 (363+ 314- 323=)
+ Biopic             vs Piedra              Match:   31 (372+ 341- 287=)
+ Biopic             vs Mixed Strategy      Match:   15 (360+ 345- 295=)
+ Biopic             vs Multi-strategy      Match:  250 (502+ 252- 246=)
+ Biopic             vs Inocencio           Match:  220 (513+ 293- 194=)
+ Biopic             vs Peterbot            Match:  757 (814+  57- 129=)
+ Biopic             vs Bugbrain            Match:  -31 (323+ 354- 323=)
+ Biopic             vs Knucklehead         Match:  489 (639+ 150- 211=)
+ Simple Modeller    vs Simple Predictor    Match:  273 (534+ 261- 205=)
+ Simple Modeller    vs Robertot            Match:  -11 (343+ 354- 303=)
+ Simple Modeller    vs Boom                Match:   25 (348+ 323- 329=)
+ Simple Modeller    vs Shofar              Match:  -52 (304+ 356- 340=)
+ Simple Modeller    vs ACT-R Lag2          Match:  -15 (336+ 351- 313=)
+ Simple Modeller    vs Majikthise          Match:   12 (355+ 343- 302=)
+ Simple Modeller    vs Vroomfondel         Match:    6 (354+ 348- 298=)
+ Simple Modeller    vs Granite             Match:   86 (404+ 318- 278=)
+ Simple Modeller    vs Marble              Match:   75 (403+ 328- 269=)
+ Simple Modeller    vs ZQ Bot              Match:  269 (509+ 240- 251=)
+ Simple Modeller    vs Sweet Rocky         Match:   -1 (327+ 328- 345=)
+ Simple Modeller    vs Piedra              Match:   11 (338+ 327- 335=)
+ Simple Modeller    vs Mixed Strategy      Match:   74 (386+ 312- 302=)
+ Simple Modeller    vs Multi-strategy      Match:  168 (456+ 288- 256=)
+ Simple Modeller    vs Inocencio           Match:  418 (629+ 211- 160=)
+ Simple Modeller    vs Peterbot            Match:  322 (561+ 239- 200=)
+ Simple Modeller    vs Bugbrain            Match:   93 (385+ 292- 323=)
+ Simple Modeller    vs Knucklehead         Match:  180 (448+ 268- 284=)
+ Simple Predictor   vs Robertot            Match:  -41 (338+ 379- 283=)
+ Simple Predictor   vs Boom                Match:   20 (349+ 329- 322=)
+ Simple Predictor   vs Shofar              Match:  -21 (346+ 367- 287=)
+ Simple Predictor   vs ACT-R Lag2          Match:  -39 (354+ 393- 253=)
+ Simple Predictor   vs Majikthise          Match:   -2 (333+ 335- 332=)
+ Simple Predictor   vs Vroomfondel         Match:  -30 (332+ 362- 306=)
+ Simple Predictor   vs Granite             Match:   32 (430+ 398- 172=)
+ Simple Predictor   vs Marble              Match:    5 (394+ 389- 217=)
+ Simple Predictor   vs ZQ Bot              Match:  146 (559+ 413-  28=)
+ Simple Predictor   vs Sweet Rocky         Match:   29 (372+ 343- 285=)
+ Simple Predictor   vs Piedra              Match:   32 (372+ 340- 288=)
+ Simple Predictor   vs Mixed Strategy      Match:    5 (372+ 367- 261=)
+ Simple Predictor   vs Multi-strategy      Match:  191 (450+ 259- 291=)
+ Simple Predictor   vs Inocencio           Match:  402 (622+ 220- 158=)
+ Simple Predictor   vs Peterbot            Match:  316 (606+ 290- 104=)
+ Simple Predictor   vs Bugbrain            Match:   15 (355+ 340- 305=)
+ Simple Predictor   vs Knucklehead         Match:  261 (501+ 240- 259=)
+ Robertot           vs Boom                Match:   -9 (327+ 336- 337=)
+ Robertot           vs Shofar              Match:    4 (334+ 330- 336=)
+ Robertot           vs ACT-R Lag2          Match:    3 (360+ 357- 283=)
+ Robertot           vs Majikthise          Match:  -19 (340+ 359- 301=)
+ Robertot           vs Vroomfondel         Match:    6 (351+ 345- 304=)
+ Robertot           vs Granite             Match:   20 (427+ 407- 166=)
+ Robertot           vs Marble              Match:   66 (466+ 400- 134=)
+ Robertot           vs ZQ Bot              Match:  106 (454+ 348- 198=)
+ Robertot           vs Sweet Rocky         Match:   37 (376+ 339- 285=)
+ Robertot           vs Piedra              Match:   42 (361+ 319- 320=)
+ Robertot           vs Mixed Strategy      Match:   97 (403+ 306- 291=)
+ Robertot           vs Multi-strategy      Match:  285 (519+ 234- 247=)
+ Robertot           vs Inocencio           Match:   38 (398+ 360- 242=)
+ Robertot           vs Peterbot            Match:  964 (975+  11-  14=)
+ Robertot           vs Bugbrain            Match:   -6 (363+ 369- 268=)
+ Robertot           vs Knucklehead         Match:  430 (603+ 173- 224=)
+ Boom               vs Shofar              Match:  -56 (316+ 372- 312=)
+ Boom               vs ACT-R Lag2          Match:   -9 (337+ 346- 317=)
+ Boom               vs Majikthise          Match:  -68 (306+ 374- 320=)
+ Boom               vs Vroomfondel         Match:   17 (348+ 331- 321=)
+ Boom               vs Granite             Match:   44 (370+ 326- 304=)
+ Boom               vs Marble              Match:   63 (392+ 329- 279=)
+ Boom               vs ZQ Bot              Match:   47 (386+ 339- 275=)
+ Boom               vs Sweet Rocky         Match:   63 (375+ 312- 313=)
+ Boom               vs Piedra              Match:   39 (367+ 328- 305=)
+ Boom               vs Mixed Strategy      Match:  -19 (333+ 352- 315=)
+ Boom               vs Multi-strategy      Match:  315 (537+ 222- 241=)
+ Boom               vs Inocencio           Match:  149 (452+ 303- 245=)
+ Boom               vs Peterbot            Match:  371 (567+ 196- 237=)
+ Boom               vs Bugbrain            Match:    3 (336+ 333- 331=)
+ Boom               vs Knucklehead         Match:  430 (614+ 184- 202=)
+ Shofar             vs ACT-R Lag2          Match:   14 (354+ 340- 306=)
+ Shofar             vs Majikthise          Match:  -12 (325+ 337- 338=)
+ Shofar             vs Vroomfondel         Match:  -19 (327+ 346- 327=)
+ Shofar             vs Granite             Match:   32 (362+ 330- 308=)
+ Shofar             vs Marble              Match:   61 (390+ 329- 281=)
+ Shofar             vs ZQ Bot              Match:   94 (413+ 319- 268=)
+ Shofar             vs Sweet Rocky         Match:    7 (347+ 340- 313=)
+ Shofar             vs Piedra              Match:   11 (344+ 333- 323=)
+ Shofar             vs Mixed Strategy      Match:   22 (346+ 324- 330=)
+ Shofar             vs Multi-strategy      Match:  155 (413+ 258- 329=)
+ Shofar             vs Inocencio           Match:   34 (353+ 319- 328=)
+ Shofar             vs Peterbot            Match:   67 (357+ 290- 353=)
+ Shofar             vs Bugbrain            Match:   12 (331+ 319- 350=)
+ Shofar             vs Knucklehead         Match:  137 (437+ 300- 263=)
+ ACT-R Lag2         vs Majikthise          Match:    4 (334+ 330- 336=)
+ ACT-R Lag2         vs Vroomfondel         Match:   27 (361+ 334- 305=)
+ ACT-R Lag2         vs Granite             Match:   91 (486+ 395- 119=)
+ ACT-R Lag2         vs Marble              Match:  108 (475+ 367- 158=)
+ ACT-R Lag2         vs ZQ Bot              Match:  152 (506+ 354- 140=)
+ ACT-R Lag2         vs Sweet Rocky         Match:   30 (375+ 345- 280=)
+ ACT-R Lag2         vs Piedra              Match:   47 (374+ 327- 299=)
+ ACT-R Lag2         vs Mixed Strategy      Match:  109 (419+ 310- 271=)
+ ACT-R Lag2         vs Multi-strategy      Match:  325 (557+ 232- 211=)
+ ACT-R Lag2         vs Inocencio           Match:  794 (891+  97-  12=)
+ ACT-R Lag2         vs Peterbot            Match:  242 (492+ 250- 258=)
+ ACT-R Lag2         vs Bugbrain            Match:   22 (350+ 328- 322=)
+ ACT-R Lag2         vs Knucklehead         Match:  498 (658+ 160- 182=)
+ Majikthise         vs Vroomfondel         Match:   11 (343+ 332- 325=)
+ Majikthise         vs Granite             Match:    2 (380+ 378- 242=)
+ Majikthise         vs Marble              Match:   13 (383+ 370- 247=)
+ Majikthise         vs ZQ Bot              Match:   65 (412+ 347- 241=)
+ Majikthise         vs Sweet Rocky         Match:   56 (385+ 329- 286=)
+ Majikthise         vs Piedra              Match:   51 (389+ 338- 273=)
+ Majikthise         vs Mixed Strategy      Match:   30 (366+ 336- 298=)
+ Majikthise         vs Multi-strategy      Match:  179 (447+ 268- 285=)
+ Majikthise         vs Inocencio           Match:   50 (367+ 317- 316=)
+ Majikthise         vs Peterbot            Match:   22 (340+ 318- 342=)
+ Majikthise         vs Bugbrain            Match:   30 (354+ 324- 322=)
+ Majikthise         vs Knucklehead         Match:  238 (494+ 256- 250=)
+ Vroomfondel        vs Granite             Match:   48 (366+ 318- 316=)
+ Vroomfondel        vs Marble              Match:   48 (397+ 349- 254=)
+ Vroomfondel        vs ZQ Bot              Match:   69 (398+ 329- 273=)
+ Vroomfondel        vs Sweet Rocky         Match:   29 (374+ 345- 281=)
+ Vroomfondel        vs Piedra              Match:   23 (381+ 358- 261=)
+ Vroomfondel        vs Mixed Strategy      Match:   81 (400+ 319- 281=)
+ Vroomfondel        vs Multi-strategy      Match:  113 (413+ 300- 287=)
+ Vroomfondel        vs Inocencio           Match:   56 (377+ 321- 302=)
+ Vroomfondel        vs Peterbot            Match:   21 (344+ 323- 333=)
+ Vroomfondel        vs Bugbrain            Match:   23 (350+ 327- 323=)
+ Vroomfondel        vs Knucklehead         Match:  208 (463+ 255- 282=)
+ Granite            vs Marble              Match:   17 (501+ 484-  15=)
+ Granite            vs ZQ Bot              Match:   -6 (480+ 486-  34=)
+ Granite            vs Sweet Rocky         Match:   23 (381+ 358- 261=)
+ Granite            vs Piedra              Match:   39 (398+ 359- 243=)
+ Granite            vs Mixed Strategy      Match:   17 (361+ 344- 295=)
+ Granite            vs Multi-strategy      Match:  200 (472+ 272- 256=)
+ Granite            vs Inocencio           Match:  643 (818+ 175-   7=)
+ Granite            vs Peterbot            Match:  910 (949+  39-  12=)
+ Granite            vs Bugbrain            Match:  -93 (345+ 438- 217=)
+ Granite            vs Knucklehead         Match:  299 (539+ 240- 221=)
+ Marble             vs ZQ Bot              Match:   65 (524+ 459-  17=)
+ Marble             vs Sweet Rocky         Match:   49 (441+ 392- 167=)
+ Marble             vs Piedra              Match:   46 (397+ 351- 252=)
+ Marble             vs Mixed Strategy      Match:   21 (377+ 356- 267=)
+ Marble             vs Multi-strategy      Match:  240 (502+ 262- 236=)
+ Marble             vs Inocencio           Match:  652 (823+ 171-   6=)
+ Marble             vs Peterbot            Match:  953 (969+  16-  15=)
+ Marble             vs Bugbrain            Match:  -50 (350+ 400- 250=)
+ Marble             vs Knucklehead         Match:  301 (541+ 240- 219=)
+ ZQ Bot             vs Sweet Rocky         Match:   59 (425+ 366- 209=)
+ ZQ Bot             vs Piedra              Match:   14 (357+ 343- 300=)
+ ZQ Bot             vs Mixed Strategy      Match:   16 (432+ 416- 152=)
+ ZQ Bot             vs Multi-strategy      Match:  236 (488+ 252- 260=)
+ ZQ Bot             vs Inocencio           Match:   -8 (419+ 427- 154=)
+ ZQ Bot             vs Peterbot            Match:  869 (920+  51-  29=)
+ ZQ Bot             vs Bugbrain            Match: -143 (315+ 458- 227=)
+ ZQ Bot             vs Knucklehead         Match:  238 (494+ 256- 250=)
+ Sweet Rocky        vs Piedra              Match:   -4 (397+ 401- 202=)
+ Sweet Rocky        vs Mixed Strategy      Match:   -5 (367+ 372- 261=)
+ Sweet Rocky        vs Multi-strategy      Match:   47 (436+ 389- 175=)
+ Sweet Rocky        vs Inocencio           Match:  -35 (341+ 376- 283=)
+ Sweet Rocky        vs Peterbot            Match:  638 (775+ 137-  88=)
+ Sweet Rocky        vs Bugbrain            Match:  -41 (336+ 377- 287=)
+ Sweet Rocky        vs Knucklehead         Match:  262 (525+ 263- 212=)
+ Piedra             vs Mixed Strategy      Match:  -41 (358+ 399- 243=)
+ Piedra             vs Multi-strategy      Match:   41 (406+ 365- 229=)
+ Piedra             vs Inocencio           Match:  725 (843+ 118-  39=)
+ Piedra             vs Peterbot            Match:  319 (587+ 268- 145=)
+ Piedra             vs Bugbrain            Match:  -42 (327+ 369- 304=)
+ Piedra             vs Knucklehead         Match:  122 (434+ 312- 254=)
+ Mixed Strategy     vs Multi-strategy      Match:   69 (399+ 330- 271=)
+ Mixed Strategy     vs Inocencio           Match:   20 (383+ 363- 254=)
+ Mixed Strategy     vs Peterbot            Match:  174 (458+ 284- 258=)
+ Mixed Strategy     vs Bugbrain            Match:  -27 (342+ 369- 289=)
+ Mixed Strategy     vs Knucklehead         Match:  283 (514+ 231- 255=)
+ Multi-strategy     vs Inocencio           Match: -137 (327+ 464- 209=)
+ Multi-strategy     vs Peterbot            Match:  -19 (321+ 340- 339=)
+ Multi-strategy     vs Bugbrain            Match: -103 (284+ 387- 329=)
+ Multi-strategy     vs Knucklehead         Match:   47 (354+ 307- 339=)
+ Inocencio          vs Peterbot            Match:  135 (439+ 304- 257=)
+ Inocencio          vs Bugbrain            Match:  -69 (299+ 368- 333=)
+ Inocencio          vs Knucklehead         Match:  242 (501+ 259- 240=)
+ Peterbot           vs Bugbrain            Match: -100 (291+ 391- 318=)
+ Peterbot           vs Knucklehead         Match:    1 (335+ 334- 331=)
+ Bugbrain           vs Knucklehead         Match:   84 (378+ 294- 328=)
  Final results (draw value = 50):
 
  Tournament results: 
 
     Player Name          total     1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25   26   27   28   29   30   31   32   33   34   35   36   37   38   39   40   41   42
-  1 Iocaine Powder       11373     0  206   45   63   32  512   30  226   71    8  272  282   48   39    6  277   -1   42   82  -11  -28  283  550   36  -53   67  146  332  178  581  282  101  216   46  900  274  365  907  988  993  995  985
-  2 Phasenbott           10060  -206    0   76   65   15  524   20  117   67   98  214  224   79   -2   20  289   20   45   94   10   28  206  167   38    7    9  143  363   53  362  345   94   57  109  998  288  129  930  981  995  995  994
-  3 MegaHAL               9748   -45  -76    0   23  -13   89   28   96   11   75  219  232    5  -46   42  241   24   51   90  -19  -43  144  189   -6  -21  350  191   83   98  371  276  189   87  238  904  406  350  939  990  993  999  994
-  4 Simple Modeller       9549   -63  -65  -23    0  -14  -20   30  238  -24  -21  109  137   69  -14    2  328    4   55  102   -8   16  219  743  -12  -29  241  238  -22  261  225  101  134   48  277  887  435  391  594  993  993  999  995
-  5 Biopic                8809   -32  -15   13   14    0  -15  -21   11   46   26   93  100   42   -8   16  118   -8   43  -11  -40   13  241  137   45  -14  259   27  420   89  518   20  153  165  111  997  305  391  577  992  995  999  997
-  6 RussRocker4           7586  -512 -524  -89   20   15    0   49   84  -24   45  134  181   68  -22   63  156    0   56    9  -36   -9  276  113  -75    2   30  105  165  142  463  352   55  164  121  925  245  260  592  995  993  999 1000
-  7 Boom                  7488   -30  -20  -28  -30   21  -49    0    0  -40  -29  102  -19   54  -15   27   65  -27   60    2  -19  -33  313   87  -33   10  151   76  -40   41  433  100  134   27  184  441  449  399  753  991  989  997  994
-  8 Simple Predictor      7182  -226 -117  -96 -238  -11  -84    0    0  -73   12  -35  -55   43  -32   95  146   66   52   70  -22  -21  179  277  -62  -21  214  282   -9  266  304  111  154  132  214  303  401  407  587  986  990  995  998
-  9 ACT-R Lag2            7152   -71  -67  -11   24  -46   24   40   73    0   57   75  106   39   23   40   91   18   50   27   52  -36  318  709  -93  -33   46    2  -32  -32  491   46   80  121  189   64  241  289  567  688  990  998  995
- 10 Robertot              7021    -8  -98  -75   21  -26  -45   29  -12  -57    0   51   56   40   24   15  107    6   29  -29  -24   34  253   14   -2  -44  191   16   -8   27  409   19  177   47  116  338  487  417  727  810  997  999  993
- 11 Granite               6846  -272 -214 -219 -109  -93 -134 -102   35  -75  -51    0   10   75  -56   29   34  -59   56   35  -72  -11  248  658  -56  -11  177  -31   45    0  251  109  177  156  162  951  245  382  591  994  993  998 1000
- 12 Marble                6721  -282 -224 -232 -137 -100 -181   19   55 -106  -56  -10    0   40  -33   40   42  -88   64   23  -53  -11  228  646  -94    9  111   63   39   57  328   94  180  177  154  842  156  393  592  989  991 1000  996
- 13 Sweet Rocky           6363   -48  -79   -5  -69  -42  -68  -54  -43  -39  -40  -75  -40    0  -48    3  -27  -33   54   14  -71  -24   50  798  -38  -29  116   40  -27   64  150  222  170  169  137  106  201  398  592  993  993  996  996
- 14 Shofar                6113   -39    2   46   14    8   22   15   32  -23  -24   56   33   48    0   30   26    0   25   72   42   12  156   60  -18   15  113  -15    3   69   94  -28   58   64  100   70  390  278  553  879  942  967  966
- 15 Piedra                5789    -6  -20  -42   -2  -16  -63  -27  -95  -40  -15  -29  -40   -3  -30    0  -12  -49   34  -30  -34  -34  121  -43   -8  -63   47   11  -12   34  132  192  182  144  142  313  169  411  590  992  994  998  996
- 16 ZQ Bot                5735  -277 -289 -241 -328 -118 -156  -65 -146  -91 -107  -34  -42   27  -26   12    0 -169   46   27   -1  -49  221  -22  -33  -42  147  115  100   24  241  281  153  169  177  916  314  434  590  998  992  996  991
- 17 Bugbrain              5723     1  -20  -24   -4    8    0   27  -66  -18   -6   59   88   33    0   49  169    0   60   38   35   -3   71  123  -24    3   21   55  -20   19  165   84  -37   32  121   82  214  140  409  915  959  980  985
- 18 * Anti-rotn           5381   -42  -45  -51  -55  -43  -56  -60  -52  -50  -29  -56  -64  -54  -25  -34  -46  -60    0  -43  -25  -11  271  235  -55  -45   55   50  -42  -12   80   12   57  222  335  499  494  146  499  496  997  998  990
- 19 Mixed Strategy        5170   -82  -94  -90 -102   11   -9   -2  -70  -27   29  -35  -23  -14  -72   30  -27  -38   43    0  -42  -56   16  -46  -35  -21  128  -28    0   91  234   38  173   50  139  159   41  424  533  987  979  997  981
- 20 Majikthise            4847    11  -10   19    8   40   36   19   22  -52   24   72   53   71  -42   34    1  -35   25   42    0   21  159   90   23   21    7    1   -2   -7  235    4   18   72   75  -17  249  141  471  -28  992  992  992
- 21 Vroomfondel           4687    28  -28   43  -16  -13    9   33   21   36  -34   11   11   24  -12   34   49    3   11   56  -21    0  193   53  -49   56  -48  -37   21   26  261   -6   17   69   88  -35  273  184  426  -29  996  994  989
- 22 Multi-strategy        3040  -283 -206 -144 -219 -241 -276 -313 -179 -318 -253 -248 -228  -50 -156 -121 -221  -71 -271  -16 -159 -193    0  -95  -50  -20  232  -28  -27  235   22    5  123   98  295  500  517  410  999  997  997  999  997
- 23 Inocencio              815  -550 -167 -189 -743 -137 -113  -87 -277 -709  -14 -658 -646 -798  -60   43   22 -123 -235   46  -90  -53   95    0  -28    0  124  -27  366  167  216   29  157  139   83  123  287  378  364  942  983  977  978
- 24 * De Bruijn            803   -36  -38    6   12  -45   75   33   62   93    2   56   94   38   18    8   33   24   55   35  -23   49   50   28    0   -1   23  -28   14    9   64   60   23   13  -12  -17   -4   -5  128   -1   21    0 -113
- 25 * Pi                   276    53   -7   21   29   14   -2  -10   21   33   44   11   -9   29  -15   63   42   -3   45   21  -21  -56   20    0    1    0   19   17  -20   16  -38   -4  -81    6  -46   20   22   24   30   22  -11  -11  -13
- 26 Yomi AI              -1511   -67   -9 -350 -241 -259  -30 -151 -214  -46 -191 -177 -111 -116 -113  -47 -147  -21  -55 -128   -7   48 -232 -124  -23  -19    0  -20   31   33  -85   25   40   -2  -17  -29   -7  149 -255  -54  -16  972  554
- 27 * Add-drift          -1517  -146 -143 -191 -238  -27 -105  -76 -282   -2  -16   31  -63  -40   15  -11 -115  -55  -50   28   -1   37   28   27   28  -17   20    0  -14  -26  -25  -47  -48   22    7    2  -12   20  -26    9    9  -29    5
- 28 * Foxtrot            -1603  -332 -363  -83   22 -420 -165   40    9   32    8  -45  -39   27   -3   12 -100   20   42    0    2  -21   27 -366  -14   20  -31   14    0  -39   39   23   -8   33   15  -26   31   26   -1   10   -5  -12   18
- 29 * Copy-drift         -1898  -178  -53  -98 -261  -89 -142  -41 -266   32  -27    0  -57  -64  -69  -34  -24  -19   12  -91    7  -26 -235 -167   -9  -16  -33   26   39    0  -87  -20   45   40   -1  -56   32  -10   19   -7    5   21    4
- 30 Knucklehead          -2586  -581 -362 -371 -225 -518 -463 -433 -304 -491 -409 -251 -328 -150  -94 -132 -241 -165  -80 -234 -235 -261  -22 -216  -64   38   85   25  -39   87    0   11  -14    1  -36   -2  -45   64  136  873  872 1000  988
- 31 * Add-react          -2677  -282 -345 -276 -101  -20 -352 -100 -111  -46  -19 -109  -94 -222   28 -192 -281  -84  -12  -38   -4    6   -5  -29  -60    4  -25   47  -23   20  -11    0  -32   52  -30  -62   17    3    9   37  -23   77   11
- 32 * Text               -2879  -101  -94 -189 -134 -153  -55 -134 -154  -80 -177 -177 -180 -170  -58 -182 -153   37  -57 -173  -18  -17 -123 -157  -23   81  -40   48    8  -45   14   32    0   51    2   34  -10   11 -185  -74  -11 -185  112
- 33 * Flat               -2898  -216  -57  -87  -48 -165 -164  -27 -132 -121  -47 -156 -177 -169  -64 -144 -169  -32 -222  -50  -72  -69  -98 -139  -13   -6    2  -22  -33  -40   -1  -52  -51    0   23 -156   18   60  211  204   -4    0 -413
- 34 * Switch A Lot       -3250   -46 -109 -238 -277 -111 -121 -184 -214 -189 -116 -162 -154 -137 -100 -142 -177 -121 -335 -139  -75  -88 -295  -83   12   46   17   -7  -15    1   36   30   -2  -23    0 -144   26   -5   26  355   12   -2    0
- 35 Peterbot             -5809  -900 -998 -904 -887 -997 -925 -441 -303  -64 -338 -951 -842 -106  -70 -313 -916  -82 -499 -159   17   35 -500 -123   17  -20   29   -2   26   56    2   62  -34  156  144    0  242  366  434  981  999  999 1000
- 36 Always Switchin'     -6833  -274 -288 -406 -435 -305 -245 -449 -401 -241 -487 -245 -156 -201 -390 -169 -314 -214 -494  -41 -249 -273 -517 -287    4  -22    7   12  -31  -32   45  -17   10  -18  -26 -242    0    9   34  511  -13   11    6
- 37 R-P-S 20-20-60       -8697  -365 -129 -350 -391 -391 -260 -399 -407 -289 -417 -382 -393 -398 -278 -411 -434 -140 -146 -424 -141 -184 -410 -378    5  -24 -149  -20  -26   10  -64   -3  -11  -60    5 -366   -9    0 -379 -122    5 -417  445
- 38 Beat Frequent Pick  -13167  -907 -930 -939 -594 -577 -592 -753 -587 -567 -727 -591 -592 -592 -553 -590 -590 -409 -499 -533 -471 -426 -999 -364 -128  -30  255   26    1  -19 -136   -9  185 -211  -26 -434  -34  379    0 -600    0  999  997
- 39 Beat The Last Move  -19686  -988 -981 -990 -993 -992 -995 -991 -986 -688 -810 -994 -989 -993 -879 -992 -998 -915 -496 -987   28   29 -997 -942    1  -22   54   -9  -10    7 -873  -37   74 -204 -355 -981 -511  122  600    0    1 1000  996
- 40 Rotate R-P-S        -25256  -993 -995 -993 -993 -995 -993 -989 -990 -990 -997 -993 -991 -993 -942 -994 -992 -959 -997 -979 -992 -996 -997 -983  -21   11   16   -9    5   -5 -872   23   11    4  -12 -999   13   -5    0   -1    0    0 -679
- 41 Good Ole Rock       -26290  -995 -995 -999 -999 -999 -999 -997 -995 -998 -999 -998 -1000 -996 -967 -998 -996 -980 -998 -997 -992 -994 -999 -977    0   11 -972   29   12  -21 -1000  -77  185    0    2 -999  -11  417 -999 -1000    0    0 1000
- 42 * Anti-Flat         -27720  -985 -994 -994 -995 -997 -1000 -994 -998 -995 -993 -1000 -996 -996 -966 -996 -991 -985 -990 -981 -992 -989 -997 -978  113   13 -554   -5  -18   -4 -988  -11 -112  413    0 -1000   -6 -445 -997 -996  679 -1000    0
+  1 Iocaine Powder       11373     0  206   45   63   32    8  512   30   71  226  282  272    6   48   39  277   -1   42   82  -11  -28  283  550   36  -53   67  146  332  178  581  282  101  216   46  900  274  365  907  988  993  995  985
+  2 Phasenbott           10060  -206    0   76   65   15   98  524   20   67  117  224  214   20   79   -2  289   20   45   94   10   28  206  167   38    7    9  143  363   53  362  345   94   57  109  998  288  129  930  981  995  995  994
+  3 MegaHAL               9744   -45  -76    0   23  -13   75   89   28   11   96  232  219   42    5  -46  241    8   51   90  -19  -43  144  179   -6  -21  350  191   83   98  398  276  189   87  238  899  406  350  939  990  993  999  994
+  4 Simple Modeller       8561   -63  -65  -23    0   67  -11   20   25  -15  273   75   86   11   -1  -52  269   93   55   74   12    6  168  418  -12  -29  241  238  -22  261  180  101  134   48  277  322  435  391  594  993  993  999  995
+  5 Biopic                8530   -32  -15   13  -67    0  -13  -43  -34  -18   75  157  121   31   49   -2   97  -31   43   15  -27  -36  250  220   45  -14  259   27  420   89  489   20  153  165  111  757  305  391  577  992  995  999  997
+  6 Robertot              7917    -8  -98  -75   11   13    0  -29   -9    3   41   66   20   42   37    4  106   -6   29   97  -19    6  285   38   -2  -44  191   16   -8   27  430   19  177   47  116  964  487  417  727  810  997  999  993
+  7 RussRocker4           7667  -512 -524  -89  -20   43   29    0   21   23   71  140  116   72   47   43  186   -1   56   49   30   42  176  140  -75    2   30  105  165  142  450  352   55  164  121  934  245  260  592  995  993  999 1000
+  8 Boom                  7570   -30  -20  -28  -25   34    9  -21    0   -9  -20   63   44   39   63  -56   47    3   60  -19  -68   17  315  149  -33   10  151   76  -40   41  430  100  134   27  184  371  449  399  753  991  989  997  994
+  9 ACT-R Lag2            7453   -71  -67  -11   15   18   -3  -23    9    0   39  108   91   47   30  -14  152   22   50  109    4   27  325  794  -93  -33   46    2  -32  -32  498   46   80  121  189  242  241  289  567  688  990  998  995
+ 10 Simple Predictor      7160  -226 -117  -96 -273  -75  -41  -71   20  -39    0    5   32   32   29  -21  146   15   52    5   -2  -30  191  402  -62  -21  214  282   -9  266  261  111  154  132  214  316  401  407  587  986  990  995  998
+ 11 Marble                6757  -282 -224 -232  -75 -157  -66 -140  -63 -108   -5    0  -17   46   49  -61   65  -50   64   21  -13  -48  240  652  -94    9  111   63   39   57  301   94  180  177  154  953  156  393  592  989  991 1000  996
+ 12 Granite               6739  -272 -214 -219  -86 -121  -20 -116  -44  -91  -32   17    0   39   23  -32   -6  -93   56   17   -2  -48  200  643  -56  -11  177  -31   45    0  299  109  177  156  162  910  245  382  591  994  993  998 1000
+ 13 Piedra                6455    -6  -20  -42  -11  -31  -42  -72  -39  -47  -32  -46  -39    0    4  -11  -14  -42   34  -41  -51  -23   41  725   -8  -63   47   11  -12   34  122  192  182  144  142  319  169  411  590  992  994  998  996
+ 14 Sweet Rocky           6300   -48  -79   -5    1  -49  -37  -47  -63  -30  -29  -49  -23   -4    0   -7  -59  -41   54   -5  -56  -29   47  -35  -38  -29  116   40  -27   64  262  222  170  169  137  638  201  398  592  993  993  996  996
+ 15 Shofar                6069   -39    2   46   52    2   -4  -43   56   14   21   61   32   11    7    0   94   12   25   22  -12  -19  155   34  -18   15  113  -15    3   69  137  -28   58   64  100   67  390  278  553  879  942  967  966
+ 16 ZQ Bot                5636  -277 -289 -241 -269  -97 -106 -186  -47 -152 -146  -65    6   14   59  -94    0 -143   46   16  -65  -69  236   -8  -33  -42  147  115  100   24  238  281  153  169  177  869  314  434  590  998  992  996  991
+ 17 Bugbrain              5481     1  -20   -8  -93   31    6    1   -3  -22  -15   50   93   42   41  -12  143    0   60   27  -30  -23  103   69  -24    3   21   55  -20   19   84   84  -37   32  121  100  214  140  409  915  959  980  985
+ 18 * Anti-rotn           5381   -42  -45  -51  -55  -43  -29  -56  -60  -50  -52  -64  -56  -34  -54  -25  -46  -60    0  -43  -25  -11  271  235  -55  -45   55   50  -42  -12   80   12   57  222  335  499  494  146  499  496  997  998  990
+ 19 Mixed Strategy        5302   -82  -94  -90  -74  -15  -97  -49   19 -109   -5  -21  -17   41    5  -22  -16  -27   43    0  -30  -81   69   20  -35  -21  128  -28    0   91  283   38  173   50  139  174   41  424  533  987  979  997  981
+ 20 Majikthise            4895    11  -10   19  -12   27   19  -30   68   -4    2   13    2   51   56   12   65   30   25   30    0   11  179   50   23   21    7    1   -2   -7  238    4   18   72   75   22  249  141  471  -28  992  992  992
+ 21 Vroomfondel           4719    28  -28   43   -6   36   -6  -42  -17  -27   30   48   48   23   29   19   69   23   11   81  -11    0  113   56  -49   56  -48  -37   21   26  208   -6   17   69   88   21  273  184  426  -29  996  994  989
+ 22 Multi-strategy        2673  -283 -206 -144 -168 -250 -285 -176 -315 -325 -191 -240 -200  -41  -47 -155 -236 -103 -271  -69 -179 -113    0 -137  -50  -20  232  -28  -27  235   47    5  123   98  295  -19  517  410  999  997  997  999  997
+ 23 Inocencio              935  -550 -167 -179 -418 -220  -38 -140 -149 -794 -402 -652 -643 -725   35  -34    8  -69 -235  -20  -50  -56  137    0  -28    0  124  -27  366  167  242   29  157  139   83  135  287  378  364  942  983  977  978
+ 24 * De Bruijn            803   -36  -38    6   12  -45    2   75   33   93   62   94   56    8   38   18   33   24   55   35  -23   49   50   28    0   -1   23  -28   14    9   64   60   23   13  -12  -17   -4   -5  128   -1   21    0 -113
+ 25 * Pi                   276    53   -7   21   29   14   44   -2  -10   33   21   -9   11   63   29  -15   42   -3   45   21  -21  -56   20    0    1    0   19   17  -20   16  -38   -4  -81    6  -46   20   22   24   30   22  -11  -11  -13
+ 26 Yomi AI              -1511   -67   -9 -350 -241 -259 -191  -30 -151  -46 -214 -111 -177  -47 -116 -113 -147  -21  -55 -128   -7   48 -232 -124  -23  -19    0  -20   31   33  -85   25   40   -2  -17  -29   -7  149 -255  -54  -16  972  554
+ 27 * Add-drift          -1517  -146 -143 -191 -238  -27  -16 -105  -76   -2 -282  -63   31  -11  -40   15 -115  -55  -50   28   -1   37   28   27   28  -17   20    0  -14  -26  -25  -47  -48   22    7    2  -12   20  -26    9    9  -29    5
+ 28 * Foxtrot            -1603  -332 -363  -83   22 -420    8 -165   40   32    9  -39  -45   12   27   -3 -100   20   42    0    2  -21   27 -366  -14   20  -31   14    0  -39   39   23   -8   33   15  -26   31   26   -1   10   -5  -12   18
+ 29 * Copy-drift         -1898  -178  -53  -98 -261  -89  -27 -142  -41   32 -266  -57    0  -34  -64  -69  -24  -19   12  -91    7  -26 -235 -167   -9  -16  -33   26   39    0  -87  -20   45   40   -1  -56   32  -10   19   -7    5   21    4
+ 30 Knucklehead          -2639  -581 -362 -398 -180 -489 -430 -450 -430 -498 -261 -301 -299 -122 -262 -137 -238  -84  -80 -283 -238 -208  -47 -242  -64   38   85   25  -39   87    0   11  -14    1  -36   -1  -45   64  136  873  872 1000  988
+ 31 * Add-react          -2677  -282 -345 -276 -101  -20  -19 -352 -100  -46 -111  -94 -109 -192 -222   28 -281  -84  -12  -38   -4    6   -5  -29  -60    4  -25   47  -23   20  -11    0  -32   52  -30  -62   17    3    9   37  -23   77   11
+ 32 * Text               -2879  -101  -94 -189 -134 -153 -177  -55 -134  -80 -154 -180 -177 -182 -170  -58 -153   37  -57 -173  -18  -17 -123 -157  -23   81  -40   48    8  -45   14   32    0   51    2   34  -10   11 -185  -74  -11 -185  112
+ 33 * Flat               -2898  -216  -57  -87  -48 -165  -47 -164  -27 -121 -132 -177 -156 -144 -169  -64 -169  -32 -222  -50  -72  -69  -98 -139  -13   -6    2  -22  -33  -40   -1  -52  -51    0   23 -156   18   60  211  204   -4    0 -413
+ 34 * Switch A Lot       -3250   -46 -109 -238 -277 -111 -116 -121 -184 -189 -214 -154 -162 -142 -137 -100 -177 -121 -335 -139  -75  -88 -295  -83   12   46   17   -7  -15    1   36   30   -2  -23    0 -144   26   -5   26  355   12   -2    0
+ 35 Peterbot             -5935  -900 -998 -899 -322 -757 -964 -934 -371 -242 -316 -953 -910 -319 -638  -67 -869 -100 -499 -174  -22  -21   19 -135   17  -20   29   -2   26   56    1   62  -34  156  144    0  242  366  434  981  999  999 1000
+ 36 Always Switchin'     -6833  -274 -288 -406 -435 -305 -487 -245 -449 -241 -401 -156 -245 -169 -201 -390 -314 -214 -494  -41 -249 -273 -517 -287    4  -22    7   12  -31  -32   45  -17   10  -18  -26 -242    0    9   34  511  -13   11    6
+ 37 R-P-S 20-20-60       -8697  -365 -129 -350 -391 -391 -417 -260 -399 -289 -407 -393 -382 -411 -398 -278 -434 -140 -146 -424 -141 -184 -410 -378    5  -24 -149  -20  -26   10  -64   -3  -11  -60    5 -366   -9    0 -379 -122    5 -417  445
+ 38 Beat Frequent Pick  -13167  -907 -930 -939 -594 -577 -727 -592 -753 -567 -587 -592 -591 -590 -592 -553 -590 -409 -499 -533 -471 -426 -999 -364 -128  -30  255   26    1  -19 -136   -9  185 -211  -26 -434  -34  379    0 -600    0  999  997
+ 39 Beat The Last Move  -19686  -988 -981 -990 -993 -992 -810 -995 -991 -688 -986 -989 -994 -992 -993 -879 -998 -915 -496 -987   28   29 -997 -942    1  -22   54   -9  -10    7 -873  -37   74 -204 -355 -981 -511  122  600    0    1 1000  996
+ 40 Rotate R-P-S        -25256  -993 -995 -993 -993 -995 -997 -993 -989 -990 -990 -991 -993 -994 -993 -942 -992 -959 -997 -979 -992 -996 -997 -983  -21   11   16   -9    5   -5 -872   23   11    4  -12 -999   13   -5    0   -1    0    0 -679
+ 41 Good Ole Rock       -26290  -995 -995 -999 -999 -999 -999 -999 -997 -998 -995 -1000 -998 -998 -996 -967 -996 -980 -998 -997 -992 -994 -999 -977    0   11 -972   29   12  -21 -1000  -77  185    0    2 -999  -11  417 -999 -1000    0    0 1000
+ 42 * Anti-Flat         -27720  -985 -994 -994 -995 -997 -993 -1000 -994 -995 -998 -996 -1000 -996 -996 -966 -991 -985 -990 -981 -992 -989 -997 -978  113   13 -554   -5  -18   -4 -988  -11 -112  413    0 -1000   -6 -445 -997 -996  679 -1000    0
 
  Match results (draw <= 50): 
 
     Player Name           total  W  L  D   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42
-  1 Phasenbott              69  29  1 11   1  0  2  2  2  1  1  1  2  1  2  2  1  1  2  1  2  1  2  2  1  2  1  2  2  2  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2
-  2 Iocaine Powder          67  27  1 13   2  1  1  2  2  1  1  1  2  1  2  1  1  1  1  1  2  1  2  2  1  2  0  2  2  2  2  2  2  2  2  2  2  2  2  2  1  2  2  2  2  2
-  3 MegaHAL                 67  27  1 13   0  1  1  1  2  1  1  1  1  1  2  2  1  1  1  1  2  1  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
-  4 Simple Modeller         63  24  2 15   0  0  1  1  1  1  1  1  1  1  2  1  1  1  2  1  2  1  2  2  2  2  1  2  1  2  2  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2
-  5 RussRocker4             62  25  4 12   0  0  0  1  1  1  1  1  1  1  2  1  1  1  2  2  2  0  2  2  2  1  1  2  2  2  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2
-  6 Biopic                  61  20  0 21   1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  2  2  1  1  1  2  2  2  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2
-  7 Boom                    61  20  0 21   1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  1  1  2  2  2  1  1  2  1  2  2  2  2  1  2  2  1  2  2  2  2  2  2  2  2  2
-  8 Shofar                  59  18  0 23   1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  2  1  2  1  2  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2
-  9 ACT-R Lag2              58  20  3 18   0  0  1  1  1  1  1  1  1  1  2  2  2  1  1  1  2  0  2  2  1  1  1  2  1  2  1  2  1  1  2  1  2  2  2  2  2  2  2  2  2  2
- 10 Bugbrain                58  18  1 22   1  1  1  1  1  1  1  1  1  1  0  1  1  1  1  1  2  1  2  2  2  1  1  2  1  2  2  2  2  1  2  1  1  2  1  2  2  2  2  2  2  2
- 11 Simple Predictor        56  23  8 10   0  0  0  0  0  1  1  1  0  2  1  1  1  1  1  2  0  0  2  1  2  2  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
- 12 Robertot                54  16  3 22   0  1  0  1  1  1  1  1  0  1  1  1  1  1  1  1  2  1  2  2  1  1  1  1  1  2  1  2  1  1  2  2  1  2  2  2  2  2  2  2  2  2
- 13 Majikthise              54  14  1 26   1  1  1  1  1  1  1  1  0  1  1  1  1  1  2  1  2  1  1  2  1  1  1  2  1  2  1  1  1  1  2  1  2  1  1  2  2  2  2  2  2  2
- 14 Vroomfondel             54  13  0 28   1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  2  2  1  2  1  1  1  1  2  1  2  1  1  2  2  2  2  2  2  2
- 15 Sweet Rocky             52  17  6 18   0  1  1  0  0  1  0  1  1  1  1  1  0  1  1  1  1  1  1  0  2  1  1  2  1  1  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
- 16 Piedra                  52  14  3 24   1  1  1  1  0  1  1  1  1  1  0  1  1  1  1  1  1  1  1  1  1  1  0  1  1  2  1  2  2  1  2  1  2  2  2  2  2  2  2  2  2  2
- 17 Marble                  50  20 11 10   0  0  0  0  0  0  1  1  0  0  2  0  0  1  1  1  1  0  1  1  2  1  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
- 18 * De Bruijn             49   9  1 31   1  1  1  1  2  1  1  1  2  1  2  1  1  1  1  1  2  1  1  2  2  1  1  1  1  1  1  1  2  1  2  1  1  1  1  1  1  2  1  1  0  1
- 19 ZQ Bot                  47  17 11 13   0  0  0  0  0  0  0  1  0  0  0  0  1  1  1  1  1  1  1  1  1  1  1  1  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2  2  2
- 20 Granite                 46  18 13 10   0  0  0  0  0  0  0  0  0  0  1  0  0  1  2  1  1  0  1  1  2  1  1  2  1  2  1  2  2  1  2  2  2  2  2  2  2  2  2  2  2  2
- 21 * Anti-rotn             46  15 10 16   1  1  0  0  0  1  0  1  1  0  0  1  1  1  0  1  0  0  1  0  1  1  1  2  1  2  1  2  1  1  2  2  2  2  2  2  2  2  2  2  2  2
- 22 Mixed Strategy          46  12  7 22   0  0  0  0  1  1  1  0  1  1  0  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  2  2  2  1  2  2  1  2  2  2  2  2  2
- 23 * Pi                    41   2  2 37   1  2  1  1  1  1  1  1  1  1  1  1  1  0  1  2  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  1  1  1  1  1  1  1
- 24 Inocencio               40  16 17  8   0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  1  0  1  1  0  0  1  1  1  2  2  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2
- 25 * Foxtrot               34   0  7 34   0  0  0  1  0  0  1  1  1  1  1  1  1  1  1  1  1  1  0  1  1  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
- 26 Multi-strategy          34  13 20  8   0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  1  0  0  0  1  1  0  1  1  1  2  1  2  1  2  2  2  2  2  2  2  2  2  2  2
- 27 * Add-drift             31   0 10 31   0  0  0  0  0  1  0  1  1  0  0  1  1  1  1  1  0  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
- 28 Peterbot                31  11 21  9   0  0  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  1  0  0  0  0  1  0  1  0  1  1  2  2  1  1  2  2  1  2  2  2  2  2  2  2
- 29 * Add-react             28   2 15 24   0  0  0  0  0  1  0  1  1  0  0  1  1  1  0  0  0  0  0  0  1  1  1  1  1  1  1  0  1  1  1  1  2  1  1  1  1  1  1  2  1  1
- 30 * Copy-drift            26   0 15 26   0  0  0  0  0  0  1  0  1  1  0  1  1  1  0  1  0  1  1  1  1  0  1  0  1  0  1  0  1  1  0  1  1  1  1  1  1  1  1  1  1  1
- 31 Knucklehead             26   8 23 10   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  1  1  1  1  1  2  1  2  1  2  1  1  1  2  2  2  2  2
- 32 Yomi AI                 25   3 19 19   1  0  0  0  1  0  0  0  1  1  0  0  1  1  0  1  0  1  0  0  0  0  1  0  1  0  1  1  1  1  0  1  1  0  1  1  1  0  1  2  2  2
- 33 * Flat                  22   3 22 16   0  0  0  1  0  0  1  0  0  1  0  1  0  0  0  0  0  1  0  0  0  1  1  0  1  0  1  0  0  1  1  1  1  2  0  1  1  2  1  1  0  2
- 34 Beat The Last Move      21   6 26  9   0  0  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  1  0  0  0  0  1  0  1  0  1  0  1  1  0  2  0  1  2  0  0  2  1  2  2  2
- 35 * Text                  21   3 23 15   0  0  0  0  0  0  0  0  0  1  0  0  1  1  0  0  0  1  0  0  0  0  2  0  1  0  1  1  1  1  1  1  2  0  1  1  1  0  1  0  2  1
- 36 Always Switchin'        19   1 23 17   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  1  1  0  1  0  1  0  1  1  1  1  1  2  1  1  1  1  1  1  1  1
- 37 * Switch A Lot          19   1 23 17   0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  1  0  1  0  1  0  1  1  1  1  1  2  1  1  1  1  1  1  1  1
- 38 Beat Frequent Pick      18   5 28  8   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  1  0  1  0  1  1  0  2  0  0  2  1  1  1  1  2  2  2
- 39 Rotate R-P-S            15   0 26 15   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  1  0  1  0  1  0  1  1  0  1  1  1  1  1  1  1  1  1  0  1
- 40 Good Ole Rock           15   3 29  9   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  1  0  1  0  1  0  0  1  0  0  1  0  2  1  1  0  1  1  2  2
- 41 * Anti-Flat             13   3 31  7   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  2  0  0  0  0  1  0  1  0  1  0  1  1  0  0  2  0  0  1  1  0  2  0  1  0
- 42 R-P-S 20-20-60          12   1 30 10   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  1  0  1  0  1  0  1  1  0  0  0  0  1  1  1  0  1  0  2  1
+  1 Phasenbott              69  29  1 11   1  0  2  2  2  1  1  1  1  2  2  1  1  2  2  1  2  1  2  2  1  2  2  1  2  2  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2
+  2 Iocaine Powder          67  27  1 13   2  1  1  2  2  1  1  1  1  2  1  1  1  2  1  1  2  1  2  2  1  2  2  0  2  2  2  2  2  2  2  2  2  2  2  2  1  2  2  2  2  2
+  3 MegaHAL                 67  27  1 13   0  1  1  1  2  1  1  1  1  1  2  1  1  2  1  1  2  1  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
+  4 Simple Modeller         63  25  3 13   0  0  1  1  1  2  0  1  2  1  1  1  1  2  1  1  2  1  2  2  2  2  2  1  1  2  2  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2
+  5 RussRocker4             61  24  4 13   0  0  0  1  1  1  1  1  1  1  1  1  1  2  1  2  2  0  2  1  2  2  2  1  2  2  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2
+  6 Biopic                  61  21  1 19   1  1  1  0  1  1  1  1  1  1  1  1  1  2  1  1  2  1  2  1  1  2  2  1  2  2  2  1  1  2  2  2  2  2  2  2  2  2  2  2  2  2
+  7 Shofar                  60  19  0 22   1  1  1  2  1  1  1  2  1  1  1  1  1  1  1  1  2  1  1  1  1  2  1  1  1  2  2  1  1  2  2  2  2  2  2  2  2  2  2  2  2  2
+  8 Boom                    58  19  2 20   1  1  1  1  1  1  0  1  1  1  1  0  1  1  2  1  2  1  1  1  2  1  2  1  1  2  2  2  2  1  2  2  1  2  2  2  2  2  2  2  2  2
+  9 Bugbrain                57  17  1 23   1  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  2  2  2  1  1  2  2  2  2  1  2  1  1  2  1  2  2  2  2  2  2  2
+ 10 ACT-R Lag2              56  18  3 20   0  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  0  2  2  1  2  2  1  1  2  2  1  1  1  2  1  2  2  2  2  2  2  2  2  2  2
+ 11 Robertot                55  16  2 23   0  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  1  2  1  2  1  1  1  2  2  1  1  1  2  2  1  2  2  2  2  2  2  2  2  2
+ 12 Majikthise              55  14  0 27   1  1  1  1  1  1  1  2  1  1  1  1  1  1  2  2  1  1  1  1  1  2  1  1  1  2  1  1  1  1  2  1  2  1  1  2  2  2  2  2  2  2
+ 13 Vroomfondel             55  14  0 27   1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  2  1  2  2  2  1  2  1  1  1  1  2  1  2  1  1  2  2  2  2  2  2  2
+ 14 Simple Predictor        54  20  7 14   0  0  0  0  0  0  1  1  1  1  1  1  1  1  1  1  1  0  1  1  2  2  2  1  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
+ 15 Sweet Rocky             53  16  4 21   0  1  1  1  1  1  1  0  1  1  1  0  1  1  1  1  1  1  1  1  2  0  1  1  1  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2
+ 16 Piedra                  52  14  3 24   1  1  1  1  0  1  1  1  1  1  1  0  1  1  1  1  1  1  1  1  1  1  2  0  1  1  2  1  2  1  2  1  2  2  2  2  2  2  2  2  2  2
+ 17 Marble                  50  20 11 10   0  0  0  0  0  0  0  0  1  0  0  1  1  1  1  1  1  0  1  1  2  2  2  1  1  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2  2
+ 18 * De Bruijn             49   9  1 31   1  1  1  1  2  1  1  1  1  2  1  1  1  2  1  1  2  1  2  1  2  1  1  1  1  1  1  1  2  1  2  1  1  1  1  1  1  2  1  1  0  1
+ 19 Granite                 49  17  9 15   0  0  0  0  0  0  1  1  0  0  1  1  1  1  1  1  1  0  1  1  2  1  2  1  1  2  2  1  2  1  2  2  2  2  2  2  2  2  2  2  2  2
+ 20 Mixed Strategy          47  13  7 21   0  0  0  0  1  1  1  1  1  0  0  1  0  1  1  1  1  1  1  1  1  1  1  1  1  2  2  1  1  2  2  2  1  2  2  1  2  2  2  2  2  2
+ 21 * Anti-rotn             46  15 10 16   1  1  0  0  0  1  1  0  0  1  1  1  1  0  0  1  0  0  0  1  1  1  2  1  1  2  2  1  1  1  2  2  2  2  2  2  2  2  2  2  2  2
+ 22 ZQ Bot                  45  18 14  9   0  0  0  0  0  0  0  1  0  0  0  0  0  0  2  1  0  1  1  1  1  1  1  1  2  2  2  2  2  1  2  2  2  2  2  2  2  2  2  2  2  2
+ 23 Inocencio               42  16 15 10   0  0  0  0  0  0  1  0  0  0  1  1  0  0  1  0  0  1  0  1  0  1  1  1  2  2  2  1  1  2  2  2  2  2  2  2  2  2  2  2  2  2
+ 24 * Pi                    41   2  2 37   1  2  1  1  1  1  1  1  1  1  1  1  0  1  1  2  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  1  1  1  1  1  1  1
+ 25 * Foxtrot               34   0  7 34   0  0  0  1  0  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+ 26 Multi-strategy          33  12 20  9   0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1  0  1  0  0  0  0  0  1  1  1  1  1  1  2  1  2  2  2  2  2  2  2  2  2  2  2
+ 27 Peterbot                32  11 20 10   0  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  0  1  0  0  0  0  0  1  1  1  1  1  2  2  1  1  2  2  1  2  2  2  2  2  2  2
+ 28 * Add-drift             31   0 10 31   0  0  0  0  0  1  1  0  0  1  1  1  1  0  1  1  0  1  1  1  1  0  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+ 29 * Add-react             28   2 15 24   0  0  0  0  0  1  1  0  0  1  1  1  1  0  0  0  0  0  0  1  1  0  1  1  1  1  0  1  1  1  1  1  2  1  1  1  1  1  1  2  1  1
+ 30 * Copy-drift            26   0 15 26   0  0  0  0  0  0  0  1  1  1  1  1  1  0  0  1  0  1  1  0  1  1  0  1  1  0  0  1  1  1  0  1  1  1  1  1  1  1  1  1  1  1
+ 31 Knucklehead             26   8 23 10   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1  1  1  1  1  2  1  2  1  2  1  1  1  2  2  2  2  2
+ 32 Yomi AI                 25   3 19 19   1  0  0  0  1  0  0  0  1  1  0  1  1  0  0  1  0  1  0  0  0  0  0  1  1  0  1  1  1  1  0  1  1  0  1  1  1  0  1  2  2  2
+ 33 * Flat                  22   3 22 16   0  0  0  1  0  0  0  1  1  0  1  0  0  0  0  0  0  1  0  1  0  0  0  1  1  0  0  1  0  1  1  1  1  2  0  1  1  2  1  1  0  2
+ 34 Beat The Last Move      21   6 26  9   0  0  0  0  0  0  0  0  0  0  0  1  1  0  0  0  0  1  0  0  0  0  0  1  1  0  0  1  1  1  0  2  0  1  2  0  0  2  1  2  2  2
+ 35 * Text                  21   3 23 15   0  0  0  0  0  0  0  0  1  0  0  1  1  0  0  0  0  1  0  0  0  0  0  2  1  0  1  1  1  1  1  1  2  0  1  1  1  0  1  0  2  1
+ 36 Always Switchin'        19   1 23 17   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  1  0  0  0  1  1  0  0  1  1  1  1  1  1  2  1  1  1  1  1  1  1  1
+ 37 * Switch A Lot          19   1 23 17   0  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  1  1  0  0  1  1  1  1  1  1  2  1  1  1  1  1  1  1  1
+ 38 Beat Frequent Pick      18   5 28  8   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1  0  0  1  1  1  0  2  0  0  2  1  1  1  1  2  2  2
+ 39 Rotate R-P-S            15   0 26 15   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  1  1  0  0  1  1  1  0  1  1  1  1  1  1  1  1  1  0  1
+ 40 Good Ole Rock           15   3 29  9   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  1  1  0  0  1  0  1  0  0  1  0  2  1  1  0  1  1  2  2
+ 41 * Anti-Flat             13   3 31  7   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  2  0  0  0  0  0  1  1  0  0  1  1  1  0  0  2  0  0  1  1  0  2  0  1  0
+ 42 R-P-S 20-20-60          12   1 30 10   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  1  1  0  0  1  1  1  0  0  0  0  1  1  1  0  1  0  2  1
 
