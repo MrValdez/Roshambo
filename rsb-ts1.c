@@ -2918,7 +2918,7 @@ int boom () {
 struct strat {
     int(*pname)();
     void (*init)();
-    double score;
+    float score;
     int ivar[16];
     double dvar[16];
     int move;
@@ -3052,7 +3052,7 @@ int shofar(void)
         r -= pow(base, s[i].score);
         if (r <= 0) break;
       }
-//    assert(i >= 0 && i < sc);
+    assert(i >= 0 && i < sc);
     chose = i;
 /*      printf("Her move was %d, my move was %d\n", opp_history[opp_history[0]], s[chose].move); */
     return s[chose].move;
