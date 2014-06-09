@@ -1,17 +1,21 @@
 This is the repository for MrValdez's doctorate dissertation. Once the first paper is published, it will be linked to this repository. 
 
-This is a work in progress and does not represent the final dissertation.
+This is a work in progress and does not represent my final dissertation.
 
 #License
 
 For the source code, please check LICENSE for more information, but the quick summary is: The International RoShamBo Test Suite has their own license and our AI is under the MIT license.
 
-The Python.dll binary is under the [Python license](https://docs.python.org/3/license.html)
+The Python.dll binary is under the [Python license](https://docs.python.org/3/license.html).
 
-#Dependencies
+#AI Dependencies
  - **gcc**. We used the unofficial windows binaries: rubenvb MinGW-w64 (gcc rubenvb-4.8.0).
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **OS**. We used Windows 8 64-bit, but other than the batch files, this code should be cross-platform (note: untested).
+
+#Tools dependencies
+ - **Python 3.x**. We used Python 3.3 32-bit.
+ - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
 
 #Supplied prerequisites
 
@@ -33,10 +37,9 @@ Here are the changes for the test suite. These modifications are necessary to al
 - **bzero()** calls **memset()**
 
 ##International RoShamBo Test Suite changes
-  - not included in this revision's results: *Pi, Switch A Lot, Flat, Anti-Flat, Foxtrot, De Bruijn, Text, Anti-rotn, Copy-drift, Add-react, Add-drift*.
-  - One AI was changed for the purpose of this paper: shofar. Shofar, for some odd reason, is throwing an run-time exception. A quick debug shows that the python-c api is causing this problem. To complete the tournament, the assert (line 3055) has been commented. This will be returned later. (todo: solve this mystery)
   - total number of players has been changed.
   - *verbose1*, *verbose2*, *verbose3* and *verbose4* has been changed to int (originally constants). This allows them to be changed via Python.
+  - Because of a bug in the Shofar AI, it was modified. Shofar has a one-off bug which causes it to throw an exception (line 3021 in the unmodified source code). We sidestep the problem by modifying the assert, but note that the random numbers that causes the exception can sometimes return an invalid move (this is because Shofar is accessing memory that it shouldn't be accessing). Luckily, the test suite will modulo the invalid move so we can run the tournament.
   
 ##Python specific changes
 *Python.c* holds most of the Python interface
