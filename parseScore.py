@@ -1,7 +1,7 @@
 import sys
 import os
 
-pathbase = "./results/"
+pathbase = "./results/"             # Note: this string should end with "/"
 
 def FindScore(bot, showAllResults):
     """Get the best and worst score of a bot against Yomi AI"""

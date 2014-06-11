@@ -2,7 +2,7 @@ import os
 import subprocess
 import charts
 
-pathbase = "./results/"
+pathbase = "./results/"             # Note: this string should end with "/"
 
 def main():
     PlayTournament(1000)

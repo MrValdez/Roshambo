@@ -1,11 +1,11 @@
 /* Basic Python structure:
 
-def yomi():
+def play():
     """ This returns 0, 1, or 2 and is the main entry point """
     return 0
 
 def SkeletonAI():
-    """ This is the most basic AI that shows the functions used """
+    """ This is the most basic AI that showcase the rps library """
     currentTurn = rps.getTurn()
     
     if currentTurn:
