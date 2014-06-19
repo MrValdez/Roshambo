@@ -88,6 +88,8 @@ The rps library contains the following test suite related functions:
 
 - **rps.random()** returns a random number using the test suite's random function. We should use this rather than Python's **math.random()** to ensure that we are using the same RNG as the AIs in the test suite. We theorized that Python's math library will also use the same RNG as the test suite, but we did not test for this.
 
+- **rps.randomRange()** functions similarly to **rps.random()** but returns a floating number between [0..1].
+
 ## Simpliest example of AI-to-test suite interface
 
 ```

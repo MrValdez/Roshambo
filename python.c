@@ -102,18 +102,18 @@ rps_random ()
 }
 
 static PyObject *
-rps_maxrandom ()
+rps_randomRange ()
 {
-    return PyFloat_FromDouble(maxrandom);
+    return PyFloat_FromDouble(random() / maxrandom);
 }
 
 static PyMethodDef rpsMethods[] = {
-    {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1."},
-    {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1."},
-    {"getTurn",  rps_getTurn, METH_VARARGS, "Returns current turn."},
+    {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1"},
+    {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1"},
+    {"getTurn",  rps_getTurn, METH_VARARGS, "Returns current turn"},
     {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
-    {"random",  rps_random, METH_VARARGS, "Returns 0 to [maxrandom]."},
-    {"maxrandom",  rps_maxrandom, METH_VARARGS, "Returns maxrandom."},
+    {"random",  rps_random, METH_VARARGS, "Returns random number between [0..maxrandom]"},
+    {"randomRange",  rps_randomRange, METH_VARARGS, "Returns random number between [0..1]"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

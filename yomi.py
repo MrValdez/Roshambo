@@ -64,7 +64,7 @@ def yomi(prediction):
             chances.append(0)    
 #    print (chances)
     
-    value = rps.random() / rps.maxrandom()
+    value = rps.randomRange()
     layerToUse = 0
     for i in range(4):
         if value <= chances[i]: 
