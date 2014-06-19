@@ -117,7 +117,5 @@ def BFP(targetPredictionSize):
 
 def play(targetPredictionSize):
     move = BFP(targetPredictionSize)
-    playing = (move + 1) % 3
-    if Debug:
-        print("Predicting %i. Playing %i\n\n"  % (move,playing))
-    return playing
+    
+    return move

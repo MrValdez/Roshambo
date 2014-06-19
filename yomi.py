@@ -1,286 +1,88 @@
-#todo: check good ole rock against yomi. why is there a tie?
 import BeatFrequentPick
 import rps
 Debug = True
 Debug = False
 
-# todo: values to experiment on:
-MemorySize = 4
-MemoryFragmentLimit = 3         # how many memories we need to remember
+yomiScore = [0, 0, 0, 0]
+yomiChoices = [0, 0, 0, 0]
+layerLastTurn = 0
 
-def checkWinner(p1, p2):
-    """
-    Returns True if p1 wins.
-    Returns False if p2 wins.
-    Returns None if its a tie
-    """
-    if p1 == p2:
-        return None
-        
-    if (p1 == 0 and p2 == 2) or \
-       (p1 == 1 and p2 == 0) or \
-       (p1 == 2 and p2 == 1):
-       return True
-       
-    return False
-
-class MemoryFragment:
-    """ 
-    This is a struct that holds the data for a memory fragment.
-    prediction is our prediction on what will happen in the future as our memory tells us
-    memoryPosition holds where in memory the fragment can be found
-    confidence tells how confident we are with the memory
-    """
-    def __init__(self, prediction, memoryPosition, confidence):
-        if type(prediction) == str:
-            raise 'prediction should be type int'
-        self.prediction      = prediction
-        self.memoryPosition  = memoryPosition
-        self.confidence      = confidence
-
-class SituationDB:
-    def __init__(self):
-        self.reset()
-    def reset(self):
-        self.FullSituation  = ""   # holds the player's and enemy's moves
-        self.AISituation    = ""   # just the player's moves
-        self.EnemySituation = ""   # just the enemy's moves
-    def add(self, myMove, enemyMove):
-        myMove = str(myMove)
-        enemyMove = str(enemyMove)
-        
-        self.FullSituation  += myMove + enemyMove
-        self.AISituation    += myMove
-        self.EnemySituation += enemyMove
-    def guessMove(self):
-        rock = 1 / 3.0
-        paper = 1 / 3.0
-        guess = rps.biased_roshambo (rock, paper)       # choose one at random
-        confidence = 0  #todo: personality
-        
-        return MemoryFragment(prediction = guess,
-                               memoryPosition = None,
-                               confidence = confidence)
-    def predict(self, currentTurn):
-        """
-        returns a list of memory fragments where we "remember" in our memory the current situation.
-        if we don't have a memory of the current situation, guess.
-        """        
-        def searchDB(DB):
-            """ returns a list of index where we receive a memory hit """
-            # get the last n turns where n is our memory size
-            global MemorySize, MemoryFragmentLimit
-            
-            n = MemorySize
-            dbSize = len(DB)
-            if n > dbSize:
-                n = dbSize
-            memoryFragment = DB[-n:]
-            
-            hits = []
-            found = dbSize - n
-            while True:
-                found = DB.rfind(memoryFragment, 0, found)
-                if found == -1:
-                    break
-                hits.append(found)
-                if len(hits) >= MemoryFragmentLimit:
-                    break
-            return hits
-        
-        def CreatePredictions(DB):
-            predictions = []
-            
-            hitList = searchDB(DB)
-            if not (hitList == None or len(hitList) == 0):
-                for hit in hitList:
-                    if DB == self.FullSituation:
-                        offset = 2
-                    else:
-                        offset = 1
-                    
-                    # todo: confidence should depend on a heuristics
-                    confidence = 0
-                    if DB == self.FullSituation:
-                        confidence = 100
-                    elif DB == self.EnemySituation:
-                        confidence = 80
-                    elif DB == self.AISituation:
-                        confidence = 80
-                        
-                    predictMove = DB[hit + offset]
-                    predictMove = int(predictMove)
-
-                    memory = MemoryFragment(prediction = predictMove,
-                                            memoryPosition = hit,
-                                            confidence = confidence)
-                    predictions.append(memory)
-        
-            return predictions
-        
-        if currentTurn == 0:
-            return [self.guessMove()]
-        
-        memoryFragments = []
-        #memoryFragments.extend(CreatePredictions(self.FullSituation))
-        #memoryFragments.extend(CreatePredictions(self.AISituation))
-        memoryFragments.extend(CreatePredictions(self.EnemySituation))
-        
-        if len(memoryFragments) == 0:
-            return [self.guessMove()]
-            
-        return memoryFragments
-
-class Yomi():
-    def __init__(self):
-        self.reset()
-        
-    def reset(self):
-        self.enemyYomiTendencies = [0, 0, 0]            # Prefered move, first yomi layer, second yomi layer, 
-        
-        # These are data from the last turn
-        self.prevPredictedEnemyMove = 0                 # This holds the move we've predicted the enemy will use
-        self.prevPredictedEnemyYomiLayer = 0 
-        self.prevAIYomiLayer = 0
-        
-    def update(self, myMoveLastTurn, enemyMoveLastTurn):
-         # decay the yomi layers
-         #for i in range(len(self.enemyYomiTendencies)):
-         #   self.enemyYomiTendencies[i] -= 0.1
-            
-         def updateEnemyYomiTendencies(layer, positiveModification = 1, negativeModification = -1):
-            if Debug: print("updating enemy's layer from last turn: ", layer)
-            for i in range(len(self.enemyYomiTendencies)):
-                if i == layer:
-                    self.enemyYomiTendencies[i] += positiveModification
-                else:
-                    self.enemyYomiTendencies[i] += negativeModification            
-         
-         def findMoveYomiLayer(move, predictedMove, predictedLayer):
-            """ returns the layer that a move can be found based on what our predicted move is """
-            layer = 0
-            while True:
-                if move == predictedMove:
-                    return layer
-                move = (move + 2) % 3
-                layer += 1
-                if layer > len(self.enemyYomiTendencies):
-                    layer = layer = 0
-         
-         if myMoveLastTurn == enemyMoveLastTurn:
-            # its a tie. so we suspect that the enemy just used the same layer as us.
-            updateEnemyYomiTendencies(self.prevAIYomiLayer, positiveModification = 1, negativeModification = -1)   #todo: personality
-         else:
-            currentEnemyLayer = findMoveYomiLayer(enemyMoveLastTurn, self.prevPredictedEnemyMove, self.prevPredictedEnemyYomiLayer)
-            #AIwins = checkWinner(myMoveLastTurn, enemyMoveLastTurn)
-            #if AIWins:
-            #else:
-            updateEnemyYomiTendencies(currentEnemyLayer)   #todo: personality
-
-            
-    def _chooseEnemyYomiLayer(self):
-        expectedEnemyYomiLayer = None
-        
-        # check for highest tendencies
-        maxValue = max(self.enemyYomiTendencies)
-        count = self.enemyYomiTendencies.count(maxValue)
-
-        if count == 1:
-            # one yomi layer has the highest tendency. Get that layer
-            for i, val in enumerate(self.enemyYomiTendencies):
-                if maxValue == val:
-                    expectedEnemyYomiLayer = i
-        else:
-            # multiple yomi layers has the same value. Let's choose randomly between them.
-            maxValue = max(self.enemyYomiTendencies)
-            count = self.enemyYomiTendencies.count(maxValue)
-            choice = rps.random() % count
-            
-            for i, val in enumerate(self.enemyYomiTendencies):
-                if val == maxValue:
-                    if choice == 0:
-                        expectedEnemyYomiLayer = i
-                        
-                        break
-                    choice -= 1            
-            if Debug: print ("Choosing at random. Guesing enemy's predicted layer: ", expectedEnemyYomiLayer)
-            
-        if expectedEnemyYomiLayer == None: #shouldn't happen
-            return 0      # default. We can't read the enemy's current yomi, so let's play safe and use layer 0 (todo: should use personal favorite)
-        
-        self.prevPredictedEnemyYomiLayer = expectedEnemyYomiLayer
-        
-        return expectedEnemyYomiLayer
-            
-    def _getYomiLayerMove(self, move, layer):
-        # returns the move at yomi layer
-        return (move + layer) % 3
-        
-    def applyYomi(self, memoryFragments):
-        enemyMove = 0
-        # select the move that we think the opponent favors
-        enemyMove = memoryFragments[0].prediction
-        self.prevPredictedEnemyMove = enemyMove
-        if Debug: print("predicting that enemy will use move ", enemyMove)
-        
-        # check if we should use yomi on the current prediction
-        enemyLayer = self._chooseEnemyYomiLayer()
-        if Debug: 
-            print(self.enemyYomiTendencies)
-            print("predicting that the enemy will use layer ", enemyLayer) 
-            input()
-        
-        AIYomiLayer = (enemyLayer + 1) % 3 # play at a higher layer. todo: we don't always want to do this.      
-        self.prevAIYomiLayer = AIYomiLayer
-        move = self._getYomiLayerMove(enemyMove, AIYomiLayer)
-        if Debug: print("Our chosen move to play is ", move)
-        
-        return move
-
-def predict(a):
-    """ returns a list of memoryFragments that we think the opponet will choose """
-
-    currentTurn = rps.getTurn()
-    memoryFragments = situationDB.predict(currentTurn)
-    
-    bfpMove = BeatFrequentPick.BFP(a)
-    bfpFragment = MemoryFragment(prediction = bfpMove,
-                                 memoryPosition = None,
-                                 confidence = 100)
-
-    memoryFragments.append(bfpFragment)
-    memoryFragments.sort(key = lambda x : x.confidence, reverse = True)
-    return memoryFragments
-    
-
-yomi = Yomi()                
-situationDB = SituationDB()
 def init():
-    situationDB.reset()
-    yomi.reset()
-    
-def play(a):
-    return BeatFrequentPick.play(a)
-    global situationDB
-    global enemyPersonality, playerPersonality
+    yomiScore = [0, 0, 0, 0]
+    layerLastTurn = 0
+
+def yomi(prediction):
+    global yomiScore
+    global layerLastTurn 
+
     currentTurn = rps.getTurn()
-    
-    if Debug: print("\n")
     
     if currentTurn == 0:
         init()
     else:
-        # record the last turn
+        # update score from last turn
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-        situationDB.add(myMoveLastTurn, enemyMoveLastTurn)
+        victory = (myMoveLastTurn == enemyMoveLastTurn + 1)
+        tie = (myMoveLastTurn == enemyMoveLastTurn)
         
-        yomi.update(myMoveLastTurn, enemyMoveLastTurn)
+        if victory:
+            scoreThisTurn = 2
+        elif tie:
+            scoreThisTurn = 1
+        else:
+            scoreThisTurn = -1
         
-    memoryFragments = predict(a)
-    move = yomi.applyYomi(memoryFragments)
+        #for i in range(4):
+        #    if yomiScore[i] == myMoveLastTurn: yomiScore[i] += scoreThisTurn
+        yomiScore[layerLastTurn] += scoreThisTurn
+
+    # fill up yomiChoices with the moves to be played
+    yomiChoices = []
+    yomiChoices.append(rps.random() % 3)        # layer 0   (original choice
+    yomiChoices.append((prediction + 1) % 3)  # layer 1   (beats enemy's choice)
+    yomiChoices.append((prediction + 2) % 3)  # layer 2   (beats enemy's layer 1)
+    yomiChoices.append((prediction + 3) % 3)  # layer 3   (beats enemy's layer 2)
     
+#    print (yomiChoices)
+
+    # figure out what layer to use
+    # 1. Get the highest point
+    # 2. Get all the layers with the same points
+    # 3. randomize what layer to choose amongst top ranking
+    maxPoint = max(yomiScore)
+    topLayersCount = yomiScore.count(maxPoint)
+    
+    probDistribution = 1.0 / topLayersCount        # can be changed to a subsystem
+    chances = []
+    currentCount = 1
+    for i in range(4):
+        if yomiScore[i] == maxPoint: 
+            chances.append(probDistribution * currentCount)
+            currentCount += 1
+        else:
+            chances.append(0)    
+#    print (chances)
+    
+    value = rps.random() / rps.maxrandom()
+    layerToUse = 0
+    for i in range(4):
+        if value <= chances[i]: 
+            layerToUse = i
+            break
+    
+    layerLastTurn = layerToUse
+        
+    # return move based on layer
+    move = yomiChoices[layerToUse]
+#    input()
     return move
+    
+def play(a):
+    prediction = BeatFrequentPick.play(a)
+    decision = yomi(prediction)
+    return decision
+
 
 def SkeletonAI():
     """ This is the most basic AI that shows the functions used """
@@ -305,4 +107,3 @@ def isVerbose():
 def BeatFrequentPickAI(a):
     import BeatFrequentPick
     return BeatFrequentPick.play(a)
-    
