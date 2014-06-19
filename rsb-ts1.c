@@ -72,12 +72,11 @@ typedef struct {
    int result[players+1];   /* list of player's match results */
 } Player_Table;
 
-#define maxrandom 2147483648.0   /* 2^31, ratio range is 0 <= r < 1 */
 
 //********************************BUG FIXXXXXXX
-#undef maxrandom
+//#define maxrandom = 2147483648.0;   /* 2^31, ratio range is 0 <= r < 1 */
 //#define maxrandom ((float) RAND_MAX )
-#define maxrandom 32767.0
+float maxrandom = 32767.0;
 
 long random()
 {
@@ -6151,7 +6150,30 @@ int main(int argc, char *argv[]) {
    g_drawn++;
    Print_Match_Results (crosstable);
    */
-   
+
+/// Quick post of score that's better than our ai
+    int j, rank = 0;
+
+    printf("\n Tournament results: \n\n");
+    printf("    ");
+    printf("%-*s ", nameleng, crosstable[0].name);
+    printf("  total \n");
+    for (i = 1; i <= players; i++) {
+        if (crosstable[i].result[0] >= crosstable[1].result[0])
+        {
+            printf(" %2d ", i);
+            printf("%-*s ", nameleng, crosstable[i].name);
+            printf(" %*d ", fw+2, crosstable[i].result[0]);
+            printf("\n");
+            rank+= 1;
+        }
+    }
+    printf("\n\n   Yomi is ranked %d", rank);
+    printf("\n");
+    printf("\n");
+
+///
+    
    exitPython();
    return(0);
 }
