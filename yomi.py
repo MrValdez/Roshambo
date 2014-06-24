@@ -30,12 +30,12 @@ def yomi(prediction):
         if victory:
             scoreThisTurn = 2
             yomiScore[layerLastTurn] += scoreThisTurn
-        elif tie:
-            scoreThisTurn = 1
-            yomiScore[layerLastTurn] += scoreThisTurn
         else:
             # add score to yomi layer that would have gave us a win
-            scoreThisTurn = 2
+            if tie:
+                scoreThisTurn = 1
+            else:
+                scoreThisTurn = 1
             
             winningMove = (enemyMoveLastTurn + 1) % 3
             # search for the layer that contains the winning move
@@ -63,22 +63,21 @@ def yomi(prediction):
     if Debug: print ("Yomi Choices: " + str(yomiChoices))
 
     # figure out what layer to use
-    # 1. Get the highest point
-    # 2. Get all the layers with the same points
+    # 1. Get the sum of all the score
+    # 2. Get the ratio for each layer
     # 3. randomize what layer to choose amongst top ranking
-    maxPoint = max(yomiScore)
-    topLayersCount = yomiScore.count(maxPoint)
+    yomiScoreSum = sum(yomiScore)
     
-    probDistribution = 1.0 / topLayersCount        # can be changed to a subsystem
-    if Debug: print (probDistribution)
     chances = []
     currentCount = 1
+    prevRatio = 0
     for i in range(1, 4):
-        if yomiScore[i] == maxPoint: 
-            chances.append(probDistribution * currentCount)
-            currentCount += 1
+        if yomiScore[i] > 0:
+            ratio = prevRatio + (yomiScore[i] / yomiScoreSum)
+            chances.append(ratio)
+            prevRatio = ratio
         else:
-            chances.append(0)    
+            chances.append(0)
     if Debug: print ("Yomi Score: " + str(yomiScore))
     if Debug: print ("Chances:    " + str(chances))
     
