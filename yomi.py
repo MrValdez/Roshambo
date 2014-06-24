@@ -7,7 +7,11 @@ yomiScore = [0, 0, 0, 0]
 yomiChoices = [0, 0, 0, 0]
 layerLastTurn = 0
 
+currentOpponent = 0
+
 def init():
+    global yomiScore
+    global layerLastTurn 
     yomiScore = [0, 0, 0, 0]
     layerLastTurn = 0
 
@@ -15,11 +19,17 @@ def yomi(prediction):
     global yomiScore
     global yomiChoices
     global layerLastTurn 
+    global currentOpponent
 
     currentTurn = rps.getTurn()
     
     if currentTurn == 0:
         init()
+        
+        if currentOpponent == 1:
+            global Debug
+#            Debug = True
+        currentOpponent += 1
     else:
         # update score from last turn
         myMoveLastTurn = rps.myHistory(currentTurn)
