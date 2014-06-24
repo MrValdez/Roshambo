@@ -48,7 +48,8 @@ int verbose3 = 1;          /* print result of each match */
 int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
-#define players   42         /* number of players in the tournament */
+//#define players   42         /* number of players in the tournament */
+#define players   41         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 int usePython = 1;
 
@@ -5598,10 +5599,10 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     else
         crosstable[i].pname = yomi;
 #if 0
-#endif
     i++;  /* nuthin' beats rock */
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
+#endif
 
     i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
     strcpy(crosstable[i].name, "R-P-S 20-20-60");
@@ -6075,8 +6076,8 @@ void Play_Tournament (Player_Table crosstable[players+1])
         // YOMI CHANGES
         if (verbose4 == 0 && i >= 1) 
         {   
-            printf(" (playing the rest of the tournament)\n\n");
-            break;
+            //printf(" (playing the rest of the tournament)\n\n");
+            verbose3 = 0;
         }
         // YOMI CHANGES
 
@@ -6106,7 +6107,7 @@ int main(int argc, char *argv[]) {
    if (verbose1 == -1)
        return 1;
 
-   verbose4 = 1;// during development, we are not interested in our standing   
+   verbose4 = 0;// during development, we are not interested in our standing   
    
    yomiVariable1 = atoi(argv[1]);
    if (yomiVariable1 == 0)
