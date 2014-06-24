@@ -13,6 +13,7 @@ def init():
 
 def yomi(prediction):
     global yomiScore
+    global yomiChoices
     global layerLastTurn 
 
     currentTurn = rps.getTurn()
@@ -23,28 +24,43 @@ def yomi(prediction):
         # update score from last turn
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-        victory = (myMoveLastTurn == enemyMoveLastTurn + 1)
+        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
         tie = (myMoveLastTurn == enemyMoveLastTurn)
         
         if victory:
             scoreThisTurn = 2
+            yomiScore[layerLastTurn] += scoreThisTurn
         elif tie:
             scoreThisTurn = 1
+            yomiScore[layerLastTurn] += scoreThisTurn
         else:
-            scoreThisTurn = -1
+            # add score to yomi layer that would have gave us a win
+            scoreThisTurn = 2
+            
+            winningMove = (enemyMoveLastTurn + 1) % 3
+            # search for the layer that contains the winning move
+            for i in range(1, len(yomiScore)):
+                if yomiChoices[i] == winningMove:
+                    yomiScore[i] += scoreThisTurn
+                    break
         
-        #for i in range(4):
-        #    if yomiScore[i] == myMoveLastTurn: yomiScore[i] += scoreThisTurn
-        yomiScore[layerLastTurn] += scoreThisTurn
+        #for i in range(1, len(yomiScore)):
+        #    if yomiChoices[i] == myMoveLastTurn: yomiScore[i] += scoreThisTurn
+        
 
     # fill up yomiChoices with the moves to be played
-    yomiChoices = []
-    yomiChoices.append(rps.random() % 3)        # layer 0   (original choice
-    yomiChoices.append((prediction + 1) % 3)  # layer 1   (beats enemy's choice)
-    yomiChoices.append((prediction + 2) % 3)  # layer 2   (beats enemy's layer 1)
-    yomiChoices.append((prediction + 3) % 3)  # layer 3   (beats enemy's layer 2)
+    layer0 = rps.random() % 3          # layer 0   (original choice)
+    layer1 = (prediction + 1) % 3      # layer 1   (beats enemy's choice)
+    layer2 = (layer1 + 2) % 3          # layer 2   (beats enemy's layer 1)
+    layer3 = (layer2 + 2) % 3          # layer 3   (beats enemy's layer 2)
     
-#    print (yomiChoices)
+    yomiChoices = []
+    yomiChoices.append(layer0)        
+    yomiChoices.append(layer1)        
+    yomiChoices.append(layer2)        
+    yomiChoices.append(layer3)        
+    
+    if Debug: print ("Yomi Choices: " + str(yomiChoices))
 
     # figure out what layer to use
     # 1. Get the highest point
@@ -54,28 +70,32 @@ def yomi(prediction):
     topLayersCount = yomiScore.count(maxPoint)
     
     probDistribution = 1.0 / topLayersCount        # can be changed to a subsystem
+    if Debug: print (probDistribution)
     chances = []
     currentCount = 1
-    for i in range(4):
+    for i in range(1, 4):
         if yomiScore[i] == maxPoint: 
             chances.append(probDistribution * currentCount)
             currentCount += 1
         else:
             chances.append(0)    
-#    print (chances)
+    if Debug: print ("Yomi Score: " + str(yomiScore))
+    if Debug: print ("Chances:    " + str(chances))
     
     value = rps.randomRange()
     layerToUse = 0
-    for i in range(4):
+    for i in range(len(chances)):
         if value <= chances[i]: 
             layerToUse = i
+            layerToUse += 1     # do this because layer 0 is removed.
             break
-    
+    if Debug: print ("Using layer %i. Random value was %f" % (layerToUse, value))
     layerLastTurn = layerToUse
-        
+    
+    if Debug: input()
+    
     # return move based on layer
     move = yomiChoices[layerToUse]
-#    input()
     return move
     
 def play(a):
