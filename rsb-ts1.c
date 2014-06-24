@@ -5604,6 +5604,10 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     crosstable[i].pname = rockbot;
 #endif
 
+    i++;  /* beat opponent's last move */
+    strcpy(crosstable[i].name, "Beat The Last Move");
+    crosstable[i].pname = copybot;
+
     i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
     strcpy(crosstable[i].name, "R-P-S 20-20-60");
     crosstable[i].pname = r226bot;
@@ -5611,10 +5615,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
     crosstable[i].pname = rotatebot;
-
-    i++;  /* beat opponent's last move */
-    strcpy(crosstable[i].name, "Beat The Last Move");
-    crosstable[i].pname = copybot;
 
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");

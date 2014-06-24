@@ -31,12 +31,15 @@ def yomi(prediction):
             scoreThisTurn = 2
             yomiScore[layerLastTurn] += scoreThisTurn
         else:
-            # add score to yomi layer that would have gave us a win
             if tie:
-                scoreThisTurn = 1
+                scoreThisTurn = 2
             else:
-                scoreThisTurn = 1
+                scoreThisTurn = -1
+                yomiScore[layerLastTurn] += scoreThisTurn
+                
+            scoreThisTurn = 1
             
+            # add score to yomi layer that would have gave us a win
             winningMove = (enemyMoveLastTurn + 1) % 3
             # search for the layer that contains the winning move
             for i in range(1, len(yomiScore)):
@@ -54,11 +57,7 @@ def yomi(prediction):
     layer2 = (layer1 + 2) % 3          # layer 2   (beats enemy's layer 1)
     layer3 = (layer2 + 2) % 3          # layer 3   (beats enemy's layer 2)
     
-    yomiChoices = []
-    yomiChoices.append(layer0)        
-    yomiChoices.append(layer1)        
-    yomiChoices.append(layer2)        
-    yomiChoices.append(layer3)        
+    yomiChoices = [layer0, layer1, layer2, layer3]
     
     if Debug: print ("Yomi Choices: " + str(yomiChoices))
 
@@ -66,18 +65,24 @@ def yomi(prediction):
     # 1. Get the sum of all the score
     # 2. Get the ratio for each layer
     # 3. randomize what layer to choose amongst top ranking
-    yomiScoreSum = sum(yomiScore)
-    
-    chances = []
-    currentCount = 1
-    prevRatio = 0
-    for i in range(1, 4):
-        if yomiScore[i] > 0:
-            ratio = prevRatio + (yomiScore[i] / yomiScoreSum)
-            chances.append(ratio)
-            prevRatio = ratio
-        else:
-            chances.append(0)
+    yomiScoreSum = 0
+    for score in yomiScore:
+        if score > 0:
+            yomiScoreSum += score
+            
+    if yomiScoreSum == 0:
+        chances = [1/3, 1/3 * 2, 1.0]
+    else:
+        chances = []
+        currentCount = 1
+        prevRatio = 0
+        for i in range(1, 4):
+            if yomiScore[i] > 0:
+                ratio = prevRatio + (yomiScore[i] / yomiScoreSum)
+                chances.append(ratio)
+                prevRatio = ratio
+            else:
+                chances.append(0)
     if Debug: print ("Yomi Score: " + str(yomiScore))
     if Debug: print ("Chances:    " + str(chances))
     
