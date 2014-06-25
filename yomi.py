@@ -9,6 +9,16 @@ layerLastTurn = 0
 
 currentOpponent = 0
 
+class YomiData:
+    def __init__(self):
+        self.victoryDelta = 1           # change to score when layer wins
+        self.lostDelta = -1             # change to score when layer lost
+        self.tieDelta = 0               # change to score when layer tied
+        self.winningDeltaForLost = 2    # change to the layer score which should have won (if layer lost)
+        self.winningDeltaForTie = 1     # change to the layer score which should have won (if layer tied)
+        
+YomiData = YomiData()
+
 def init():
     global yomiScore
     global layerLastTurn 
@@ -38,16 +48,17 @@ def yomi(prediction):
         tie = (myMoveLastTurn == enemyMoveLastTurn)
         
         if victory:
-            scoreThisTurn = 2
+            scoreThisTurn = YomiData.victoryDelta
             yomiScore[layerLastTurn] += scoreThisTurn
         else:
             if tie:
-                scoreThisTurn = 2
-            else:
-                scoreThisTurn = -1
+                scoreThisTurn = YomiData.tieDelta
                 yomiScore[layerLastTurn] += scoreThisTurn
-                
-            scoreThisTurn = 1
+                scoreThisTurn = YomiData.winningDeltaForTie
+            else:
+                scoreThisTurn = YomiData.lostDelta
+                yomiScore[layerLastTurn] += scoreThisTurn
+                scoreThisTurn = YomiData.winningDeltaForLost
             
             # add score to yomi layer that would have gave us a win
             winningMove = (enemyMoveLastTurn + 1) % 3
@@ -95,7 +106,7 @@ def yomi(prediction):
                 chances.append(0)
     if Debug: print ("Yomi Score: " + str(yomiScore))
     if Debug: print ("Chances:    " + str(chances))
-    
+   
     value = rps.randomRange()
     layerToUse = 0
     for i in range(len(chances)):
@@ -103,6 +114,16 @@ def yomi(prediction):
             layerToUse = i
             layerToUse += 1     # do this because layer 0 is removed.
             break
+    
+    #experiment
+    currentMax = 0
+    layerToUse = 1
+    for i in range(1, len(chances) + 1):
+        if yomiScore[i] > currentMax:
+            currentMax = yomiScore[i]
+            layerToUse = i
+    #experiment        
+    
     if Debug: print ("Using layer %i. Random value was %f" % (layerToUse, value))
     layerLastTurn = layerToUse
     
@@ -137,7 +158,3 @@ def isVerbose():
     """If True is returned, print the result of each trial."""
     global Debug
     return Debug
-        
-def BeatFrequentPickAI(a):
-    import BeatFrequentPick
-    return BeatFrequentPick.play(a)
