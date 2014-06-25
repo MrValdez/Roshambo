@@ -103,7 +103,7 @@ def decideYomiLayer(yomiScore):
    
     value = rps.randomRange()
     layerToUse = 0
-    for i in range(4):
+    for i in range(len(chances)):
         if value <= chances[i]: 
             layerToUse = i
             layerToUse += 1     # do this because layer 0 is removed.
