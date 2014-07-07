@@ -2,6 +2,8 @@ This is the repository for MrValdez's doctorate dissertation. Once the first pap
 
 This is a work in progress and does not represent my final dissertation.
 
+[![DOI](https://zenodo.org/badge/4406/MrValdez/Roshambo.png)](http://dx.doi.org/10.5281/zenodo.10478)
+
 #License
 
 For the source code, please check LICENSE for more information, but the quick summary is: The International RoShamBo Test Suite has their own license and our AI is under the MIT license.
