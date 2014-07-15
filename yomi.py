@@ -33,7 +33,7 @@ class YomiData:
         self.winningDeltaForLost = 2
         self.winningDeltaForTie = 1
         self.decayDelta = [1.0, 1.0, 1.0, 1.0]
-#        self.decayDelta = [1.0, 0.9, 0.8, 0.1]
+        self.decayDelta = [1.0, 0.9, 0.8, 0.1]
         
 YomiData = YomiData()
 
@@ -43,8 +43,6 @@ def init():
     yomiScore = [0, 0, 0, 0]
     layerLastTurn = 0
     
-    if Debug and rps.getTurn() == 0: print("\n")
-
 def prettifyList(list):
     #return "[%.2f %.2f %.2f %.2f]" % (list[0], list[1], list[2], list[3])
     return str(["%0.2f" % i for i in list])[1:-1].replace("'", "").rjust(25)
@@ -61,6 +59,11 @@ def updateScore():
     enemyMoveLastTurn = rps.enemyHistory(currentTurn)
     victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
     tie = (myMoveLastTurn == enemyMoveLastTurn)
+
+    # decay the scores
+    for i in range(len(yomiScore)):
+        yomiScore[i] *= YomiData.decayDelta[i]
+        if yomiScore[i] < 0: yomiScore[i] = 0
 
     if victory:
         scoreThisTurn = YomiData.victoryDelta
@@ -81,14 +84,10 @@ def updateScore():
             if yomiChoices[i] == winningMove:
                 yomiScore[i] += scoreThisTurn
                 break
-    
-    # decay the scores
-    for i in range(len(yomiScore)):
-        yomiScore[i] *= YomiData.decayDelta[i]
 
     for i in range(len(yomiScore)):
         if yomiScore[i] < 0: yomiScore[i] = 0
-
+    
 def decideYomiLayer(yomiScore):
     # figure out what layer to use
     # 1. Get the sum of all the score
@@ -118,11 +117,15 @@ def decideYomiLayer(yomiScore):
     if Debug: print ("Chances:     " + prettifyList(chances))
     if Debug: 
         chanceSize = [chances[0], chances[1] - chances[0]]
-        if chances[1] > 0:
+        if chances[1] > 0 and chances[2] > 0:
             chanceSize.append(chances[2] - chances[1])
+        elif chances[2] == 0:
+            chanceSize.append(0)
+            chanceSize[1] = 0
         else:
             chanceSize.append(chances[2] - chances[0])
             chanceSize[1] = 0
+            
         print ("Chances Size:" + prettifyList(chanceSize))
    
     value = rps.randomRange()
@@ -179,13 +182,18 @@ def yomi(prediction):
     layerLastTurn = layerToUse
     
     if Debug: print ("Using layer %i." % (layerToUse))    
-    if Debug: input()
     
     # return move based on layer
     move = yomiChoices[layerToUse]
     return move
     
 def play(a):
+    if Debug:
+        if rps.getTurn() == 0: 
+            print("\n\n")
+        else:             
+            input()
+
     prediction = BeatFrequentPick.play(a)
     decision = yomi(prediction)
     return decision
