@@ -4,7 +4,7 @@
 import BeatFrequentPick
 import rps
 Debug = True
-Debug = False
+#Debug = False
 
 yomiChoices = [0, 0, 0, 0]
 layerLastTurn = 0
@@ -106,25 +106,6 @@ def prettifyList(list):
     #return "[%.2f %.2f %.2f %.2f]" % (list[0], list[1], list[2], list[3])
     return str(["%0.2f" % i for i in list])[1:-1].replace("'", "").rjust(25)
 
-def debugPrintScore():
-    if not Debug: 
-        return
-
-    print ("Yomi Score:  " + prettifyList(yomiScore))
-    print ("Chances:     " + prettifyList(chances))
-
-    chanceSize = [chances[0], chances[1] - chances[0]]
-    if chances[1] > 0 and chances[2] > 0:
-        chanceSize.append(chances[2] - chances[1])
-    elif chances[2] == 0:
-        chanceSize.append(0)
-        chanceSize[1] = 0
-    else:
-        chanceSize.append(chances[2] - chances[0])
-        chanceSize[1] = 0
-        
-    print ("Chances Size:" + prettifyList(chanceSize))
-
 def debugYomiStatUsage():
     print ("\n\nYomi stats:  " + str(yomiLayerUsage))
     print ("Score stats: " + str(yomiLayerScore))
@@ -156,8 +137,23 @@ def decideYomiLayer(yomiScore):
                 prevRatio = ratio
             else:
                 chances.append(0)
-                
-    debugPrintScore()
+
+    if Debug: 
+        print ("Yomi Score:  " + prettifyList(yomiScore))
+        print ("Chances:     " + prettifyList(chances))
+
+        chanceSize = [chances[0], chances[1] - chances[0]]
+        if chances[1] > 0 and chances[2] > 0:
+            chanceSize.append(chances[2] - chances[1])
+        elif chances[2] == 0:
+            chanceSize.append(0)
+            chanceSize[1] = 0
+        else:
+            chanceSize.append(chances[2] - chances[0])
+            chanceSize[1] = 0
+            
+        print ("Chances Size:" + prettifyList(chanceSize))
+        
     
     if not YomiData.observation > 0:
         value = rps.randomRange()
@@ -176,7 +172,6 @@ def decideYomiLayer(yomiScore):
     return layerToUse
 
 def yomi(prediction):
-    global yomiScore
     global yomiChoices
     global currentOpponent
     global layerLastTurn
