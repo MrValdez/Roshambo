@@ -95,19 +95,14 @@ class YomiData:
         self.confidence = 0
         self.maxConfidence = 10
         
-        #experiment
         self.observation = 15
         self.observationDeltaForLost = 3
         self.observationDeltaForTie = 2
         self.observationDeltaForWin = 1
-        #experiment
+        self.layerConfidenceTresholdDuringObservationMode = 0.7
 
     def loadData(self):
         self.decayDelta = [1.0, 0.9, 0.8, 0.7]
-        self.observation = 15
-        self.observationDeltaForLost = 1
-        self.observationDeltaForTie = 2
-        self.observationDeltaForWin = 3
         
 YomiData = YomiData()
 
@@ -193,11 +188,12 @@ def decideYomiLayer(yomiScore):
     if Debug: print ("Random value was %f." % (value))
 
     # while in observation mode, use layer 0 except when the layer we have chosen passes the treshold.
-    layerConfidenceTreshold = 0.8
     if YomiData.observation > 0:
         if Debug: print ("***Currently in observation mode***")
-        if chances[layerToUse - 1] > layerConfidenceTreshold:
-            if Debug: print ("Layer Confidence Treshold reached even when under observation mode.")
+        if chances[layerToUse - 1] > YomiData.layerConfidenceTresholdDuringObservationMode:
+            if Debug: 
+                print ("Layer Confidence Treshold reached even when under observation mode.")
+                print ("Treshold: %.2f" % (YomiData.layerConfidenceTresholdDuringObservationMode))
         else:
             layerToUse = 0
 
@@ -212,17 +208,17 @@ def yomi(prediction):
     
     if currentTurn == 0:
         init()
-
-        # This code is for jumping into a specific opponent for debugging
-        if currentOpponent == 1:
-            global Debug
-#            Debug = True
-        currentOpponent += 1
     else:
         YomiData.updateScore()
         
     if currentTurn == 999:
         debugYomiStatUsage()
+
+        # This code is for jumping into a specific opponent for debugging
+        currentOpponent += 1
+        if currentOpponent == 1:
+            global Debug
+            #Debug = True
         
     # fill up yomiChoices with the moves to be played
     layer0 = rps.random() % 3          # layer 0   (original choice)
