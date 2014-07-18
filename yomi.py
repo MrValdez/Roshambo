@@ -1,10 +1,15 @@
 #todo:
 # make chances for each yomi layer different (not 1/3 each)
 
+# make switching layers contain a cost. going higher has a higher cost. going lower has a lower cost. (this is modelling confidence)
+
+# yomi = we are modelling what layer the opponent is susceptible to
+# changing layer = we are modelling how confident we are that the opponent did not decide to change layer. In future AIs, if the opponent did something unexpected, this has a larger chance to flip.
+
 import BeatFrequentPick
 import rps
 Debug = True
-#Debug = False
+Debug = False
 
 yomiChoices = [0, 0, 0, 0]
 layerLastTurn = 0
@@ -39,16 +44,19 @@ class YomiData:
 
         if victory:
             scoreThisTurn = self.victoryDelta
-            self.yomiScore[layerLastTurn] += scoreThisTurn
+            self.yomiScore[layerLastTurn] += scoreThisTurn * self.layerPreference[i]
+            self.confidence += 3
             
             yomiLayerScore[layerLastTurn] += 1
         else:
             if tie:
-                self.yomiScore[layerLastTurn] += self.tieDelta
+                self.yomiScore[layerLastTurn] += self.tieDelta * self.layerPreference[i]
                 scoreThisTurn = self.winningDeltaForTie
+                self.confidence -= 1
             else:
-                self.yomiScore[layerLastTurn] += self.lostDelta
+                self.yomiScore[layerLastTurn] += self.lostDelta * self.layerPreference[i]
                 scoreThisTurn = self.winningDeltaForLost
+                self.confidence -= 2
             
             # add score to yomi layer that would have gave us a win
             winningMove = (enemyMoveLastTurn + 1) % 3
@@ -56,8 +64,12 @@ class YomiData:
             # search for the layer that contains the winning move
             for i in range(1, 4):
                 if yomiChoices[i] == winningMove:
-                    self.yomiScore[i] += scoreThisTurn
+                    #self.yomiScore[i] += scoreThisTurn
+                    self.yomiScore[i] +=  scoreThisTurn * self.layerPreference[i]
                     break
+
+        if self.confidence < 0:  self.confidence = 0
+        if self.confidence > self.maxConfidence: self.confidence = self.maxConfidence
 
         for i in range(len(self.yomiScore)):
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
@@ -77,24 +89,25 @@ class YomiData:
         self.tieDelta = 0               # change to score when layer tied
         self.winningDeltaForLost = 2    # change to the layer score which should have won (if choice lost)
         self.winningDeltaForTie = 1     # change to the layer score which should have won (if choice tied)
-        self.decayDelta = [1.0, 1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)       
+        self.decayDelta = [1.0, 1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)
+        
+        self.layerPreference = [0, 1, 0.9, 0.1]    # how much is added to each layer when adding delta
+        self.confidence = 0
+        self.maxConfidence = 10
         
         #experiment
-        self.observation = 0
+        self.observation = 15
         self.observationDeltaForLost = 3
         self.observationDeltaForTie = 2
         self.observationDeltaForWin = 1
         #experiment
 
     def loadData(self):
-        self.yomiScore = [0, 0, 0, 0]        
-        self.victoryDelta = 1
-        self.lostDelta = -1
-        self.tieDelta = 0
-        self.winningDeltaForLost = 2
-        self.winningDeltaForTie = 1
-        self.decayDelta = [1.0, 1.0, 1.0, 1.0]
-        #self.decayDelta = [1.0, 0.9, 0.8, 0.7]
+        self.decayDelta = [1.0, 0.9, 0.8, 0.7]
+        self.observation = 15
+        self.observationDeltaForLost = 1
+        self.observationDeltaForTie = 2
+        self.observationDeltaForWin = 3
         
 YomiData = YomiData()
 
@@ -102,11 +115,19 @@ def init():
     global layerLastTurn 
     layerLastTurn = 0
     
+    YomiData.__init__()
+    
+    global yomiChoices, yomiLayerUsage
+    yomiChoices = [0, 0, 0, 0]
+    yomiLayerUsage = [0, 0, 0, 0]        # Count how many times a yomi layer is used
+    yomiLayerScore = [0, 0, 0, 0]        # Count how many times a yomi layer won
+    
 def prettifyList(list):
     #return "[%.2f %.2f %.2f %.2f]" % (list[0], list[1], list[2], list[3])
     return str(["%0.2f" % i for i in list])[1:-1].replace("'", "").rjust(25)
 
 def debugYomiStatUsage():
+    return
     print ("\n\nYomi stats:  " + str(yomiLayerUsage))
     print ("Score stats: " + str(yomiLayerScore))
     print ("\n")
@@ -116,7 +137,7 @@ def decideYomiLayer(yomiScore):
     # 1. Get the sum of all the score
     # 2. Get the ratio for each layer
     # 3. If we are still under observation mode, don't use yomi, but keep score
-    # 4. If we are randomize what layer to choose amongst top ranking
+    # 4. If we are, randomize what layer to choose amongst top ranking
         
     yomiScoreSum = 0
     for i in range(1, 4):
@@ -138,38 +159,49 @@ def decideYomiLayer(yomiScore):
             else:
                 chances.append(0)
 
+    chanceSize = [chances[0], chances[1] - chances[0]]      # chanceSize tells us how big the layer's ratio is
+    if chances[1] > 0 and chances[2] > 0:
+        chanceSize.append(chances[2] - chances[1])
+    elif chances[2] == 0:
+        chanceSize.append(0)
+        chanceSize[1] = 0
+    else:
+        chanceSize.append(chances[2] - chances[0])
+        chanceSize[1] = 0
+
     if Debug: 
         print ("Yomi Score:  " + prettifyList(yomiScore))
-        print ("Chances:     " + prettifyList(chances))
-
-        chanceSize = [chances[0], chances[1] - chances[0]]
-        if chances[1] > 0 and chances[2] > 0:
-            chanceSize.append(chances[2] - chances[1])
-        elif chances[2] == 0:
-            chanceSize.append(0)
-            chanceSize[1] = 0
-        else:
-            chanceSize.append(chances[2] - chances[0])
-            chanceSize[1] = 0
-            
+        print ("Chances:     " + prettifyList(chances))            
         print ("Chances Size:" + prettifyList(chanceSize))
-        
+            
+    layerConfidence = 0  # how confident we are with our layer choice
+    value = rps.randomRange()
+    layerToUse = 0
+    for i in range(len(chances)):
+        if value <= chances[i]: 
+            layerToUse = i
+            layerToUse += 1     # do this because layer 0 is removed.
+            
+            total = 0
+            for j in range(0, i):
+                total += chanceSize[j]
+                
+            layerConfidence = value - total
+            if layerConfidence < 0: layerConfidence = 0
+            break
     
-    if not YomiData.observation > 0:
-        value = rps.randomRange()
-        layerToUse = 0
-        for i in range(len(chances)):
-            if value <= chances[i]: 
-                layerToUse = i
-                layerToUse += 1     # do this because layer 0 is removed.
-                break
-        
-        if Debug: print ("Random value was %f." % (value))
-    else:
-        layerToUse = 0
-        if Debug: print ("Currently in observation mode")
-    
-    return layerToUse
+    if Debug: print ("Random value was %f." % (value))
+
+    # while in observation mode, use layer 0 except when the layer we have chosen passes the treshold.
+    layerConfidenceTreshold = 0.8
+    if YomiData.observation > 0:
+        if Debug: print ("***Currently in observation mode***")
+        if chances[layerToUse - 1] > layerConfidenceTreshold:
+            if Debug: print ("Layer Confidence Treshold reached even when under observation mode.")
+        else:
+            layerToUse = 0
+
+    return layerToUse, layerConfidence
 
 def yomi(prediction):
     global yomiChoices
@@ -203,7 +235,27 @@ def yomi(prediction):
     if Debug: print ("Yomi Choices:      %i     %i     %i     %i" % 
                      (yomiChoices[0], yomiChoices[1], yomiChoices[2], yomiChoices[3]))
 
-    layerToUse = decideYomiLayer(YomiData.yomiScore)
+    layerToUse, layerConfidence = decideYomiLayer(YomiData.yomiScore)
+    
+    # see if we are confident with changing layers
+    if layerLastTurn > 0 and layerLastTurn != layerToUse:
+        if YomiData.confidence == 1:
+            # we are confident to stay in this layer
+            layerToUse = layerLastTurn
+        else:
+            # see if we should change layer
+            AIConfidence = YomiData.confidence / YomiData.maxConfidence
+            confidenceBreakingPoint = AIConfidence * 0.7   # todo: play with numbers. should the AI listen to itself or its opponent's tendencies?            
+            confidenceBreakingPoint += layerConfidence * 0.3
+            flipValue = rps.randomRange()
+
+            if flipValue < confidenceBreakingPoint:
+                layerToUse = layerLastTurn
+            
+            if Debug:
+                print ("AI's confidence: %.2f  Oppoenent's layer model confidence: %.2f" % (AIConfidence, layerConfidence))
+                print ("Breaking Point to change layer: %.2f    Flip value: %.2f" % (confidenceBreakingPoint, flipValue))
+                    
     layerLastTurn = layerToUse
     
     if Debug: print ("Using layer %i." % (layerToUse))    
@@ -219,7 +271,10 @@ def play(a):
         if rps.getTurn() == 0: 
             print("\n\n")
         else:             
-            input()
+            if not YomiData.observation > 0:    # skip to the point when we are no longer observing
+                input()
+            else:
+                print()
 
     prediction = BeatFrequentPick.play(a)
     decision = yomi(prediction)
