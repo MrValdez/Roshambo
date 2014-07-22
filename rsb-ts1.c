@@ -49,7 +49,7 @@ int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
 //#define players   42         /* number of players in the tournament */
-#define players   41         /* number of players in the tournament */
+#define players   3         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 int usePython = 1;
 
@@ -5598,15 +5598,19 @@ void Init_Player_Table (Player_Table crosstable[players+1])
         crosstable[i].pname = python;
     else
         crosstable[i].pname = yomi;
+
+    i++;  /* Jason Hutchens (Aus) */
+    strcpy(crosstable[i].name, "MegaHAL");
+    crosstable[i].pname = halbot;
+
+    i++;  /* nuthin' beats rock */
+    strcpy(crosstable[i].name, "Good Ole Rock");
+    crosstable[i].pname = rockbot;
+
 #if 0
     i++;  /* nuthin' beats rock */
     strcpy(crosstable[i].name, "Good Ole Rock");
     crosstable[i].pname = rockbot;
-#endif
-
-    i++;  /* beat opponent's last move */
-    strcpy(crosstable[i].name, "Beat The Last Move");
-    crosstable[i].pname = copybot;
 
     i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
     strcpy(crosstable[i].name, "R-P-S 20-20-60");
@@ -5615,6 +5619,10 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* rotate r -> p -> s */
     strcpy(crosstable[i].name, "Rotate R-P-S");
     crosstable[i].pname = rotatebot;
+
+    i++;  /* beat opponent's last move */
+    strcpy(crosstable[i].name, "Beat The Last Move");
+    crosstable[i].pname = copybot;
 
     i++;  /* never repeat the same move */
     strcpy(crosstable[i].name, "Always Switchin'");
@@ -5667,10 +5675,11 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     i++;  /* add prev pair of moves; drift over time (200) */
     strcpy(crosstable[i].name, "* Add-drift");
     crosstable[i].pname = adddriftbot2;
-
+#endif
 #ifdef Comment_Block  /* drb: player list */
 
 #endif /* end of Comment_Block */
+#ifdef Comment_Block  /* drb: player list */
 
     i++;  /* Dan Egnor (USA) */
     strcpy(crosstable[i].name, "Iocaine Powder");
@@ -5768,6 +5777,7 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Knucklehead");
     crosstable[i].pname = sunCrazybot;
 
+#endif /* end of Comment_Block -- be sure to change the #define players value */
 #ifdef Comment_Block  /* use these to comment out a block of players */
 
     i++;  /* Michael Schatz et al (USA) */
@@ -6071,6 +6081,9 @@ void Play_Tournament (Player_Table crosstable[players+1])
             score = Play_Match (crosstable[i].pname, crosstable[j].pname);
             crosstable[i].result[j] += score;
             crosstable[j].result[i] -= score;
+        // YOMI CHANGES
+        verbose1 = isVerbose();     // Do this in case we change debug mid-tournament
+        // YOMI CHANGES
         }
         
         // YOMI CHANGES
@@ -6107,7 +6120,7 @@ int main(int argc, char *argv[]) {
    if (verbose1 == -1)
        return 1;
 
-   verbose4 = 0;// during development, we are not interested in our standing   
+   verbose4 = 0;// during development, we are not interested in our standing. set to 0 during debug
    
    yomiVariable1 = atoi(argv[1]);
    if (yomiVariable1 == 0)
