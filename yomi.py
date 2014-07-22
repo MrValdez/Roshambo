@@ -8,8 +8,6 @@
 
 # perlin noise instead of random?
 
-#todo: cleanup
-
 import BeatFrequentPick
 import rps
 Debug = True
@@ -128,6 +126,8 @@ def debugYomiStatUsage():
     print ("Score stats: " + str(yomiLayerScore))
     print ("\n")
     
+import csv
+    
 def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCeiling = 0.7):
     """ 
     Returns [True or False, confidence level]
@@ -165,8 +165,19 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     
     # normalize confidenceGraph
     confidenceGraphMax = max(confidenceGraph[0])
-    confidenceGraphChart = [x / confidenceGraphMax for x in confidenceGraph[0]]
-    #todo implement confidenceCeiling
+    # normalize confidenceGraph against confidenceCeiling
+    #confidenceGraphMax += int(confidenceGraphMax * confidenceCeiling)
+    confidenceGraphChart = [(x / confidenceGraphMax) * confidenceCeiling for x in confidenceGraph[0]]    
+
+    saveGraph = False
+    if saveGraph:
+        # todo:
+        with open('foo.csv', 'w') as f:
+            for i in confidenceGraphChart:
+                s = "%.2f\n" % (i)
+                f.write(s)
+            
+        input()
     
     if originLayer > targetLayer:
         op = min
@@ -178,15 +189,14 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     targetStart = int(targetStart)
     targetEnd   = int(targetEnd)
     layerGraph  = confidenceGraphChart[targetStart:targetEnd]
+    
     target      = op(layerGraph)
+    result          = X > target
     if originLayer < targetLayer:
-        result          = X < target
         confidenceLevel = target - X
     else:
-        result          = X > target
         confidenceLevel = X - target
     
-    #print (result, confidenceLevel)
     return result, confidenceLevel
     
 def decideYomiLayer(yomiScore):
@@ -310,18 +320,19 @@ def yomi(prediction):
         else:
             # see if we should change layer
             flipValue = rps.randomRange()
-            confidenceGraph = ([x for x in range(100)], 
-                                [
-                                 (0,   25),  # layer 1
-                                 (25, 50),   # layer 2
-                                 (50, 100)   # layer 3
-                                 ])
+            layerSize = [10, 30, 70]
+            layerRange = [(0, layerSize[0])] 
+            layerRange.append((layerRange[0][1], layerRange[0][1] + layerSize[1]))
+            layerRange.append((layerRange[1][1], layerRange[1][1] + layerSize[2]))
+            
+            confidenceGraph = ([x for x in range(100)], layerRange)
                                  
             changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn - 1, layerToUse - 1)
 
             if changeLayer == False:
                 if Debug:
-                    print ("Layer did not change from %i to %i. Confidence: %.2f" % (layerLastTurn, layerToUse,confidence))
+                    print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
+                            (layerLastTurn, layerToUse, flipValue, confidence))
                     
                 layerToUse = layerLastTurn
             #if Debug:
