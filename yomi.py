@@ -6,6 +6,10 @@
 # yomi = we are modelling what layer the opponent is susceptible to
 # changing layer = we are modelling how confident we are that the opponent did not decide to change layer. In future AIs, if the opponent did something unexpected, this has a larger chance to flip.
 
+# perlin noise instead of random?
+
+#todo: cleanup
+
 import BeatFrequentPick
 import rps
 Debug = True
@@ -31,20 +35,18 @@ class YomiData:
         global layerLastTurn
         
         currentTurn = rps.getTurn()
-
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
         tie = (myMoveLastTurn == enemyMoveLastTurn)
-
+        
         # decay the scores
         for i in range(len(self.yomiScore)):
             self.yomiScore[i] *= self.decayDelta[i]
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
 
         if victory:
-            scoreThisTurn = self.victoryDelta
-            self.yomiScore[layerLastTurn] += scoreThisTurn * self.layerPreference[i]
+            self.yomiScore[layerLastTurn] += self.victoryDelta * self.layerPreference[i]
             self.confidence += 3
             
             yomiLayerScore[layerLastTurn] += 1
@@ -64,22 +66,21 @@ class YomiData:
             # search for the layer that contains the winning move
             for i in range(1, 4):
                 if yomiChoices[i] == winningMove:
-                    #self.yomiScore[i] += scoreThisTurn
                     self.yomiScore[i] +=  scoreThisTurn * self.layerPreference[i]
                     break
 
-        if self.confidence < 0:  self.confidence = 0
+        if self.confidence < 0:                  self.confidence = 0
         if self.confidence > self.maxConfidence: self.confidence = self.maxConfidence
 
         for i in range(len(self.yomiScore)):
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
 
         if victory:
-                self.observation -= self.observationDeltaForWin
+            self.observation -= self.observationDeltaForWin
         elif tie:
-                self.observation -= self.observationDeltaForTie
+            self.observation -= self.observationDeltaForTie
         else:
-                self.observation -= self.observationDeltaForLost
+            self.observation -= self.observationDeltaForLost
         
     def loadDefault(self):
         # defaults:            
@@ -127,6 +128,67 @@ def debugYomiStatUsage():
     print ("Score stats: " + str(yomiLayerScore))
     print ("\n")
     
+def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCeiling = 0.7):
+    """ 
+    Returns [True or False, confidence level]
+    
+    confidenceGraph should be ([one dimensional array], [(layer1_start, layer1_end), (layer2_start, layer2_end), (layer3_start, layer3_end))
+    
+    Init:
+        Normalize confidenceGraph to confidenceCeiling (todo)
+    
+    This function check where X lies in the confidenceGraph.
+    1. If the target layer is higher than the origin layer,
+        a. target = Find the max of next layer.
+        b. result = Check if X is equal or exceeds the target.
+       If the target layer is lower than the origin layer,. 
+        a. target = Find the min of next layer.
+        b. result = Check if X is equal or lower the target.
+    
+    3. return result
+    
+    Sample confidence graph:
+    
+    L1|  |L3 
+    ....../.
+    ...../..
+    ..../...
+    .../....
+    ../.....
+    ./......
+    /.......
+      |L2|  
+    
+    """
+    
+    layersRange = confidenceGraph[1]
+    
+    # normalize confidenceGraph
+    confidenceGraphMax = max(confidenceGraph[0])
+    confidenceGraphChart = [x / confidenceGraphMax for x in confidenceGraph[0]]
+    #todo implement confidenceCeiling
+    
+    if originLayer > targetLayer:
+        op = min
+    else:
+        op = max
+        
+    targetStart = layersRange[targetLayer][0]
+    targetEnd   = layersRange[targetLayer][1]
+    targetStart = int(targetStart)
+    targetEnd   = int(targetEnd)
+    layerGraph  = confidenceGraphChart[targetStart:targetEnd]
+    target      = op(layerGraph)
+    if originLayer < targetLayer:
+        result          = X < target
+        confidenceLevel = target - X
+    else:
+        result          = X > target
+        confidenceLevel = X - target
+    
+    #print (result, confidenceLevel)
+    return result, confidenceLevel
+    
 def decideYomiLayer(yomiScore):
     # figure out what layer to use
     # 1. Get the sum of all the score
@@ -141,7 +203,7 @@ def decideYomiLayer(yomiScore):
             yomiScoreSum += score
             
     if yomiScoreSum == 0:
-        chances = [1/3, 1/3 * 2, 1.0]
+        chances = [1/3, 2/3, 1.0]
     else:
         chances = []
         currentCount = 1
@@ -190,6 +252,7 @@ def decideYomiLayer(yomiScore):
     # while in observation mode, use layer 0 except when the layer we have chosen passes the treshold.
     if YomiData.observation > 0:
         if Debug: print ("***Currently in observation mode***")
+        
         if chances[layerToUse - 1] > YomiData.layerConfidenceTresholdDuringObservationMode:
             if Debug: 
                 print ("Layer Confidence Treshold reached even when under observation mode.")
@@ -199,8 +262,23 @@ def decideYomiLayer(yomiScore):
 
     return layerToUse, layerConfidence
 
-def yomi(prediction):
+def getYomiChoices(prediction):    
     global yomiChoices
+
+    # fill up yomiChoices with the moves to be played
+    layer0 = rps.random() % 3          # layer 0   (original choice)
+    layer1 = (prediction + 1) % 3      # layer 1   (beats enemy's choice)
+    layer2 = (layer1 + 2) % 3          # layer 2   (beats enemy's layer 1)
+    layer3 = (layer2 + 2) % 3          # layer 3   (beats enemy's layer 2)
+    
+    yomiChoices = [layer0, layer1, layer2, layer3]
+
+    if Debug: print ("Yomi Choices:      %i     %i     %i     %i" % 
+                     (yomiChoices[0], yomiChoices[1], yomiChoices[2], yomiChoices[3]))
+
+    return yomiChoices
+
+def yomi(prediction):
     global currentOpponent
     global layerLastTurn
     
@@ -219,18 +297,9 @@ def yomi(prediction):
         if currentOpponent == 1:
             global Debug
             #Debug = True
-        
-    # fill up yomiChoices with the moves to be played
-    layer0 = rps.random() % 3          # layer 0   (original choice)
-    layer1 = (prediction + 1) % 3      # layer 1   (beats enemy's choice)
-    layer2 = (layer1 + 2) % 3          # layer 2   (beats enemy's layer 1)
-    layer3 = (layer2 + 2) % 3          # layer 3   (beats enemy's layer 2)
     
-    yomiChoices = [layer0, layer1, layer2, layer3]
+    yomiChoices = getYomiChoices(prediction)
     
-    if Debug: print ("Yomi Choices:      %i     %i     %i     %i" % 
-                     (yomiChoices[0], yomiChoices[1], yomiChoices[2], yomiChoices[3]))
-
     layerToUse, layerConfidence = decideYomiLayer(YomiData.yomiScore)
     
     # see if we are confident with changing layers
@@ -240,17 +309,24 @@ def yomi(prediction):
             layerToUse = layerLastTurn
         else:
             # see if we should change layer
-            AIConfidence = YomiData.confidence / YomiData.maxConfidence
-            confidenceBreakingPoint = AIConfidence * 0.7   # todo: play with numbers. should the AI listen to itself or its opponent's tendencies?            
-            confidenceBreakingPoint += layerConfidence * 0.3
             flipValue = rps.randomRange()
+            confidenceGraph = ([x for x in range(100)], 
+                                [
+                                 (0,   25),  # layer 1
+                                 (25, 50),   # layer 2
+                                 (50, 100)   # layer 3
+                                 ])
+                                 
+            changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn - 1, layerToUse - 1)
 
-            if flipValue < confidenceBreakingPoint:
+            if changeLayer == False:
+                if Debug:
+                    print ("Layer did not change from %i to %i. Confidence: %.2f" % (layerLastTurn, layerToUse,confidence))
+                    
                 layerToUse = layerLastTurn
-            
-            if Debug:
-                print ("AI's confidence: %.2f  Oppoenent's layer model confidence: %.2f" % (AIConfidence, layerConfidence))
-                print ("Breaking Point to change layer: %.2f    Flip value: %.2f" % (confidenceBreakingPoint, flipValue))
+            #if Debug:
+            #    print ("AI's confidence: %.2f  Oppoenent's layer model confidence: %.2f" % (AIConfidence, layerConfidence))
+            #    print ("Breaking Point to change layer: %.2f    Flip value: %.2f" % (confidenceBreakingPoint, flipValue))
                     
     layerLastTurn = layerToUse
     
@@ -275,22 +351,6 @@ def play(a):
     prediction = BeatFrequentPick.play(a)
     decision = yomi(prediction)
     return decision
-
-
-def SkeletonAI():
-    """ This is the most basic AI that shows the functions used """
-    currentTurn = rps.getTurn()
-    
-    if currentTurn:
-        myMoveLastTurn = rps.myHistory(currentTurn)
-        enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-        
-    print ("%i" % (currentTurn))
-    print (" %i %i" % (rps.myHistory(currentTurn - 0), rps.enemyHistory(currentTurn - 0)))
-    print (" %i %i" % (rps.myHistory(currentTurn - 1), rps.enemyHistory(currentTurn - 1)))
-    
-    input()
-    return (rps.enemyHistory(currentTurn) + 1) % 3
     
 def isVerbose():
     """If True is returned, print the result of each trial."""
