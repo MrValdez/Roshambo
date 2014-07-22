@@ -358,8 +358,13 @@ def yomi(prediction):
             #Debug = True
     
     # get the possible choices
+    #  - decide on a move to play without predicting opponent
+    #  - make a prediction
+    #  - add the yomi layers to the prediction
     # decide which Yomi layer to use
+    #  - (see function comments)
     # decide if we should change layer
+    #  - some AI variant should change layer easily. some should change reluntanctly
     
     yomiChoices = getYomiChoices(prediction)    
     layerToUse, layerConfidence = decideYomiLayer(YomiData.yomiScore)
@@ -367,7 +372,7 @@ def yomi(prediction):
 
     layerLastTurn = layerToUse
     
-    if Debug: print ("Using layer %i." % (layerToUse))    
+    if Debug: print ("Using layer %i." % (layerToUse))
 
     yomiLayerUsage[layerToUse] += 1
     
