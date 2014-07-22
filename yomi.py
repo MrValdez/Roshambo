@@ -101,6 +101,8 @@ class YomiData:
         self.observationDeltaForWin = 1
         self.layerConfidenceTresholdDuringObservationMode = 0.7
 
+        self.layerConfidenceSize = [10, 30, 0]        # how large the AI's confidence is with each layer. Its possible to not have 100% confidence
+        
     def loadData(self):
         self.decayDelta = [1.0, 0.9, 0.8, 0.7]
         
@@ -175,7 +177,9 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
         # todo:
         with open('foo.csv', 'w') as f:
             # layer range
-            #todo
+            s = [str(s[1]) for s in layersRange]
+            f.write(",".join(s))
+            f.write("\n")
             # layer data
             for i in confidenceGraphChart:
                 s = "%.2f\n" % (i)
@@ -189,12 +193,18 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     else:
         op = max
         
+    graphSize   = len(confidenceGraphChart)
     targetStart = layersRange[targetLayer][0]
     targetEnd   = layersRange[targetLayer][1]
     targetStart = int(targetStart)
     targetEnd   = int(targetEnd)
+    targetStart = min(targetStart, graphSize)          # make sure we don't go outside the graph
+    targetEnd   = min(targetEnd, graphSize)            # make sure we don't go outside the graph
     layerGraph  = confidenceGraphChart[targetStart:targetEnd]
     
+    if len(layerGraph) <= 0:
+        return False, 0
+        
     target      = op(layerGraph)
     result      = X > target
     if originLayer < targetLayer:
@@ -203,7 +213,41 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
         confidenceLevel = X - target
     
     return result, confidenceLevel
-    
+
+def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):    
+    # see if we are confident with changing layers
+    if layerLastTurn > 0 and layerLastTurn != layerToUse:
+        if YomiData.confidence == 1:
+            # we are confident to stay in this layer
+            layerToUse = layerLastTurn
+        else:
+            # see if we should change layer
+            
+            # three possibilities:
+            # a. flipValue = rps.randomRange()
+            # b. flipValue = rps.randomRange() + layerConfidence
+            # c. flipValue = layerConfidence
+            
+            flipValue = layerConfidence
+            
+            layerSize = YomiData.layerConfidenceSize
+            layerRange = [(0, layerSize[0])] 
+            layerRange.append((layerRange[0][1], layerRange[0][1] + layerSize[1]))
+            layerRange.append((layerRange[1][1], layerRange[1][1] + layerSize[2]))
+            confidenceGraph = ([x for x in range(100)], layerRange)
+            #confidenceGraph = ([math.log(x+0.1) for x in range(100)], layerRange)
+            
+            changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn - 1, layerToUse - 1)
+
+            if changeLayer == False:
+                if Debug:
+                    print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
+                            (layerLastTurn, layerToUse, flipValue, confidence))
+                    
+                layerToUse = layerLastTurn
+                
+    return layerToUse
+                    
 def decideYomiLayer(yomiScore):
     # figure out what layer to use
     # 1. Get the sum of all the score
@@ -313,34 +357,14 @@ def yomi(prediction):
             global Debug
             #Debug = True
     
-    yomiChoices = getYomiChoices(prediction)
+    # get the possible choices
+    # decide which Yomi layer to use
+    # decide if we should change layer
     
+    yomiChoices = getYomiChoices(prediction)    
     layerToUse, layerConfidence = decideYomiLayer(YomiData.yomiScore)
-    
-    # see if we are confident with changing layers
-    if layerLastTurn > 0 and layerLastTurn != layerToUse:
-        if YomiData.confidence == 1:
-            # we are confident to stay in this layer
-            layerToUse = layerLastTurn
-        else:
-            # see if we should change layer
-            flipValue = rps.randomRange()
-            layerSize = [10, 30, 70]        # end of layer1, end of layer2, end of layer3
-            layerRange = [(0, layerSize[0])] 
-            layerRange.append((layerRange[0][1], layerSize[1]))
-            layerRange.append((layerRange[1][1], layerSize[2]))
-            confidenceGraph = ([x for x in range(100)], layerRange)
-            #confidenceGraph = ([math.log(x+0.1) for x in range(100)], layerRange)
-                                 
-            changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn - 1, layerToUse - 1)
+    layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
 
-            if changeLayer == False:
-                if Debug:
-                    print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
-                            (layerLastTurn, layerToUse, flipValue, confidence))
-                    
-                layerToUse = layerLastTurn
-                    
     layerLastTurn = layerToUse
     
     if Debug: print ("Using layer %i." % (layerToUse))    

@@ -4,11 +4,13 @@ import sys
 
 def Plot(filename, title, saveFigure = True):
     with open(filename) as f:
+        layerRange = f.readline()
         data = f.read().strip()
 
-    data = data.split("\n")
+    layerRange = layerRange.split(",")
+    data = data[1:].split("\n")
         
-    x_data = [x for x in range(100)]
+    x_data = [x for x in range(len(data))]
     y_data = [float(x) * 100 for x in data]
 
     # 5x4 inches
@@ -33,13 +35,14 @@ def Plot(filename, title, saveFigure = True):
     ax.plot(x_data, y_data, "b", linewidth=1.0)
 
     # add labels for yomi
-    layer1max = 30
-    layer2max = 40
-    plt.xticks([layer1max, layer2max])
+    layer1max = min(int(layerRange[0]), len(data))
+    layer2max = min(int(layerRange[1]), len(data))
+    layer3max = min(int(layerRange[2]), len(data))
+    plt.xticks([layer1max, layer2max, layer3max])
     yPos = -10
     plt.text(layer1max / 2, yPos, "Layer 1", fontsize = 14)
     plt.text((layer1max + layer2max) / 2, yPos, "Layer 2", fontsize = 14)
-    plt.text((layer2max) + ((100 - layer2max) / 2), yPos, "Layer 3", fontsize = 14)
+    plt.text((layer2max) + ((layer3max - layer2max) / 2), yPos, "Layer 3", fontsize = 14)
     
     #ax.set_title("(lower is better)")
     ax.set_xlabel("targetPredictionSize")
