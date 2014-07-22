@@ -8,6 +8,7 @@
 
 # perlin noise instead of random?
 
+import math
 import BeatFrequentPick
 import rps
 Debug = True
@@ -173,10 +174,14 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     if saveGraph:
         # todo:
         with open('foo.csv', 'w') as f:
+            # layer range
+            #todo
+            # layer data
             for i in confidenceGraphChart:
                 s = "%.2f\n" % (i)
                 f.write(s)
             
+        print ("log saved")
         input()
     
     if originLayer > targetLayer:
@@ -191,7 +196,7 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     layerGraph  = confidenceGraphChart[targetStart:targetEnd]
     
     target      = op(layerGraph)
-    result          = X > target
+    result      = X > target
     if originLayer < targetLayer:
         confidenceLevel = target - X
     else:
@@ -320,12 +325,12 @@ def yomi(prediction):
         else:
             # see if we should change layer
             flipValue = rps.randomRange()
-            layerSize = [10, 30, 70]
+            layerSize = [10, 30, 70]        # end of layer1, end of layer2, end of layer3
             layerRange = [(0, layerSize[0])] 
-            layerRange.append((layerRange[0][1], layerRange[0][1] + layerSize[1]))
-            layerRange.append((layerRange[1][1], layerRange[1][1] + layerSize[2]))
-            
+            layerRange.append((layerRange[0][1], layerSize[1]))
+            layerRange.append((layerRange[1][1], layerSize[2]))
             confidenceGraph = ([x for x in range(100)], layerRange)
+            #confidenceGraph = ([math.log(x+0.1) for x in range(100)], layerRange)
                                  
             changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn - 1, layerToUse - 1)
 
@@ -335,9 +340,6 @@ def yomi(prediction):
                             (layerLastTurn, layerToUse, flipValue, confidence))
                     
                 layerToUse = layerLastTurn
-            #if Debug:
-            #    print ("AI's confidence: %.2f  Oppoenent's layer model confidence: %.2f" % (AIConfidence, layerConfidence))
-            #    print ("Breaking Point to change layer: %.2f    Flip value: %.2f" % (confidenceBreakingPoint, flipValue))
                     
     layerLastTurn = layerToUse
     
