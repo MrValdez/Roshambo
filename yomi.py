@@ -1,3 +1,6 @@
+# priority:
+# temporarily remove decision making for benchmarking purposes
+
 #todo:
 # make chances for each yomi layer different (not 1/3 each)
 
@@ -23,10 +26,48 @@ yomiLayerScore = [0, 0, 0, 0]        # Count how many times a yomi layer won
 
 currentOpponent = 0
 
-class YomiData:
+class YomiPersonality:
+    """ contains the personality that can influence what yomi layers to use """
     def __init__(self):
         self.loadDefault()
         self.loadData()
+
+    def loadDefault(self):
+        # defaults:            
+        self.victoryDelta = 1           # change to score when layer wins
+        self.lostDelta = -1             # change to score when layer lost
+        self.tieDelta = 0               # change to score when layer tied
+        self.winningDeltaForLost = 2    # change to the layer score which should have won (if choice lost)
+        self.winningDeltaForTie = 1     # change to the layer score which should have won (if choice tied)
+        self.decayDelta = [1.0, 1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)
+        
+        self.layerPreference = [0, 1, 0.9, 0.1]    # how much is added to each layer when adding delta
+                
+        # observation mode is when the Yomi AI studies the opponent first
+        self.observation = 15                       # initial observation point
+        self.observationDeltaForLost = 3
+        self.observationDeltaForTie = 2
+        self.observationDeltaForWin = 1
+        self.layerConfidenceTresholdDuringObservationMode = 0.7
+
+        self.layerConfidenceSize = [10, 30, 0]        # how large the AI's confidence is with each layer. Its possible to not have 100% confidence
+        
+    def loadData(self):
+        self.decayDelta = [1.0, 0.9, 0.8, 0.7]
+    
+
+class YomiData:
+    def __init__(self):
+        personality = YomiPersonality()
+        self.__dict__ = personality.__dict__.copy()
+
+        self.yomiScore = [0, 0, 0, 0]   
+
+        # AI's localize confidence
+        # todo: implement this
+        self.confidence = 0
+        self.maxConfidence = 10
+        
         
     def updateScore(self):
         # update score from last turn
@@ -81,30 +122,6 @@ class YomiData:
         else:
             self.observation -= self.observationDeltaForLost
         
-    def loadDefault(self):
-        # defaults:            
-        self.yomiScore = [0, 0, 0, 0]   
-        self.victoryDelta = 1           # change to score when layer wins
-        self.lostDelta = -1             # change to score when layer lost
-        self.tieDelta = 0               # change to score when layer tied
-        self.winningDeltaForLost = 2    # change to the layer score which should have won (if choice lost)
-        self.winningDeltaForTie = 1     # change to the layer score which should have won (if choice tied)
-        self.decayDelta = [1.0, 1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)
-        
-        self.layerPreference = [0, 1, 0.9, 0.1]    # how much is added to each layer when adding delta
-        self.confidence = 0
-        self.maxConfidence = 10
-        
-        self.observation = 15
-        self.observationDeltaForLost = 3
-        self.observationDeltaForTie = 2
-        self.observationDeltaForWin = 1
-        self.layerConfidenceTresholdDuringObservationMode = 0.7
-
-        self.layerConfidenceSize = [10, 30, 0]        # how large the AI's confidence is with each layer. Its possible to not have 100% confidence
-        
-    def loadData(self):
-        self.decayDelta = [1.0, 0.9, 0.8, 0.7]
         
 YomiData = YomiData()
 
@@ -217,7 +234,7 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
 def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):    
     # see if we are confident with changing layers
     if layerLastTurn > 0 and layerLastTurn != layerToUse:
-        if YomiData.confidence == 1:
+        if YomiData.confidence > 5:
             # we are confident to stay in this layer
             layerToUse = layerLastTurn
         else:
@@ -296,7 +313,7 @@ def decideYomiLayer(yomiScore):
     for i in range(len(chances)):
         if value <= chances[i]: 
             layerToUse = i
-            layerToUse += 1     # do this because layer 0 is removed.
+            layerToUse += 1     # do this because layer 0 is removed. Todo: add layer 0 confidence
             
             total = 0
             for j in range(0, i):
