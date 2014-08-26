@@ -1,6 +1,7 @@
 *.exe
 __pycache__/
 paper/
+paper */
 temp/
 commentator/
 Yomi Algo/
