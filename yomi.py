@@ -11,6 +11,7 @@
 
 import math
 import BeatFrequentPick
+import PatternPredictor
 import rps
 Debug = True
 Debug = False
@@ -480,8 +481,11 @@ def play(a):
             else:
                 print()
 
-    prediction = BeatFrequentPick.play(a)
-    decision = yomi(prediction)
+    #prediction = BeatFrequentPick.play(a)
+    #decision = yomi(prediction)
+    
+    prediction = PatternPredictor.play(a)
+    decision = (prediction[0] + 1) % 3
     return decision
     
 def isVerbose():
