@@ -59,9 +59,7 @@ class YomiPersonality:
         self.layerPreference = [1, 1, 1] 
         self.observation = 0
         self.decayDelta = [1, 1, 1]
-        self.winningDeltaForLost = 1.5
-        self.winningDeltaForTie = 1
-        self.minimumLayerConsideration = 0.01
+        self.minimumLayerConsideration = 0.05
         
 class YomiData:
     def __init__(self):
@@ -146,10 +144,11 @@ def init():
     
 def prettifyList(list):
     #return "[%.2f %.2f %.2f %.2f]" % (list[0], list[1], list[2], list[3])
-    return str(["%0.2f" % i for i in list])[1:-1].replace("'", "").rjust(25)
+    return str(["%0.3f" % i for i in list])[1:-1].replace("'", "").rjust(25)
 
 def debugYomiStatUsage():
-    return
+    if not Debug: return
+    
     print ("\n\nYomi stats:  " + str(yomiLayerUsage))
     print ("Score stats: " + str(yomiLayerScore))
     print ("\n")
@@ -240,7 +239,10 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     return result, confidenceLevel
 
 def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):
-    if layerToUse == -1 or layerLastTurn != -1:
+    return layerToUse
+    
+    #todo
+    if layerToUse == -1:
         return layerToUse
         
     # see if we are confident with changing layers
@@ -279,40 +281,47 @@ def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):
 def shouldUseYomi(playConfidence, yomiScore):
     # returns False if we are confident with our play
     # returns True if we are not confident with our play
+    
+    #todo: check sum here rather than in decideyomilayer
         
     return True
                     
 def decideYomiLayer(yomiData, predictionConfidence):
     # figure out what layer to use
     # 1. Get the sum of all the score
-    # 2. Get the ratio for each layer
-    # 3. If we are still under observation mode, don't use yomi, but keep score
-    # 4. If we are, choose a layer
-    yomiScore = yomiData.yomiScore
-        
-    yomiScoreSum = 0
-    for score in yomiScore:
-        if score > 0:
-            yomiScoreSum += score
-    
+    # 1b. Add the confidence we have on prediction
+    # 2. Normalize the layers to 1.0
+    # 3a. If we are still under observation mode, don't use yomi, but keep score
+    # 3b. If we are not under observation mode, choose a layer
     if predictionConfidence >= yomiData.predictionConfidenceTreshold:
         if Debug: 
             print ("High confidence of predicting opponent at %.2f. Treshold %.2f" % (predictionConfidence, yomiData.predictionConfidenceTreshold))
         return 0, predictionConfidence
+
+    yomiScore = [score for score in yomiData.yomiScore]
+
+    # add prediction confidence to layer chances
+    if Debug: 
+        print ("Layer 0's confidence: %.2f. Prediction confidence: %.2f" % (yomiScore[0], predictionConfidence))
+        print (yomiScore)
+
+    predictionConfidenceDelta = max(yomiScore[0], predictionConfidence)
+    yomiScore[0] = predictionConfidenceDelta
+    
+    # normalize everything to 1        
+    total = sum([score for score in yomiScore if score > 0])
     
     chances = []
-    if yomiScoreSum == 0:
-        chances = [0, 0, 0]     
+    if total == 0:
+        chances = [0, 0, 0]
     else:
+        normal = 1 / total
         for score in yomiScore:
             if score > 0:
-                ratio = score / yomiScoreSum
+                ratio = score * normal
                 chances.append(ratio)
             else:
                 chances.append(0)
-
-    # add prediction confidence
-    chances[0] = max(chances[0], predictionConfidence)
 
     # make sure we don't go down the minimum layer consideration
     # if we have to modify, take from the other layers
@@ -409,6 +418,7 @@ def yomi(prediction):
     else:
         YomiData.updateScore()
         
+    debugYomiStatUsage()
     if currentTurn == 999:
         debugYomiStatUsage()
 
@@ -424,6 +434,7 @@ def yomi(prediction):
     #  - add the yomi layers to the prediction
     # decide which Yomi layer to use
     #  - (see function comments)
+    #  - if we are not very confident with our Yomi, we stick to our own play
     # decide if we should change layer
     #  - some AI variant should change layer easily. some should change reluntanctly
     
@@ -433,13 +444,12 @@ def yomi(prediction):
         yomiChoices = getYomiChoices(prediction)
         if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (playConfidence))
 
-        layerToUse, layerConfidence = decideYomiLayer(YomiData, prediction[1])
-        if layerToUse != -1:
-            layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
+        layerToUse, layerConfidence = decideYomiLayer(YomiData, 0)#todo prediction[1])
+        layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
 
         layerLastTurn = layerToUse
         if layerToUse == -1:
-            if Debug: print ("Using our play.")
+            if Debug: print ("Using our play (layer -1).")
             move = ourPlay
         else:        
             if Debug: print ("Using layer %i." % (layerToUse))
