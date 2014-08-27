@@ -9,6 +9,8 @@
 
 # perlin noise instead of random?
 
+# it seems that using yomi beats iocaine powder. using layer 0 permanently causes it lose. test to check if this is true.
+
 import math
 import BeatFrequentPick
 import PatternPredictor
@@ -426,7 +428,7 @@ def yomi(predictors):
         # create the predictors scorecard
         global predictorsScoreCard
         predictorsScoreCard = [0] * len(predictors)
-    else:    
+    elif lastSelectedPrediction != -1:    
         # update scorecard
         currentTurn = rps.getTurn()
         myMoveLastTurn = rps.myHistory(currentTurn)
@@ -513,10 +515,11 @@ def yomi(predictors):
 
         layerToUse, layerConfidence = decideYomiLayer(YomiData, prediction[1])
         layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
-
+        
         if layerToUse == -1:
             if Debug: print ("Using our play (layer -1).")
             move = ourPlay
+            lastSelectedPrediction = -1
         else:        
             if Debug: print ("Using layer %i." % (layerToUse))
 
@@ -528,6 +531,7 @@ def yomi(predictors):
         layerLastTurn = layerToUse
     else:
         if Debug: print ("Decided to use personal move. Current play confidence is %.2f" % (playConfidence))
+        lastSelectedPrediction = -1
         move = ourPlay
         
     return move
