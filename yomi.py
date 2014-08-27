@@ -40,9 +40,10 @@ class YomiPersonality:
         self.winningDeltaForLost = 2    # change to the layer score which should have won (if choice lost)
         self.winningDeltaForTie = 1     # change to the layer score which should have won (if choice tied)
         self.decayDelta = [1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)
+        self.minimumLayerConsideration = 0.0    # the lowest probability that a layer can have
         
         self.layerPreference = [1, 0.9, 0.1]    # how much is added to each layer when adding delta
-                
+        
         # observation mode is when the Yomi AI studies the opponent first
         self.observation = 15                       # initial observation point
         self.observationDeltaForLost = 3
@@ -57,9 +58,12 @@ class YomiPersonality:
     
         # experiment
         self.layerPreference = [1, 1, 1] 
-        self.observation = 10
+        self.observation = 0
         self.decayDelta = [1, 1, 1]
-
+        self.winningDeltaForLost = 1.5
+        self.winningDeltaForTie = 1
+        self.minimumLayerConsideration = 0.1
+        
 class YomiData:
     def __init__(self):
         personality = YomiPersonality()
@@ -275,12 +279,13 @@ def shouldUseYomi(playConfidence, yomiScore):
     # returns True if we are not confident with our play
     return True
                     
-def decideYomiLayer(yomiScore):
+def decideYomiLayer(yomiData):
     # figure out what layer to use
     # 1. Get the sum of all the score
     # 2. Get the ratio for each layer
     # 3. If we are still under observation mode, don't use yomi, but keep score
     # 4. If we are, randomize what layer to choose amongst top ranking
+    yomiScore = yomiData.yomiScore
         
     yomiScoreSum = 0
     for score in yomiScore:
@@ -295,26 +300,43 @@ def decideYomiLayer(yomiScore):
         prevRatio = 0
         for score in yomiScore:
             if score > 0:
-                ratio = prevRatio + (score / yomiScoreSum)
+                ratio = score / yomiScoreSum
                 chances.append(ratio)
                 prevRatio = ratio
             else:
                 chances.append(0)
 
-    chanceSize = [chances[0], chances[1] - chances[0]]      # chanceSize tells us how big the layer's ratio is
-    if chances[1] > 0 and chances[2] > 0:
-        chanceSize.append(chances[2] - chances[1])
-    elif chances[2] == 0:
-        chanceSize.append(0)
-        chanceSize[1] = 0
-    else:
-        chanceSize.append(chances[2] - chances[0])
-        chanceSize[1] = 0
+    # make sure we don't go down the minimum layer consideration
+    # if we have to modify, take from the other layers
+    toModify = 0
+    for chance in chances:
+        if chance < yomiData.minimumLayerConsideration:
+            toModify += 1
+            
+    if toModify and \
+       toModify != len(chances):            # just a check to make sure there's a non-zero value in all the layers   
+        delta = (yomiData.minimumLayerConsideration * toModify) / (len(chances) - toModify)
+        if Debug:
+            print ("Chances (unmodified):" + prettifyList(chances))
+        for i in range(len(chances)):
+            if chances[i] < yomiData.minimumLayerConsideration:
+                chances[i] += yomiData.minimumLayerConsideration
+            else:
+                chances[i] -= delta
+
+    rawChance = [chances[0], chances[1], chances[2]]
+    
+    # simplify the code by putting each ratio into a single number line
+    for i in range(1, len(chances)):
+        chances[i] += chances[i-1]
 
     if Debug: 
-        print ("Yomi Score:  " + prettifyList(yomiScore))
-        print ("Chances:     " + prettifyList(chances))            
-        print ("Chances Size:" + prettifyList(chanceSize))
+        print ("Yomi Score:          " + prettifyList(yomiScore))
+        if toModify:
+            print ("Chances (modified):  " + prettifyList(chances))            
+        else:
+            print ("Chances:             " + prettifyList(chances))            
+        print ("Raw Chances:         " + prettifyList(rawChance))
             
     layerConfidence = 0  # how confident we are with our layer choice
     value = rps.randomRange()
@@ -325,7 +347,7 @@ def decideYomiLayer(yomiScore):
             
             total = 0
             for j in range(0, i):
-                total += chanceSize[j]
+                total += rawChance[j]
                 
             layerConfidence = value - total
             if layerConfidence < 0: layerConfidence = 0
@@ -396,7 +418,7 @@ def yomi(prediction):
         yomiChoices = getYomiChoices(prediction)
         if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (playConfidence))
 
-        layerToUse, layerConfidence = decideYomiLayer(YomiData.yomiScore)
+        layerToUse, layerConfidence = decideYomiLayer(YomiData)
         layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
 
         layerLastTurn = layerToUse
