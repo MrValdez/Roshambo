@@ -3,15 +3,16 @@ import rps
 enemyHistory = ""
     
 def play(a):
+    global enemyHistory
     currentTurn = rps.getTurn()
     
     if currentTurn == 0:
+        enemyHistory = ""
         return 1, 0
         
     myMoveLastTurn = rps.myHistory(currentTurn)
     enemyMoveLastTurn = rps.enemyHistory(currentTurn)
 
-    global enemyHistory
     enemyHistory += str(enemyMoveLastTurn)
     history = enemyHistory
     
