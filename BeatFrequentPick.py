@@ -61,7 +61,7 @@ def BFP(targetPredictionSize):
             print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, remainingPredictionSize))
             print("Done init()\n")
 
-        return biased_roshambo (1 / 3.0, 1 / 3.0)
+        return biased_roshambo (1 / 3.0, 1 / 3.0), 1 / 3.0
     
     oppMove = rps.enemyHistory(currentTurn)
     
@@ -113,9 +113,16 @@ def BFP(targetPredictionSize):
         input()
         
     remainingPredictionSize -= 1
-    return biased_roshambo (thisTurnProbR, thisTurnProbP)
+    move = biased_roshambo (thisTurnProbR, thisTurnProbP)
+    
+    # get our confidence of selectred move
+    if move == 0:    confidence = thisTurnProbR
+    elif move == 1:  confidence = thisTurnProbP
+    else:            confidence = 1.0 - (thisTurnProbR + thisTurnProbP)
+    
+    return move, confidence
 
 def play(targetPredictionSize):
-    move = BFP(targetPredictionSize)
+    move, confidence = BFP(targetPredictionSize)
     
-    return move
+    return (move, confidence)

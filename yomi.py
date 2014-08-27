@@ -280,7 +280,7 @@ def shouldUseYomi(playConfidence, yomiScore):
     # returns True if we are not confident with our play
     return True
                     
-def decideYomiLayer(yomiData):
+def decideYomiLayer(yomiData, predictionConfidence):
     # figure out what layer to use
     # 1. Get the sum of all the score
     # 2. Get the ratio for each layer
@@ -292,7 +292,11 @@ def decideYomiLayer(yomiData):
     for score in yomiScore:
         if score > 0:
             yomiScoreSum += score
-            
+    
+    if predictionConfidence == 1.0:
+        #todo
+        return 0, predictionConfidence
+    
     chances = []
     if yomiScoreSum == 0:
         chances = [0, 0, 0]     
@@ -374,8 +378,10 @@ def decideYomiLayer(yomiData):
 def getYomiChoices(prediction):    
     global yomiChoices
 
+    move = prediction[0]
+    
     # fill up yomiChoices with the moves to be played
-    layer1 = (prediction + 1) % 3      # layer 1   (beats enemy's choice)
+    layer1 = (move   + 1) % 3      # layer 1   (beats enemy's choice)
     layer2 = (layer1 + 2) % 3          # layer 2   (beats enemy's layer 1)
     layer3 = (layer2 + 2) % 3          # layer 3   (beats enemy's layer 2)
     
@@ -416,12 +422,12 @@ def yomi(prediction):
     #  - some AI variant should change layer easily. some should change reluntanctly
     
     ourPlay = rps.random() % 3
-    playConfidence = 0.0
+    playConfidence = 0
     if shouldUseYomi(playConfidence, YomiData.yomiScore):
         yomiChoices = getYomiChoices(prediction)
         if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (playConfidence))
 
-        layerToUse, layerConfidence = decideYomiLayer(YomiData)
+        layerToUse, layerConfidence = decideYomiLayer(YomiData, prediction[1])
         if layerToUse != -1:
             layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
 
