@@ -93,8 +93,15 @@ class YomiData:
             self.yomiScore[i] *= self.decayDelta[i]
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
 
-        if self.observation or layerLastTurn != -1:
-            if victory:
+        if victory:
+            self.observation -= self.observationDeltaForWin
+        elif tie:
+            self.observation -= self.observationDeltaForTie
+        else:
+            self.observation -= self.observationDeltaForLost
+
+        if self.observation:
+            if victory and layerLastTurn != -1:
                 self.yomiScore[layerLastTurn] += self.victoryDelta * self.layerPreference[layerLastTurn]
                 self.confidence += 3
                 
@@ -123,13 +130,6 @@ class YomiData:
 
         for i in range(len(self.yomiScore)):
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
-
-        if victory:
-            self.observation -= self.observationDeltaForWin
-        elif tie:
-            self.observation -= self.observationDeltaForTie
-        else:
-            self.observation -= self.observationDeltaForLost
         
         
 YomiData = YomiData()
@@ -293,16 +293,14 @@ def decideYomiLayer(yomiData):
             yomiScoreSum += score
             
     if yomiScoreSum == 0:
-        chances = [1/3, 2/3, 1.0]
+        chances = [1/3, 2/3, 1.0]     
+        chances = [0, 0, 0]     
     else:
         chances = []
-        currentCount = 1
-        prevRatio = 0
         for score in yomiScore:
             if score > 0:
                 ratio = score / yomiScoreSum
                 chances.append(ratio)
-                prevRatio = ratio
             else:
                 chances.append(0)
 
@@ -313,9 +311,10 @@ def decideYomiLayer(yomiData):
         if chance < yomiData.minimumLayerConsideration:
             toModify += 1
             
-    if toModify and \
-       toModify != len(chances):            # just a check to make sure there's a non-zero value in all the layers   
-        delta = (yomiData.minimumLayerConsideration * toModify) / (len(chances) - toModify)
+    if toModify:            # just a check to make sure there's a non-zero value in all the layers   
+        aboveMinimumLayerConsideration = len(chances) - toModify
+        if aboveMinimumLayerConsideration == 0: aboveMinimumLayerConsideration = 1
+        delta = (yomiData.minimumLayerConsideration * toModify) / aboveMinimumLayerConsideration
         if Debug:
             print ("Chances (unmodified):" + prettifyList(chances))
         for i in range(len(chances)):
@@ -340,6 +339,7 @@ def decideYomiLayer(yomiData):
             
     layerConfidence = 0  # how confident we are with our layer choice
     value = rps.randomRange()
+    if Debug: print ("Random value was %f." % (value))
     layerToUse = 0
     for i in range(len(chances)):
         if value <= chances[i]: 
@@ -352,10 +352,11 @@ def decideYomiLayer(yomiData):
             layerConfidence = value - total
             if layerConfidence < 0: layerConfidence = 0
             break
-    
-    if Debug: print ("Random value was %f." % (value))
-
-    # while in observation mode, use layer 0 except when the layer we have chosen passes the treshold.
+    else:
+        if Debug: print ("No confidence in yomi")
+        return -1, layerConfidence
+        
+    # while in observation mode, use layer -1 except when the layer we have chosen passes the treshold.
     if YomiData.observation > 0:
         if Debug: print ("***Currently in observation mode***")
         
@@ -419,10 +420,12 @@ def yomi(prediction):
         if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (playConfidence))
 
         layerToUse, layerConfidence = decideYomiLayer(YomiData)
-        layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
+        if layerToUse != -1:
+            layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
 
         layerLastTurn = layerToUse
         if layerToUse == -1:
+            if Debug: print ("Using our play.")
             move = ourPlay
         else:        
             if Debug: print ("Using layer %i." % (layerToUse))
