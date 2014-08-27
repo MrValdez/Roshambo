@@ -5603,9 +5603,9 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "MegaHAL");
     crosstable[i].pname = halbot;
 
-    i++;  /* nuthin' beats rock */
-    strcpy(crosstable[i].name, "Good Ole Rock");
-    crosstable[i].pname = rockbot;
+    i++;  /* rotate r -> p -> s */
+    strcpy(crosstable[i].name, "Rotate R-P-S");
+    crosstable[i].pname = rotatebot;
 
 #if 0
     i++;  /* nuthin' beats rock */
