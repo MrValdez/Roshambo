@@ -2,8 +2,6 @@
 # temporarily remove decision making for benchmarking purposes
 
 #todo:
-# make chances for each yomi layer different (not 1/3 each)
-
 # make switching layers contain a cost. going higher has a higher cost. going lower has a lower cost. (this is modelling confidence)
 
 # yomi = we are modelling what layer the opponent is susceptible to
@@ -240,9 +238,12 @@ def shouldChangeLayer(X, confidenceGraph, originLayer, targetLayer, confidenceCe
     
     return result, confidenceLevel
 
-def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):    
+def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):
+    if layerToUse == -1 or layerLastTurn != -1:
+        return layerToUse
+        
     # see if we are confident with changing layers
-    if (layerToUse != -1 and layerLastTurn  != -1) and layerLastTurn != layerToUse:
+    if layerLastTurn != layerToUse:
         if YomiData.confidence > 5:
             # we are confident to stay in this layer
             layerToUse = layerLastTurn
@@ -284,7 +285,7 @@ def decideYomiLayer(yomiData):
     # 1. Get the sum of all the score
     # 2. Get the ratio for each layer
     # 3. If we are still under observation mode, don't use yomi, but keep score
-    # 4. If we are, randomize what layer to choose amongst top ranking
+    # 4. If we are, choose a layer
     yomiScore = yomiData.yomiScore
         
     yomiScoreSum = 0
@@ -292,11 +293,10 @@ def decideYomiLayer(yomiData):
         if score > 0:
             yomiScoreSum += score
             
+    chances = []
     if yomiScoreSum == 0:
-        chances = [1/3, 2/3, 1.0]     
         chances = [0, 0, 0]     
     else:
-        chances = []
         for score in yomiScore:
             if score > 0:
                 ratio = score / yomiScoreSum
@@ -306,20 +306,22 @@ def decideYomiLayer(yomiData):
 
     # make sure we don't go down the minimum layer consideration
     # if we have to modify, take from the other layers
-    toModify = 0
+    minimumLayerConsideration = yomiData.minimumLayerConsideration
+    numberOfBelowLayerConsideration = 0
     for chance in chances:
-        if chance < yomiData.minimumLayerConsideration:
-            toModify += 1
+        if chance < minimumLayerConsideration:
+            numberOfBelowLayerConsideration += 1
             
-    if toModify:            # just a check to make sure there's a non-zero value in all the layers   
-        aboveMinimumLayerConsideration = len(chances) - toModify
+    if numberOfBelowLayerConsideration:    # just a check to make sure there's a non-zero value in all the layers   
+        aboveMinimumLayerConsideration = len(chances) - numberOfBelowLayerConsideration
         if aboveMinimumLayerConsideration == 0: aboveMinimumLayerConsideration = 1
-        delta = (yomiData.minimumLayerConsideration * toModify) / aboveMinimumLayerConsideration
-        if Debug:
-            print ("Chances (unmodified):" + prettifyList(chances))
+        
+        delta = (minimumLayerConsideration * numberOfBelowLayerConsideration) / aboveMinimumLayerConsideration
+        if Debug: print ("Chances (unmodified):" + prettifyList(chances))
+        
         for i in range(len(chances)):
-            if chances[i] < yomiData.minimumLayerConsideration:
-                chances[i] += yomiData.minimumLayerConsideration
+            if chances[i] < minimumLayerConsideration:
+                chances[i] += minimumLayerConsideration
             else:
                 chances[i] -= delta
 
@@ -327,7 +329,7 @@ def decideYomiLayer(yomiData):
     
     # simplify the code by putting each ratio into a single number line
     for i in range(1, len(chances)):
-        chances[i] += chances[i-1]
+        chances[i] += chances[i - 1]
 
     if Debug: 
         print ("Yomi Score:          " + prettifyList(yomiScore))
