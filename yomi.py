@@ -39,6 +39,7 @@ class YomiPersonality:
         self.winningDeltaForTie = 1     # change to the layer score which should have won (if choice tied)
         self.decayDelta = [1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)
         self.minimumLayerConsideration = 0.0    # the lowest probability that a layer can have
+        self.predictionConfidenceTreshold = 0.8  # the lowest treshold for yomi layer 1 to automatically use prediction
         
         self.layerPreference = [1, 0.9, 0.1]    # how much is added to each layer when adding delta
         
@@ -60,7 +61,7 @@ class YomiPersonality:
         self.decayDelta = [1, 1, 1]
         self.winningDeltaForLost = 1.5
         self.winningDeltaForTie = 1
-        self.minimumLayerConsideration = 0.1
+        self.minimumLayerConsideration = 0.01
         
 class YomiData:
     def __init__(self):
@@ -278,6 +279,7 @@ def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):
 def shouldUseYomi(playConfidence, yomiScore):
     # returns False if we are confident with our play
     # returns True if we are not confident with our play
+        
     return True
                     
 def decideYomiLayer(yomiData, predictionConfidence):
@@ -293,8 +295,9 @@ def decideYomiLayer(yomiData, predictionConfidence):
         if score > 0:
             yomiScoreSum += score
     
-    if predictionConfidence == 1.0:
-        #todo
+    if predictionConfidence >= yomiData.predictionConfidenceTreshold:
+        if Debug: 
+            print ("High confidence of predicting opponent at %.2f. Treshold %.2f" % (predictionConfidence, yomiData.predictionConfidenceTreshold))
         return 0, predictionConfidence
     
     chances = []
@@ -307,6 +310,9 @@ def decideYomiLayer(yomiData, predictionConfidence):
                 chances.append(ratio)
             else:
                 chances.append(0)
+
+    # add prediction confidence
+    chances[0] = max(chances[0], predictionConfidence)
 
     # make sure we don't go down the minimum layer consideration
     # if we have to modify, take from the other layers
@@ -337,7 +343,7 @@ def decideYomiLayer(yomiData, predictionConfidence):
 
     if Debug: 
         print ("Yomi Score:          " + prettifyList(yomiScore))
-        if toModify:
+        if numberOfBelowLayerConsideration:
             print ("Chances (modified):  " + prettifyList(chances))            
         else:
             print ("Chances:             " + prettifyList(chances))            
@@ -381,7 +387,7 @@ def getYomiChoices(prediction):
     move = prediction[0]
     
     # fill up yomiChoices with the moves to be played
-    layer1 = (move   + 1) % 3      # layer 1   (beats enemy's choice)
+    layer1 = (move   + 1) % 3          # layer 1   (beats enemy's choice)
     layer2 = (layer1 + 2) % 3          # layer 2   (beats enemy's layer 1)
     layer3 = (layer2 + 2) % 3          # layer 3   (beats enemy's layer 2)
     
