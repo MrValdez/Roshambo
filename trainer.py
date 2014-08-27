@@ -4,6 +4,15 @@ import charts
 
 pathbase = "./results/"             # Note: this string should end with "/"
 
+todo: seed village from the initial result data from previous paper
+
+# Grab latest village DNA from database
+# Mutate DNA
+# Play tournament with DNA
+# Save
+# Repeat
+
+
 def main():
     PlayTournament(1000)
     CreateCSV()
