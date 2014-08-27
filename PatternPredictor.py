@@ -1,14 +1,19 @@
 import rps
 
-enemyHistory = ""
+Debug = True
+Debug = False
     
+enemyHistory = ""
+turnsToCheck = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
+turnsToCheck.reverse()
+
 def play(a):
     global enemyHistory
     currentTurn = rps.getTurn()
     
     if currentTurn == 0:
         enemyHistory = ""
-        return 1, 0
+        return rps.biased_roshambo (1/3.0, 1/3.0), 0
         
     myMoveLastTurn = rps.myHistory(currentTurn)
     enemyMoveLastTurn = rps.enemyHistory(currentTurn)
@@ -16,8 +21,7 @@ def play(a):
     enemyHistory += str(enemyMoveLastTurn)
     history = enemyHistory
     
-    turnsToCheck = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
-    for turn in reversed(turnsToCheck):
+    for i, turn in enumerate(turnsToCheck):
         if turn > currentTurn:
             continue
             
@@ -25,19 +29,20 @@ def play(a):
         found = history.rfind(seq, 0, currentTurn - 1)
                 
         if found != -1:
-            start = found+len(seq)
-            move = history[start:start + 1]
+            end = found + len(seq)
+            move = history[end:end + 1]
             move = int(move)
-            #print ("seq", seq)
-            #print ("found", found)
-            #print ("start", start)
-            #print ("hisrory", history)
-            #print ("move: ", move)
-            #input()
-            confidence = 1
-            return move, confidence
+            confidence = 1 - (i / len(turnsToCheck))
+            if Debug:
+                print ("Sequence to look for:   ", seq)
+                print ("Position of found seq:  ", found)
+                print ("Location of end of seq: ", end)
+                print ("Current history:        ", history)
+                print ("Enemy move predicted:   ", move)
+                print ("Confidence:             ", confidence)
+                input()
+                
+            
+            return move, confidence       
         
-        
-    move = (rps.enemyHistory(currentTurn) + 1) % 3
-    confidence = 1
-    return move, confidence
+    return rps.biased_roshambo (1/3.0, 1/3.0), 0
