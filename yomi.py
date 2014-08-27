@@ -19,6 +19,9 @@ Debug = False
 yomiChoices = [0, 0, 0]
 layerLastTurn = 0
 
+predictorsScoreCard = []
+lastSelectedPrediction = 0
+
 # for debugging
 yomiLayerUsage = [0, 0, 0]        # Count how many times a yomi layer is used
 yomiLayerScore = [0, 0, 0]        # Count how many times a yomi layer won
@@ -413,7 +416,65 @@ def getYomiChoices(prediction):
 
     return yomiChoices
 
-def yomi(prediction):
+def yomi(predictors):
+    
+    # select from the predictors based on highest confidence
+    # todo: select from the predictors based on past performance
+    
+    global lastSelectedPrediction
+    if rps.getTurn() == 0: 
+        # create the predictors scorecard
+        global predictorsScoreCard
+        predictorsScoreCard = [0] * len(predictors)
+    else:    
+        # update scorecard
+        currentTurn = rps.getTurn()
+        myMoveLastTurn = rps.myHistory(currentTurn)
+        enemyMoveLastTurn = rps.enemyHistory(currentTurn)
+        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
+        if victory:
+            predictorsScoreCard[lastSelectedPrediction] += 1
+
+    # select best performer
+    bestPerformance = max(predictorsScoreCard)
+    for i, performance in enumerate(predictorsScoreCard):
+        if bestPerformance == performance:
+            bestPerformanceIndex = i          
+            break
+    else:
+        bestPerformanceIndex = -1
+        
+    # select highest rate
+    rates = [predictor[1] for predictor in predictors]
+    highestRate = max(rates)
+    highestRateIndex = -1
+    if highestRate > predictors[bestPerformanceIndex][1]:
+        for i, predictor in enumerate(predictors):
+            if highestRate == predictor[1]:
+                highestRateIndex = i          
+                break
+    
+    # choose between two
+    if highestRateIndex == -1:
+        selectedPrediction = bestPerformanceIndex
+    elif bestPerformanceIndex == -1:
+        selectedPrediction = highestRateIndex
+    elif bestPerformanceIndex == -1 and highestRateIndex == -1:
+        selectedPrediction = rps.random() % 2
+    elif bestPerformanceIndex == highestRateIndex:
+        selectedPrediction = highestRateIndex
+    else:
+        prob = rps.randomRange()
+        if prob < predictors[bestPerformanceIndex][1]:
+            selectedPrediction = bestPerformanceIndex
+        else:
+            selectedPrediction = highestRateIndex
+            
+    prediction = predictors[selectedPrediction]
+    lastSelectedPrediction = selectedPrediction
+
+    # end selection
+
     global currentOpponent
     global layerLastTurn
     
@@ -481,11 +542,10 @@ def play(a):
             else:
                 print()
 
-    #prediction = BeatFrequentPick.play(a)
-    #decision = yomi(prediction)
+    predictors = [BeatFrequentPick.play(a), PatternPredictor.play(a)]      
+        
+    decision = yomi(predictors)
     
-    prediction = PatternPredictor.play(a)
-    decision = (prediction[0] + 1) % 3
     return decision
     
 def isVerbose():
