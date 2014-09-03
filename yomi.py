@@ -64,7 +64,8 @@ class YomiPersonality:
         # experiment
         self.layerPreference = [1, 1, 1] 
         self.observation = 5
-        self.decayDelta = [1, 1, 1]
+        #self.decayDelta = [1, 1, 1]
+        self.decayDelta = [1, 0.7, 0.5]
         self.minimumLayerConsideration = 0.05
         
 class YomiData:
@@ -73,13 +74,7 @@ class YomiData:
         self.__dict__ = personality.__dict__.copy()
 
         self.yomiScore = [0, 0, 0]   
-        
-        # AI's localize confidence
-        # todo: implement this
-        self.confidence = 0
-        self.maxConfidence = 10
-        
-        
+                
     def updateScore(self):
         # update score from last turn
         global yomiChoices
@@ -106,18 +101,15 @@ class YomiData:
         if self.observation:
             if victory and layerLastTurn != -1:
                 self.yomiScore[layerLastTurn] += self.victoryDelta * self.layerPreference[layerLastTurn]
-                self.confidence += 3
                 
                 yomiLayerScore[layerLastTurn] += 1
             else:
                 if tie:
                     self.yomiScore[layerLastTurn] += self.tieDelta * self.layerPreference[layerLastTurn]
                     scoreThisTurn = self.winningDeltaForTie
-                    self.confidence -= 1
                 else:
                     self.yomiScore[layerLastTurn] += self.lostDelta * self.layerPreference[layerLastTurn]
                     scoreThisTurn = self.winningDeltaForLost
-                    self.confidence -= 2
                 
                 # add score to yomi layer that would have gave us a win
                 winningMove = (enemyMoveLastTurn + 1) % 3
@@ -127,9 +119,6 @@ class YomiData:
                     if yomiChoices[i] == winningMove:
                         self.yomiScore[i] +=  scoreThisTurn * self.layerPreference[i]
                         break
-
-        if self.confidence < 0:                  self.confidence = 0
-        if self.confidence > self.maxConfidence: self.confidence = self.maxConfidence
 
         for i in range(len(self.yomiScore)):
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
@@ -256,35 +245,30 @@ def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):
         # no change
         return layerToUse
         
-    # see if we are confident with changing layers
-    if YomiData.confidence > 5:
-        # we are confident to stay in this layer
-        layerToUse = layerLastTurn
-    else:
-        # see if we should change layer
-        
-        # three possibilities:
-        # a. flipValue = rps.randomRange()
-        # b. flipValue = rps.randomRange() + layerConfidence
-        # c. flipValue = layerConfidence
-        
-        flipValue = layerConfidence
-        
-        layerSize = YomiData.layerConfidenceSize
-        layerRange = [(0, layerSize[0])] 
-        layerRange.append((layerRange[0][1], layerRange[0][1] + layerSize[1]))
-        layerRange.append((layerRange[1][1], layerRange[1][1] + layerSize[2]))
-        confidenceGraph = ([x for x in range(100)], layerRange)
-        #confidenceGraph = ([math.log(x+0.1) for x in range(100)], layerRange)
-        
-        changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn, layerToUse)
+    # see if we should change layer
+    
+    # three possibilities:
+    # a. flipValue = rps.randomRange()
+    # b. flipValue = rps.randomRange() + layerConfidence
+    # c. flipValue = layerConfidence
+    
+    flipValue = layerConfidence
+    
+    layerSize = YomiData.layerConfidenceSize
+    layerRange = [(0, layerSize[0])] 
+    layerRange.append((layerRange[0][1], layerRange[0][1] + layerSize[1]))
+    layerRange.append((layerRange[1][1], layerRange[1][1] + layerSize[2]))
+    confidenceGraph = ([x for x in range(100)], layerRange)
+    #confidenceGraph = ([math.log(x+0.1) for x in range(100)], layerRange)
+    
+    changeLayer, confidence = shouldChangeLayer(flipValue, confidenceGraph, layerLastTurn, layerToUse)
 
-        if changeLayer == False:
-            if Debug:
-                print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
-                        (layerLastTurn, layerToUse, flipValue, confidence))
-                
-            layerToUse = layerLastTurn
+    if changeLayer == False:
+        if Debug:
+            print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
+                    (layerLastTurn, layerToUse, flipValue, confidence))
+            
+        layerToUse = layerLastTurn
                 
     return layerToUse
                     
@@ -314,7 +298,6 @@ def decideYomiLayer(yomiData, predictionConfidence):
     # add prediction confidence to layer chances
     if Debug: 
         print ("Layer 0's confidence: %.2f. Prediction confidence: %.2f" % (yomiScore[0], predictionConfidence))
-        print (yomiScore)
 
     predictionConfidenceDelta = max(yomiScore[0], predictionConfidence)
     yomiScore[0] = predictionConfidenceDelta
@@ -434,17 +417,22 @@ def yomi(predictors):
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
+        tie = (myMoveLastTurn == enemyMoveLastTurn)
         if victory:
             predictorsScoreCard[lastSelectedPrediction] += 1
+        elif tie:
+            predictorsScoreCard[lastSelectedPrediction] += 0
+        else:
+            predictorsScoreCard[lastSelectedPrediction] -= 1
 
     # select best performer
     bestPerformance = max(predictorsScoreCard)
-    for i, performance in enumerate(predictorsScoreCard):
-        if bestPerformance == performance:
-            bestPerformanceIndex = i          
-            break
-    else:
-        bestPerformanceIndex = -1
+    bestPerformanceIndex = -1
+    if bestPerformance > 0:
+        for i, performance in enumerate(predictorsScoreCard):
+            if bestPerformance == performance:
+                bestPerformanceIndex = i          
+                break
         
     # select highest rate
     rates = [predictor[1] for predictor in predictors]
@@ -521,7 +509,7 @@ def yomi(predictors):
             move = ourPlay
             lastSelectedPrediction = -1
         else:        
-            if Debug: print ("Using layer %i." % (layerToUse))
+            if Debug: print ("Using layer %i." % (layerToUse + 1))
 
             yomiLayerUsage[layerToUse] += 1
             

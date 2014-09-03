@@ -13,6 +13,7 @@ def play(a):
     
     if currentTurn == 0:
         enemyHistory = ""
+        return 1, 0
         return rps.biased_roshambo (1/3.0, 1/3.0), 0
         
     myMoveLastTurn = rps.myHistory(currentTurn)
@@ -45,4 +46,5 @@ def play(a):
             
             return move, confidence       
         
+    return 1, 0
     return rps.biased_roshambo (1/3.0, 1/3.0), 0
