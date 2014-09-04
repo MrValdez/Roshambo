@@ -266,7 +266,7 @@ def decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn):
     if changeLayer == False:
         if Debug:
             print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
-                    (layerLastTurn, layerToUse, flipValue, confidence))
+                    (layerLastTurn + 1, layerToUse + 1, flipValue, confidence))
             
         layerToUse = layerLastTurn
                 
@@ -396,7 +396,7 @@ def getYomiChoices(prediction):
     
     yomiChoices = [layer1, layer2, layer3]
 
-    if Debug: print ("Yomi Choices:       %i     %i     %i" % 
+    if Debug: print ("Yomi Choices:                  %i      %i      %i" % 
                      (yomiChoices[0], yomiChoices[1], yomiChoices[2]))
 
     return yomiChoices
