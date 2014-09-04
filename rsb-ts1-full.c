@@ -5942,32 +5942,57 @@ void Print_Scaled_Results (Player_Table crosstable[players+1])
 void Print_M_Results (Player_Table crosstable[players+1])
 {
     int i, j, win, draw, loss;
+    
+    int YomiRank = 1000;        // Yomi Changes
 
     printf(" Match results (draw <= %d): \n\n", g_drawn);
     printf("    ");
     printf("%-*s ", nameleng, crosstable[0].name);
     printf("   total  W  L  D ");
-    for (j = 1; j <= players; j++) {
-        printf(" %*d", fw-2, j);
+
+    if (verbose4)
+    {
+        for (j = 1; j <= players; j++) {
+            printf(" %*d", fw-2, j);
+        }
     }
     printf("\n");
+    
     for (i = 1; i <= players; i++) {
         printf(" %2d ", i);
         printf("%-*s ", nameleng, crosstable[i].name);
         printf(" %*d ", fw+2, crosstable[i].result[0]);
+
         win = 0; loss = 0; draw = -1;
         for (j = 1; j <= players; j++) {
             if ( crosstable[i].result[j] == 2 ) { win++; }
             if ( crosstable[i].result[j] == 0 ) { loss++; }
             if ( crosstable[i].result[j] == 1 ) { draw++; }
         }
+        
         printf(" %2d %2d %2d ", win, loss, draw);
-        for (j = 1; j <= players; j++) {
-            printf(" %*d", fw-2, crosstable[i].result[j]);
+        
+        if (verbose4)
+        {
+            for (j = 1; j <= players; j++) {
+                printf(" %*d", fw-2, crosstable[i].result[j]);
+            }
         }
+           
         printf("\n");
+        
+        // Yomi Changes
+        if (strcmp("Yomi AI", crosstable[i].name) == 0)
+        {
+            YomiRank = i;
+            break;
+        }
+        // Yomi Changes
     }
-    printf("\n");
+    if (verbose4)
+        printf("\n");
+    
+    printf("\n   Yomi AI is match ranked %i\n", YomiRank);
 }
 
 void Print_MSorted_Results (Player_Table crosstable[players+1])
@@ -6136,14 +6161,17 @@ int main(int argc, char *argv[]) {
       /* Print_Match_Results (crosstable); */
    }
 
+   g_drawn = 50.6 / sqrt(tourneys);
+   
    if (verbose4)
    {
-       g_drawn = 50.6 / sqrt(tourneys);
        printf(" Final results (draw value = %d):\n", g_drawn);
-       
+   
        Print_Scaled_Results (crosstable);   
-       Print_Match_Results (crosstable);
-    }
+   }
+   
+   Print_Match_Results (crosstable);
+
    /* add one for luck (compare to last iteration)
    g_drawn++;
    Print_Match_Results (crosstable);
@@ -6152,7 +6180,7 @@ int main(int argc, char *argv[]) {
 /// Quick post of score that's better than our ai
     int j, rank = 0;
 
-    printf("\n Tournament results: \n\n");
+    printf("\n Tournament results:\n");
     printf("    ");
     printf("%-*s ", nameleng, crosstable[0].name);
     printf("  total \n");
@@ -6166,7 +6194,7 @@ int main(int argc, char *argv[]) {
             rank+= 1;
         }
     }
-    printf("\n\n   Yomi is ranked %d", rank);
+    printf("\n   Yomi is tournament ranked %d", rank);
     printf("\n");
     printf("\n");
 
