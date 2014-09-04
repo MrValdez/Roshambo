@@ -1,6 +1,3 @@
-# priority:
-# temporarily remove decision making for benchmarking purposes
-
 #todo:
 # make switching layers contain a cost. going higher has a higher cost. going lower has a lower cost. (this is modelling confidence)
 
@@ -101,11 +98,10 @@ class Yomi:
         
         personality = self.Personality
         
-        # decay the scores
-        for i in range(len(self.yomiScore)):
+        for i, _ in enumerate(self.yomiScore):
             self.yomiScore[i] *= personality.decayDelta[i]
             if self.yomiScore[i] < 0: self.yomiScore[i] = 0
-
+        
         if victory:
             self.Personality.observation -= personality.observationDeltaForWin
         elif tie:
@@ -113,9 +109,9 @@ class Yomi:
         else:
             self.Personality.observation -= personality.observationDeltaForLost
 
-        if self.Personality.observation:
+        if self.layerLastTurn != -1:
             layerLastTurn = self.layerLastTurn
-            if victory and layerLastTurn != -1:
+            if victory:
                 self.yomiScore[layerLastTurn] += personality.victoryDelta * personality.layerPreference[layerLastTurn]
                 
                 global yomiLayerScore
@@ -137,7 +133,7 @@ class Yomi:
                         self.yomiScore[i] +=  scoreThisTurn * personality.layerPreference[i]
                         break
 
-        for i in range(len(self.yomiScore)):
+        for i, _ in enumerate(self.yomiScore):
             if self.yomiScore[i] < 0: 
                 self.yomiScore[i] = 0
 
@@ -290,9 +286,6 @@ class Yomi:
         if Debug: 
             print ("Layer 0's confidence: %.2f. Prediction confidence: %.2f" % (yomiScore[0], predictionConfidence))
 
-        predictionConfidenceDelta = max(yomiScore[0], predictionConfidence)
-        yomiScore[0] = predictionConfidenceDelta
-        
         # normalize everything to 1        
         total = sum([score for score in yomiScore if score > 0])
         
@@ -316,24 +309,20 @@ class Yomi:
             if chance < minimumLayerConsideration:
                 numberOfBelowLayerConsideration += 1
                 
-        if numberOfBelowLayerConsideration:    # check to make sure there's a non-zero value in all the layers   
+        if numberOfBelowLayerConsideration > 0:    # check to make sure there's a non-zero value in all the layers   
             aboveMinimumLayerConsideration = len(chances) - numberOfBelowLayerConsideration
             if aboveMinimumLayerConsideration == 0: aboveMinimumLayerConsideration = 1
             
             delta = (minimumLayerConsideration * numberOfBelowLayerConsideration) / aboveMinimumLayerConsideration
             if Debug: print ("Chances (unmodified):" + self._prettifyList(chances))
             
-            for i in range(len(chances)):
+            for i, _ in enumerate(chances):
                 if chances[i] < minimumLayerConsideration:
                     chances[i] += minimumLayerConsideration
                 else:
                     chances[i] -= delta
 
         rawChance = [chances[0], chances[1], chances[2]]
-        
-        # simplify the code by putting each ratio into a single number line
-        for i in range(1, len(chances)):
-            chances[i] += chances[i - 1]
 
         if Debug: 
             prettifyList = self._prettifyList
@@ -347,8 +336,8 @@ class Yomi:
         layerConfidence = 0  # how confident we are with our layer choice
         value = rps.randomRange()
         if Debug: print ("Random value was %f." % (value))
-        layerToUse = 0
-        for i in range(len(chances)):
+        layerToUse = -1
+        for i, _ in enumerate(chances):
             if value <= chances[i]: 
                 layerToUse = i
                 
@@ -359,6 +348,7 @@ class Yomi:
                 layerConfidence = value - total
                 if layerConfidence < 0: layerConfidence = 0
                 break
+            value -= chances[i]
         else:
             if Debug: print ("No confidence in yomi")
             return -1, layerConfidence
