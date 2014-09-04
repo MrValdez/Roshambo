@@ -92,10 +92,10 @@ class PredictorSelector:
         # check if we have a tie for maximum. if we do, choose between them using a random number
         numCount = confidences.count(maxConfidence)
         if numCount > 1:
-            division = 1 / numCount
+            distribution = 1 / numCount
             for i, confidence in enumerate(confidences):
                 if confidence == maxConfidence:
-                    confidences[i] = division
+                    confidences[i] = distribution
                 else:
                     confidences[i] = 0
                     
