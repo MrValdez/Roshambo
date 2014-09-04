@@ -37,22 +37,22 @@ class PredictorSelector:
         # update all wins
         for i, result in enumerate(self.LastResults):
             move = result[0]
-            if move == victory:
+            if victory:
                 self.Scores[i] += 2
-            elif move == tie:
+            elif tie:
                 self.Scores[i] += 1
-            elif move == lost:
+            elif lost:
                 self.Scores[i] -= 3
                 
         if self.LastPredictor != None:
             i = self.LastPredictor
             move = self.LastResults[self.LastPredictor][0]
             
-            if move == victory:
+            if victory:
                 self.Scores[i] += 2
-            elif move == tie:
+            elif tie:
                 self.Scores[i] += 1
-            elif move == lost:
+            elif lost:
                 self.Scores[i] -= 3
 
         if Debug:

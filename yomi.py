@@ -118,6 +118,7 @@ class Yomi:
             if victory and layerLastTurn != -1:
                 self.yomiScore[layerLastTurn] += personality.victoryDelta * personality.layerPreference[layerLastTurn]
                 
+                global yomiLayerScore
                 yomiLayerScore[layerLastTurn] += 1
             else:
                 if tie:
