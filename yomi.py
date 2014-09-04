@@ -12,9 +12,8 @@
 # it seems that using yomi beats iocaine powder. using layer 0 permanently causes it lose. test to check if this is true.
 
 import math
-import BeatFrequentPick
-import PatternPredictor
 import rps
+import yomiPredictorSelector
 Debug = True
 Debug = False
 
@@ -29,6 +28,7 @@ yomiLayerUsage = [0, 0, 0]        # Count how many times a yomi layer is used
 yomiLayerScore = [0, 0, 0]        # Count how many times a yomi layer won
 
 currentOpponent = 0
+predictorSelector = yomiPredictorSelector.PredictorSelector()
 
 class YomiPersonality:
     """ contains the personality that can influence what yomi layers to use """
@@ -401,70 +401,7 @@ def getYomiChoices(prediction):
 
     return yomiChoices
 
-def yomi(predictors):
-    
-    # select from the predictors based on highest confidence
-    # todo: select from the predictors based on past performance
-    
-    global lastSelectedPrediction
-    if rps.getTurn() == 0: 
-        # create the predictors scorecard
-        global predictorsScoreCard
-        predictorsScoreCard = [0] * len(predictors)
-    elif lastSelectedPrediction != -1:    
-        # update scorecard
-        currentTurn = rps.getTurn()
-        myMoveLastTurn = rps.myHistory(currentTurn)
-        enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
-        tie = (myMoveLastTurn == enemyMoveLastTurn)
-        if victory:
-            predictorsScoreCard[lastSelectedPrediction] += 1
-        elif tie:
-            predictorsScoreCard[lastSelectedPrediction] += 0
-        else:
-            predictorsScoreCard[lastSelectedPrediction] -= 1
-
-    # select best performer
-    bestPerformance = max(predictorsScoreCard)
-    bestPerformanceIndex = -1
-    if bestPerformance > 0:
-        for i, performance in enumerate(predictorsScoreCard):
-            if bestPerformance == performance:
-                bestPerformanceIndex = i          
-                break
-        
-    # select highest rate
-    rates = [predictor[1] for predictor in predictors]
-    highestRate = max(rates)
-    highestRateIndex = -1
-    if highestRate > predictors[bestPerformanceIndex][1]:
-        for i, predictor in enumerate(predictors):
-            if highestRate == predictor[1]:
-                highestRateIndex = i          
-                break
-    
-    # choose between two
-    if highestRateIndex == -1:
-        selectedPrediction = bestPerformanceIndex
-    elif bestPerformanceIndex == -1:
-        selectedPrediction = highestRateIndex
-    elif bestPerformanceIndex == -1 and highestRateIndex == -1:
-        selectedPrediction = rps.random() % 2
-    elif bestPerformanceIndex == highestRateIndex:
-        selectedPrediction = highestRateIndex
-    else:
-        prob = rps.randomRange()
-        if prob < predictors[bestPerformanceIndex][1]:
-            selectedPrediction = bestPerformanceIndex
-        else:
-            selectedPrediction = highestRateIndex
-            
-    prediction = predictors[selectedPrediction]
-    lastSelectedPrediction = selectedPrediction
-
-    # end selection
-
+def yomi(prediction):
     global currentOpponent
     global layerLastTurn
     
@@ -501,7 +438,8 @@ def yomi(predictors):
         yomiChoices = getYomiChoices(prediction)
         if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (playConfidence))
 
-        layerToUse, layerConfidence = decideYomiLayer(YomiData, prediction[1])
+        predictionConfidence = prediction[1]
+        layerToUse, layerConfidence = decideYomiLayer(YomiData, predictionConfidence)
         layerToUse = decideChangeLayer(YomiData, layerToUse, layerConfidence, layerLastTurn)
         
         if layerToUse == -1:
@@ -534,9 +472,11 @@ def play(a):
             else:
                 print()
 
-    predictors = [BeatFrequentPick.play(a), PatternPredictor.play(a)]      
+    if rps.getTurn() == 0:
+        predictorSelector.reset()
         
-    decision = yomi(predictors)
+    predictorSelector.update()
+    decision = yomi(predictorSelector.getHighestRank(a))
     
     return decision
     

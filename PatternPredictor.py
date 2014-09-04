@@ -93,6 +93,4 @@ def play(a):
         input()
             
     return bestMove, bestConfidence
-        
-    return 1, 0
     return rps.biased_roshambo (1/3.0, 1/3.0), 0
