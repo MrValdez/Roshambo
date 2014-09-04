@@ -434,7 +434,7 @@ def yomi(prediction):
     
     ourPlay = rps.random() % 3
     playConfidence = 0
-    if shouldUseYomi(playConfidence, YomiData.yomiScore):
+    if shouldUseYomi(playConfidence, YomiData.yomiScore):        
         yomiChoices = getYomiChoices(prediction)
         if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (playConfidence))
 
@@ -459,6 +459,7 @@ def yomi(prediction):
         if Debug: print ("Decided to use personal move. Current play confidence is %.2f" % (playConfidence))
         lastSelectedPrediction = -1
         move = ourPlay
+        predictorSelector.LastPredictor = None   # todo: move to predictorSelector
         
     return move
     
