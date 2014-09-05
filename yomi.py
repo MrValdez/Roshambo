@@ -297,8 +297,9 @@ class Yomi:
         # add prediction confidence to layer chances (todo)
         #chances = [score * predictionConfidence for score in normalScores]     # very bad
         #chances = [(score * 0.75) + (predictionConfidence * 0.25) for score in normalScores]
-        chances = [score for score in normalScores]
-        chances[0] += predictionConfidence
+        #chances = [score for score in normalScores]
+        #chances[0] += predictionConfidence
+        chances = [score + predictionConfidence for score in normalScores]
         
         # make sure we don't go down the minimum layer consideration
         # if we have to modify, take from the other layers
