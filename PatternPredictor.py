@@ -70,13 +70,18 @@ def play(a):
                         break                
                 confidenceInSequenceFound = 1.0
 
-            confidenceInSequence = (i + 1) / len(turnsToCheck)
+            if len(history) - turn < 0:
+                confidenceInSequence = (i + 1) / turn
+            else:
+                confidenceInSequence = (i + 1) / len(turnsToCheck)
             confidence = (confidenceInSequence * 0.75) + (confidenceInSequenceFound * 0.25)
                                 
             if bestConfidence < confidence:
                 if Debug:
                     print ("Sequence to look for:          ", seq)
                     print ("Position of latest found seq:  ", history.rfind(seq, 0, currentTurn - 1))
+                    print ("Predicted move:                ", move)
+                    print ("Confidence:                    ", confidence)
 
                 if Debug and bestConfidence != -1:
                     print ("confidence changed from %.2f to %.2f" % (bestConfidence, confidence))
