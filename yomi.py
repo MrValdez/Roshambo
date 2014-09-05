@@ -269,9 +269,8 @@ class Yomi:
                         
     def decideYomiLayer(self, predictionConfidence):
         # figure out what layer to use
-        # 1. Get the sum of all the score
-        # 1b. Add the confidence we have on prediction
-        # 2. Normalize the layers to 1.0
+        # 1. Normalize the score to 1.0
+        # 2. Add the confidence we have on prediction
         # 3a. If we are still under observation mode, don't use yomi, but keep score
         # 3b. If we are not under observation mode, choose a layer
         
@@ -280,27 +279,27 @@ class Yomi:
                 print ("High confidence of predicting opponent at %.2f. Treshold %.2f" % (predictionConfidence, self.Personality.predictionConfidenceTreshold))
             return 0, predictionConfidence
 
-        yomiScore = [score for score in self.yomiScore]
-
-        # add prediction confidence to layer chances
-        if Debug: 
-            print ("Layer 0's confidence: %.2f. Prediction confidence: %.2f" % (yomiScore[0], predictionConfidence))
-
-        # normalize everything to 1        
-        total = sum([score for score in yomiScore if score > 0])
+        # normalize score to 1        
+        total = sum([score for score in self.yomiScore if score > 0])
         
-        chances = []
+        normalScores = []
         if total == 0:
-            chances = [0, 0, 0]
+            normalScores = [0, 0, 0]
         else:
             normal = 1 / total
-            for score in yomiScore:
+            for score in self.yomiScore:
                 if score > 0:
                     ratio = score * normal
-                    chances.append(ratio)
+                    normalScores.append(ratio)
                 else:
-                    chances.append(0)
+                    normalScores.append(0)
 
+        # add prediction confidence to layer chances (todo)
+        #chances = [score * predictionConfidence for score in normalScores]     # very bad
+        #chances = [(score * 0.75) + (predictionConfidence * 0.25) for score in normalScores]
+        chances = [score for score in normalScores]
+        chances[0] += predictionConfidence
+        
         # make sure we don't go down the minimum layer consideration
         # if we have to modify, take from the other layers
         minimumLayerConsideration = self.Personality.minimumLayerConsideration
@@ -326,7 +325,7 @@ class Yomi:
 
         if Debug: 
             prettifyList = self._prettifyList
-            print ("Yomi Score:          " + prettifyList(yomiScore))
+            print ("Yomi Score:          " + prettifyList(self.yomiScore))
             if numberOfBelowLayerConsideration:
                 print ("Chances (modified):  " + prettifyList(chances))            
             else:
@@ -399,7 +398,7 @@ class Yomi:
 
             predictionConfidence = prediction[1]
             layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence)
-            layerToUse = self.decideChangeLayer(layerToUse, layerConfidence)
+            #layerToUse = self.decideChangeLayer(layerToUse, layerConfidence)
             
             if layerToUse == -1:
                 if Debug: print ("Using our play (layer -1).")
