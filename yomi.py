@@ -444,7 +444,12 @@ yomi = Yomi()
 strategy = RPSstrategy.RPSstrategy()
 predictorSelector = yomiPredictorSelector.PredictorSelector()
 
+import PatternPredictor
+
 def play(a):
+    predict = PatternPredictor.play(a)[0]
+    return (predict + 1) % 3
+    
     startDebugTurn()
     
     if rps.getTurn()  == 0:
