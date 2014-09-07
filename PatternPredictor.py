@@ -4,8 +4,8 @@ Debug = True
 Debug = False
     
 enemyHistory = ""
-turnsToCheck = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
-turnsToCheck.reverse()
+sequenceSizes = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
+sequenceSizes.reverse()
 
 def play(a):
     global enemyHistory
@@ -24,7 +24,7 @@ def play(a):
     
     bestMove = 0
     bestConfidence = -1
-    for i, turn in enumerate(turnsToCheck):
+    for i, turn in enumerate(sequenceSizes):
         if turn > currentTurn:
             continue
             
@@ -73,7 +73,7 @@ def play(a):
             if len(history) - turn < 0:
                 confidenceInSequence = (i + 1) / turn
             else:
-                confidenceInSequence = (i + 1) / len(turnsToCheck)
+                confidenceInSequence = (i + 1) / len(sequenceSizes)
             confidence = (confidenceInSequence * 0.75) + (confidenceInSequenceFound * 0.25)
                                 
             if bestConfidence < confidence:
