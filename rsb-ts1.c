@@ -6105,7 +6105,7 @@ void Play_Tournament (Player_Table crosstable[players+1])
     if (verbose2) { Print_T_Results (crosstable); }
 }
 
-int yomiVariable1;
+char *yomiVariable1 = 0;
 int initPython(int argc, char *argv[]);
 void exitPython();
 
@@ -6122,11 +6122,13 @@ int main(int argc, char *argv[]) {
 
    verbose4 = 0;// during development, we are not interested in our standing. set to 0 during debug
    
-   yomiVariable1 = atoi(argv[1]);
-   if (yomiVariable1 == 0)
-       yomiVariable1 = 1;
-   //printf("%i", yomiVariable1);
-
+   if (argc > 1)
+   {
+       //yomiVariable1 = atoi(argv[1]);
+       yomiVariable1 = argv[1];
+       //printf("%s", yomiVariable1);
+   }
+   
    if (argc > 2)
        usePython = atoi(argv[2]);
    

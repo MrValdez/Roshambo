@@ -192,7 +192,7 @@ int isVerbose()
     }
 }     
 
-extern int yomiVariable1;
+extern char *yomiVariable1;
 
 int python()
 {
@@ -205,7 +205,11 @@ int python()
     PyObject *pArgs = PyTuple_New(1);
     
     int index = 0;
-    pValue = PyLong_FromLong(yomiVariable1);
+    if (yomiVariable1 == 0)
+        pValue = PyLong_FromLong(-1);
+    else
+        pValue = PyUnicode_FromString(yomiVariable1);
+        
     if (!pValue) {
         Py_DECREF(pArgs);
         Py_DECREF(pModule);
