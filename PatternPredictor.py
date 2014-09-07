@@ -4,10 +4,21 @@ Debug = True
 Debug = False
     
 enemyHistory = ""
-sequenceSizes = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
-sequenceSizes.reverse()
+sequenceSizes = None
 
 def play(a):
+    global sequenceSizes
+    if sequenceSizes == None:
+        if a == -1:
+            a = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
+            a.reverse()
+        else:
+            a = str(a).split(",")
+            a = [int(turn) for turn in a]
+            a.sort(reverse=True)
+            
+        sequenceSizes = a
+        
     global enemyHistory
     currentTurn = rps.getTurn()
     
