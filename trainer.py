@@ -10,9 +10,9 @@ argv = [2]
 
 def main():
     global argv
-    PlayTournament(10, priorityMatch = True)
+    PlayTournament(50, priorityMatch = True)
     argv = [2]
-    PlayTournament(10, priorityTournament = True)
+    PlayTournament(50, priorityTournament = True)
     CreateCSV()
 #    charts.startPlotting()
 
@@ -50,12 +50,16 @@ def PlayTournament(size, priorityMatch = False, priorityTournament = False):
                 MatchPts = resultMatch
             else:
                 argv.remove(nextSeqSize)
+                print (nextSeqSize, "is unwanted in match points. Deleting", filename)
+                os.remove(filename)
 
         if priorityTournament:
             if resultMatch < TournamentPts:
                 TournamentPts = resultMatch
             else:
                 argv.remove(nextSeqSize)
+                print (nextSeqSize, "is unwanted in tournament points. Deleting ", filename)
+                os.remove(filename)
      
 def GetRank(text, header):
     """
