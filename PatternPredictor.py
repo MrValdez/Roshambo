@@ -11,14 +11,14 @@ def play(a):
     if sequenceSizes == None:
         if a == -1:
             a = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
-            a.reverse()
+            a.sort(reverse=True)
         else:
             a = str(a).split(",")
             a = [int(turn) for turn in a]
             a.sort(reverse=True)
             
-        sequenceSizes = a
-        
+        sequenceSizes = a        
+           
     global enemyHistory
     currentTurn = rps.getTurn()
     

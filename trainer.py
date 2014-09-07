@@ -10,8 +10,8 @@ argv = [2]
 
 def main():
     global argv
-    PlayTournament(10, priorityMatch = False)
-    PlayTournament(10, priorityTournament = False)
+    PlayTournament(2, priorityMatch = True)
+#    #PlayTournament(10, priorityTournament = True)
     CreateCSV()
 #    charts.startPlotting()
 
@@ -24,18 +24,18 @@ def PlayTournament(size, priorityMatch = False, priorityTournament = False):
         nextSeqSize += 1
         argv.append(nextSeqSize)
         filename = pathbase + "results %s.txt" % (str(argv))
-        print ("Running %s..." % (filename), end='')
+        print ("\nRunning %s..." % (filename), end='')
         
-        #output = subprocess.check_output(["full.exe", str(argv)], universal_newlines = True)
-        output = subprocess.check_output(["full.exe"], universal_newlines = True)
+        argument = ",".join([str(s) for s in argv])
+        output = subprocess.check_output(["full.exe", argument], universal_newlines = True)
         with open(filename, "w") as f:
             stdout = str(output)
             f.write(stdout)
         
         header = "Match results"
-        resultMatch = GetRank(output, header)
+        resultMatch = int(GetRank(output, header))
         header = "Tournament results"
-        resultTournament = GetRank(output, header)
+        resultTournament = int(GetRank(output, header))
 
         global MatchPts
         global TournamentPts    
@@ -44,6 +44,7 @@ def PlayTournament(size, priorityMatch = False, priorityTournament = False):
                 MatchPts = resultMatch
             else:
                 argv.remove(nextSeqSize)
+
         if priorityTournament:
             if resultMatch < TournamentPts:
                 TournamentPts = resultMatch
