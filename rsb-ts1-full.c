@@ -5985,7 +5985,8 @@ void Print_M_Results (Player_Table crosstable[players+1])
         if (strcmp("Yomi AI", crosstable[i].name) == 0)
         {
             YomiRank = i;
-            break;
+            if (verbose4 == 0)
+                break;
         }
         // Yomi Changes
     }
@@ -6096,7 +6097,7 @@ void Play_Tournament (Player_Table crosstable[players+1])
         }
         
         // YOMI CHANGES
-        if (verbose4 == 0 && i >= 1) 
+        if (i >= 1) 
         {   
             //printf(" (playing the rest of the tournament)\n\n");
             verbose3 = 0;
@@ -6129,7 +6130,8 @@ int main(int argc, char *argv[]) {
    if (verbose1 == -1)
        return 1;
 
-   verbose4 = 0;// during development, we are not interested in our standing. set to 0 during debug
+   verbose4 = 0; // during development, we are not interested in our standing. set to 0 during debug
+   verbose4 = 1;
    
    if (argc > 1)
    {
