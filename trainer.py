@@ -10,8 +10,9 @@ argv = [2]
 
 def main():
     global argv
-    PlayTournament(2, priorityMatch = True)
-#    #PlayTournament(10, priorityTournament = True)
+    PlayTournament(10, priorityMatch = True)
+    argv = [2]
+    PlayTournament(10, priorityTournament = True)
     CreateCSV()
 #    charts.startPlotting()
 
@@ -23,7 +24,12 @@ def PlayTournament(size, priorityMatch = False, priorityTournament = False):
         size -= 1
         nextSeqSize += 1
         argv.append(nextSeqSize)
-        filename = pathbase + "results %s.txt" % (str(argv))
+        filename = "results %s.txt" % (str(argv))
+        if filename in os.listdir(pathbase): #file already exists
+            print (filename + " already exists")
+            continue
+            
+        filename = pathbase + filename
         print ("\nRunning %s..." % (filename), end='')
         
         argument = ",".join([str(s) for s in argv])
