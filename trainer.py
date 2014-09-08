@@ -1,6 +1,6 @@
 import os
 import subprocess
-#import charts
+import charts
 
 pathbase = "./results/"             # Note: this string should end with "/"
 
@@ -10,11 +10,11 @@ argv = [2]
 
 def main():
     global argv
-    PlayTournament(50, priorityMatch = True)
-    argv = [2]
-    PlayTournament(50, priorityTournament = True)
+#    PlayTournament(50, priorityMatch = True)
+#    argv = [2]
+#    PlayTournament(50, priorityTournament = True)
     CreateCSV()
-#    charts.startPlotting()
+    charts.startPlotting()
 
 
 def PlayTournament(size, priorityMatch = False, priorityTournament = False):

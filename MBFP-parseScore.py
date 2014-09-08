@@ -17,8 +17,7 @@ def FindScore(bot, showAllResults):
         if filename[-4:] != ".txt":
             print("%s is not txt file" % (filename))
         
-        variable = filename.split(".")[0]
-        variable = variable[8:]
+        variable = filename[-8:-4]
             
         with open(pathbase + filename) as f:
             # find the rank of the Yomi AI            
@@ -56,9 +55,9 @@ def FindScore(bot, showAllResults):
         
 def DisplayScore(bestScore, worstScore, gamesWon, gamesLost, gamesTied):
     print ("")
-    print ("Best Score : %s  Variant: %s\n %s" % (bestScore[1], bestScore[0], bestScore[2]))
+    print ("Best Score : %s  targetRank: %s\n %s" % (bestScore[1], bestScore[0], bestScore[2]))
     print ("")
-    print ("Worst Score: %s  Variant: %s\n %s" % (worstScore[1], worstScore[0], worstScore[2]))    
+    print ("Worst Score: %s  targetRank: %s\n %s" % (worstScore[1], worstScore[0], worstScore[2]))    
     print ("")
     print ("Variants won: %i. Variants Lost: %i. Variants tied: %i" % (gamesWon, gamesLost, gamesTied))
 
