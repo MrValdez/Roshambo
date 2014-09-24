@@ -20,11 +20,13 @@ def Plot(filename, title, saveFigure = True):
     y_data.reverse()
 
     # 5x4 inches
-    fig = plt.figure(figsize=(15, 6), dpi=80, frameon = False)
-    fig.subplots_adjust(left=0.05, right=0.55, top=0.9, bottom=0.1, wspace=0, hspace=0)
+    #fig = plt.figure(figsize=(15, 6), dpi=80, frameon = False)
+    #fig.subplots_adjust(left=0.05, right=0.55, top=0.9, bottom=0.1, wspace=0, hspace=0)
+    fig = plt.figure(figsize=(10, 6), dpi=80, frameon = False)
+    fig.subplots_adjust(left=0.06, right=0.95, top=0.9, bottom=0.1, wspace=0, hspace=0)
 
-    xMargin = 2
-    yMargin = 3
+    xMargin = 1
+    yMargin = 2
 
     y_data = numpy.array(y_data)    
     plt.xlim(-xMargin,len(y_data)+xMargin)
@@ -37,25 +39,29 @@ def Plot(filename, title, saveFigure = True):
     #ax.scatter(x_data, y_data, color="red", marker="^")
     #ax.plot(x_data, y_data, "b", linewidth=1.0, linestyle="-")
     x_data = range(len(y_data))
-    alphabet = [s for s in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[:len(y_data)]]
+    #alphabet = [s for s in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"[:len(y_data)]]
+    alphabet = [str(i) for i in range(2, 2 + len(y_data))]
     plt.xticks(x_data, alphabet, rotation=0)
     ax.plot(x_data, y_data, "bo", linewidth=1.0, linestyle="-")
     
     #ax.set_title(title + "\n(lower is better)")
     #ax.set_title("(lower is better)")
-    ax.set_xlabel("SequenceSize")
+    ax.set_xlabel("SequenceSize length")
     ax.set_ylabel("Ranking")
-
-    #textstr = '$\mu=%.2f$\n$\mathrm{median}=%.2f$\n$\sigma=%.2f$'%(4.2, 2.1, 2.0)
     
     textstr = ""
     for i, data in enumerate(x_data_raw):
-        textstr +=  "%s: %s\n" % (alphabet[i], data)
+        #textstr +=  "%s: %s\n" % (alphabet[i], data)
+        
+        data_range = data.split(",")
+        data_range = "%s - %s" % (data_range[0], data_range[-1])
+        
+        textstr +=  "%s: %s\n" % (alphabet[i], data_range)
 
     # these are matplotlib.patch.Patch properties
     props = dict(boxstyle='round', facecolor='white')
 
-    ax.text(1.02, 0.99, textstr, transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
+    #ax.text(1.02, 0.99, textstr, transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=props)
         
     if saveFigure:
         figureName = str(filename).split(".")[0] + ".png"
@@ -65,10 +71,10 @@ def Plot(filename, title, saveFigure = True):
         fig.show()
 
 def startPlotting():
-    Plot("results_match.csv", "Match Results", True)
-    Plot("results_tournament.csv", "Tournament Results", True)    
-    #Plot("results_match.csv", "Match Results", False)
-    #Plot("results_tournament.csv", "Tournament Results", False)    
+    Plot("results_match.csv", "Match Results", saveFigure = True)
+    Plot("results_tournament.csv", "Tournament Results", saveFigure = True)    
+    #Plot("results_match.csv", "Match Results", saveFigure = False)
+    #Plot("results_tournament.csv", "Tournament Results", saveFigure = False)    
 
 if __name__ == "__main__":
     startPlotting()
