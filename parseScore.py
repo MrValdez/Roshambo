@@ -6,6 +6,8 @@ pathbase = "./results/"             # Note: this string should end with "/"
 def FindScore(bot, showAllResults):
     """Get the best and worst score of a bot against Yomi AI"""
     fileList = sorted(os.listdir(pathbase))
+    fileList.reverse()      # for SeqPred
+
     bestScore = [0, -1000, ""] # "targetTurn", "score", "line"
     worstScore = [0, 1000, ""]
     
@@ -63,8 +65,9 @@ def DisplayScore(bestScore, worstScore, gamesWon, gamesLost, gamesTied):
     print ("Variants won: %i. Variants Lost: %i. Variants tied: %i" % (gamesWon, gamesLost, gamesTied))
 
 def DisplayLatex(bot, bestScore, worstScore):
-    print ("%s & MBFP\\textsubscript{%s} & %s & MBFP\\textsubscript{%s} & %s \\\\ \\hline" % 
-            (bot, int(bestScore[0]), bestScore[1], int(worstScore[0]), worstScore[1]))
+    print ("%s & SequenceSize\\textsubscript{%s} & %s & SequenceSize\\textsubscript{%s} & %s \\\\ \\hline" % 
+            (bot, bestScore[0].count(",") + 2, bestScore[1], worstScore[0].count(",") + 2, worstScore[1]))
+            # MBFP: (bot, int(bestScore[0]), bestScore[1], int(worstScore[0]), worstScore[1]))
 
 bot = None
 showAllResults = False
