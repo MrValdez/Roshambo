@@ -100,7 +100,7 @@ def play(a):
                 bestConfidence = confidence 
                 bestMove = move              
                 
-            return move, confidence         # uncomment this to check all the turns
+            return move, confidence         # uncomment this to check all the sequences
 
     if Debug and bestConfidence >= 0:
         print ("Current history:               ", history)
