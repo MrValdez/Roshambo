@@ -11,6 +11,7 @@ def play(a):
     if sequenceSizes == None:
         if a == -1:
             a = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
+            a = [1, 2, 3, 4, 5]
             a.sort(reverse=True)
         else:
             a = str(a).split(",")
@@ -40,8 +41,8 @@ def play(a):
             continue
             
         seq = history[-turn:]
-        #found = history.rfind(seq, 0, currentTurn - 1)
-        found = history.rfind(seq, 0, -turn)
+        #found = history.rfind(seq, 0, -turn)
+        found = history.find(seq, 0, -turn)
                 
         if found != -1:
             # list how many times we see a predicted move
@@ -52,7 +53,7 @@ def play(a):
                 move = int(move)
 
                 possiblePredictions[move] += 1
-                found = history.rfind(seq, 0, found)
+                found = history.find(seq, found + 1, -turn)
                     
             maxCount = max(possiblePredictions)
             # check if we have a tie for maximum. if we do, choose between them using a random number
