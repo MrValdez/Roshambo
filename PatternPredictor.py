@@ -46,7 +46,7 @@ def play(a):
                 
         if found != -1:
             # list how many times we see a predicted move
-            possiblePredictions = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissoros
+            possiblePredictions = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
             while found != -1:
                 end = found + len(seq)
                 move = history[end:end + 1]
@@ -56,25 +56,42 @@ def play(a):
                 found = history.find(seq, found + 1, -turn)
                     
             maxCount = max(possiblePredictions)
-            # check if we have a tie for maximum. if we do, choose between them using a random number
+            # check if we have a tie for maximum.
             numCount = possiblePredictions.count(maxCount)
             if numCount > 1:
-                sumCount = maxCount * numCount
-                for i, count in enumerate(possiblePredictions):
-                    if count == maxCount:
-                        possiblePredictions[i] = count / sumCount
-                    else:
-                        possiblePredictions[i] = 0
+                # we have a tie.
+                # let's see if what move has the most in the entire history
+                moveCounts = [0, 0, 0]
+                if possiblePredictions[0] == maxCount: moveCounts[0] = history.count("0")
+                if possiblePredictions[1] == maxCount: moveCounts[1] = history.count("1")
+                if possiblePredictions[2] == maxCount: moveCounts[2] = history.count("2")
+                
+                moveCountMax = max(moveCounts)
+                moveCountNum = moveCounts.count(moveCountMax)
+                if moveCountNum == 1:
+                    for i, count in enumerate(moveCounts):
+                        if count == moveCountMax:
+                            move = i
+                            break                
+                    confidenceInSequenceFound = 1.0
+                else:                
+                    # if we still have a tie, choose between them using a random number
+                    sumCount = maxCount * numCount
+                    for i, count in enumerate(possiblePredictions):
+                        if count == maxCount:
+                            possiblePredictions[i] = count / sumCount
+                        else:
+                            possiblePredictions[i] = 0
+                            
+                    random = rps.randomRange()               
                         
-                random = rps.randomRange()               
-                    
-                for i, randomNumber in enumerate(possiblePredictions):
-                    if random <= randomNumber:
-                        move = i
-                        break
-                    random -= randomNumber
+                    for i, randomNumber in enumerate(possiblePredictions):
+                        if random <= randomNumber:
+                            move = i
+                            break
+                        random -= randomNumber
 
-                confidenceInSequenceFound = possiblePredictions[move]
+                    confidenceInSequenceFound = possiblePredictions[move]
             else:
                 for i, count in enumerate(possiblePredictions):
                     if count == maxCount:
