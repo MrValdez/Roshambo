@@ -4,13 +4,12 @@ Debug = True
 Debug = False
     
 enemyHistory = ""
-sequenceSizes = None
+windowSize = None
 
 def play(a):
-    global sequenceSizes
-    if sequenceSizes == None:
+    global windowSize
+    if windowSize == None:
         if a == -1:
-            a = [1, 2, 3, 4, 5, 10, 15, 20, 25, 50]
             a = [1, 2, 3, 4, 5]
             a.sort(reverse=True)
         else:
@@ -18,17 +17,16 @@ def play(a):
             a = [int(turn) for turn in a]
             a.sort(reverse=True)
             
-        sequenceSizes = a        
+        windowSize = a        
            
     global enemyHistory
     currentTurn = rps.getTurn()
     
     if currentTurn == 0:
         enemyHistory = ""
-        return 1, 0
-        return rps.biased_roshambo (1/3.0, 1/3.0), 0
+        return 1, 0         # play Rock with 0 confidence
         
-    myMoveLastTurn = rps.myHistory(currentTurn)
+    # myMoveLastTurn = rps.myHistory(currentTurn)
     enemyMoveLastTurn = rps.enemyHistory(currentTurn)
 
     enemyHistory += str(enemyMoveLastTurn)
@@ -36,15 +34,17 @@ def play(a):
     
     bestMove = 0
     bestConfidence = -1
-    for i, turn in enumerate(sequenceSizes):
-        if turn > currentTurn:
+    for i, windowLength in enumerate(windowSize):
+        if windowLength > currentTurn:
+            # our window is bigger than the history size, so we ignore this window length
             continue
             
-        seq = history[-turn:]
-        #found = history.rfind(seq, 0, -turn)
-        found = history.find(seq, 0, -turn)
+        seq = history[-windowLength:]
+        found = history.find(seq, 0, -windowLength)
                 
-        if found != -1:
+        if found == -1:
+            continue
+        else:
             # list how many times we see a predicted move
             possiblePredictions = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
             while found != -1:
@@ -53,12 +53,21 @@ def play(a):
                 move = int(move)
 
                 possiblePredictions[move] += 1
-                found = history.find(seq, found + 1, -turn)
+                found = history.find(seq, found + 1, -windowLength)
                     
-            maxCount = max(possiblePredictions)
             # check if we have a tie for maximum.
+            maxCount = max(possiblePredictions)
             numCount = possiblePredictions.count(maxCount)
-            if numCount > 1:
+
+            if numCount == 1:
+                # we don't have a tie for maximum. Get the highest move
+                for i, count in enumerate(possiblePredictions):
+                    if count == maxCount:
+                        move = i
+                        return move, 1.0
+                             
+                confidenceInSequenceFound = 1.0
+            else:
                 # we have a tie.
                 # let's see if what move has the most in the entire history
                 moveCounts = [0, 0, 0]
@@ -92,17 +101,11 @@ def play(a):
                         random -= randomNumber
 
                     confidenceInSequenceFound = possiblePredictions[move]
-            else:
-                for i, count in enumerate(possiblePredictions):
-                    if count == maxCount:
-                        move = i
-                        break                
-                confidenceInSequenceFound = 1.0
 
-            if len(history) - turn < 0:
-                confidenceInSequence = (i + 1) / turn
+            if len(history) - windowLength < 0:
+                confidenceInSequence = (i + 1) / windowLength
             else:
-                confidenceInSequence = (i + 1) / len(sequenceSizes)
+                confidenceInSequence = (i + 1) / len(windowSize)
             confidence = (confidenceInSequence * 0.75) + (confidenceInSequenceFound * 0.25)
                                 
             if bestConfidence < confidence:
@@ -127,4 +130,3 @@ def play(a):
         input()
             
     return bestMove, bestConfidence
-    return rps.biased_roshambo (1/3.0, 1/3.0), 0
