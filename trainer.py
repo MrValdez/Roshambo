@@ -2,22 +2,21 @@ import os
 import subprocess
 import charts
 
+#pathbase = "./results - Original/"             # Note: this string should end with "/"
 pathbase = "./results/"             # Note: this string should end with "/"
 
 MatchPts = 100
 TournamentPts = 100
-argv = [2]
+argv = [1]
 
 def main():
     global argv
-#    PlayTournament(50, priorityMatch = True)
-#    argv = [2]
-#    PlayTournament(50, priorityTournament = True)
+    PlayTournament(33)
     CreateCSV()
     charts.startPlotting()
 
 
-def PlayTournament(size, priorityMatch = False, priorityTournament = False):
+def PlayTournament(size):
     global argv
     nextSeqSize = max(argv)
     while size > 0:
@@ -42,24 +41,6 @@ def PlayTournament(size, priorityMatch = False, priorityTournament = False):
         resultMatch = int(GetRank(output, header))
         header = "Tournament results"
         resultTournament = int(GetRank(output, header))
-
-        global MatchPts
-        global TournamentPts    
-        if priorityMatch:
-            if resultMatch < MatchPts:
-                MatchPts = resultMatch
-            else:
-                argv.remove(nextSeqSize)
-                print (nextSeqSize, "is unwanted in match points. Deleting", filename)
-                os.remove(filename)
-
-        if priorityTournament:
-            if resultMatch < TournamentPts:
-                TournamentPts = resultMatch
-            else:
-                argv.remove(nextSeqSize)
-                print (nextSeqSize, "is unwanted in tournament points. Deleting ", filename)
-                os.remove(filename)
      
 def GetRank(text, header):
     """
@@ -100,7 +81,8 @@ def CreateCSV(outputFilename = "results"):
             header = "Match results"
             rank = GetRank(text, header)
             print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
-            csv[0] += "%s,%s\n" % (variable, rank)
+            #csv[0] += "%s,%s\n" % (variable, rank)
+            csv[0] += "%s,%s\n" % (variable[-3:], rank)
             if int(rank) < best[0][1]:
                 best[0][0] = variable
                 best[0][1] = int(rank)
@@ -108,7 +90,8 @@ def CreateCSV(outputFilename = "results"):
             header = "Tournament results"
             rank = GetRank(text, header)
             print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
-            csv[1] += "%s,%s\n" % (variable, rank)
+            #csv[1] += "%s,%s\n" % (variable, rank)
+            csv[1] += "%s,%s\n" % (variable[-3:], rank)
             if int(rank) < best[1][1]:
                 best[1][0] = variable
                 best[1][1] = int(rank)    
@@ -116,7 +99,7 @@ def CreateCSV(outputFilename = "results"):
     print ("\n")
     print ("Best Match Result      is variant %s with rank of %i" % (best[0][0], best[0][1]))
     print ("Best Tournament Result is variant %s with rank of %i" % (best[1][0], best[1][1]))
-    
+
     file = "%s_%s.csv" % (outputFilename, "match")
     with open(file, "w") as f:
         f.write(csv[0])
