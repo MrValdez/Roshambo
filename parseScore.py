@@ -31,7 +31,7 @@ def FindScore(bot, showAllResults):
                 continue
             line = text[text.rfind("\n", 0, found):text.find("\n", found)].strip()
             if showAllResults:
-                print ("%s: %s" % (variable, line))
+                print ("%s:\n %s" % (variable, line))
             
             scoreText = line[line.find("Match:") + len("Match:"):]
             score = scoreText[0:scoreText.find("(")].strip()
