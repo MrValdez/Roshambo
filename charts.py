@@ -46,7 +46,8 @@ def Plot(filename, title, saveFigure = True):
     
     #ax.set_title(title + "\n(lower is better)")
     #ax.set_title("(lower is better)")
-    ax.set_xlabel("SequenceSize length")
+    #ax.set_xlabel("SequenceSize length")     # MBFP
+    ax.set_xlabel("WindowSize length")      # Sequence Predictor
     ax.set_ylabel("Ranking")
     
     textstr = ""
