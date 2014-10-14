@@ -8,8 +8,8 @@ def FindScore(bot, showAllResults):
     fileList = sorted(os.listdir(pathbase))
     fileList.reverse()      # for SeqPred
 
-    bestScore = [0, -1000, ""] # "targetTurn", "score", "line"
-    worstScore = [0, 1000, ""]
+    bestScore = [0, -10000, ""] # "targetTurn", "score", "line"
+    worstScore = [0, 10000, ""]
     
     gamesWon = 0
     gamesTied = 0
