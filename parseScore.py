@@ -65,7 +65,7 @@ def DisplayScore(bestScore, worstScore, gamesWon, gamesLost, gamesTied):
     print ("Variants won: %i. Variants Lost: %i. Variants tied: %i" % (gamesWon, gamesLost, gamesTied))
 
 def DisplayLatex(bot, bestScore, worstScore):
-    print ("%s & SequenceSize\\textsubscript{%s} & %s & SequenceSize\\textsubscript{%s} & %s \\\\ \\hline" % 
+    print ("%s & WS = %s & %s & WS = %s & %s \\\\ \\hline" % 
             (bot, bestScore[0].count(",") + 2, bestScore[1], worstScore[0].count(",") + 2, worstScore[1]))
             # MBFP: (bot, int(bestScore[0]), bestScore[1], int(worstScore[0]), worstScore[1]))
 
