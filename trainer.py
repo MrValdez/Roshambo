@@ -11,7 +11,7 @@ argv = [1]
 
 def main():
     global argv
-    PlayTournament(33)
+    PlayTournament(29)
     CreateCSV()
     charts.startPlotting()
 
