@@ -6,36 +6,36 @@ Debug = False
 enemyHistory = ""
 windowSize = None
 
-def play(a):
-    init(a)
-           
+def play(a):           
     global enemyHistory
     currentTurn = rps.getTurn()
     
     if currentTurn == 0:
-        enemyHistory = ""
+        init(a)
         return 0, 0         # play Rock with 0 confidence
         
-    # myMoveLastTurn = rps.myHistory(currentTurn)
     enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-
     enemyHistory += str(enemyMoveLastTurn)
-    history = enemyHistory
+    History = enemyHistory
     
-    for windowLength in windowSize:
-        if windowLength > currentTurn:
+    for SequenceLength in windowSize:
+        if SequenceLength > currentTurn:
             # our window is bigger than the history size, so we ignore this window length
             continue
             
-        prediction, confidence = CheckHistory(history, windowLength)
+        prediction, confidence = CheckHistory(History, SequenceLength)
         if prediction != -1:
             return prediction, confidence
             
-    # no seq found.
+    # no Seq found.
     return 0, 0         # play Rock with 0 confidence
 
 def init(a):
     global windowSize
+    global enemyHistory
+
+    enemyHistory = ""
+
     if windowSize == None:
         if a == -1:
             # default windowSize
@@ -48,37 +48,37 @@ def init(a):
             
         windowSize = a        
 
-def CheckHistory(history, windowLength):
+def CheckHistory(History, SequenceLength):
     """return prediction, confidence"""
 
-    seq = history[-windowLength:]
-    found = history.find(seq, 0, -windowLength)
+    Seq = History[-SequenceLength:]
+    found = History.find(Seq, 0, -SequenceLength)
     if found == -1:
         return -1, -1
 
     # list how many times we see a predicted move
     tally = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
     while found != -1:
-        end = found + len(seq)
-        move = history[end:end + 1]
+        end = found + len(Seq)
+        move = History[end:end + 1]
         move = int(move)
 
         tally[move] += 1
-        found = history.find(seq, found + 1, -windowLength)
+        found = History.find(Seq, found + 1, -SequenceLength)
  
-    prediction, confidence = GetHighestTally(history, tally, windowLength)
+    prediction, confidence = GetHighestTally(History, tally, SequenceLength)
 
     if Debug:
         currentTurn = rps.getTurn()
-        print ("Sequence to look for:          ", seq)
-        print ("Position of latest found seq:  ", history.rfind(seq, 0, currentTurn - 1))
+        print ("Sequence to look for:          ", Seq)
+        print ("Position of latest found Seq:  ", History.rfind(Seq, 0, currentTurn - 1))
         print ("Predicted move:                ", prediction)
         print ("Confidence:                    ", confidence)
         input()
 
     return prediction, confidence
  
-def GetHighestTally(history, tally, windowLength):            
+def GetHighestTally(History, tally, SequenceLength):            
     # check if we have a tie for maximum.
     maxCount = max(tally)
     numCount = tally.count(maxCount)
@@ -92,11 +92,11 @@ def GetHighestTally(history, tally, windowLength):
                 return prediction, confidence                            
 
     # we have a tie.
-    # let's see what move was played the most in the entire history
+    # let's see what move was played the most in the entire History
     moveCounts = [0, 0, 0]
-    if tally[0] == maxCount: moveCounts[0] = history.count("0")
-    if tally[1] == maxCount: moveCounts[1] = history.count("1")
-    if tally[2] == maxCount: moveCounts[2] = history.count("2")
+    if tally[0] == maxCount: moveCounts[0] = History.count("0")
+    if tally[1] == maxCount: moveCounts[1] = History.count("1")
+    if tally[2] == maxCount: moveCounts[2] = History.count("2")
     
     prediction = -1
     moveCountMax = max(moveCounts)
