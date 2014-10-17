@@ -86,10 +86,8 @@ def GetHighestTally(History, tally, SequenceLength):
     if numCount == 1:
         # we don't have a tie for maximum. Get the highest move
         confidence = 1.0
-        for i, count in enumerate(tally):
-            if count == maxCount:
-                prediction = i
-                return prediction, confidence                            
+        prediction = tally.index(maxCount)
+        return prediction, confidence                            
 
     # we have a tie.
     # let's see what move was played the most in the entire History
@@ -124,6 +122,7 @@ def GetHighestTally(History, tally, SequenceLength):
         random -= randomNumber
 
     if prediction == -1:
+        # prediction not found
         return -1, 0
 
     confidence = tally[prediction]
