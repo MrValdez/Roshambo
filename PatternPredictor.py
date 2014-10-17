@@ -103,10 +103,7 @@ def GetHighestTally(history, tally, windowLength):
     moveCountNum = moveCounts.count(moveCountMax)
     if moveCountNum == 1:
         confidence = 1.0
-        for i, count in enumerate(moveCounts):
-            if count == moveCountMax:
-                prediction = i
-                break    
+        prediction = moveCounts.index(moveCountMax)
         return prediction, confidence
 
     # if we still have a tie, choose between them using a random number
