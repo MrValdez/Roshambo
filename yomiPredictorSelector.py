@@ -38,22 +38,22 @@ class PredictorSelector:
         for i, result in enumerate(self.LastResults):
             move = result[0]
             if victory:
-                self.Scores[i] += 2
-            elif tie:
                 self.Scores[i] += 1
+            elif tie:
+                self.Scores[i] += 0
             elif lost:
-                self.Scores[i] -= 3
+                self.Scores[i] -= 1
                 
         if self.LastPredictor != None:
             i = self.LastPredictor
             move = self.LastResults[self.LastPredictor][0]
             
             if victory:
-                self.Scores[i] += 2
-            elif tie:
                 self.Scores[i] += 1
+            elif tie:
+                self.Scores[i] += 0
             elif lost:
-                self.Scores[i] -= 3
+                self.Scores[i] -= 1
 
         if Debug:
             print(self.Scores)
