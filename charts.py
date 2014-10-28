@@ -40,7 +40,7 @@ def Plot(filename, title, saveFigure = True):
     #ax.plot(x_data, y_data, "b", linewidth=1.0, linestyle="-")
     x_data = range(len(y_data))
     #alphabet = [s for s in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"[:len(y_data)]]
-    alphabet = [str(i) for i in range(2, 2 + len(y_data))]
+    alphabet = [str(i) for i in range(1, 2 + len(y_data))]
     plt.xticks(x_data, alphabet, rotation=0)
     ax.plot(x_data, y_data, "bo", linewidth=1.0, linestyle="-")
     
