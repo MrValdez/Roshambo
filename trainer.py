@@ -19,10 +19,9 @@ def main():
 def PlayTournament(size):
     global argv
     nextSeqSize = max(argv)
+    
     while size > 0:
         size -= 1
-        nextSeqSize += 1
-        argv.append(nextSeqSize)
         filename = "results %s.txt" % (str(argv))
         if filename in os.listdir(pathbase): #file already exists
             print (filename + " already exists")
@@ -42,6 +41,9 @@ def PlayTournament(size):
         header = "Tournament results"
         resultTournament = int(GetRank(output, header))
      
+        nextSeqSize += 1
+        argv.append(nextSeqSize)
+        
 def GetRank(text, header):
     """
     Get the rank under header.
@@ -82,7 +84,9 @@ def CreateCSV(outputFilename = "results"):
             rank = GetRank(text, header)
             print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
             #csv[0] += "%s,%s\n" % (variable, rank)
-            csv[0] += "%s,%s\n" % (variable[-3:], rank)
+            
+            variable = variable[-3:].replace("]","").replace("[","").strip()
+            csv[0] += "%s,%s\n" % (variable, rank)
             if int(rank) < best[0][1]:
                 best[0][0] = variable
                 best[0][1] = int(rank)
@@ -91,14 +95,17 @@ def CreateCSV(outputFilename = "results"):
             rank = GetRank(text, header)
             print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
             #csv[1] += "%s,%s\n" % (variable, rank)
-            csv[1] += "%s,%s\n" % (variable[-3:], rank)
+            
+            variable = variable[-3:].replace("]","").replace("[","").strip()
+            csv[1] += "%s,%s\n" % (variable, rank)
+
             if int(rank) < best[1][1]:
                 best[1][0] = variable
                 best[1][1] = int(rank)    
 
     print ("\n")
-    print ("Best Match Result      is variant %s with rank of %i" % (best[0][0], best[0][1]))
-    print ("Best Tournament Result is variant %s with rank of %i" % (best[1][0], best[1][1]))
+    print ("Best Match Result      is variant [%s] with rank of %i" % (best[0][0], best[0][1]))
+    print ("Best Tournament Result is variant [%s] with rank of %i" % (best[1][0], best[1][1]))
 
     file = "%s_%s.csv" % (outputFilename, "match")
     with open(file, "w") as f:
