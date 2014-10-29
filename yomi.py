@@ -66,7 +66,7 @@ class Yomi:
         self.Personality = YomiPersonality()
         self.reset()
 
-    def reset(self):        
+    def reset(self):
         self.Personality.__init__()
         
         self.yomiChoices = [0, 0, 0]
@@ -444,15 +444,24 @@ yomi = Yomi()
 strategy = RPSstrategy.RPSstrategy()
 predictorSelector = yomiPredictorSelector.PredictorSelector()
 
-import PatternPredictor
+
+#to test specific prediction, uncomment:
+#import PatternPredictor
+#PatternPredictor = PatternPredictor.PatternPredictor()
+#import BeatFrequentPick
+#MBFP = BeatFrequentPick.MBFP()
+#import MBFP
+#
 
 def play(a):
-    predict = PatternPredictor.play(a)[0]
-    return (predict + 1) % 3
+    #to test specific prediction, uncomment:
+    #predict = PatternPredictor.play(a)[0]
+    #predict = MBFP.play(a)[0]
+    #return (predict + 1) % 3
     
     startDebugTurn()
     
-    if rps.getTurn()  == 0:
+    if rps.getTurn() == 0:
         strategy.reset()
         predictorSelector.reset()
         yomi.reset()
@@ -461,9 +470,10 @@ def play(a):
     ownPlay = strategy.play()
         
     predictorSelector.update()
-    prediction = predictorSelector.getHighestRank(a)
+    prediction = predictorSelector.getHighestRank()
     
-    decision = yomi.play(ownPlay, prediction)
+    return (prediction[0] + 1) % 3
+    #decision = yomi.play(ownPlay, prediction)
     
     return decision
     
