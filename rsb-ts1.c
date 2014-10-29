@@ -5599,13 +5599,13 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     else
         crosstable[i].pname = yomi;
 
-    i++;  /* beat opponent's last move */
-    strcpy(crosstable[i].name, "Beat The Last Move");
-    crosstable[i].pname = copybot;
-
     i++;  /* Jason Hutchens (Aus) */
     strcpy(crosstable[i].name, "MegaHAL");
     crosstable[i].pname = halbot;
+
+    i++;  /* Dan Egnor (USA) */
+    strcpy(crosstable[i].name, "Iocaine Powder");
+    crosstable[i].pname = iocainebot;
 
 #if 0
     i++;  /* nuthin' beats rock */
