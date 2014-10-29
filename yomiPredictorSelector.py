@@ -64,35 +64,31 @@ class PredictorSelector:
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
 
+        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
+        tie = (myMoveLastTurn == enemyMoveLastTurn)
+        lost = (myMoveLastTurn == ((enemyMoveLastTurn - 1) % 3))
+
         # update all wins        
         for predictor in self.Predictors:
-            move = predictor.moveLastTurn + 1       # add +1 to move since that's the move that beats the prediction
-            
-            victory = (move == ((enemyMoveLastTurn + 1) % 3))
-            tie = (move == enemyMoveLastTurn)
-            lost = (move == ((enemyMoveLastTurn - 1) % 3))
-
-            predictor.score *= 0.9
+            #predictor.score *= 0.9
 
             if predictor.chosenLastTurn:
-                # this predictor was chosen last turn, so give it bigger changes
-                if victory:
-                    predictor.score += 2
-                elif tie:
-                    predictor.score += 1
-                elif lost:
-                    predictor.score -= 2
-            else:
+                # this predictor was chosen last turn, so it should go up
                 if victory:
                     predictor.score += 1
                 elif tie:
                     predictor.score += 0
                 elif lost:
-                    predictor.score -= 1
-            
-            if predictor.score > 4: predictor.score = 4   
-            if predictor.score < -4: predictor.score = -4   
-            
+                    predictor.score += -1
+            else:
+                # this predictor was NOT chosen last turn, so it should go down
+                if victory:
+                    predictor.score += -1
+                elif tie:
+                    predictor.score += 0
+                elif lost:
+                    predictor.score += +1
+                        
             if Debug:
                 if predictor.chosenLastTurn: print("** ", end="")
                 print("%s: score(%.2f) move(%i)" % (predictor.name, predictor.score, move), end="")
