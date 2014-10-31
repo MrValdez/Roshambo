@@ -452,10 +452,14 @@ predictorSelector = yomiPredictorSelector.PredictorSelector()
 #MBFP = BeatFrequentPick.MBFP()
 #import MBFP
 #
+#PP = None
 
 def play(a):
     #to test specific prediction, uncomment:
-    #predict = PatternPredictor.play(a)[0]
+    #global PP
+    #if PP == None:
+    #    PP = PatternPredictor.PatternPredictor(a)
+    #predict = PP.play()[0]
     #predict = MBFP.play(a)[0]
     #return (predict + 1) % 3
     
@@ -472,9 +476,10 @@ def play(a):
     predictorSelector.update()
     prediction = predictorSelector.getHighestRank()
     
+    #to test prediction ranking, uncomment:
     return (prediction[0] + 1) % 3
-    #decision = yomi.play(ownPlay, prediction)
     
+    decision = yomi.play(ownPlay, prediction)
     return decision
     
 def isVerbose():

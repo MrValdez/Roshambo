@@ -4,21 +4,26 @@ Debug = True
 Debug = False
 
 class PatternPredictor:
-    def __init__(self):        
+    def __init__(self, variant):        
         self.enemyHistory = ""
         self.windowSize = None
+        self.variant = variant
+        self.reset()
 
-    def play(self, a):           
+    def reset(self):
+        self.init(self.variant)
+
+    def play(self):           
         currentTurn = rps.getTurn()
         
         if currentTurn == 0:
-            self.init(a)
+            self.reset()
             return 0, 0         # play Rock with 0 confidence
             
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         self.enemyHistory += str(enemyMoveLastTurn)
         History = self.enemyHistory
-        
+
         for SequenceLength in self.windowSize:
             if SequenceLength > currentTurn:
                 # our window is bigger than the history size, so we ignore this window length

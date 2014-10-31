@@ -5,20 +5,24 @@ Debug = True
 Debug = False
 
 class MBFP:
-    def __init__(self):
+    def __init__(self, targetPredictionSize):
+        self.targetPredictionSize = int(targetPredictionSize)
         self.reset()
         
     def reset(self):
-        self.statR = 0
-        self.statP = 0
-        self.statS = 0
+        self.statR, self.statP, self.statS = 0, 0, 0
+        self.remainingPredictionSize = self.targetPredictionSize
+        self.probR = 1 / 3.0
+        self.probP = 1 / 3.0
+        self.predictionR = self.probR * self.targetPredictionSize
+        self.predictionP = self.probP * self.targetPredictionSize
 
-        self.remainingPredictionSize = 0
-
-        self.probR = 0.0
-        self.probP = 0.0
-        self.predictionR = 0.0
-        self.predictionP = 0.0
+        if Debug:
+            print("\n\nInitial data (Target Prediction Size %i):\n" % (self.targetPredictionSize))
+            print("statR, statP:                         %i    %i" % (self.statR, self.statP));
+            print("predictionR, predictionP:             %.2f %.2f" % (self.predictionR, self.predictionP));
+            print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, self.remainingPredictionSize))
+            print("Done init()\n")
 
     def calculateProbThisTurn(self):
         thisTurnProbR = float((self.predictionR - self.statR) / float(self.remainingPredictionSize))
@@ -38,21 +42,7 @@ class MBFP:
     def predict(self, targetPredictionSize):
         currentTurn = rps.getTurn()
         if (currentTurn == 0):
-            #initialize        
-            self.statR, self.statP, self.statS = 0, 0, 0
-            self.remainingPredictionSize = targetPredictionSize
-            self.probR = 1 / 3.0
-            self.probP = 1 / 3.0
-            self.predictionR = self.probR * targetPredictionSize
-            self.predictionP = self.probP * targetPredictionSize
-
-            if Debug:
-                print("\n\nInitial data (Target Prediction Size %i):\n" % (self.targetPredictionSize))
-                print("statR, statP:                         %i    %i" % (self.statR, self.statP));
-                print("predictionR, predictionP:             %.2f %.2f" % (self.predictionR, self.predictionP));
-                print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, self.remainingPredictionSize))
-                print("Done init()\n")
-
+            self.reset()
             return biased_roshambo (1 / 3.0, 1 / 3.0), 1 / 3.0
         
         oppMove = rps.enemyHistory(currentTurn)
@@ -114,8 +104,7 @@ class MBFP:
         
         return move, confidence
 
-    def play(self, targetPredictionSize):
-        targetPredictionSize = int(targetPredictionSize)
-        move, confidence = self.predict(targetPredictionSize)
+    def play(self):
+        move, confidence = self.predict(self.targetPredictionSize)
         
         return (move, confidence)

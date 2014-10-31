@@ -1,4 +1,5 @@
 import random
+import operator
 
 import BeatFrequentPick
 import PatternPredictor
@@ -12,7 +13,7 @@ class Predictor:
         name = module.__name__ if name == "" else name
         self.name = "%s [%s]" % (name, str(variant))
         
-        self.module = module()
+        self.module = module(variant)
         self.play = self.module.play
         self.variant = variant
         self.reset()
@@ -39,6 +40,18 @@ class PredictorSelector:
         Predictors.append(p)
         p = Predictor(name="MBFP", module=BeatFrequentPick.MBFP, variant=4)
         Predictors.append(p)
+
+#        PPsize = 12
+#        nextSeqSize = 1
+#        argv = [1]
+
+#        while PPsize > 0:
+#            PPsize -= 1
+#            variant = ",".join([str(s) for s in argv])
+#            p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant=variant)
+#            Predictors.append(p)
+#            nextSeqSize += 1
+#            argv.append(nextSeqSize)
         
         self.Predictors = Predictors
         self.reset()
@@ -46,7 +59,8 @@ class PredictorSelector:
     def reset(self):
         self.LastPredictor = None
         for predictor in self.Predictors:
-            predictor.reset()    
+            #predictor.reset()    
+            pass
     
     def update(self):
         self._updatePredictors()
@@ -110,31 +124,30 @@ class PredictorSelector:
         """
         
         # 1. run each predictor.
-        for predictor in self.Predictors:
+        #scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
+        scoreSorted = self.Predictors
+        
+        chosenPredictor = None
+        for i, predictor in enumerate(scoreSorted):
+            #if i > 3: break
+        
             play = predictor.play
-            variant = predictor.variant
             
             predictor.chosenLastTurn = False
             
-            move, confidence = play(variant)
+            move, confidence = play()
             predictor.moveLastTurn = move
             predictor.confidenceLastTurn = confidence
-
         
         ####################### debug
+        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
+        chosenPredictor = scoreSorted[0]
         
-        maxScore = max([p.score for p in self.Predictors])
-        if Debug: print("max score: %f " % (maxScore), end="")
-        
-        chosenPredictor = None
-        for p in self.Predictors:
-            if p.score == maxScore: 
-                chosenPredictor = p
-                
-                if Debug: print("chosen predictor: %s" % (p.name))
+        if Debug:
+            maxScore = max([p.score for p in self.Predictors])
+            print("max score: %f " % (maxScore), end="")      
+            print("chosen predictor: %s" % (chosenPredictor.name))
 
-                break
-        
         if chosenPredictor == None:
             chosenPredictor = random.choice(self.Predictors)
             
