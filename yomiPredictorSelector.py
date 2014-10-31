@@ -26,32 +26,38 @@ class Predictor:
         
         self.chosenLastTurn = False
 
+    def update(self):
+        self.module.update()
+        
+    def play(self):
+        return self.module.play()
+
 class PredictorSelector:
     """PredictorSelector contains all predictors to be used"""
     
     def __init__(self):
         Predictors = []
         
-        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="6,5,4,3,2,1")
-        Predictors.append(p)
-        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="5,4,3,2,1")
-        Predictors.append(p)
+#        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="6,5,4,3,2,1")
+#        Predictors.append(p)
+#        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="5,4,3,2,1")
+#        Predictors.append(p)
         p = Predictor(name="MBFP", module=BeatFrequentPick.MBFP, variant=5)
         Predictors.append(p)
         p = Predictor(name="MBFP", module=BeatFrequentPick.MBFP, variant=4)
         Predictors.append(p)
 
-#        PPsize = 12
-#        nextSeqSize = 1
-#        argv = [1]
+        PPsize = 12
+        nextSeqSize = 1
+        argv = [1]
 
-#        while PPsize > 0:
-#            PPsize -= 1
-#            variant = ",".join([str(s) for s in argv])
-#            p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant=variant)
-#            Predictors.append(p)
-#            nextSeqSize += 1
-#            argv.append(nextSeqSize)
+        while PPsize > 0:
+            PPsize -= 1
+            variant = ",".join([str(s) for s in argv])
+            p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant=variant)
+            Predictors.append(p)
+            nextSeqSize += 1
+            argv.append(nextSeqSize)
         
         self.Predictors = Predictors
         self.reset()
@@ -63,14 +69,8 @@ class PredictorSelector:
             pass
     
     def update(self):
-        self._updatePredictors()
         self._updateScore()
-        
-    def _updatePredictors(self):
-        return
-        for predictor in self.Predictors:
-            predictor.update()        
-    
+            
     def _updateScore(self):
         currentTurn = rps.getTurn()
         if currentTurn == 0: return
@@ -105,16 +105,13 @@ class PredictorSelector:
                         
             if Debug:
                 if predictor.chosenLastTurn: print("** ", end="")
-                print("%s: score(%.2f) move(%i)" % (predictor.name, predictor.score, move), end="")
+                print("%s: score(%.2f) move(%i)" % (predictor.name, predictor.score, predictor.moveLastTurn), end="")
                 if victory:
                     print(" win")
                 elif tie:
                     print(" tie")
                 elif lost:
                     print(" lost")
-        if Debug:
-            input()
-
     
     def getHighestRank(self):
         """
@@ -124,18 +121,17 @@ class PredictorSelector:
         """
         
         # 1. run each predictor.
-        #scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
-        scoreSorted = self.Predictors
+        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
+        #scoreSorted = self.Predictors
         
         chosenPredictor = None
-        for i, predictor in enumerate(scoreSorted):
-            #if i > 3: break
-        
-            play = predictor.play
-            
+        for i, predictor in enumerate(scoreSorted):                    
             predictor.chosenLastTurn = False
+
+            predictor.update()
             
-            move, confidence = play()
+            if i == 0:
+                move, confidence = predictor.play()
             predictor.moveLastTurn = move
             predictor.confidenceLastTurn = confidence
         
@@ -147,6 +143,7 @@ class PredictorSelector:
             maxScore = max([p.score for p in self.Predictors])
             print("max score: %f " % (maxScore), end="")      
             print("chosen predictor: %s" % (chosenPredictor.name))
+            input()
 
         if chosenPredictor == None:
             chosenPredictor = random.choice(self.Predictors)
