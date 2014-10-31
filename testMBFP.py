@@ -7,7 +7,7 @@ import random
 pathbase = "./MBFP results/"             # Note: this string should end with "/"
 
 class testMBFP(unittest.TestCase):
-    #@unittest.skip("Skipping full test")
+    @unittest.skip("Skipping full test")
     def testAllResults(self):
         for i, filename in enumerate(os.listdir(pathbase)):
             #errors:
@@ -24,7 +24,7 @@ class testMBFP(unittest.TestCase):
             
             self.compare(filename)
     
-    @unittest.skip("Skipping partial test")
+    #@unittest.skip("Skipping partial test")
     def testRandomResult(self):
         files = os.listdir(pathbase)
         for x in range(5):
@@ -36,7 +36,7 @@ class testMBFP(unittest.TestCase):
             
             self.compare(filename)
 
-    @unittest.skip("Skipping partial test")
+    #@unittest.skip("Skipping partial test")
     def testMinimal(self):
         files = os.listdir(pathbase)
     

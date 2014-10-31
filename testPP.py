@@ -17,7 +17,7 @@ class testPP(unittest.TestCase):
     #@unittest.skip("Skipping partial test")
     def testRandomResults(self):
         files = os.listdir(pathbase)
-        for x in range(5):
+        for x in range(3):
             filename = random.choice(files)
             
             self.compare(filename)
