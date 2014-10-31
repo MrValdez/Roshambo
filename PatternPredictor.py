@@ -12,8 +12,8 @@ class PatternPredictor:
 
     def reset(self):
         self.init(self.variant)
-
-    def play(self):           
+        
+    def update(self):
         currentTurn = rps.getTurn()
         
         if currentTurn == 0:
@@ -22,6 +22,9 @@ class PatternPredictor:
             
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         self.enemyHistory += str(enemyMoveLastTurn)
+        
+    def play(self):
+        currentTurn = rps.getTurn()
         History = self.enemyHistory
 
         for SequenceLength in self.windowSize:
