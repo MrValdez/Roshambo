@@ -29,7 +29,7 @@ class testMBFP(unittest.TestCase):
         files = os.listdir(pathbase)
         for x in range(5):
             i = random.randint(2, len(files))
-            if i in (31, 258, 393, 939, 942, 961, 962): 
+            if i + 1 in (31, 258, 393, 939, 942, 961, 962): 
                 continue
                 
             filename = files[i]
