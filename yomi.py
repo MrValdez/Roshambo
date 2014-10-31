@@ -18,8 +18,7 @@ Debug = False
 
 # for debugging
 yomiLayerScore = [0, 0, 0]        # Count how many times a yomi layer won
-
-currentOpponent = 0
+currentOpponent = 0               # This code is for jumping into a specific opponent for debugging
 
 class YomiPersonality:
     """ contains the personality that can influence what yomi layers to use """
@@ -71,7 +70,7 @@ class Yomi:
         
         self.yomiChoices = [0, 0, 0]
         self.yomiLayerUsage = [0, 0, 0]        # Count how many times a yomi layer is used
-        self.yomiScore = [0, 0, 0]   
+        self.yomiScore = [0, 0, 0]
         self.layerLastTurn = -1
     
     def _prettifyList(self, list):
@@ -137,128 +136,6 @@ class Yomi:
             if self.yomiScore[i] < 0: 
                 self.yomiScore[i] = 0
 
-    def shouldChangeLayer(self, X, confidenceGraph, originLayer, targetLayer, confidenceCeiling = 0.7):
-        """ 
-        Returns [True or False, confidence level]
-        
-        confidenceGraph should be ([one dimensional array], [(layer1_start, layer1_end), (layer2_start, layer2_end), (layer3_start, layer3_end))
-        
-        Init:
-            Normalize confidenceGraph to confidenceCeiling (todo)
-        
-        This function check where X lies in the confidenceGraph.
-        1. If the target layer is higher than the origin layer,
-            a. target = Find the max of next layer.
-            b. result = Check if X is equal or exceeds the target.
-           If the target layer is lower than the origin layer,. 
-            a. target = Find the min of next layer.
-            b. result = Check if X is equal or lower the target.
-        
-        3. return result
-        
-        Sample confidence graph:
-        
-        L1|  |L3 
-        ....../.
-        ...../..
-        ..../...
-        .../....
-        ../.....
-        ./......
-        /.......
-          |L2|  
-        
-        """
-
-        layersRange = confidenceGraph[1]
-        
-        # normalize confidenceGraph
-        confidenceGraphMax = max(confidenceGraph[0])
-        # normalize confidenceGraph against confidenceCeiling
-        #confidenceGraphMax += int(confidenceGraphMax * confidenceCeiling)
-        confidenceGraphChart = [(x / confidenceGraphMax) * confidenceCeiling for x in confidenceGraph[0]]    
-
-        saveGraph = False
-        if saveGraph:
-            # todo:
-            with open('foo.csv', 'w') as f:
-                # layer range
-                s = [str(s[1]) for s in layersRange]
-                f.write(",".join(s))
-                f.write("\n")
-                # layer data
-                for i in confidenceGraphChart:
-                    s = "%.2f\n" % (i)
-                    f.write(s)
-                
-            print ("log saved")
-            input()
-        
-        if originLayer > targetLayer:
-            op = min
-        else:
-            op = max
-            
-        graphSize   = len(confidenceGraphChart)
-        targetStart = layersRange[targetLayer][0]
-        targetEnd   = layersRange[targetLayer][1]
-        targetStart = int(targetStart)
-        targetEnd   = int(targetEnd)
-        targetStart = min(targetStart, graphSize)          # make sure we don't go outside the graph
-        targetEnd   = min(targetEnd, graphSize)            # make sure we don't go outside the graph
-        layerGraph  = confidenceGraphChart[targetStart:targetEnd]
-        
-        if len(layerGraph) <= 0:
-            return False, 0
-            
-        target      = op(layerGraph)
-        result      = X > target
-        if originLayer < targetLayer:
-            confidenceLevel = target - X
-        else:
-            confidenceLevel = X - target
-        
-        return result, confidenceLevel
-
-    def decideChangeLayer(self, layerToUse, layerConfidence):    
-        # return the layer we should use. it'll either be the layer we want to use
-        # or the previous layer we should stay on.
-
-        if layerToUse == -1:
-            # use our move
-            return -1
-            
-        if self.layerLastTurn == layerToUse:
-            # no change
-            return layerToUse
-            
-        # see if we should change layer
-        
-        # three possibilities:
-        # a. flipValue = rps.randomRange()
-        # b. flipValue = rps.randomRange() + layerConfidence
-        # c. flipValue = layerConfidence
-        
-        flipValue = layerConfidence
-        
-        layerSize = self.Personality.layerConfidenceSize
-        layerRange = [(0, layerSize[0])] 
-        layerRange.append((layerRange[0][1], layerRange[0][1] + layerSize[1]))
-        layerRange.append((layerRange[1][1], layerRange[1][1] + layerSize[2]))
-        confidenceGraph = ([x for x in range(100)], layerRange)
-        #confidenceGraph = ([math.log(x+0.1) for x in range(100)], layerRange)
-        
-        changeLayer, confidence = self.shouldChangeLayer(flipValue, confidenceGraph, self.layerLastTurn, layerToUse)
-
-        if changeLayer == False:
-            if Debug:
-                print ("Layer did not change from %i to %i.\n AI's confidence: %.2f. Missing confidence: %.2f" % 
-                        (self.layerLastTurn + 1, layerToUse + 1, flipValue, confidence))
-                
-            layerToUse = self.layerLastTurn
-                    
-        return layerToUse
-                    
     def shouldUseYomi(self, playConfidence):
         # returns False if we are confident with our play
         # returns True if we are not confident with our play
@@ -267,105 +144,6 @@ class Yomi:
             
         return True
                         
-    def decideYomiLayer(self, predictionConfidence):
-        # figure out what layer to use
-        # 1. Normalize the score to 1.0
-        # 2. Add the confidence we have on prediction
-        # 3a. If we are still under observation mode, don't use yomi, but keep score
-        # 3b. If we are not under observation mode, choose a layer
-        
-        if predictionConfidence >= self.Personality.predictionConfidenceTreshold:
-            if Debug: 
-                print ("High confidence of predicting opponent at %.2f. Treshold %.2f" % (predictionConfidence, self.Personality.predictionConfidenceTreshold))
-            return 0, predictionConfidence
-
-        # normalize score to 1        
-        total = sum([score for score in self.yomiScore if score > 0])
-        
-        normalScores = []
-        if total == 0:
-            normalScores = [0, 0, 0]
-        else:
-            normal = 1 / total
-            for score in self.yomiScore:
-                if score > 0:
-                    ratio = score * normal
-                    normalScores.append(ratio)
-                else:
-                    normalScores.append(0)
-
-        # add prediction confidence to layer chances (todo)
-        #chances = [score * predictionConfidence for score in normalScores]     # very bad
-        #chances = [(score * 0.75) + (predictionConfidence * 0.25) for score in normalScores]
-        #chances = [score for score in normalScores]
-        #chances[0] += predictionConfidence
-        chances = [score + predictionConfidence for score in normalScores]
-        
-        # make sure we don't go down the minimum layer consideration
-        # if we have to modify, take from the other layers
-        minimumLayerConsideration = self.Personality.minimumLayerConsideration
-        numberOfBelowLayerConsideration = 0
-        for chance in chances:
-            if chance < minimumLayerConsideration:
-                numberOfBelowLayerConsideration += 1
-                
-        if numberOfBelowLayerConsideration > 0:    # check to make sure there's a non-zero value in all the layers   
-            aboveMinimumLayerConsideration = len(chances) - numberOfBelowLayerConsideration
-            if aboveMinimumLayerConsideration == 0: aboveMinimumLayerConsideration = 1
-            
-            delta = (minimumLayerConsideration * numberOfBelowLayerConsideration) / aboveMinimumLayerConsideration
-            if Debug: print ("Chances (unmodified):" + self._prettifyList(chances))
-            
-            for i, _ in enumerate(chances):
-                if chances[i] < minimumLayerConsideration:
-                    chances[i] += minimumLayerConsideration
-                else:
-                    chances[i] -= delta
-
-        rawChance = [chances[0], chances[1], chances[2]]
-
-        if Debug: 
-            prettifyList = self._prettifyList
-            print ("Yomi Score:          " + prettifyList(self.yomiScore))
-            if numberOfBelowLayerConsideration:
-                print ("Chances (modified):  " + prettifyList(chances))            
-            else:
-                print ("Chances:             " + prettifyList(chances))            
-            print ("Raw Chances:         " + prettifyList(rawChance))
-                
-        layerConfidence = 0  # how confident we are with our layer choice
-        value = rps.randomRange()
-        if Debug: print ("Random value was %f." % (value))
-        layerToUse = -1
-        for i, _ in enumerate(chances):
-            if value <= chances[i]: 
-                layerToUse = i
-                
-                total = 0
-                for j in range(0, i):
-                    total += rawChance[j]
-                    
-                layerConfidence = value - total
-                if layerConfidence < 0: layerConfidence = 0
-                break
-            value -= chances[i]
-        else:
-            if Debug: print ("No confidence in yomi")
-            return -1, layerConfidence
-            
-        # while in observation mode, use layer -1 except when the layer we have chosen passes the treshold.
-        if self.Personality.observation > 0:
-            if Debug: print ("***Currently in observation mode***")
-            
-            if chances[layerToUse] > self.Personality.layerConfidenceTresholdDuringObservationMode:
-                if Debug: 
-                    print ("Layer Confidence Treshold reached even when under observation mode.")
-                    print ("Treshold: %.2f" % (self.Personality.layerConfidenceTresholdDuringObservationMode))
-            else:
-                layerToUse = -1
-
-        return layerToUse, layerConfidence
-
     def getYomiChoices(self, move):    
         # fill up yomiChoices with the moves to be played
         layer1 = (move   + 1) % 3          # layer 1   (beats enemy's choice)
@@ -379,7 +157,10 @@ class Yomi:
 
         return yomiChoices
 
-    def play(self, ownPlay, prediction):       
+    def decideYomiLayer(self, predictionConfidence):
+        return 0, 1.0
+
+    def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
         self._debugYomiStatUsage()
 
@@ -392,34 +173,24 @@ class Yomi:
         # decide if we should change layer
         #  - some AI variant should change layer easily. some should change reluntanctly
         
-        ownPlayConfidence = ownPlay[1]
-        if self.shouldUseYomi(ownPlayConfidence):        
-            yomiChoices = self.getYomiChoices(prediction[0])
-            if Debug: print ("Decided to use yomi. Current play confidence is %.2f" % (ownPlayConfidence))
+        yomiChoices = self.getYomiChoices(prediction)
 
-            predictionConfidence = prediction[1]
-            layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence)
-            #layerToUse = self.decideChangeLayer(layerToUse, layerConfidence)
-            
-            if layerToUse == -1:
-                if Debug: print ("Using our play (layer -1).")
-                move = ownPlay[0]
-                predictorSelector.LastPredictor = None   # todo: move to predictorSelector
-            else:        
-                if Debug: print ("Using layer %i." % (layerToUse + 1))
+        layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence)
+        predictorSelector.LastYomiLayer = layerToUse
+                
+        if layerToUse == -1:
+            if Debug: print ("Using our play (layer 0).")
+            move = ownPlay
+            predictorSelector.LastPredictor = None
+        else:        
+            if Debug: print ("Using layer %i." % (layerToUse + 1))
 
-                self.yomiLayerUsage[layerToUse] += 1
-                
-                # return move based on layer
-                move = yomiChoices[layerToUse]
-                
-            self.layerLastTurn = layerToUse
-        else:
-            if Debug: print ("Decided to use personal move. Current play confidence is %.2f" % (playConfidence))
-            move = ownPlay[0]
-            predictorSelector.LastPredictor = None   # todo: move to predictorSelector
-            self.layerLastTurn = -1
+            self.yomiLayerUsage[layerToUse] += 1
             
+            # return move based on layer
+            move = yomiChoices[layerToUse]
+            
+        self.layerLastTurn = layerToUse
         return move
 
 def startDebugTurn():
@@ -444,25 +215,22 @@ yomi = Yomi()
 strategy = RPSstrategy.RPSstrategy()
 predictorSelector = yomiPredictorSelector.PredictorSelector()
 
-
 #to test specific prediction, uncomment:
-#import PatternPredictor
-#PatternPredictor = PatternPredictor.PatternPredictor()
-#import BeatFrequentPick
-#MBFP = BeatFrequentPick.MBFP()
+import PatternPredictor
+import BeatFrequentPick
 #import MBFP
-#
-#PP = None
+Predictor = None
 
 def play(a):
     #to test specific prediction, uncomment:
-    #global PP
-    #if PP == None:
-    #    PP = PatternPredictor.PatternPredictor(a)
-    #predict = PP.play()[0]
-    #predict = MBFP.play(a)[0]
+    #global Predictor
+    #if Predictor == None:
+    #    Predictor = PatternPredictor.PatternPredictor(a)
+    #    Predictor = BeatFrequentPick.MBFP(a)
+    #Predictor.update()
+    #predict = Predictor.play()[0]
     #return (predict + 1) % 3
-    
+        
     startDebugTurn()
     
     if rps.getTurn() == 0:
@@ -471,15 +239,15 @@ def play(a):
         yomi.reset()
     
     strategy.update()
-    ownPlay = strategy.play()
-        
+    ownPlay, ownPlayConfidence = strategy.play()
+    
     predictorSelector.update()
-    prediction = predictorSelector.getHighestRank()
-    
+    prediction, predictionConfidence = predictorSelector.getHighestRank()
+
     #to test prediction ranking, uncomment:
-    return (prediction[0] + 1) % 3
+    #return (prediction[0] + 1) % 3
     
-    decision = yomi.play(ownPlay, prediction)
+    decision = yomi.play(predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence)
     return decision
     
 def isVerbose():

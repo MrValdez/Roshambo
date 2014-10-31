@@ -10,8 +10,9 @@ Debug = False
 
 class Predictor:
     def __init__(self, module, variant, name=""):
-        name = module.__name__ if name == "" else name
-        self.name = "%s [%s]" % (name, str(variant))
+        if name == "":
+            name = "%s [%s]" % (module.__name__, str(variant))
+        self.name = name
         
         self.module = module(variant)
         self.play = self.module.play
@@ -24,8 +25,6 @@ class Predictor:
         self.moveLastTurn = 0
         self.confidenceLastTurn = 0
         
-        self.chosenLastTurn = False
-
     def update(self):
         self.module.update()
         
@@ -42,9 +41,9 @@ class PredictorSelector:
 #        Predictors.append(p)
 #        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="5,4,3,2,1")
 #        Predictors.append(p)
-        p = Predictor(name="MBFP", module=BeatFrequentPick.MBFP, variant=5)
+        p = Predictor(module=BeatFrequentPick.MBFP, variant=5)
         Predictors.append(p)
-        p = Predictor(name="MBFP", module=BeatFrequentPick.MBFP, variant=4)
+        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
         Predictors.append(p)
 
         PPsize = 12
@@ -54,7 +53,8 @@ class PredictorSelector:
         while PPsize > 0:
             PPsize -= 1
             variant = ",".join([str(s) for s in argv])
-            p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant=variant)
+            name = "Pattern Predictor [%i]" % (nextSeqSize)
+            p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
             Predictors.append(p)
             nextSeqSize += 1
             argv.append(nextSeqSize)
@@ -64,6 +64,7 @@ class PredictorSelector:
         
     def reset(self):
         self.LastPredictor = None
+        self.LastYomiLayer = 0
         for predictor in self.Predictors:
             #predictor.reset()    
             pass
@@ -78,40 +79,56 @@ class PredictorSelector:
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
 
-        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
-        tie = (myMoveLastTurn == enemyMoveLastTurn)
-        lost = (myMoveLastTurn == ((enemyMoveLastTurn - 1) % 3))
+        # update predictor used last turn
+        if self.LastPredictor:
+            predictor = self.LastPredictor
 
-        # update all wins        
-        for predictor in self.Predictors:
-            #predictor.score *= 0.9
+            victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
+            tie = (myMoveLastTurn == enemyMoveLastTurn)
+            lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
 
-            if predictor.chosenLastTurn:
-                # this predictor was chosen last turn, so it should go up
-                if victory:
-                    predictor.score += 1
-                elif tie:
-                    predictor.score += 0
-                elif lost:
-                    predictor.score += -1
-            else:
-                # this predictor was NOT chosen last turn, so it should go down
-                if victory:
-                    predictor.score += -1
-                elif tie:
-                    predictor.score += 0
-                elif lost:
-                    predictor.score += +1
-                        
             if Debug:
-                if predictor.chosenLastTurn: print("** ", end="")
-                print("%s: score(%.2f) move(%i)" % (predictor.name, predictor.score, predictor.moveLastTurn), end="")
+                print("**%s: move(%i) score(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.score), end="")
                 if victory:
                     print(" win")
                 elif tie:
                     print(" tie")
                 elif lost:
                     print(" lost")
+
+            if victory:
+                predictor.score += 1
+            elif tie:
+                predictor.score += 0
+            elif lost:
+                predictor.score += -1
+
+        # update the rest of the predictors that they should have gained if they were chosen
+        for predictor in self.Predictors:
+            if self.LastPredictor == predictor:
+                continue
+            #predictor.score *= 0.9
+
+            myMoveLastTurn = (predictor.moveLastTurn + self.LastYomiLayer + 1) % 3
+            victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
+            tie = (myMoveLastTurn == enemyMoveLastTurn)
+            lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
+        
+            if Debug:
+                print("%s: move(%i) score(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.score), end="")
+                if victory:
+                    print(" win")
+                elif tie:
+                    print(" tie")
+                elif lost:
+                    print(" lost")
+
+            if victory:
+                predictor.score += +1
+            elif tie:
+                predictor.score += 0
+            elif lost:
+                predictor.score += -1
     
     def getHighestRank(self):
         """
@@ -125,22 +142,21 @@ class PredictorSelector:
         #scoreSorted = self.Predictors
         
         chosenPredictor = None
-        for i, predictor in enumerate(scoreSorted):                    
-            predictor.chosenLastTurn = False
-
+        self.LastPredictor = None
+        for i, predictor in enumerate(scoreSorted):                  
             predictor.update()
             
-            if i == 0:
-                move, confidence = predictor.play()
+            move, confidence = predictor.play()
             predictor.moveLastTurn = move
             predictor.confidenceLastTurn = confidence
         
+        #2. select the predictors with the highest confidence and score
         ####################### debug
-        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
+        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'), reverse=True)
         chosenPredictor = scoreSorted[0]
         
         if Debug:
-            maxScore = max([p.score for p in self.Predictors])
+            maxScore = max([p.score for p in self.Predictors])                
             print("max score: %f " % (maxScore), end="")      
             print("chosen predictor: %s" % (chosenPredictor.name))
             input()
@@ -150,62 +166,9 @@ class PredictorSelector:
             
         #chosenPredictor = self.Predictors[1]
         
-        chosenPredictor.chosenLastTurn = True
+        self.LastPredictor = chosenPredictor
         move = chosenPredictor.moveLastTurn
         confidence = chosenPredictor.confidenceLastTurn
                 
-        return move, confidence        ####################### debug
-        
-    def foo():
-        #todo: broken:
-        
-        
-        # 2. select the predictors with the highest confidence and score
-        index = None
-        confidences = [predictor[1] for predictor in results]
-                
-        # add the predictor's score to its confidence
-        # todo
-        total = sum(self.Scores)
-        if total > 0:
-            for i, score in enumerate(self.Scores):
-                 scoreDelta = score / total
-                 confidences[i] = (confidences[i] * 0.35) + (scoreDelta * 0.65)    # todo: play with this
-
-        # grab the highest confidence
-        maxConfidence = max(confidences)
-        
-        # check if we have a tie for maximum. if we do, choose between them using a random number
-        numCount = confidences.count(maxConfidence)
-        if numCount > 1:
-            distribution = 1 / numCount
-            for i, confidence in enumerate(confidences):
-                if confidence == maxConfidence:
-                    confidences[i] = distribution
-                else:
-                    confidences[i] = 0
-                    
-            random = rps.randomRange()               
-                
-            for i, confidence in enumerate(confidences):
-                if random <= confidence:
-                    index = i
-                    break
-                random -= confidence
-        else:
-            for i, confidence in enumerate(confidences):
-                if confidence == maxConfidence:
-                    index = i
-                    break
-        
-        if index == None:
-            index = rps.random() % len(self.LastResults)
-            confidence = 0
-            results[index][1] = confidence
-
-        if Debug:
-            print (index, confidences)
-        
-        self.LastPredictor = index
-        
-        return results[index]
+        #3. return the highest ranking
+        return move, confidence        
