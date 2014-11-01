@@ -3,14 +3,20 @@ import rps
 Debug = True
 Debug = False
 
+UseByteArray = False
+UseByteArray = True
+
 class PatternPredictor:
     def __init__(self, variant):        
-        self.enemyHistory = ""
         self.windowSize = None
         self.variant = variant
         self.reset()
 
     def reset(self):
+        if UseByteArray:
+            self.enemyHistory = bytearray()
+        else:
+            self.enemyHistory = ""
         self.init(self.variant)
         
     def update(self):
@@ -21,11 +27,18 @@ class PatternPredictor:
             return 0, 0         # play Rock with 0 confidence
             
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-        self.enemyHistory += str(enemyMoveLastTurn)
+        
+        if UseByteArray:
+            self.enemyHistory.append(enemyMoveLastTurn)
+            #self.enemyHistory[currentTurn] = enemyMoveLastTurn
+        else:
+            self.enemyHistory += str(enemyMoveLastTurn)        
+        
         
     def play(self):
         currentTurn = rps.getTurn()
         History = self.enemyHistory
+        return 0, 0
 
         for SequenceLength in self.windowSize:
             if SequenceLength > currentTurn:
@@ -40,8 +53,6 @@ class PatternPredictor:
         return 0, 0         # play Rock with 0 confidence
 
     def init(self, a):       
-        self.enemyHistory = ""
-
         if self.windowSize == None:
             if a == -1:
                 # default windowSize
@@ -66,7 +77,10 @@ class PatternPredictor:
         tally = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
         while found != -1:
             end = found + len(Seq)
-            move = History[end:end + 1]
+            if UseByteArray:            
+                move = History[end]
+            else:
+                move = History[end:end + 1]
             move = int(move)
 
             tally[move] += 1
@@ -94,13 +108,19 @@ class PatternPredictor:
             confidence = 1.0
             prediction = tally.index(maxCount)
             return prediction, confidence                            
-
+    
         # we have a tie.
         # let's see what move was played the most in the entire History
         moveCounts = [0, 0, 0]
-        if tally[0] == maxCount: moveCounts[0] = History.count("0")
-        if tally[1] == maxCount: moveCounts[1] = History.count("1")
-        if tally[2] == maxCount: moveCounts[2] = History.count("2")
+        
+        if UseByteArray:
+            if tally[0] == maxCount: moveCounts[0] = History.count(0)
+            if tally[1] == maxCount: moveCounts[1] = History.count(1)
+            if tally[2] == maxCount: moveCounts[2] = History.count(2)
+        else:
+            if tally[0] == maxCount: moveCounts[0] = History.count("0")
+            if tally[1] == maxCount: moveCounts[1] = History.count("1")
+            if tally[2] == maxCount: moveCounts[2] = History.count("2")
         
         prediction = -1
         moveCountMax = max(moveCounts)
