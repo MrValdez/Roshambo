@@ -22,7 +22,7 @@ class MBFP:
             print("\n\nInitial data (Target Prediction Size %i):\n" % (self.targetPredictionSize))
             print("statR, statP:                         %i    %i" % (self.statR, self.statP));
             print("predictionR, predictionP:             %.2f %.2f" % (self.predictionR, self.predictionP));
-            print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, self.remainingPredictionSize))
+            print("currentTurn, remainingPredictionSize: %i    %i" % (rps.getTurn(), self.remainingPredictionSize))
             print("Done init()\n")
 
     def update(self):
