@@ -3,8 +3,8 @@ import rps
 Debug = True
 Debug = False
 
-UseByteArray = False
 UseByteArray = True
+UseByteArray = False
 
 class PatternPredictor:
     def __init__(self, variant):        
@@ -38,7 +38,6 @@ class PatternPredictor:
     def play(self):
         currentTurn = rps.getTurn()
         History = self.enemyHistory
-        return 0, 0
 
         for SequenceLength in self.windowSize:
             if SequenceLength > currentTurn:
