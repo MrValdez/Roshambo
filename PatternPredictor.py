@@ -3,8 +3,8 @@ import rps
 Debug = True
 Debug = False
 
-UseByteArray = True
 UseByteArray = False
+UseByteArray = True
 
 class PatternPredictor:
     def __init__(self, variant):        
@@ -43,7 +43,7 @@ class PatternPredictor:
             if SequenceLength > currentTurn:
                 # our window is bigger than the history size, so we ignore this window length
                 continue
-                
+
             prediction, confidence = self.CheckHistory(History, SequenceLength)
             if prediction != -1:
                 return prediction, confidence
@@ -75,6 +75,7 @@ class PatternPredictor:
         # list how many times we see a predicted move
         tally = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
         while found != -1:
+            # todo: very slow
             end = found + len(Seq)
             if UseByteArray:            
                 move = History[end]
