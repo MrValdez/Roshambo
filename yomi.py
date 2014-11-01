@@ -6,8 +6,6 @@
 
 # perlin noise instead of random?
 
-# it seems that using yomi beats iocaine powder. using layer 0 permanently causes it lose. test to check if this is true.
-
 import math
 import rps
 import yomiPredictorSelector
@@ -17,60 +15,19 @@ Debug = True
 Debug = False
 
 # for debugging
-yomiLayerScore = [0, 0, 0]        # Count how many times a yomi layer won
 currentOpponent = 0               # This code is for jumping into a specific opponent for debugging
-
-class YomiPersonality:
-    """ contains the personality that can influence what yomi layers to use """
-    def __init__(self):
-        self.loadDefault()
-        self.loadData()
-
-    def loadDefault(self):
-        # defaults:            
-        self.victoryDelta = 1           # change to score when layer wins
-        self.lostDelta = -1             # change to score when layer lost
-        self.tieDelta = 0               # change to score when layer tied
-        self.winningDeltaForLost = 2    # change to the layer score which should have won (if choice lost)
-        self.winningDeltaForTie = 1     # change to the layer score which should have won (if choice tied)
-        self.decayDelta = [1.0, 1.0, 1.0] # changes to the layer scores every turn by multiplication (different layers have different decay scores)
-        self.minimumLayerConsideration = 0.0    # the lowest probability that a layer can have
-        self.predictionConfidenceTreshold = 0.8  # the lowest treshold for yomi layer 1 to automatically use prediction
-        
-        self.layerPreference = [1, 0.9, 0.1]    # how much is added to each layer when adding delta
-        
-        # observation mode is when the Yomi AI studies the opponent first
-        self.observation = 15                       # initial observation point
-        self.observationDeltaForLost = 3
-        self.observationDeltaForTie = 2
-        self.observationDeltaForWin = 1
-        self.layerConfidenceTresholdDuringObservationMode = 0.7
-
-        self.layerConfidenceSize = [10, 30, 0]        # how large the AI's confidence is with each layer. Its possible to not have 100% confidence
-        
-    def loadData(self):
-        self.decayDelta = [0.9, 0.8, 0.7]
-    
-        # experiment
-        self.layerPreference = [1, 1, 1] 
-        self.observation = 5
-        self.decayDelta = [1, 1, 1]
-        self.decayDelta = [1, 0.7, 0.5]
-        self.minimumLayerConsideration = 0.05
 
 import csv
 
 class Yomi:
     def __init__(self):
-        self.Personality = YomiPersonality()
         self.reset()
 
-    def reset(self):
-        self.Personality.__init__()
-        
-        self.yomiChoices = [0, 0, 0]
+    def reset(self):        
+        self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
+        self.yomiScore = [0, 0, 0]             # The victory points each score received. Seperate from yomiLayerUsage because points have different values.
         self.yomiLayerUsage = [0, 0, 0]        # Count how many times a yomi layer is used
-        self.yomiScore = [0, 0, 0]
+        self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
         self.layerLastTurn = -1
     
     def _prettifyList(self, list):
@@ -80,8 +37,9 @@ class Yomi:
     def _debugYomiStatUsage(self):
         if not Debug: return
         
-        print ("\n\nYomi stats:  " + str(self.yomiLayerUsage))
-        print ("Score stats: " + str(yomiLayerScore))
+        print ("\n\nYomi usage stats:  " + self._prettifyList(self.yomiLayerUsage))
+        print ("Yomi Score stats:  " + self._prettifyList(self.yomiScore))
+        print ("Yomi wins stats:   " + self._prettifyList(self.yomiLayerWins))
         print ("\n")        
                 
     def updateScore(self):
@@ -95,46 +53,45 @@ class Yomi:
         victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
         tie = (myMoveLastTurn == enemyMoveLastTurn)
         
-        personality = self.Personality
-        
-        for i, _ in enumerate(self.yomiScore):
-            self.yomiScore[i] *= personality.decayDelta[i]
-            if self.yomiScore[i] < 0: self.yomiScore[i] = 0
-        
-        if victory:
-            self.Personality.observation -= personality.observationDeltaForWin
-        elif tie:
-            self.Personality.observation -= personality.observationDeltaForTie
-        else:
-            self.Personality.observation -= personality.observationDeltaForLost
+        victoryPoints = 2
+        tiePoints = 1
+        lostPoints = -1
 
+        for i, _ in enumerate(self.yomiLayerUsage):
+            self.yomiScore[i] -= 1
+                
         if self.layerLastTurn != -1:
             layerLastTurn = self.layerLastTurn
+            self.yomiLayerUsage[layerLastTurn] += 1
+            
             if victory:
-                self.yomiScore[layerLastTurn] += personality.victoryDelta * personality.layerPreference[layerLastTurn]
-                
-                global yomiLayerScore
-                yomiLayerScore[layerLastTurn] += 1
+                self.yomiScore[layerLastTurn] += victoryPoints
+                self.yomiLayerWins[layerLastTurn] += 1
             else:
                 if tie:
-                    self.yomiScore[layerLastTurn] += personality.tieDelta * personality.layerPreference[layerLastTurn]
-                    scoreThisTurn = personality.winningDeltaForTie
+                    self.yomiScore[layerLastTurn] += tiePoints
                 else:
-                    self.yomiScore[layerLastTurn] += personality.lostDelta * personality.layerPreference[layerLastTurn]
-                    scoreThisTurn = personality.winningDeltaForLost
+                    self.yomiScore[layerLastTurn] += lostPoints
                 
-                # add score to yomi layer that would have gave us a win
-                winningMove = (enemyMoveLastTurn + 1) % 3
-                
-                # search for the layer that contains the winning move and update it
-                for i in range(len(self.yomiChoices)):
-                    if self.yomiChoices[i] == winningMove:
-                        self.yomiScore[i] +=  scoreThisTurn * personality.layerPreference[i]
-                        break
-
+        # add score to yomi layer that would have gave us a win
+        # todo: is it better to remove this as to stop double-guessing?
+        winningMove = (enemyMoveLastTurn + 1) % 3
+        victoryPoints = 0
+        
+        # search for the layer that contains the winning move and update it
+        try:
+            i = self.yomiChoices.index(winningMove)
+        except ValueError:
+            pass
+        else:
+            #self.yomiScore[i] +=  victoryPoints
+            pass
+                    
         for i, _ in enumerate(self.yomiScore):
+            #if self.yomiScore[i] < -3: 
+            #    self.yomiScore[i] = -3
             if self.yomiScore[i] < 0: 
-                self.yomiScore[i] = 0
+                self.yomiScore[i] += 2
 
     def shouldUseYomi(self, playConfidence):
         # returns False if we are confident with our play
@@ -153,12 +110,17 @@ class Yomi:
         yomiChoices = [layer1, layer2, layer3]
         self.yomiChoices = yomiChoices
 
-        if Debug: print ("Yomi Choices:                  %i      %i      %i" % (yomiChoices[0], yomiChoices[1], yomiChoices[2]))
+        if Debug: print ("Yomi Choices:          %i      %i      %i" % (yomiChoices[0], yomiChoices[1], yomiChoices[2]))
 
         return yomiChoices
 
     def decideYomiLayer(self, predictionConfidence):
-        return 0, 1.0
+        maxScore = max(self.yomiScore)
+        if maxScore < 0:
+            return -1, 1.0
+            
+        yomiLayer = self.yomiScore.index(maxScore)
+        return yomiLayer, 1.0
 
     def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
@@ -191,6 +153,7 @@ class Yomi:
             move = yomiChoices[layerToUse]
             
         self.layerLastTurn = layerToUse
+
         return move
 
 def startDebugTurn():
@@ -198,8 +161,10 @@ def startDebugTurn():
 
     global Debug   
     if Debug: 
-        if not yomi.Personality.observation > 0:    # skip to the point when we are no longer observing
+        if currentTurn:    # skip to the point when we are no longer observing
+        #if currentTurn and not yomi.Personality.observation > 0:    # skip to the point when we are no longer observing
             input()
+            print("**next turn**")
 
     if currentTurn == 999:
         yomi._debugYomiStatUsage()
