@@ -39,14 +39,14 @@ class PredictorSelector:
     def __init__(self):
         Predictors = []
         
-#        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="6,5,4,3,2,1")
+#        p = Predictor(module=PatternPredictor.PatternPredictor, variant="6,5,4,3,2,1")
 #        Predictors.append(p)
-#        p = Predictor(name="Pattern Predictor", module=PatternPredictor.PatternPredictor, variant="5,4,3,2,1")
+#        p = Predictor(module=PatternPredictor.PatternPredictor, variant="5,4,3,2,1")
 #        Predictors.append(p)
-        p = Predictor(module=BeatFrequentPick.MBFP, variant=5)
-        Predictors.append(p)
-        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
-        Predictors.append(p)
+#        p = Predictor(module=BeatFrequentPick.MBFP, variant=5)
+#        Predictors.append(p)
+#        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
+#        Predictors.append(p)
 
         PPsize = 12
         nextSeqSize = 1
@@ -97,12 +97,12 @@ class PredictorSelector:
                     print(" lost")
 
             if victory:
-                predictor.scoreWins += 1
+                predictor.scoreWins += 2
             elif tie:
                 predictor.scoreWins += 1
                 predictor.scoreLosts += 1
             elif lost:
-                predictor.scoreLosts += 1
+                predictor.scoreLosts += 2
         
         # update the rest of the predictors that they should have gained if they were chosen
         for predictor in self.Predictors:
@@ -186,14 +186,13 @@ class PredictorSelector:
             if confidence > 0.9: confidence = 0.9
             if confidence < 0: confidence = 0
             #confidence = 0.85
-            
-            
+                        
             if positiveRatings <= 0 or totalRatings <= 0:
                 continue
                         
             #z = 1.96        # hardcorded for confidence=95%
             #z = 1.0         # 1.44=85% 1.96=95%
-            z = normcdfi(1 - 0.5 * (1 - confidence))
+            z = cached_normcdfi(1 - 0.5 * (1 - confidence))
             
             phat = float(positiveRatings) / totalRatings
             n = totalRatings
@@ -204,20 +203,49 @@ class PredictorSelector:
             predictorScores.append((rating, predictor))
 
         if len(predictorScores):
-            scoreSorted = sorted(predictorScores, key=lambda i: i[0], reverse=True)
-            chosenPredictor = scoreSorted[0][1]
-            rating = scoreSorted[0][0]
+            # filter out predictors that does not tie with the maximum rating, for optimization purposes
+            maxRating = max(predictorScores, key=lambda i: i[0])[0]
+            p = [p for p in predictorScores if p[0] == maxRating]
+
+            if predictorScores[0] != maxRating:
+                assert("Something is wrong. We filtered out predictions that is not the maximum but we got some here")                
             
-            if Debug:
-                for p in scoreSorted:
-                    print ("%s Rating: %.3f. Score +%i/-%i" % (p[1].name, p[0], p[1].scoreWins, p[1].scoreLosts))
-            
-                if len(predictorScores):
-                    input() 
+            predictorScores = p   
         else:
             chosenPredictor = random.choice(self.Predictors)
             rating = 0
+
+        if len(predictorScores) == 1:
+            rating, chosenPredictor = predictorScores[0]
+            if Debug:
+                p = chosenPredictor
+                print ("%s (%i) Rating: %.3f. Score +%i/-%i" % (p.name, p.moveLastTurn, rating, p.scoreWins, p.scoreLosts))
         
+                input() 
+        elif len(predictorScores) > 1:                       
+            # check if the highest rating predictions have different moves.
+            # if True, then randomly select from between the moves
+            Rmoves = [p for p in predictorScores if p[1].moveLastTurn == 0]
+            Pmoves = [p for p in predictorScores if p[1].moveLastTurn == 1]
+            Smoves = [p for p in predictorScores if p[1].moveLastTurn == 2]
+            size = len(predictorScores)
+            
+            if (len(Rmoves) != size or len(Pmoves) != size or len(Smoves) != size):
+                # Randomly select from the moves
+                chosenPredictor = random.choice(predictorScores)
+                rating = chosenPredictor[0]
+                chosenPredictor = chosenPredictor[1]
+            else:
+                # All the high ratings have the same move. Just use the first one.
+                chosenPredictor = predictorScores[0][1]
+                rating = predictorScores[0][0]            
+            
+            if Debug:
+                for p in scoreSorted:
+                    print ("%s (%i) Rating: %.3f. Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].scoreWins, p[1].scoreLosts))
+            
+                if len(predictorScores):
+                    input()         
 
         return chosenPredictor, rating
     
@@ -299,3 +327,17 @@ def normcdfi(p, mu=0.0, sigma2=1.0):
         return math.sqrt(2) * erfi(2 * p - 1)
     else:
         return mu + math.sqrt(sigma2) * normcdfi(p)
+
+CacheForNormCDFISet = []
+def cached_normcdfi(p, mu=0.0, sigma2=1.0):
+    """Call normcdfi and cache the results"""
+    global CacheForNormCDFISet 
+    for i in CacheForNormCDFISet:
+        if i[2] == mu and i[3] == sigma2 and i[1] == p: return i[0]
+    
+    # p not in cache. Add it
+    result = normcdfi(p, mu, sigma2)
+    cache = (result, p, mu, sigma2)
+    CacheForNormCDFISet.append(cache)
+    
+    return result
