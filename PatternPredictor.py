@@ -125,8 +125,19 @@ class PatternPredictor:
         moveCountMax = max(moveCounts)
         moveCountNum = moveCounts.count(moveCountMax)
         if moveCountNum == 1:
-            confidence = 1.0
             prediction = moveCounts.index(moveCountMax)
+            
+            # confidence = difference between the highest tally and how close it is to 10
+            confidence = (sum(moveCounts) - moveCountMax) / 10.0
+            if confidence > 0.9: 
+                confidence = 0.9
+            else:
+                confidence = (confidence * 0.5) + 0.5
+            
+            if Debug:
+                print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
+                input()
+            
             return prediction, confidence
 
         # if we still have a tie, choose between them using a random number
@@ -150,6 +161,11 @@ class PatternPredictor:
             # prediction not found
             return -1, 0
 
-        confidence = tally[prediction]
+        # our confidence is based on our random number
+        confidence = tally[prediction] - random 
+        
+        if Debug:
+            print (random, confidence)
+            input()
                                 
         return prediction, confidence
