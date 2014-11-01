@@ -1,5 +1,6 @@
 import random
 import operator
+import math
 
 import BeatFrequentPick
 import PatternPredictor
@@ -20,7 +21,8 @@ class Predictor:
         self.reset()
     
     def reset(self):        
-        self.score = 0
+        self.scoreWins = 0
+        self.scoreLosts = 0
         
         self.moveLastTurn = 0
         self.confidenceLastTurn = 0
@@ -66,9 +68,8 @@ class PredictorSelector:
         self.LastPredictor = None
         self.LastYomiLayer = 0
         for predictor in self.Predictors:
-            #predictor.reset()    
-            pass
-    
+            predictor.reset()    
+            
     def update(self):
         self._updateScore()
             
@@ -78,7 +79,6 @@ class PredictorSelector:
             
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-
         # update predictor used last turn
         if self.LastPredictor:
             predictor = self.LastPredictor
@@ -88,7 +88,7 @@ class PredictorSelector:
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
 
             if Debug:
-                print("**%s: move(%i) score(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.score), end="")
+                print("**%s: move(%i) score(+%i/-%i)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts), end="")
                 if victory:
                     print(" win")
                 elif tie:
@@ -97,12 +97,13 @@ class PredictorSelector:
                     print(" lost")
 
             if victory:
-                predictor.score += 1
+                predictor.scoreWins += 1
             elif tie:
-                predictor.score += 0
+                predictor.scoreWins += 1
+                predictor.scoreLosts += 1
             elif lost:
-                predictor.score += -1
-
+                predictor.scoreLosts += 1
+        
         # update the rest of the predictors that they should have gained if they were chosen
         for predictor in self.Predictors:
             if self.LastPredictor == predictor:
@@ -115,7 +116,7 @@ class PredictorSelector:
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
         
             if Debug:
-                print("%s: move(%i) score(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.score), end="")
+                print("%s: move(%i) score(+%i/-%i)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts), end="")
                 if victory:
                     print(" win")
                 elif tie:
@@ -124,13 +125,14 @@ class PredictorSelector:
                     print(" lost")
 
             if victory:
-                predictor.score += +1
+                predictor.scoreWins += 1
             elif tie:
-                predictor.score += 0
+                predictor.scoreWins += 1
+                predictor.scoreLosts += 1
             elif lost:
-                predictor.score += -1
+                predictor.scoreLosts += 1
     
-    def getHighestRank(self):
+    def getPrediction(self):
         """
         1. run each predictor.
         2. select the predictors with the highest confidence and score
@@ -138,8 +140,8 @@ class PredictorSelector:
         """
         
         # 1. run each predictor.
-        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
-        #scoreSorted = self.Predictors
+        #scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'))
+        scoreSorted = self.Predictors
         
         chosenPredictor = None
         self.LastPredictor = None
@@ -151,8 +153,77 @@ class PredictorSelector:
             predictor.confidenceLastTurn = confidence
         
         #2. select the predictors with the highest confidence and score
-        ####################### debug
-        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('score'), reverse=True)
+        move, confidence = self.getHighestRank()
+        
+        #3. return the highest ranking
+        return move, confidence
+        
+    def getHighestRank(self):    
+        chosenPredictor, rankRating = self.getHighestRank_LowerWilson()
+        #chosenPredictor, rankRating = self.getHighestRank_Naive()
+        
+        self.LastPredictor = chosenPredictor
+        move = chosenPredictor.moveLastTurn
+        predictorConfidence = chosenPredictor.confidenceLastTurn
+        
+        confidence = rankRating * predictorConfidence
+                
+        return move, confidence 
+    
+    def getHighestRank_LowerWilson(self):
+        """
+        Get the highest rank using "lower bound of Wilson score confidence interval for a Bernoulli parameter"
+        http://www.evanmiller.org
+         How Not To Sort By Average Rating.htm
+        """
+        confidence = 0.95
+        
+        predictorScores = []
+        for i, predictor in enumerate(self.Predictors):                  
+            positiveRatings = predictor.scoreWins
+            totalRatings = predictor.scoreWins + predictor.scoreLosts
+            confidence = predictor.confidenceLastTurn
+            if confidence > 0.9: confidence = 0.9
+            if confidence < 0: confidence = 0
+            #confidence = 0.85
+            
+            
+            if positiveRatings <= 0 or totalRatings <= 0:
+                continue
+                        
+            #z = 1.96        # hardcorded for confidence=95%
+            #z = 1.0         # 1.44=85% 1.96=95%
+            z = normcdfi(1 - 0.5 * (1 - confidence))
+            
+            phat = float(positiveRatings) / totalRatings
+            n = totalRatings
+            
+            #rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)        
+            rating = (phat + z*z/(2*n) - z * ((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
+            
+            predictorScores.append((rating, predictor))
+
+        if len(predictorScores):
+            scoreSorted = sorted(predictorScores, key=lambda i: i[0], reverse=True)
+            chosenPredictor = scoreSorted[0][1]
+            rating = scoreSorted[0][0]
+            
+            if Debug:
+                for p in scoreSorted:
+                    print ("%s Rating: %.3f. Score +%i/-%i" % (p[1].name, p[0], p[1].scoreWins, p[1].scoreLosts))
+            
+                if len(predictorScores):
+                    input() 
+        else:
+            chosenPredictor = random.choice(self.Predictors)
+            rating = 0
+        
+
+        return chosenPredictor, rating
+    
+    def getHighestRank_Naive(self):
+        """Get the highest rank using a naive algo"""
+        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('scoreWins'), reverse=True)
         chosenPredictor = scoreSorted[0]
         
         if Debug:
@@ -165,10 +236,66 @@ class PredictorSelector:
             chosenPredictor = random.choice(self.Predictors)
             
         #chosenPredictor = self.Predictors[1]
+        rankConfidence = 0
+        return chosenPredictor, rankConfidence
         
-        self.LastPredictor = chosenPredictor
-        move = chosenPredictor.moveLastTurn
-        confidence = chosenPredictor.confidenceLastTurn
-                
-        #3. return the highest ranking
-        return move, confidence        
+# from stackoverflow. google search: "wilson bernoulli python". (No exact url because I was on mobile Internet and I copy-pasted from phone to pc)
+
+def binconf(p, n, c=0.95):
+    '''
+    Calculate binomial confidence interval based on the number of positive and
+    negative events observed. Uses Wilson score and approximations to inverse
+    of normal cumulative density function.
+
+    Parameters
+    ----------
+    p: int
+    number of positive events observed
+    n: int
+    number of negative events observed
+    c : optional, [0,1]
+    confidence percentage. e.g. 0.95 means 95% confident the probability of
+    success lies between the 2 returned values
+
+    Returns
+    -------
+    theta_low : float
+    lower bound on confidence interval
+    theta_high : float
+    upper bound on confidence interval
+    '''
+    p, n = float(p), float(n)
+    N = p + n
+
+    if N == 0.0: return (0.0, 1.0)
+
+    p = p / N
+    z = normcdfi(1 - 0.5 * (1-c))
+
+    a1 = 1.0 / (1.0 + z * z / N)
+    a2 = p + z * z / (2 * N)
+    a3 = z * math.sqrt(p * (1-p) / N + z * z / (4 * N * N))
+
+    return (a1 * (a2 - a3), a1 * (a2 + a3))
+
+
+def erfi(x):
+    """Approximation to inverse error function"""
+    a = 0.147 # MAGIC!!!
+    a1 = math.log(1 - x * x)
+    a2 = (2.0 / (math.pi * a) + a1 / 2.0)
+
+    return (sign(x) * math.sqrt( math.sqrt(a2 * a2 - a1 / a) - a2 ))
+
+
+def sign(x):
+    if x < 0: return -1
+    if x == 0: return 0
+    if x > 0: return 1
+
+def normcdfi(p, mu=0.0, sigma2=1.0):
+    """Inverse CDF of normal distribution"""
+    if mu == 0.0 and sigma2 == 1.0:
+        return math.sqrt(2) * erfi(2 * p - 1)
+    else:
+        return mu + math.sqrt(sigma2) * normcdfi(p)

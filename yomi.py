@@ -234,10 +234,10 @@ def play(a):
     ownPlay, ownPlayConfidence = strategy.play()
     
     predictorSelector.update()
-    prediction, predictionConfidence = predictorSelector.getHighestRank()
+    prediction, predictionConfidence = predictorSelector.getPrediction()
 
     #to test prediction ranking, uncomment:
-    #return (prediction[0] + 1) % 3
+    return (prediction + 1) % 3
     
     decision = yomi.play(predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence)
        
