@@ -162,7 +162,7 @@ class Yomi:
 
         layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence)
         predictorSelector.LastYomiLayer = layerToUse
-                
+        
         if layerToUse == -1:
             if Debug: print ("Using our play (layer 0).")
             move = ownPlay
@@ -200,6 +200,9 @@ def startDebugTurn():
             #Debug = True
             pass
     
+import time    
+startTime = time.time()
+    
 yomi = Yomi()
 strategy = RPSstrategy.RPSstrategy()
 predictorSelector = yomiPredictorSelector.PredictorSelector()
@@ -212,13 +215,13 @@ Predictor = None
 
 def play(a):
     #to test specific prediction, uncomment:
-    #global Predictor
-    #if Predictor == None:
-    #    Predictor = PatternPredictor.PatternPredictor(a)
-    #    Predictor = BeatFrequentPick.MBFP(a)
-    #Predictor.update()
-    #predict = Predictor.play()[0]
-    #return (predict + 1) % 3
+    global Predictor
+#    if Predictor == None:
+#        Predictor = PatternPredictor.PatternPredictor(a)
+#        Predictor = BeatFrequentPick.MBFP(a)
+#    Predictor.update()
+#    predict = Predictor.play()[0]
+#    return (predict + 1) % 3
         
     startDebugTurn()
     
@@ -237,6 +240,12 @@ def play(a):
     #return (prediction[0] + 1) % 3
     
     decision = yomi.play(predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence)
+       
+    if rps.getTurn() == 999:
+        global startTime
+        endTime = time.time()
+#        print ("\nTotal time elapsed:", endTime - startTime)
+        startTime = endTime
     return decision
     
 def isVerbose():
