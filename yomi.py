@@ -135,7 +135,12 @@ class Yomi:
 
         return yomiChoices
 
-    def decideYomiLayer(self, predictionConfidence):
+    def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):    
+        if ownPlayConfidence > predictionConfidence:
+            return -1, ownPlayConfidence
+
+        return 0, 1.0
+    
         maxScore = max(self.yomiScore)
         if maxScore < 0:
             #print("using layer 0")
@@ -160,7 +165,7 @@ class Yomi:
         
         yomiChoices = self.getYomiChoices(prediction)
 
-        layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence)
+        layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence, ownPlayConfidence)
         predictorSelector.LastYomiLayer = layerToUse
         
         if layerToUse == -1:
@@ -235,16 +240,16 @@ def play(a):
     
     predictorSelector.update()
     prediction, predictionConfidence = predictorSelector.getPrediction()
-
-    #to test prediction ranking, uncomment:
-    return (prediction + 1) % 3
     
     decision = yomi.play(predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence)
-       
+    
+    #to test prediction ranking, uncomment:
+    #decision = (prediction + 1) % 3
+      
     if rps.getTurn() == 999:
         global startTime
         endTime = time.time()
-#        print ("\nTotal time elapsed:", endTime - startTime)
+        #print ("\nTotal time elapsed:", endTime - startTime)
         startTime = endTime
     return decision
     
