@@ -9,7 +9,7 @@ pathbase = "./PP results/"             # Note: this string should end with "/"
 class testPP(unittest.TestCase):
     @unittest.skip("Skipping full test")
     def testAllResults(self):
-        # ETA 8:16
+        # ETA 8:00-9:00
     
         for i, filename in enumerate(reversed(os.listdir(pathbase))):            
             self.compare(filename)
