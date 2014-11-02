@@ -19,6 +19,7 @@ class testPP(unittest.TestCase):
         files = os.listdir(pathbase)
         for x in range(3):
             filename = random.choice(files)
+            files.remove(filename)
             
             self.compare(filename)
 
