@@ -75,7 +75,7 @@ class PatternPredictor:
         # list how many times we see a predicted move
         tally = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
         while found != -1:
-            # todo: very slow
+            # todo: very slow. optimize
             end = found + len(Seq)
             if UseByteArray:            
                 move = History[end]
@@ -85,6 +85,16 @@ class PatternPredictor:
 
             tally[move] += 1
             found = History.find(Seq, found + 1, -SequenceLength)
+            
+            # check if we get a tally that is greater than 10 compared to the other tallies.
+            # this is an optimization to quickly end the loop.
+            difference = 150
+            if tally[0] >= tally[1] + difference and tally[0] >= tally[2] + difference:    
+                break
+            if tally[1] >= tally[0] + difference and tally[1] >= tally[2] + difference:    
+                break
+            if tally[2] >= tally[0] + difference and tally[2] >= tally[1] + difference:    
+                break
      
         prediction, confidence = self.GetHighestTally(History, tally, SequenceLength)
 
