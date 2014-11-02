@@ -25,16 +25,9 @@ class Yomi:
 
     def reset(self):        
         self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
-        self.yomiScore = [0, 0, 0]             # The victory points each score received. Seperate from yomiLayerUsage because points have different values.
-        self.yomiLayerUsage = [0, 0, 0]        # Count how many times a yomi layer is used
         self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
-        self.layerLastTurn = -1
-        self.ownStrategyUsage = 0               # count how many times we used our own strategy
-        
-        self.startingYomiScore = -10
-        startingYomiScore = self.startingYomiScore 
-        for i, _ in enumerate(self.yomiScore):
-            self.yomiScore[i] = startingYomiScore
+        self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer losts
+        self.layerLastTurn = -1        
     
     def _prettifyList(self, list):
         #return "[%.2f %.2f %.2f %.2f]" % (list[0], list[1], list[2], list[3])
@@ -43,9 +36,8 @@ class Yomi:
     def _debugYomiStatUsage(self):
         if not Debug: return
         
-        print ("\n\nYomi usage stats:  " + self._prettifyList(self.yomiLayerUsage))
-        print ("Yomi Score stats:  " + self._prettifyList(self.yomiScore))
-        print ("Yomi wins stats:   " + self._prettifyList(self.yomiLayerWins))
+        print ("\n\nYomi wins stats:   " + self._prettifyList(self.yomiLayerWins))
+        print ("Yomi losts stats:  " + self._prettifyList(self.yomiLayerLosts))
         print ("\n")        
                 
     def updateScore(self):
@@ -59,37 +51,26 @@ class Yomi:
         victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
         tie = (myMoveLastTurn == enemyMoveLastTurn)
         
-        victoryPoints = 2
-        tiePoints = 1
-        lostPoints = -2
-
         layerLastTurn = self.layerLastTurn
         
         # update layer we used last turn
-        if layerLastTurn != -1:
-            self.yomiLayerUsage[layerLastTurn] += 1
+        for i, _ in enumerate(self.yomiLayerWins):
+            myMoveLastTurn = self.yomiChoices[i]
+            victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
+            tie = (myMoveLastTurn == enemyMoveLastTurn)
+            lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)               
             
             if victory:
-                self.yomiScore[layerLastTurn] += victoryPoints
-                self.yomiLayerWins[layerLastTurn] += 1
+                self.yomiLayerWins[i] += 1
+            elif tie:
+                self.yomiLayerWins[i] += 1
+                self.yomiLayerLosts[i] += 1
             else:
-                if tie:
-                    self.yomiScore[layerLastTurn] += tiePoints
-                else:
-                    self.yomiScore[layerLastTurn] += lostPoints
-
-        # update other layers
-        for i, _ in enumerate(self.yomiScore):
-            if i != layerLastTurn:
-                myMoveLastTurn = self.yomiChoices[i]
-                tie = (myMoveLastTurn == enemyMoveLastTurn)
-                lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
-                
-                if lost:
-                    if self.yomiScore[i] > 0:
-                        self.yomiScore[i] -= 1
-                elif tie:
-                    self.yomiScore[i] += 1
+                self.yomiLayerLosts[i] += 1                                            
+                    
+        return
+        
+        
                 
         # add score to yomi layer that would have gave us a win
         # todo: is it better to remove this as to stop double-guessing?
@@ -139,16 +120,34 @@ class Yomi:
         if ownPlayConfidence > predictionConfidence:
             return -1, ownPlayConfidence
 
-        return 0, 1.0
-    
-        maxScore = max(self.yomiScore)
-        if maxScore < 0:
-            #print("using layer 0")
-            self.ownStrategyUsage += 1
-            return -1, 1.0
+        if max(self.yomiLayerWins) <= ownPlayConfidence:
+            return -1, ownPlayConfidence               
+
+        confidences = []
+        for i in [0, 1, 2]:
+            if self.yomiLayerWins[i] > 0:
+                yomiConfidence = (self.yomiLayerWins[i] - self.yomiLayerLosts[i]) / self.yomiLayerWins[i]
+            else:
+                yomiConfidence = 0
             
-        yomiLayer = self.yomiScore.index(maxScore)
-        return yomiLayer, 1.0
+            if i == 0:
+                yomiConfidence = (yomiConfidence * 0.5) + (predictionConfidence * 0.5)
+            elif i == 1:
+                yomiConfidence = (yomiConfidence * 0.25) + (predictionConfidence * 0.75)
+                yomiConfidence = 0
+            elif i == 2:
+                yomiConfidence = (yomiConfidence * 0.15) + (predictionConfidence * 0.85)
+                yomiConfidence = 0
+                
+            confidences.append(yomiConfidence)
+        
+        confidence = max(confidences)
+        yomiLayer = confidences.index(confidence)
+
+        if confidence < ownPlayConfidence:
+            return -1, ownPlayConfidence                   
+        
+        return yomiLayer, confidence
 
     def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
@@ -170,12 +169,11 @@ class Yomi:
         
         if layerToUse == -1:
             if Debug: print ("Using our play (layer 0).")
+            #print ("Using our play (layer 0).")
             move = ownPlay
             predictorSelector.LastPredictor = None
         else:        
             if Debug: print ("Using layer %i." % (layerToUse + 1))
-
-            self.yomiLayerUsage[layerToUse] += 1
             
             # return move based on layer
             move = yomiChoices[layerToUse]
