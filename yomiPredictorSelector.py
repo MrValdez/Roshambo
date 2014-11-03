@@ -1,4 +1,3 @@
-import random
 import operator
 import math
 
@@ -212,7 +211,8 @@ class PredictorSelector:
             
             predictorScores = p   
         else:
-            chosenPredictor = random.choice(self.Predictors)
+            random = rps.random() % len(self.Predictors)
+            chosenPredictor = self.Predictors[random]
             rating = 0
 
         if len(predictorScores) == 1:
@@ -232,7 +232,8 @@ class PredictorSelector:
             
             if (len(Rmoves) != size or len(Pmoves) != size or len(Smoves) != size):
                 # Randomly select from the moves
-                chosenPredictor = random.choice(predictorScores)
+                random = rps.random() % len(predictorScores)
+                chosenPredictor = predictorScores[random]
                 rating = chosenPredictor[0]
                 chosenPredictor = chosenPredictor[1]
             else:
@@ -261,7 +262,8 @@ class PredictorSelector:
             input()
 
         if chosenPredictor == None:
-            chosenPredictor = random.choice(self.Predictors)
+            random = rps.random() % len(self.Predictors)
+            chosenPredictor = self.Predictors[random]
             
         #chosenPredictor = self.Predictors[1]
         rankConfidence = 0
