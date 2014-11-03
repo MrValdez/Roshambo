@@ -1,4 +1,6 @@
 import sys
+import time
+
 import socket
 import select
 from debuggerOpcodes import *
@@ -28,11 +30,12 @@ resolution = [rowWidth, AIrowHeight * AInumbers]
 
 print(resolution)
 brain = pygame.Surface(resolution)
+brain.fill([0,0,0])
 
 def Reset():
     global tail
     tail = [0, 0]
-    brain.fill([0,0,0])
+    #brain.fill([0,0,0])
 
 Reset()
 
@@ -80,7 +83,7 @@ def FillRow():
     """ Empty the next row in case we looped around """
     
     # optimization suggestion: use pygame.surfarray
-    for y in range(tail[1], tail[1] + (tileHeight * 3)):
+    for y in range(tail[1], tail[1] + (tileHeight)):
         for x in range(resolution[0]):
             brain.set_at([x, y], [0, 0, 0])
     
@@ -94,6 +97,10 @@ def handleOpcode (conn, opcode):
     elif opcode == OPCODE_ActivateLayer3:
         AddValue(3)
     elif opcode == OPCODE_NextAI:
+        time.sleep(1)   # a little sleep hack to allow the server to catch up because of rendering and update speed
+                        # without this, the next recv might return a BlockingIOError. This is a hack and the elegent
+                        # solution is to loop during a block and try again, or to use UDP.
+
         strSize = conn.recv(1)
         AIname = conn.recv(int(strSize[0]))
         print("Next AI:", AIname)
@@ -158,7 +165,7 @@ while IsRunning:
     screen.blit(brainScaled, [x, y])
     #screen.blit(brain, [x, y])
     
-    timeout = 0.1
+    timeout = 0
     inputs, outputs, errors = select.select(inputSockets, [], [], timeout)
     
     for conn in inputs:
