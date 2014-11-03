@@ -27,12 +27,13 @@ class VisualDebugger:
             self.connected = True
         except:
             self.connected = False
-        
+                    
     def NextAI(self, name):
         if not self.connected: return
         
         self.conn.send(OPCODE_NextAI)    
         size = len(name)
+        
         self.conn.send(bytes([size]))        # we send the length of the string first. This is unnecessary in TCP/IP but it is for UDP.
         self.conn.send(bytes(name, "utf-8"))
         
@@ -54,8 +55,21 @@ class VisualDebugger:
 
     def close(self):
         if not self.connected: return
-        conn.close()
-    
+
+        print("Disconnecting from debugger...")
+        
+        # tell the server we are disconnecting. Wait for the server to say ok.
+        self.conn.send(OPCODE_Exit)
+        data = None
+        while data != OPCODE_Exit:
+            data = self.conn.recv(1)
+        
+        self.conn.close()
+        self.connected = False
+
+    def __del__(self):
+        print("deleting")
+        self.close()
 
 Debug = True
 Debug = False
@@ -304,3 +318,6 @@ def isVerbose():
     """If True is returned, print the result of each trial."""
     global Debug
     return Debug
+    
+def shutdown():
+    yomi.VisualDebugger.close()

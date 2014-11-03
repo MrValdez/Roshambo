@@ -17,19 +17,25 @@ maxTextSize = maxText.get_size()
 rowMargin = 10
 rowBorder = maxTextSize[1]
 AInumbers = 42
+#AInumbers = 2
 maxAITurns = 1000
 #rowWidth = 1000
 rowWidth = screen.get_width()
 tileWidth = 10
 tileHeight = 10
-AIrowHeight = ((int(maxAITurns / (rowWidth / tileWidth)) + 1) * max(tileHeight, maxTextSize[1])) + (rowMargin * 2)
+AIrowHeight = ((int(maxAITurns * (tileWidth / rowWidth)) + 1) * max(tileHeight, maxTextSize[1])) + (rowMargin * 2)
 resolution = [rowWidth, AIrowHeight * AInumbers]
 
 print(resolution)
 brain = pygame.Surface(resolution)
-brain.fill([0, 0, 0])
 
-tail = [0, 0]
+def Reset():
+    global tail
+    tail = [0, 0]
+    brain.fill([0,0,0])
+
+Reset()
+
 def AddValue(value):
     global brain
     if value == 0:
@@ -44,35 +50,53 @@ def AddValue(value):
         print("Value needs to be 0-3")
 
     # optimization suggestion: use pygame.surfarray
-    for x in range(tileWidth):
-        for y in range(tileHeight):
+    for y in range(tileHeight):
+        for x in range(tileWidth):
             brain.set_at([tail[0] + x, tail[1] + y], color)
         
     tail[0] += tileWidth
     if tail[0] > rowWidth:
         tail[0] = 0
         tail[1] += rowMargin
+        FillRow()
+        
+    if tail[1] > resolution[1]:
+        tail[1] = 0
 
 def NextAI(AIname):
     tail[0] = 0
-    tail[1] += rowMargin
+    tail[1] += rowMargin * 2
     
     AIname = font.render(AIname, True, (255,255,255))
     brain.blit(AIname, tail)
-    tail[0] = AIname.get_width() + rowMargin
-    tail[1] += int(AIname.get_height() / 2) - int(tileHeight / 2)
+    tail[0] = 0
+    tail[1] += AIname.get_height()
 
-def Reset():
-    tail = [0, 0]
+    if tail[1] > resolution[1]:
+        tail[1] = 0
 
+def FillRow():
+    """ Empty the next row in case we looped around """
+    
+    # optimization suggestion: use pygame.surfarray
+    for y in range(tail[1], tail[1] + (tileHeight * 3)):
+        for x in range(resolution[0]):
+            brain.set_at([x, y], [0, 0, 0])
+    
+c = 0
 def handleOpcode (conn, opcode):
+    global c
     if opcode == OPCODE_ActivateLayer0:
+        c += 1
         AddValue(0)
     elif opcode == OPCODE_ActivateLayer1:
+        c += 1
         AddValue(1)
     elif opcode == OPCODE_ActivateLayer2:
+        c += 1
         AddValue(2)
     elif opcode == OPCODE_ActivateLayer3:
+        c += 1
         AddValue(3)
     elif opcode == OPCODE_NextAI:
         strSize = conn.recv(1)
@@ -81,7 +105,11 @@ def handleOpcode (conn, opcode):
         NextAI(AIname)
     elif opcode == OPCODE_NewTournament:
         Reset()
+    elif opcode == OPCODE_Exit:
+        print("Exit received. Telling client to exit...")
+        conn.send(OPCODE_Exit)
 
+    print(c)
 def test():
     for i in range(10):
         AddValue(0)
@@ -98,11 +126,18 @@ def test():
 # Network init
 port = 42
 def setupServer():
+    
+    # TCP/IP
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    # UDP
+    #serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
     #serverSocket.bind((socket.gethostname(), port)     # uncomment to allow access outside of localhost
     serverSocket.bind(("", port))
-    serverSocket.setblocking(0)
+    
     serverSocket.listen(1)              # listen to just 1 connection
+    serverSocket.setblocking(0)
     
     return serverSocket
     
@@ -149,7 +184,7 @@ while IsRunning:
                     for opcode in data:
                         handleOpcode (conn, opcode)
         except:
-            print(sys.exc_info())
+            print(sys.exc_info())                    
             inputSockets.remove(client)
     
     pygame.display.update()
@@ -165,6 +200,7 @@ while IsRunning:
     if keystate[pygame.K_RIGHT]: x -= 1
     if keystate[pygame.K_UP]:    y += 1
     if keystate[pygame.K_DOWN]:  y -= 1
+    if keystate[pygame.K_SPACE]: x = 0
 
     if keystate[pygame.K_RIGHTBRACKET] and not prevkeystate[pygame.K_RIGHTBRACKET]: 
         scale = not scale

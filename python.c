@@ -250,6 +250,17 @@ int python()
 
 void exitPython()
 {
+    PyObject *pFunc = PyObject_GetAttrString(pModule, "shutdown");
+    if (!pFunc) {
+        if (PyErr_Occurred())
+            PyErr_Print();
+        fprintf(stderr, "Cannot find function \"shutdown\"");
+    }
+    else
+    {
+        PyObject *pValue = PyObject_CallObject(pFunc, 0);
+    }
+
     Py_XDECREF(yomiFunc);
     Py_DECREF(pModule);
 

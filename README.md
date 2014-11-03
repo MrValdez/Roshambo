@@ -76,6 +76,8 @@ This is an example of a simple **play()** function:
 ```
 
   The function **isVerbose()** must also exist. This function should return True if we want the test suite to print the play results of each turn.
+
+  The function **shutdown()** must also exist. This function is called when the program is about to exit. Any cleanups that should be done should be called here.
   
 ##RPS library
 The rps library contains the following test suite related functions:
