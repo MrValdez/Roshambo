@@ -40,7 +40,8 @@ class VisualDebugger:
         if not self.connected: return        
         currentTurn = rps.getTurn()
         if currentTurn == 0: 
-            self.NextAI("Foo")
+            name = rps.enemyName()
+            self.NextAI(name)
 
         if layer == -1:
             self.conn.send(OPCODE_ActivateLayer0)

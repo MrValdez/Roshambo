@@ -92,6 +92,8 @@ The rps library contains the following test suite related functions:
 
 - **rps.randomRange()** functions similarly to **rps.random()** but returns a floating number between [0..1].
 
+- **rps.enemyName()** returns name of current enemy. Used for debugging. Don't use this to check opponent's name when deciding the AI's move.
+
 ## Simpliest example of AI-to-test suite interface
 
 ```

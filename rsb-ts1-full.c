@@ -6080,6 +6080,10 @@ void Print_Match_Results (Player_Table crosstable[players+1])
     Print_MSorted_Results (mtable);
 }
 
+// YOMI CHANGES
+char current_opponent[50];   
+// YOMI CHANGES
+
 void Play_Tournament (Player_Table crosstable[players+1])
 {
     int i, j, score;
@@ -6088,6 +6092,9 @@ void Play_Tournament (Player_Table crosstable[players+1])
         for (j = i+1; j <= players; j++) {
             if (verbose3) { printf(" %-*s vs %-*s ", nameleng,
                 crosstable[i].name, nameleng, crosstable[j].name); }
+        // YOMI CHANGES
+            strcpy(current_opponent, crosstable[j].name);
+        // YOMI CHANGES
             score = Play_Match (crosstable[i].pname, crosstable[j].pname);
             crosstable[i].result[j] += score;
             crosstable[j].result[i] -= score;

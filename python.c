@@ -107,9 +107,17 @@ rps_randomRange ()
     return PyFloat_FromDouble(random() / maxrandom);
 }
 
+extern char current_opponent[50];
+static PyObject *
+rps_enemyName ()
+{
+    return PyUnicode_DecodeASCII(current_opponent, strlen(current_opponent), 0);
+}
+
 static PyMethodDef rpsMethods[] = {
     {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1"},
     {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1"},
+    {"enemyName",  rps_enemyName, METH_VARARGS, "Returns name of current enemy. Used for debugging. Don\'t use this to check opponent\'s name when deciding the AI\'s move."},
     {"getTurn",  rps_getTurn, METH_VARARGS, "Returns current turn"},
     {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
     {"random",  rps_random, METH_VARARGS, "Returns random number between [0..maxrandom]"},
