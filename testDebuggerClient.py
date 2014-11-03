@@ -12,6 +12,7 @@ def connect():
 conn = connect()
 conn.send(OPCODE_NewTournament)
 
+conn.send(OPCODE_NextAI)
 for y in range(0,42):
     for x in range(0, 1000):
         opcode = random.choice([OPCODE_ActivateLayer0, OPCODE_ActivateLayer1, OPCODE_ActivateLayer2, OPCODE_ActivateLayer3])

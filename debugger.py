@@ -1,16 +1,34 @@
 import socket
 import select
+from debuggerOpcodes import *
+
 import pygame
 import random
-from debuggerOpcodes import *
+import string
 
 # Pygame Init
 pygame.init()
-screen = pygame.display.set_mode([100, 2000])
+screen = pygame.display.set_mode([640, 480])
+font = pygame.font.SysFont("timesnewromans", 15)
 
-brain = pygame.Surface([42, 1000])
+maxText = font.render(string.ascii_letters, True, (255,255,255))
+maxTextSize = maxText.get_size()
+rowMargin = 10
+rowBorder = maxTextSize[1]
+AInumbers = 42
+maxAITurns = 1000
+#rowWidth = 1000
+rowWidth = screen.get_width()
+tileWidth = 10
+tileHeight = 10
+AIrowHeight = ((int(maxAITurns / (rowWidth / tileWidth)) + 1) * max(tileHeight, maxTextSize[1])) + (rowMargin * 2)
+resolution = [rowWidth, AIrowHeight * AInumbers]
+
+print(resolution)
+brain = pygame.Surface(resolution)
+brain.fill([0, 0, 0])
+
 tail = [0, 0]
-
 def AddValue(value):
     global brain
     if value == 0:
@@ -25,12 +43,23 @@ def AddValue(value):
         print("Value needs to be 0-3")
 
     # optimization suggestion: use pygame.surfarray
-    brain.set_at(tail, color)
-    tail[1] += 1
+    for x in range(tileWidth):
+        for y in range(tileHeight):
+            brain.set_at([tail[0] + x, tail[1] + y], color)
+        
+    tail[0] += tileWidth
+    if tail[0] > rowWidth:
+        tail[0] = 0
+        tail[1] += rowMargin
 
-def NextRow():
-    tail[1] = 0
-    tail[0] += 1
+def NextAI():
+    tail[0] = 0
+    tail[1] += rowMargin
+    
+    AIname = font.render("Iocaine Powder", True, (255,255,255))
+    brain.blit(AIname, tail)
+    tail[0] = AIname.get_width() + rowMargin
+    tail[1] += int(AIname.get_height() / 2) - int(tileHeight / 2)
 
 def Reset():
     tail = [0, 0]
@@ -45,7 +74,7 @@ def handleOpcode (opcode):
     elif opcode == OPCODE_ActivateLayer3:
         AddValue(3)
     elif opcode == OPCODE_NextAI:
-        NextRow()
+        NextAI()
     elif opcode == OPCODE_NewTournament:
         Reset()
 
@@ -53,12 +82,12 @@ def test():
     for i in range(10):
         AddValue(0)
         
-    NextRow()
+    NextAI()
 
     for i in range(10):
         AddValue(random.randint(0,3))
         
-    NextRow()
+    NextAI()
 
 #test()
 
@@ -80,11 +109,20 @@ inputSockets = [server]
 
 # Update
 IsRunning = True
+scale = True
+x, y = 0, 0
+keystate = pygame.key.get_pressed()
 while IsRunning:
-    screen.fill([0, 0, 0])
+    screen.fill([128, 128, 128])
 
-    brainScaled = pygame.transform.scale(brain, screen.get_size())
-    screen.blit(brainScaled, [0,0])
+    if scale:
+        #brainScaled = pygame.transform.scale(brain, [brain.get_width() * scale, brain.get_height() * scale])
+        brainScaled = pygame.transform.scale2x(brain)       #optimization
+    else:
+        brainScaled = brain
+        
+    screen.blit(brainScaled, [x, y])
+    #screen.blit(brain, [x, y])
     
     timeout = 0
     inputs, outputs, errors = select.select(inputSockets, [], [], timeout)
@@ -109,10 +147,27 @@ while IsRunning:
     pygame.display.update()
 
     events = pygame.event.get()
+    prevkeystate = keystate
     keystate = pygame.key.get_pressed()
     if keystate[pygame.K_ESCAPE]:
         pygame.quit()
         IsRunning = False
+        
+    if keystate[pygame.K_LEFT]:  x += 1
+    if keystate[pygame.K_RIGHT]: x -= 1
+    if keystate[pygame.K_UP]:    y += 1
+    if keystate[pygame.K_DOWN]:  y -= 1
 
+    if keystate[pygame.K_RIGHTBRACKET] and not prevkeystate[pygame.K_RIGHTBRACKET]: 
+        scale = not scale
+    if keystate[pygame.K_LEFTBRACKET] and not prevkeystate[pygame.K_LEFTBRACKET]:    
+        scale = not scale
+     
+#    if keystate[pygame.K_RIGHTBRACKET] and not prevkeystate[pygame.K_RIGHTBRACKET]: 
+#        scale += 1
+#    if keystate[pygame.K_LEFTBRACKET] and not prevkeystate[pygame.K_LEFTBRACKET]:
+#        scale -= 1
+#    scale = 1 if scale < 1 else scale    
+    
 # Shutdown
 conn.close()
