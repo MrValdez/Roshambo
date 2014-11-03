@@ -1,3 +1,4 @@
+import sys
 import socket
 import select
 from debuggerOpcodes import *
@@ -131,21 +132,25 @@ while IsRunning:
     inputs, outputs, errors = select.select(inputSockets, [], [], timeout)
     
     for conn in inputs:
-        if conn is server:
-            (client, address) = conn.accept()
-            print("Connected from", address)        
-            inputSockets.append(client)
-        else:
-            data = conn.recv(1)
-            if not data:
-                break
-            #print(data)    #uncomment to debug
-            if len(data) == 1:
-                opcode = data
-                handleOpcode (conn, opcode)
+        try:
+            if conn is server:
+                (client, address) = conn.accept()
+                print("Connected from", address)        
+                inputSockets.append(client)
             else:
-                for opcode in data:
+                data = conn.recv(1)
+                if not data:
+                    break
+                #print(data)    #uncomment to debug
+                if len(data) == 1:
+                    opcode = data
                     handleOpcode (conn, opcode)
+                else:
+                    for opcode in data:
+                        handleOpcode (conn, opcode)
+        except:
+            print(sys.exc_info())
+            inputSockets.remove(client)
     
     pygame.display.update()
 
