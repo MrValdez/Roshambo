@@ -33,9 +33,9 @@ class RPSstrategy:
         move = rps.random() % 3
         
         confidence = self.playerLosts - self.playerWins
-        if confidence > 0:
-            confidence = confidence / self.panicValue
-        
+        if confidence > self.panicValue:
+            confidence = (confidence / self.panicValue) - 1
+            
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
         
