@@ -97,9 +97,9 @@ def handleOpcode (conn, opcode):
     elif opcode == OPCODE_ActivateLayer3:
         AddValue(3)
     elif opcode == OPCODE_NextAI:
-        time.sleep(1)   # a little sleep hack to allow the server to catch up because of rendering and update speed
-                        # without this, the next recv might return a BlockingIOError. This is a hack and the elegent
-                        # solution is to loop during a block and try again, or to use UDP.
+        time.sleep(0.1)   # a little sleep hack to allow the server to catch up because of rendering and update speed
+                          # without this, the next recv might return a BlockingIOError. This is a hack and the elegent
+                          # solution is to loop during a block and try again, or to use UDP.
 
         strSize = conn.recv(1)
         AIname = conn.recv(int(strSize[0]))
