@@ -1,8 +1,11 @@
-This is the repository for MrValdez's doctorate dissertation. Once the first paper is published, it will be linked to this repository. 
+This is the repository for MrValdez's doctorate dissertation. 
+
+The first paper is published at [![DOI](https://zenodo.org/badge/4406/MrValdez/Roshambo.png)](http://dx.doi.org/10.5281/zenodo.10478)
+
+Once the secodn paper is published, it will be linked to this repository. 
 
 This is a work in progress and does not represent my final dissertation.
 
-[![DOI](https://zenodo.org/badge/4406/MrValdez/Roshambo.png)](http://dx.doi.org/10.5281/zenodo.10478)
 
 #License
 
