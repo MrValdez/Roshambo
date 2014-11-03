@@ -52,11 +52,11 @@ def AddValue(value):
         tail[0] = 0
         tail[1] += rowMargin
 
-def NextAI():
+def NextAI(AIname):
     tail[0] = 0
     tail[1] += rowMargin
     
-    AIname = font.render("Iocaine Powder", True, (255,255,255))
+    AIname = font.render(AIname, True, (255,255,255))
     brain.blit(AIname, tail)
     tail[0] = AIname.get_width() + rowMargin
     tail[1] += int(AIname.get_height() / 2) - int(tileHeight / 2)
@@ -64,7 +64,7 @@ def NextAI():
 def Reset():
     tail = [0, 0]
 
-def handleOpcode (opcode):
+def handleOpcode (conn, opcode):
     if opcode == OPCODE_ActivateLayer0:
         AddValue(0)
     elif opcode == OPCODE_ActivateLayer1:
@@ -74,7 +74,10 @@ def handleOpcode (opcode):
     elif opcode == OPCODE_ActivateLayer3:
         AddValue(3)
     elif opcode == OPCODE_NextAI:
-        NextAI()
+        strSize = conn.recv(1)
+        AIname = conn.recv(int(strSize[0]))
+        print("Next AI:", AIname)
+        NextAI(AIname)
     elif opcode == OPCODE_NewTournament:
         Reset()
 
@@ -109,7 +112,7 @@ inputSockets = [server]
 
 # Update
 IsRunning = True
-scale = True
+scale = False
 x, y = 0, 0
 keystate = pygame.key.get_pressed()
 while IsRunning:
@@ -139,10 +142,10 @@ while IsRunning:
             #print(data)    #uncomment to debug
             if len(data) == 1:
                 opcode = data
-                handleOpcode (opcode)
+                handleOpcode (conn, opcode)
             else:
                 for opcode in data:
-                    handleOpcode (opcode)
+                    handleOpcode (conn, opcode)
     
     pygame.display.update()
 
