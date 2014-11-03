@@ -103,6 +103,7 @@ def handleOpcode (conn, opcode):
     elif opcode == OPCODE_Exit:
         print("Exit received. Telling client to exit...")
         conn.send(OPCODE_Exit)
+        return OPCODE_Exit
 
 def test():
     for i in range(10):
@@ -157,7 +158,7 @@ while IsRunning:
     screen.blit(brainScaled, [x, y])
     #screen.blit(brain, [x, y])
     
-    timeout = 0
+    timeout = 0.1
     inputs, outputs, errors = select.select(inputSockets, [], [], timeout)
     
     for conn in inputs:
@@ -173,13 +174,18 @@ while IsRunning:
                 #print(data)    #uncomment to debug
                 if len(data) == 1:
                     opcode = data
-                    handleOpcode (conn, opcode)
+                    result = handleOpcode (conn, opcode)
                 else:
                     for opcode in data:
-                        handleOpcode (conn, opcode)
+                        result = handleOpcode (conn, opcode)
+                        
+                if result == OPCODE_Exit:
+                    conn.close()
+                    inputSockets.remove(conn)
         except:
             print(sys.exc_info())                    
-            inputSockets.remove(client)
+            inputSockets.remove(conn)
+            conn.close()
     
     pygame.display.update()
 
