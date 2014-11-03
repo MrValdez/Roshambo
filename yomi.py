@@ -11,8 +11,54 @@ import rps
 import yomiPredictorSelector
 import RPSstrategy
 
+import socket
+from debuggerOpcodes import *
+
+class VisualDebugger:
+    def connect(self):
+        try:
+            port = 42
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect(("localhost", port))
+            
+            self.conn = s
+           
+            self.conn.send(OPCODE_NewTournament)
+            self.connected = True
+        except:
+            self.connected = False
+        
+    def NextAI(self, name):
+        if not self.connected: return
+        
+        self.conn.send(OPCODE_NextAI)    
+        size = len(name)
+        self.conn.send(bytes([size]))        # we send the length of the string first. This is unnecessary in TCP/IP but it is for UDP.
+        self.conn.send(bytes(name, "utf-8"))
+        
+    def SendLayer(self, layer):
+        if not self.connected: return        
+        currentTurn = rps.getTurn()
+        if currentTurn == 0: 
+            self.NextAI("Foo")
+
+        if layer == -1:
+            self.conn.send(OPCODE_ActivateLayer0)
+        elif layer == 0:
+            self.conn.send(OPCODE_ActivateLayer1)
+        elif layer == 1:
+            self.conn.send(OPCODE_ActivateLayer2)
+        elif layer == 2:
+            self.conn.send(OPCODE_ActivateLayer3)
+
+    def close(self):
+        if not self.connected: return
+        conn.close()
+    
+
 Debug = True
 Debug = False
+
 
 # for debugging
 currentOpponent = 0               # This code is for jumping into a specific opponent for debugging
@@ -21,6 +67,8 @@ import csv
 
 class Yomi:
     def __init__(self):
+        self.VisualDebugger = VisualDebugger()
+        self.VisualDebugger.connect()
         self.reset()
 
     def reset(self):        
@@ -166,7 +214,6 @@ class Yomi:
 
         layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence, ownPlayConfidence)
         predictorSelector.LastYomiLayer = layerToUse
-        
         if layerToUse == -1:
             if Debug: print ("Using our play (layer 0).")
             #print ("Using our play (layer 0).")
@@ -180,6 +227,7 @@ class Yomi:
             
         self.layerLastTurn = layerToUse
 
+        self.VisualDebugger.SendLayer(layerToUse)
         return move
 
 def startDebugTurn():
