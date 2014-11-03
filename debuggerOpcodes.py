@@ -1,0 +1,7 @@
+#OPCODE_Init = b"0"
+OPCODE_ActivateLayer0 = b"1"
+OPCODE_ActivateLayer1 = b"2"
+OPCODE_ActivateLayer2 = b"3"
+OPCODE_ActivateLayer3 = b"4"
+OPCODE_NextAI = b"5"
+OPCODE_NewTournament = b"6"
