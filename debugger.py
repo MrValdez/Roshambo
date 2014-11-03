@@ -38,6 +38,7 @@ Reset()
 
 def AddValue(value):
     global brain
+    
     if value == 0:
         color = pygame.Color(255, 0, 0)
     elif value == 1:
@@ -47,7 +48,7 @@ def AddValue(value):
     elif value == 3:
         color = pygame.Color(255, 0, 255)
     else:
-        print("Value needs to be 0-3")
+        print("Value needs to be 0-3. Got", value)
 
     # optimization suggestion: use pygame.surfarray
     for y in range(tileHeight):
@@ -83,20 +84,14 @@ def FillRow():
         for x in range(resolution[0]):
             brain.set_at([x, y], [0, 0, 0])
     
-c = 0
 def handleOpcode (conn, opcode):
-    global c
     if opcode == OPCODE_ActivateLayer0:
-        c += 1
         AddValue(0)
     elif opcode == OPCODE_ActivateLayer1:
-        c += 1
         AddValue(1)
     elif opcode == OPCODE_ActivateLayer2:
-        c += 1
         AddValue(2)
     elif opcode == OPCODE_ActivateLayer3:
-        c += 1
         AddValue(3)
     elif opcode == OPCODE_NextAI:
         strSize = conn.recv(1)
@@ -109,7 +104,6 @@ def handleOpcode (conn, opcode):
         print("Exit received. Telling client to exit...")
         conn.send(OPCODE_Exit)
 
-    print(c)
 def test():
     for i in range(10):
         AddValue(0)
