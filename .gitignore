@@ -1,4 +1,5 @@
 *.exe
+*.pyc
 __pycache__/
 paper/
 paper */
