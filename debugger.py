@@ -221,4 +221,5 @@ while IsRunning:
 #    scale = 1 if scale < 1 else scale    
     
 # Shutdown
-conn.close()
+for conn in inputs:
+    conn.close()
