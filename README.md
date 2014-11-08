@@ -2,6 +2,14 @@ This is the repository for MrValdez's doctorate dissertation. Once the first pap
 
 This is a work in progress and does not represent my final dissertation.
 
+#DOI used in this repository
+
+The Effectiveness of using a Historical Sequence-based Predictor Algorithm in the First International RoShambo Tournament: 
+
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.12617.png)](http://dx.doi.org/10.5281/zenodo.12617)
+
+The Effectiveness of using a Modified "Beat Frequent Pick" Algorithm in the First International RoShambo Tournament: 
+
 [![DOI](https://zenodo.org/badge/4406/MrValdez/Roshambo.png)](http://dx.doi.org/10.5281/zenodo.10478)
 
 #License
