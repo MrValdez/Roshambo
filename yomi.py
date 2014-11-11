@@ -11,6 +11,14 @@ import rps
 import yomiPredictorSelector
 import RPSstrategy
 
+Debug = True
+Debug = False
+
+# for debugging
+currentOpponent = 0               # This code is for jumping into a specific opponent for debugging
+
+import csv
+
 import socket
 from debuggerOpcodes import *
 
@@ -71,15 +79,6 @@ class VisualDebugger:
         print("deleting")
         self.close()
 
-Debug = True
-Debug = False
-
-
-# for debugging
-currentOpponent = 0               # This code is for jumping into a specific opponent for debugging
-
-import csv
-
 class Yomi:
     def __init__(self):
         self.VisualDebugger = VisualDebugger()
@@ -89,8 +88,16 @@ class Yomi:
     def reset(self):        
         self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
         self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
-        self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer losts
+        self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
+        self.yomiLayerTies = [0, 0, 0]        # Count how many times a yomi layer tied
         self.layerLastTurn = -1        
+        
+        self.currentYomiModel = ""
+        self.yomiModels = [ [], [], [] ]
+        
+        self.enemyConfidence = 0
+        self.totalWins = 0
+        self.totalLosts = 0
     
     def _prettifyList(self, list):
         #return "[%.2f %.2f %.2f %.2f]" % (list[0], list[1], list[2], list[3])
@@ -108,55 +115,59 @@ class Yomi:
         currentTurn = rps.getTurn()
         if currentTurn == 0: 
             return
-        
-        myMoveLastTurn = rps.myHistory(currentTurn)
+
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
-        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
-        tie = (myMoveLastTurn == enemyMoveLastTurn)
-        
-        layerLastTurn = self.layerLastTurn
-        
-        # update layer we used last turn
+        layerToWin = -1
+        # update yomi layers' scores
         for i, _ in enumerate(self.yomiLayerWins):
             myMoveLastTurn = self.yomiChoices[i]
             victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
             tie = (myMoveLastTurn == enemyMoveLastTurn)
-            lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)               
+            lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)            
             
             if victory:
                 self.yomiLayerWins[i] += 1
+                layerToWin = i
             elif tie:
-                self.yomiLayerWins[i] += 1
-                self.yomiLayerLosts[i] += 1
+                self.yomiLayerTies[i] += 1
             else:
-                self.yomiLayerLosts[i] += 1                                            
+                self.yomiLayerLosts[i] += 1
+
+        myMoveLastTurn = rps.myHistory(currentTurn)
+        victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
+        tie = (myMoveLastTurn == enemyMoveLastTurn)
+        lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)            
+        if victory:
+            self.totalWins += 1
+        elif lost:
+            self.totalLosts += 1
+
+
+        layerLastTurn = self.layerLastTurn
+        #if layerLastTurn != 0: print(layerLastTurn)
+        if layerLastTurn == -1:
+            return
                     
-        return
+        self.currentYomiModel += str(layerLastTurn)
+        if lost or tie:
+            if len(self.currentYomiModel):
+                failedModel = self.currentYomiModel
+                #print (failedModel)
+                #print(self.yomiModels)
+                if failedModel in self.yomiModels[layerLastTurn]:
+                    print("fail")
+                    self.yomiModels[layerLastTurn].remove(failedModel)
+                self.yomiModels[layerToWin].append(self.currentYomiModel)
+            self.currentYomiModel = ""
+            
+        if victory:
+            self.enemyConfidence -= rps.randomRange() * 0.1
+        if lost or tie:
+            self.enemyConfidence += rps.randomRange() * 0.1
+            
+        if self.enemyConfidence < 0: self.enemyConfidence = 0
+        if self.enemyConfidence > 1: self.enemyConfidence = 1
         
-        
-                
-        # add score to yomi layer that would have gave us a win
-        # todo: is it better to remove this as to stop double-guessing?
-        winningMove = (enemyMoveLastTurn + 1) % 3
-        
-        # search for the layer that contains the winning move and update it
-        try:
-            i = self.yomiChoices.index(winningMove)
-        except ValueError:
-            pass
-        else:
-            self.yomiScore[i] += victoryPoints
-            pass
-                    
-        for i, _ in enumerate(self.yomiScore):
-            if self.yomiScore[i] < self.startingYomiScore: 
-                self.yomiScore[i] = self.startingYomiScore 
-            #if self.yomiScore[i] < -3: 
-            #    self.yomiScore[i] = -3
-            #if self.yomiScore[i] < 0: 
-            #    self.yomiScore[i] += 2
-            self.yomiScore[i] += 1
-            pass
 
     def shouldUseYomi(self, playConfidence):
         # returns False if we are confident with our play
@@ -179,38 +190,50 @@ class Yomi:
 
         return yomiChoices
 
-    def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):    
+    def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):          
+#        if ownPlayConfidence >= predictionConfidence:
+#            return -1, ownPlayConfidence
+
+#        random = rps.randomRange()
+
+#        if random < predictionConfidence:
+#            return 0, predictionConfidence      # layer 1
+
+#        return 1, predictionConfidence          # layer 2
+        
+
+
+
+
+
+
+
+
         if ownPlayConfidence > predictionConfidence:
             return -1, ownPlayConfidence
 
-        if max(self.yomiLayerWins) <= ownPlayConfidence:
-            return -1, ownPlayConfidence               
+        currentTurn = rps.getTurn()
+        if currentTurn <= 0:
+            return -1, ownPlayConfidence
 
         confidences = []
         for i in [0, 1, 2]:
-            if self.yomiLayerWins[i] > 0:
-                yomiConfidence = (self.yomiLayerWins[i] - self.yomiLayerLosts[i]) / self.yomiLayerWins[i]
-            else:
-                yomiConfidence = 0
+            yomiConfidence = (self.yomiLayerWins[i] - (self.yomiLayerLosts[i] + self.yomiLayerTies[i])) / currentTurn
+            yomiConfidence += predictionConfidence
             
-            if i == 0:
-                yomiConfidence = (yomiConfidence * 0.5) + (predictionConfidence * 0.5)
-            elif i == 1:
-                yomiConfidence = (yomiConfidence * 0.25) + (predictionConfidence * 0.75)
-                yomiConfidence = 0
-            elif i == 2:
-                yomiConfidence = (yomiConfidence * 0.15) + (predictionConfidence * 0.85)
-                yomiConfidence = 0
-                
             confidences.append(yomiConfidence)
         
-        confidence = max(confidences)
-        yomiLayer = confidences.index(confidence)
+        #print(confidences)
 
-        if confidence < ownPlayConfidence:
-            return -1, ownPlayConfidence                   
+        random = rps.randomRange()
+        if random < confidences[0]:
+            return 0, predictionConfidence      # layer 1
+        if random < confidences[1]:
+            return 1, predictionConfidence          # layer 2
+        if random < confidences[2]:
+            return 2, predictionConfidence          # layer 3
         
-        return yomiLayer, confidence
+        return -1, ownPlayConfidence
 
     def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
@@ -231,7 +254,6 @@ class Yomi:
         predictorSelector.LastYomiLayer = layerToUse
         if layerToUse == -1:
             if Debug: print ("Using our play (layer 0).")
-            #print ("Using our play (layer 0).")
             move = ownPlay
             predictorSelector.LastPredictor = None
         else:        
