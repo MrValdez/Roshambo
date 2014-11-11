@@ -167,13 +167,7 @@ class PredictorSelector:
         self.LastPredictor = chosenPredictor
         move = chosenPredictor.moveLastTurn
         predictorConfidence = chosenPredictor.confidenceLastTurn
-        
-        #confidence = (rankRating + predictorConfidence) / 2    #todo
-        #confidence = max(rankRating, predictorConfidence)     #todo
-#        if rankRating > predictorConfidence:
-#            confidence = (rankRating * 0.75) + (predictorConfidence * 0.25)
-#        else:
-#            confidence = (rankRating * 0.25) + (predictorConfidence * 0.75)
+
         confidence = rankRating
                 
         return move, confidence 
@@ -191,6 +185,7 @@ class PredictorSelector:
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             confidence = predictor.confidenceLastTurn
             if confidence >= 1:
+                # only reserved for high confidence
                 rating = 1
                 predictorScores.append((rating, predictor))
                 continue
