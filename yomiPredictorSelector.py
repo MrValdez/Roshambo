@@ -24,6 +24,7 @@ class Predictor:
         self.scoreLosts = 0
         
         self.moveLastTurn = 0
+        self.confidenceThisTurn = 0
         self.confidenceLastTurn = 0
         
     def update(self):
@@ -87,7 +88,7 @@ class PredictorSelector:
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
 
             if Debug:
-                print("**%s: move(%i) score(+%i/-%i)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts), end="")
+                print("**%s: move(%i) score(+%i/-%i) confidence(%.2f/%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidenceThisTurn, predictor.confidenceLastTurn), end="")
                 if victory:
                     print(" win")
                 elif tie:
@@ -96,12 +97,12 @@ class PredictorSelector:
                     print(" lost")
 
             if victory:
-                predictor.scoreWins += 2
+                predictor.scoreWins += 1
             elif tie:
                 predictor.scoreWins += 1
-                predictor.scoreLosts += 1
+                predictor.scoreLosts += 0
             elif lost:
-                predictor.scoreLosts += 2
+                predictor.scoreLosts += 1
         
         # update the rest of the predictors that they should have gained if they were chosen
         for predictor in self.Predictors:
@@ -115,7 +116,7 @@ class PredictorSelector:
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
         
             if Debug:
-                print("%s: move(%i) score(+%i/-%i)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts), end="")
+                print("%s: move(%i) score(+%i/-%i) confidence(%.2f/%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidenceThisTurn, predictor.confidenceLastTurn), end="")
                 if victory:
                     print(" win")
                 elif tie:
@@ -127,7 +128,7 @@ class PredictorSelector:
                 predictor.scoreWins += 1
             elif tie:
                 predictor.scoreWins += 1
-                predictor.scoreLosts += 1
+                predictor.scoreLosts += 0
             elif lost:
                 predictor.scoreLosts += 1
     
@@ -149,8 +150,10 @@ class PredictorSelector:
             
             move, confidence = predictor.play()
             predictor.moveLastTurn = move
-            predictor.confidenceLastTurn = confidence
         
+            predictor.confidenceLastTurn = predictor.confidenceThisTurn
+            predictor.confidenceThisTurn = confidence
+            
         #2. select the predictors with the highest confidence and score
         move, confidence = self.getHighestRank()
         
@@ -165,7 +168,13 @@ class PredictorSelector:
         move = chosenPredictor.moveLastTurn
         predictorConfidence = chosenPredictor.confidenceLastTurn
         
-        confidence = rankRating * predictorConfidence
+        #confidence = (rankRating + predictorConfidence) / 2    #todo
+        #confidence = max(rankRating, predictorConfidence)     #todo
+#        if rankRating > predictorConfidence:
+#            confidence = (rankRating * 0.75) + (predictorConfidence * 0.25)
+#        else:
+#            confidence = (rankRating * 0.25) + (predictorConfidence * 0.75)
+        confidence = rankRating
                 
         return move, confidence 
     
@@ -175,14 +184,17 @@ class PredictorSelector:
         http://www.evanmiller.org
          How Not To Sort By Average Rating.htm
         """
-        confidence = 0.95
         
         predictorScores = []
         for i, predictor in enumerate(self.Predictors):                  
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             confidence = predictor.confidenceLastTurn
-            if confidence > 0.9: confidence = 0.9
+            if confidence >= 1:
+                rating = 1
+                predictorScores.append((rating, predictor))
+                continue
+            if confidence > 0.99: confidence = 0.99
             if confidence < 0: confidence = 0
             #confidence = 0.85
                         
@@ -196,9 +208,8 @@ class PredictorSelector:
             phat = float(positiveRatings) / totalRatings
             n = totalRatings
             
-            #rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)        
-            rating = (phat + z*z/(2*n) - z * ((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
-            
+            rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)        
+                
             predictorScores.append((rating, predictor))
 
         if len(predictorScores):
@@ -242,7 +253,7 @@ class PredictorSelector:
                 rating = predictorScores[0][0]            
             
             if Debug:
-                for p in scoreSorted:
+                for p in predictorScores:
                     print ("%s (%i) Rating: %.3f. Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].scoreWins, p[1].scoreLosts))
             
                 if len(predictorScores):
@@ -252,21 +263,60 @@ class PredictorSelector:
     
     def getHighestRank_Naive(self):
         """Get the highest rank using a naive algo"""
-        scoreSorted = sorted(self.Predictors, key=operator.attrgetter('scoreWins'), reverse=True)
-        chosenPredictor = scoreSorted[0]
+
+        # filter out low confidences
+        maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
+        p = [p for p in self.Predictors if p.confidenceThisTurn == maxConfidence]
         
+        if len(p) == 1:
+            # only one predictor has high confidence
+            chosenPredictor = p[0]
+        elif len(p) > 1:
+            # many predictors has high confidence. look for highest wins
+            maxScore = max(p, key=operator.attrgetter('scoreWins'))
+            predictors = p
+            p = [p for p in predictors if p.scoreWins == maxScore]
+            
+            if len(p) == 1:
+                chosenPredictor = p[0]
+            else:
+                # there are ties. look for lowest losts
+                maxScore = min(p, key=operator.attrgetter('scoreLosts'))
+                predictors = p
+                p = [p for p in predictors if p.scoreLosts == maxScore]
+                
+                if len(p) == 1:
+                    chosenPredictor = p[-1]
+                else:
+                    # choose at random
+                    random = rps.random() % len(p)
+                    chosenPredictor = p[random]
+        else:
+            # confidences are low. look for highest wins
+            maxScore = max(self.Predictors, key=operator.attrgetter('scoreWins'))
+            p = [p for p in self.Predictors if p.scoreWins == maxScore]
+            
+            if len(p) == 1:
+                chosenPredictor = p[0]
+            elif len(p) > 1:
+                # choose at random
+                random = rps.random() % len(p)
+                chosenPredictor = p[random]
+            else:
+                # choose at random
+                random = rps.random() % len(self.Predictors)
+                chosenPredictor = self.Predictors[random]
+                    
         if Debug:
-            maxScore = max([p.score for p in self.Predictors])                
+            maxScore = max([p.scoreWins for p in self.Predictors])                
             print("max score: %f " % (maxScore), end="")      
+            maxScore = max([p.confidenceLastTurn for p in self.Predictors])                
+            print("max confidence: %f " % (maxScore), end="")      
             print("chosen predictor: %s" % (chosenPredictor.name))
             input()
 
-        if chosenPredictor == None:
-            random = rps.random() % len(self.Predictors)
-            chosenPredictor = self.Predictors[random]
             
-        #chosenPredictor = self.Predictors[1]
-        rankConfidence = 0
+        rankConfidence = chosenPredictor.confidenceThisTurn
         return chosenPredictor, rankConfidence
         
 # from stackoverflow. google search: "wilson bernoulli python". (No exact url because I was on mobile Internet and I copy-pasted from phone to pc)
