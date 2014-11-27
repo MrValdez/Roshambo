@@ -6,6 +6,15 @@
 
 # perlin noise instead of random?
 
+import sys      # pykov and scipy depedencies
+#sys.path.append(r"\Windows\System32\python34.zip")
+sys.path.append(r"\Python34")
+sys.path.append(r"\Python34\lib")
+sys.path.append(r"\Python34\lib\site-packages")
+sys.path.append(r"\Python34\dlls")
+import pykov
+from pprint import pprint
+
 import math
 import rps
 import yomiPredictorSelector
@@ -191,49 +200,106 @@ class Yomi:
         return yomiChoices
 
     def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):          
-#        if ownPlayConfidence >= predictionConfidence:
-#            return -1, ownPlayConfidence
-
-#        random = rps.randomRange()
-
-#        if random < predictionConfidence:
-#            return 0, predictionConfidence      # layer 1
-
-#        return 1, predictionConfidence          # layer 2
-        
-
-
-
-
-
-
-
-
-        if ownPlayConfidence > predictionConfidence:
+        if ownPlayConfidence >= predictionConfidence:
             return -1, ownPlayConfidence
 
         currentTurn = rps.getTurn()
         if currentTurn <= 0:
             return -1, ownPlayConfidence
 
-        confidences = []
+#######
+# monte carlo
+# (reversing player's yomi layer) http://nbviewer.ipython.org/github/fonnesbeck/Bios366/blob/master/notebooks/Section4_2-MCMC.ipynb
+# technical info on markov chain: http://www.biochem-caflisch.uzh.ch/rscalco/pykov/getting_started.html
+#                                 https://github.com/riccardoscalco/Pykov
+        import pykov
+        
+        layerLastTurn = self.layerLastTurn
+        if layerLastTurn == -1: start = "A"
+        if layerLastTurn == 0:  start = "A"
+        if layerLastTurn == 1:  start = "B"
+        if layerLastTurn == 2:  start = "C"
+        
+        layer2Confidence = 1.0 - predictionConfidence
+        layer3Confidence = layer2Confidence * 0.176
+        
+        # probability in staying in the same layer
+        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
+        stayLayer3Confidence = layer3Confidence * (1 - 0.125)
+        
+        # probability in moving to a lower layer
+        backLayer1Confidence = 1.0 - stayLayer2Confidence
+        backLayer2Confidence = 1.0 - stayLayer3Confidence
+        
+        p = pykov.Chain({("A", "A"): predictionConfidence, ("A", "B"): layer2Confidence,
+                         ("B", "A"): backLayer1Confidence, ("B", "B"): stayLayer2Confidence, ("B", "C"): layer3Confidence,
+                         ("C", "B"): backLayer2Confidence, ("C", "C"): stayLayer3Confidence})
+        #print (predictionConfidence)
+        #pprint (p)
+        print(self.layerLastTurn)
+        result = p.move(start)
+        print (result)
+        input()
+        
+        if result == "A":   return 0, predictionConfidence
+        if result == "B":   return 1, layer2Confidence
+        if result == "C":   return 2, layer3Confidence
+        
+        return -1, 0
+#######        
+
+
+#######
+#        random = rps.randomRange()
+
+#        if random < predictionConfidence:
+#            return 0, predictionConfidence      # layer 1
+
+#        return 1, predictionConfidence          # layer 2
+#######
+                    
+#######
+        #return rps.biased_roshambo(0.35,0.25), predictionConfidence     # weak
+#######
+
+#######        
+        # Benford's law
+        # 1 	30.1% 	
+        # 2 	17.6% 	
+        # 3 	12.5% 	
+        # 4 	9.7% 	
+        # 5 	7.9% 	
+        # 6 	6.7% 	
+        # 7 	5.8% 	
+        # 8 	5.1% 	
+        # 9 	4.6% 	
+
+        ratio = 1.0 / 3
+        confidences = [ratio] * 3
         for i in [0, 1, 2]:
             yomiConfidence = (self.yomiLayerWins[i] - (self.yomiLayerLosts[i] + self.yomiLayerTies[i])) / currentTurn
-            yomiConfidence += predictionConfidence
             
-            confidences.append(yomiConfidence)
+            if i == 0:
+                confidences[i] = (predictionConfidence * 0.67) + (yomiConfidence * 0.33)
+            else:
+                confidences[i] = (confidences[i - 1] * 0.67) + (yomiConfidence * 0.33)
         
-        #print(confidences)
+        #print(confidences, sum(confidences))
 
         random = rps.randomRange()
         if random < confidences[0]:
             return 0, predictionConfidence      # layer 1
+        random -= confidences[0]
+        
         if random < confidences[1]:
             return 1, predictionConfidence          # layer 2
+        random -= confidences[1]
+        
         if random < confidences[2]:
             return 2, predictionConfidence          # layer 3
         
         return -1, ownPlayConfidence
+#######
 
     def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
