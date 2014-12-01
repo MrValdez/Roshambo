@@ -211,21 +211,19 @@ class Yomi:
 # monte carlo
 # (reversing player's yomi layer) http://nbviewer.ipython.org/github/fonnesbeck/Bios366/blob/master/notebooks/Section4_2-MCMC.ipynb
 # technical info on markov chain: http://www.biochem-caflisch.uzh.ch/rscalco/pykov/getting_started.html
-#                                 https://github.com/riccardoscalco/Pykov
-        import pykov
-        
+#                                 https://github.com/riccardoscalco/Pykov       
         layerLastTurn = self.layerLastTurn
         if layerLastTurn == -1: start = "A"
         if layerLastTurn == 0:  start = "A"
         if layerLastTurn == 1:  start = "B"
         if layerLastTurn == 2:  start = "C"
         
-        layer2Confidence = 1.0 - predictionConfidence
-        layer3Confidence = layer2Confidence * 0.176
+        layer2Confidence = predictionConfidence - 0.301
+        layer3Confidence = layer2Confidence * 0.125
         
         # probability in staying in the same layer
-        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
-        stayLayer3Confidence = layer3Confidence * (1 - 0.125)
+        stayLayer2Confidence = layer2Confidence * (1 - 0.176)
+        stayLayer3Confidence = layer3Confidence * (1 - 0.097)
         
         # probability in moving to a lower layer
         backLayer1Confidence = 1.0 - stayLayer2Confidence
@@ -234,12 +232,13 @@ class Yomi:
         p = pykov.Chain({("A", "A"): predictionConfidence, ("A", "B"): layer2Confidence,
                          ("B", "A"): backLayer1Confidence, ("B", "B"): stayLayer2Confidence, ("B", "C"): layer3Confidence,
                          ("C", "B"): backLayer2Confidence, ("C", "C"): stayLayer3Confidence})
-        #print (predictionConfidence)
-        #pprint (p)
-        print(self.layerLastTurn)
+#        print ("Current Turn: ", currentTurn)
+#        print ("Confidence  : ", predictionConfidence)
+#        pprint (p)
+#        print ("Last Turn   : ", self.layerLastTurn)
         result = p.move(start)
-        print (result)
-        input()
+#        print ("Result      : ",result)
+#        input()
         
         if result == "A":   return 0, predictionConfidence
         if result == "B":   return 1, layer2Confidence
