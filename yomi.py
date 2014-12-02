@@ -12,6 +12,7 @@ sys.path.append(r"\Python34")
 sys.path.append(r"\Python34\lib")
 sys.path.append(r"\Python34\lib\site-packages")
 sys.path.append(r"\Python34\dlls")
+
 import pykov
 from pprint import pprint
 
@@ -217,28 +218,68 @@ class Yomi:
         if layerLastTurn == 0:  start = "A"
         if layerLastTurn == 1:  start = "B"
         if layerLastTurn == 2:  start = "C"
+
+        # Benford's law
+        # 1 	30.1% 	
+        # 2 	17.6% 	
+        # 3 	12.5% 	
         
-        layer2Confidence = predictionConfidence - 0.301
-        layer3Confidence = layer2Confidence * 0.125
+        if predictionConfidence == 1:
+            stayLayer1Confidence = 1
+        else:
+            #stayLayer1Confidence = predictionConfidence - math.log((1 - predictionConfidence), 100)
+            stayLayer1Confidence = predictionConfidence
+            if stayLayer1Confidence > predictionConfidence:
+                print("overconfidence:", stayLayer1Confidence)
+                stayLayer1Confidence = predictionConfidence     # don't go past the prediction confidence
+        
+        layer2Confidence = 1 - stayLayer1Confidence
+        layer3Confidence = layer2Confidence * 0.176
         
         # probability in staying in the same layer
-        stayLayer2Confidence = layer2Confidence * (1 - 0.176)
-        stayLayer3Confidence = layer3Confidence * (1 - 0.097)
+        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
+        stayLayer3Confidence = layer3Confidence * (1 - 0.125)
         
         # probability in moving to a lower layer
         backLayer1Confidence = 1.0 - stayLayer2Confidence
         backLayer2Confidence = 1.0 - stayLayer3Confidence
         
-        p = pykov.Chain({("A", "A"): predictionConfidence, ("A", "B"): layer2Confidence,
-                         ("B", "A"): backLayer1Confidence, ("B", "B"): stayLayer2Confidence, ("B", "C"): layer3Confidence,
-                         ("C", "B"): backLayer2Confidence, ("C", "C"): stayLayer3Confidence})
-#        print ("Current Turn: ", currentTurn)
-#        print ("Confidence  : ", predictionConfidence)
-#        pprint (p)
-#        print ("Last Turn   : ", self.layerLastTurn)
-        result = p.move(start)
-#        print ("Result      : ",result)
-#        input()
+        #test
+        backLayer1Confidence = stayLayer1Confidence
+        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
+        layer3Confidence = layer2Confidence - stayLayer2Confidence
+        
+        #flipped test
+        layer3Confidence, stayLayer2Confidence = stayLayer2Confidence, layer3Confidence
+        
+        #test return from C to A
+        backLayer2Confidence = 0
+        stayLayer3Confidence = 1 - stayLayer1Confidence
+
+        backLayer2Confidence = stayLayer2Confidence
+        stayLayer3Confidence = layer3Confidence
+        
+        backLayer2Confidence = layer3Confidence
+        stayLayer3Confidence = stayLayer2Confidence
+        
+        #test
+            
+        from collections import OrderedDict
+        yomi = OrderedDict((
+                (("A", "A"), stayLayer1Confidence), (("A", "B"), layer2Confidence),
+                (("B", "A"), backLayer1Confidence), (("B", "B"), stayLayer2Confidence), (("B", "C"), layer3Confidence),
+                (("C", "A"), stayLayer1Confidence), (("C", "B"), backLayer2Confidence), (("C", "C"), stayLayer3Confidence)))
+        p = pykov.Chain(yomi)
+                    
+        result = p.move(start, rps.randomRange)
+        
+        if 0 and predictionConfidence != 1:
+            print ("Current Turn: ", currentTurn)
+            print ("Confidence  : ", predictionConfidence)
+            pprint (p)
+            print ("Last Turn   : ", start)
+            print ("Result      : ",result)
+            input()
         
         if result == "A":   return 0, predictionConfidence
         if result == "B":   return 1, layer2Confidence
