@@ -49,7 +49,7 @@ int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
 //#define players   42         /* number of players in the tournament */
-#define players   3         /* number of players in the tournament */
+#define players   7         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 int usePython = 1;
 
@@ -5599,13 +5599,29 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     else
         crosstable[i].pname = yomi;
 
+    i++;  /* Dan Egnor (USA) */
+    strcpy(crosstable[i].name, "Iocaine Powder");
+    crosstable[i].pname = iocainebot;
+
+    i++;  /* Jakob Mandelson (USA) */
+    strcpy(crosstable[i].name, "Phasenbott");
+    crosstable[i].pname = phasenbott;
+
     i++;  /* Jason Hutchens (Aus) */
     strcpy(crosstable[i].name, "MegaHAL");
     crosstable[i].pname = halbot;
 
-    i++;  /* Dan Egnor (USA) */
-    strcpy(crosstable[i].name, "Iocaine Powder");
-    crosstable[i].pname = iocainebot;
+    i++;  /* Russ Williams (USA) */
+    strcpy(crosstable[i].name, "RussRocker4");
+    crosstable[i].pname = russrocker4;
+
+    i++;  /* Jonathan Schaeffer (Can) */
+    strcpy(crosstable[i].name, "Biopic");
+    crosstable[i].pname = biopic;
+
+    i++;  /* Don Beal (UK) */
+    strcpy(crosstable[i].name, "Simple Modeller");
+    crosstable[i].pname = mod1bot;
 
 #if 0
     i++;  /* nuthin' beats rock */
