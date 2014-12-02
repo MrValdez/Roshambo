@@ -11,7 +11,8 @@ class RPSstrategy:
         self.playerTies = 0
         self.moveLastTurn = 0
         
-        self.panicValue = 20
+        self.losingValue = 50       # if the lost difference reaches this value, the AI is losing
+        self.panicValue = int(self.losingValue * 0.75)
     
     def update(self):        
         currentTurn = rps.getTurn()
@@ -37,12 +38,12 @@ class RPSstrategy:
         currentTurn = rps.getTurn()
         turnsRemaining = totalTurns - currentTurn
         lostDifference = self.playerLosts - self.playerWins
-        if lostDifference > self.panicValue:
-            confidence = (lostDifference / self.panicValue) - 1
-            #print(lostDifference,confidence)
-
+        if lostDifference >= self.panicValue:
+            confidence = (lostDifference / self.losingValue)
+            #print(currentTurn, self.playerWins, lostDifference,self.losingValue,confidence)
+            #input()
         
-        if self.playerLosts > 200 or self.playerTies > 200:
+        if self.playerLosts + self.playerTies > totalTurns / 2:
             # Late game            
             if turnsRemaining + self.playerWins < self.playerLosts * 1.5:
                 # Let's make an assumption that we are going to win all of the remaining turns. Will we have enough to win?

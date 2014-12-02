@@ -1,3 +1,4 @@
+import math
 import rps
 
 Debug = True
@@ -18,6 +19,14 @@ class PatternPredictor:
         else:
             self.enemyHistory = ""
         self.init(self.variant)
+
+        # DNA variable
+        # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
+        # higher = weaker?
+        # self.targetDifference = 10
+        self.targetDifference = 5
+        self.targetDifference = 1
+        self.targetDifference = 4
         
     def update(self):
         currentTurn = rps.getTurn()
@@ -138,12 +147,16 @@ class PatternPredictor:
         if moveCountNum == 1:
             prediction = moveCounts.index(moveCountMax)
             
-            # confidence = difference between the highest tally and how close it is to 10
-            confidence = (sum(moveCounts) - moveCountMax) / 10.0
+            # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
+            targetDifference = self.targetDifference           
+            
+            # confidence = difference between the highest tally and how close it is to targetDifference
+            confidence = (sum(moveCounts) - moveCountMax) / targetDifference
             if confidence > 0.9: 
                 confidence = 0.9
             else:
-                confidence = (confidence * 0.5) + 0.5
+                #confidence = (confidence * 0.5) + 0.5
+                confidence = math.log(confidence, targetDifference)
             
             if Debug:
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
@@ -173,7 +186,8 @@ class PatternPredictor:
             return -1, 0
 
         # our confidence is based on our random number
-        confidence = tally[prediction] - random 
+        #confidence = tally[prediction] - random 
+        confidence = 1 - random 
         
         if Debug:
             print (random, confidence)
