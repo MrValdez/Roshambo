@@ -95,10 +95,16 @@ class Yomi:
         self.VisualDebugger.connect()
         self.reset()
 
-    def reset(self):        
-        self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
         self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
         self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
+
+    def reset(self):        
+        self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
+        #self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
+        #self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
+        
+        #towrite: yomilayerwins and yomilayerlosts are within one shift with each other. Makes sense but write as trivia?
+        
         self.yomiLayerTies = [0, 0, 0]        # Count how many times a yomi layer tied
         self.layerLastTurn = -1        
         
@@ -250,25 +256,84 @@ class Yomi:
         layer3Confidence = layer2Confidence - stayLayer2Confidence
         
         #flipped test
-        layer3Confidence, stayLayer2Confidence = stayLayer2Confidence, layer3Confidence
+        #layer3Confidence, stayLayer2Confidence = stayLayer2Confidence, layer3Confidence
+        #backLayer1Confidence, stayLayer2Confidence = stayLayer2Confidence, backLayer1Confidence
         
         #test return from C to A
-        backLayer2Confidence = 0
-        stayLayer3Confidence = 1 - stayLayer1Confidence
+        #backLayer2Confidence = 0
+        #stayLayer3Confidence = 1 - stayLayer1Confidence
 
-        backLayer2Confidence = stayLayer2Confidence
-        stayLayer3Confidence = layer3Confidence
+        #backLayer2Confidence = stayLayer2Confidence
+        #stayLayer3Confidence = layer3Confidence
         
-        backLayer2Confidence = layer3Confidence
-        stayLayer3Confidence = stayLayer2Confidence
+        #backLayer2Confidence = layer3Confidence
+        #stayLayer3Confidence = stayLayer2Confidence
         
         #test
+        
+        # add yomi win stats
+        total = sum(self.yomiLayerWins)
+        influence1 = self.yomiLayerWins[0] / total
+        influence2 = self.yomiLayerWins[1] / total
+        influence3 = self.yomiLayerWins[2] / total
+
+        if 0:
+            # layer A
+            stayLayer1Confidence = (stayLayer1Confidence * .75) + (influence1 * .25)
+            backLayer1Confidence = (backLayer1Confidence * .75) + (influence1 * .25)
+            # layer B
+            layer2Confidence     = (layer2Confidence     * .75) + (influence2 * .25)
+            stayLayer2Confidence = (stayLayer2Confidence * .75) + (influence2 * .25)
+            backLayer2Confidence = (backLayer2Confidence * .75) + (influence2 * .25)
+            # layer C
+            layer3Confidence     = (layer3Confidence     * .75) + (influence3 * .25)
+            stayLayer3Confidence = (stayLayer3Confidence * .75) + (influence3 * .25) 
+        else:        
+            # layer A
+            stayLayer1Confidence += influence1
+            backLayer1Confidence += influence1
+            # layer B
+            layer2Confidence     += influence2
+            stayLayer2Confidence += influence2
+            backLayer2Confidence += influence2
+            # layer C
+            layer3Confidence     += influence3
+            stayLayer3Confidence += influence3
             
+
+        transitionAA = stayLayer1Confidence
+        transitionAB = layer2Confidence
+        
+        transitionBA = backLayer1Confidence
+        transitionBB = stayLayer2Confidence
+        transitionBC = layer3Confidence
+        
+        transitionCA = stayLayer1Confidence
+        transitionCB = backLayer2Confidence
+        transitionCC = stayLayer3Confidence
+        
+        normal = (transitionAA + transitionAB)
+        if normal < 1: normal = 1.0
+        transitionAA /= normal
+        transitionAB /= normal
+
+        normal = (transitionBA + transitionBB + transitionBC)
+        if normal < 1: normal = 1.0
+        transitionBA /= normal
+        transitionBB /= normal
+        transitionBC /= normal
+        
+        normal = (transitionCA + transitionCB + transitionCC)
+        if normal < 1: normal = 1.0
+        transitionCA /= normal
+        transitionCB /= normal
+        transitionCC /= normal
+        
         from collections import OrderedDict
         yomi = OrderedDict((
-                (("A", "A"), stayLayer1Confidence), (("A", "B"), layer2Confidence),
-                (("B", "A"), backLayer1Confidence), (("B", "B"), stayLayer2Confidence), (("B", "C"), layer3Confidence),
-                (("C", "A"), stayLayer1Confidence), (("C", "B"), backLayer2Confidence), (("C", "C"), stayLayer3Confidence)))
+                (("A", "A"), transitionAA), (("A", "B"), transitionAB),
+                (("B", "A"), transitionBA), (("B", "B"), transitionBB), (("B", "C"), transitionBC),
+                (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)))
         p = pykov.Chain(yomi)
                     
         result = p.move(start, rps.randomRange)
@@ -283,7 +348,9 @@ class Yomi:
         
         if result == "A":   return 0, predictionConfidence
         if result == "B":   return 1, layer2Confidence
-        if result == "C":   return 2, layer3Confidence
+        if result == "C":   
+            #print("C")
+            return 2, layer3Confidence
         
         return -1, 0
 #######        
