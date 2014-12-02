@@ -95,13 +95,10 @@ class Yomi:
         self.VisualDebugger.connect()
         self.reset()
 
-        self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
-        self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
-
     def reset(self):        
         self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
-        #self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
-        #self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
+        self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
+        self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
         
         #towrite: yomilayerwins and yomilayerlosts are within one shift with each other. Makes sense but write as trivia?
         
@@ -110,6 +107,11 @@ class Yomi:
         
         self.currentYomiModel = ""
         self.yomiModels = [ [], [], [] ]
+        
+        self.yomiHistory = ""
+        self.yomiHistorySize = 50
+        self.yomiHistoryWins = ""
+        self.yomiHistoryWinsSize = 50
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -144,6 +146,8 @@ class Yomi:
             if victory:
                 self.yomiLayerWins[i] += 1
                 layerToWin = i
+                self.yomiHistoryWins += str(i)
+                self.yomiHistoryWins = self.yomiHistoryWins[-self.yomiHistoryWinsSize:]
             elif tie:
                 self.yomiLayerTies[i] += 1
             else:
@@ -175,7 +179,10 @@ class Yomi:
                     self.yomiModels[layerLastTurn].remove(failedModel)
                 self.yomiModels[layerToWin].append(self.currentYomiModel)
             self.currentYomiModel = ""
-            
+        
+        self.yomiHistory += str(layerLastTurn)
+        self.yomiHistory = self.yomiHistory[-self.yomiHistorySize:]
+                                        
         if victory:
             self.enemyConfidence -= rps.randomRange() * 0.1
         if lost or tie:
@@ -272,34 +279,41 @@ class Yomi:
         #test
         
         # add yomi win stats
-        total = sum(self.yomiLayerWins)
-        influence1 = self.yomiLayerWins[0] / total
-        influence2 = self.yomiLayerWins[1] / total
-        influence3 = self.yomiLayerWins[2] / total
+        #yomiLayerWins = self.yomiLayerWins
 
-        if 0:
-            # layer A
-            stayLayer1Confidence = (stayLayer1Confidence * .75) + (influence1 * .25)
-            backLayer1Confidence = (backLayer1Confidence * .75) + (influence1 * .25)
-            # layer B
-            layer2Confidence     = (layer2Confidence     * .75) + (influence2 * .25)
-            stayLayer2Confidence = (stayLayer2Confidence * .75) + (influence2 * .25)
-            backLayer2Confidence = (backLayer2Confidence * .75) + (influence2 * .25)
-            # layer C
-            layer3Confidence     = (layer3Confidence     * .75) + (influence3 * .25)
-            stayLayer3Confidence = (stayLayer3Confidence * .75) + (influence3 * .25) 
-        else:        
-            # layer A
-            stayLayer1Confidence += influence1
-            backLayer1Confidence += influence1
-            # layer B
-            layer2Confidence     += influence2
-            stayLayer2Confidence += influence2
-            backLayer2Confidence += influence2
-            # layer C
-            layer3Confidence     += influence3
-            stayLayer3Confidence += influence3
-            
+        yomiHistory = self.yomiHistoryWins
+        yomiLayerWins = [yomiHistory.count("0"), yomiHistory.count("1"), yomiHistory.count("2")]                         
+        #print(yomiHistory, yomiLayerWins)
+        #input()
+        
+        total = sum(yomiLayerWins)
+        if total:
+            influence1 = yomiLayerWins[0] / total
+            influence2 = yomiLayerWins[1] / total
+            influence3 = yomiLayerWins[2] / total
+
+            if 1:
+                # layer A
+                stayLayer1Confidence = (stayLayer1Confidence * .75) + (influence1 * .25)
+                backLayer1Confidence = (backLayer1Confidence * .75) + (influence1 * .25)
+                # layer B
+                layer2Confidence     = (layer2Confidence     * .75) + (influence2 * .25)
+                stayLayer2Confidence = (stayLayer2Confidence * .75) + (influence2 * .25)
+                backLayer2Confidence = (backLayer2Confidence * .75) + (influence2 * .25)
+                # layer C
+                layer3Confidence     = (layer3Confidence     * .75) + (influence3 * .25)
+                stayLayer3Confidence = (stayLayer3Confidence * .75) + (influence3 * .25) 
+            else:        
+                # layer A
+                stayLayer1Confidence += influence1
+                backLayer1Confidence += influence1
+                # layer B
+                layer2Confidence     += influence2
+                stayLayer2Confidence += influence2
+                backLayer2Confidence += influence2
+                # layer C
+                layer3Confidence     += influence3
+                stayLayer3Confidence += influence3            
 
         transitionAA = stayLayer1Confidence
         transitionAB = layer2Confidence
