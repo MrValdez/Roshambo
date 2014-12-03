@@ -43,7 +43,7 @@ class MBFP:
         thisTurnProbR = float((self.predictionR - self.statR) / float(self.remainingPredictionSize))
         thisTurnProbP = float((self.predictionP - self.statP) / float(self.remainingPredictionSize))
         
-        return (thisTurnProbR, thisTurnProbP)
+        return thisTurnProbR, thisTurnProbP
 
     def recomputeFutureProb(self, currentTurn, targetPredictionSize):
         self.probR = self.statR / float (currentTurn)
@@ -58,13 +58,15 @@ class MBFP:
         currentTurn = rps.getTurn()
         if (currentTurn == 0):
             return biased_roshambo (1 / 3.0, 1 / 3.0), 1 / 3.0
-        
+
         turnsUpdated = currentTurn - self.updateTurn     # how many turns to predict
         self.updateTurn = currentTurn
         
         move = 0
         confidence = 0
-        for i in range(turnsUpdated):
+        while turnsUpdated:
+            turnsUpdated -= 1
+            
             if (self.remainingPredictionSize <= 0):
                 if Debug:
                     print ("***********************")
@@ -74,7 +76,7 @@ class MBFP:
                 self.recomputeFutureProb(currentTurn, targetPredictionSize)
                 
             thisTurnProbR, thisTurnProbP = self.calculateProbThisTurn()
-            
+
             if Debug:
                 print("currentTurn, remainingPredictionSize: %i    %i" % (currentTurn, self.remainingPredictionSize))
                 print("statR, statP:                         %i    %i" % (self.statR, self.statP));
@@ -112,7 +114,7 @@ class MBFP:
             if move == 0:    confidence = thisTurnProbR
             elif move == 1:  confidence = thisTurnProbP
             else:            confidence = 1.0 - (thisTurnProbR + thisTurnProbP)
-        
+            
         return move, confidence
 
     def play(self):
