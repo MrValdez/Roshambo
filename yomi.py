@@ -248,11 +248,11 @@ class Yomi:
                 stayLayer1Confidence = predictionConfidence     # don't go past the prediction confidence
   
         layer2Confidence = 1 - stayLayer1Confidence
-        layer3Confidence = layer2Confidence * 0.176
+        layer3Confidence = layer2Confidence #* 0.176
         
         # probability in staying in the same layer
-        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
-        stayLayer3Confidence = layer3Confidence * (1 - 0.125)
+        stayLayer2Confidence = layer2Confidence #* (1 - 0.301)
+        stayLayer3Confidence = layer3Confidence #* (1 - 0.125)
         
         # probability in moving to a lower layer
         backLayer1Confidence = 1.0 - stayLayer2Confidence
@@ -260,7 +260,7 @@ class Yomi:
         
         #test
         backLayer1Confidence = stayLayer1Confidence
-        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
+        stayLayer2Confidence = layer2Confidence #* (1 - 0.301)
         layer3Confidence = layer2Confidence - stayLayer2Confidence
         
         #flipped test
@@ -355,7 +355,8 @@ class Yomi:
                     
         result = p.move(start, rps.randomRange)
         
-        if 0 and result == "C":
+        if 0:
+            currentTurn = rps.getTurn()
             print ("Current Turn: ", currentTurn)
             print ("Confidence  : ", predictionConfidence)
             pprint (p)
