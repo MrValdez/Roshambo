@@ -111,7 +111,7 @@ class Yomi:
         self.yomiHistory = ""
         self.yomiHistorySize = 50
         self.yomiHistoryWins = ""
-        self.yomiHistoryWinsSize = 50
+        self.yomiHistoryWinsSize = 5           # target for DNA
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -214,11 +214,17 @@ class Yomi:
         return yomiChoices
 
     def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):          
-        if ownPlayConfidence >= predictionConfidence:
+        if ownPlayConfidence > predictionConfidence:
             return -1, ownPlayConfidence
-
+                
+        if ownPlayConfidence == predictionConfidence:
+            # flip a coin
+            if rps.randomRange() <= 0.5:
+                return -1, ownPlayConfidence
+        
         currentTurn = rps.getTurn()
-        if currentTurn <= 0:
+        if currentTurn <= 0:           # to DNA
+        #if currentTurn <= 50:
             return -1, ownPlayConfidence
 
 #######
@@ -280,7 +286,7 @@ class Yomi:
         
         # add yomi win stats
         #yomiLayerWins = self.yomiLayerWins
-
+        
         yomiHistory = self.yomiHistoryWins
         yomiLayerWins = [yomiHistory.count("0"), yomiHistory.count("1"), yomiHistory.count("2")]                         
         #print(yomiHistory, yomiLayerWins)
@@ -292,17 +298,19 @@ class Yomi:
             influence2 = yomiLayerWins[1] / total
             influence3 = yomiLayerWins[2] / total
 
-            if 1:
+            if 0:
+                delta1 = .1
+                delta2 = .99
                 # layer A
-                stayLayer1Confidence = (stayLayer1Confidence * .75) + (influence1 * .25)
-                backLayer1Confidence = (backLayer1Confidence * .75) + (influence1 * .25)
+                stayLayer1Confidence = (stayLayer1Confidence * delta1) + (influence1 * delta2)
+                backLayer1Confidence = (backLayer1Confidence * delta1) + (influence1 * delta2)
                 # layer B
-                layer2Confidence     = (layer2Confidence     * .75) + (influence2 * .25)
-                stayLayer2Confidence = (stayLayer2Confidence * .75) + (influence2 * .25)
-                backLayer2Confidence = (backLayer2Confidence * .75) + (influence2 * .25)
+                layer2Confidence     = (layer2Confidence     * delta1) + (influence2 * delta2)
+                stayLayer2Confidence = (stayLayer2Confidence * delta1) + (influence2 * delta2)
+                backLayer2Confidence = (backLayer2Confidence * delta1) + (influence2 * delta2)
                 # layer C
-                layer3Confidence     = (layer3Confidence     * .75) + (influence3 * .25)
-                stayLayer3Confidence = (stayLayer3Confidence * .75) + (influence3 * .25) 
+                layer3Confidence     = (layer3Confidence     * delta1) + (influence3 * delta2)
+                stayLayer3Confidence = (stayLayer3Confidence * delta1) + (influence3 * delta2) 
             else:        
                 # layer A
                 stayLayer1Confidence += influence1
@@ -352,7 +360,7 @@ class Yomi:
                     
         result = p.move(start, rps.randomRange)
         
-        if 0 and predictionConfidence != 1:
+        if 0:
             print ("Current Turn: ", currentTurn)
             print ("Confidence  : ", predictionConfidence)
             pprint (p)
@@ -521,6 +529,7 @@ def play(a):
         endTime = time.time()
         #print ("\nTotal time elapsed:", endTime - startTime)
         startTime = endTime
+        
     return decision
     
 def isVerbose():
