@@ -194,17 +194,19 @@ class PredictorSelector:
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             confidence = predictor.confidenceThisTurn
-            #print(confidence)
-            
+
 #            if confidence >= 1:                             # possible DNA
 #                predictorScores.append((1.0, predictor))
 #                continue
+            
+            confidence = 1 - confidence
             
             maxPredictionRating = 0.99                      # possible DNA
             if confidence > maxPredictionRating: confidence = maxPredictionRating
             if confidence < 0: confidence = 0
             #confidence = 0.85
                         
+            positiveRatings = totalRatings
             if positiveRatings <= 0 or totalRatings <= 0:
                 continue
                         
@@ -216,7 +218,7 @@ class PredictorSelector:
             n = totalRatings
             
             rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)        
-                
+            
             predictorScores.append((rating, predictor))
 
         if len(predictorScores):
