@@ -166,7 +166,7 @@ class PredictorSelector:
         
         self.LastPredictor = chosenPredictor
         move = chosenPredictor.moveLastTurn
-        predictorConfidence = chosenPredictor.confidenceLastTurn
+        predictorConfidence = chosenPredictor.confidenceThisTurn
 
         confidence = rankRating
                 
