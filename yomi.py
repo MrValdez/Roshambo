@@ -221,12 +221,7 @@ class Yomi:
             # flip a coin
             if rps.randomRange() <= 0.5:
                 return -1, ownPlayConfidence
-        
-        currentTurn = rps.getTurn()
-        if currentTurn <= 0:           # to DNA
-        #if currentTurn <= 50:
-            return -1, ownPlayConfidence
-
+       
 #######
 # monte carlo
 # (reversing player's yomi layer) http://nbviewer.ipython.org/github/fonnesbeck/Bios366/blob/master/notebooks/Section4_2-MCMC.ipynb
@@ -251,7 +246,7 @@ class Yomi:
             if stayLayer1Confidence > predictionConfidence:
                 print("overconfidence:", stayLayer1Confidence)
                 stayLayer1Confidence = predictionConfidence     # don't go past the prediction confidence
-        
+  
         layer2Confidence = 1 - stayLayer1Confidence
         layer3Confidence = layer2Confidence * 0.176
         

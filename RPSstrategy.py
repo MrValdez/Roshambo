@@ -1,4 +1,5 @@
 import rps
+import math
 
 class RPSstrategy:
     def __init__(self):
@@ -38,6 +39,19 @@ class RPSstrategy:
         currentTurn = rps.getTurn()
         turnsRemaining = totalTurns - currentTurn
         lostDifference = self.playerLosts - self.playerWins
+        
+        EarlyGame = 20      # DNA
+        if currentTurn <= EarlyGame:
+            # at the beginning of the game, we use our own play since we don't have enough information
+            # to predict
+            #if self.playerWins < self.losingValue:
+            if currentTurn == 0:
+                confidence = 1
+            else:
+                if EarlyGame > 1:
+                    #confidence = currentTurn / EarlyGame
+                    confidence = 1 - math.log(currentTurn, EarlyGame)
+                        
         if lostDifference >= self.panicValue:
             confidence = (lostDifference / self.losingValue)
             #print(currentTurn, self.playerWins, lostDifference,self.losingValue,confidence)
