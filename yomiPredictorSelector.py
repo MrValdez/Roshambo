@@ -53,13 +53,19 @@ class PredictorSelector:
         argv = [1]
 
         while PPsize > 0:
-            PPsize -= 1
             variant = ",".join([str(s) for s in argv])
             name = "Pattern Predictor [%i]" % (nextSeqSize)
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
             Predictors.append(p)
             nextSeqSize += 1
             argv.append(nextSeqSize)
+            PPsize -= 1
+
+        MBFPsize = 10
+        while MBFPsize > 0:
+            p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
+#            Predictors.append(p)
+            MBFPsize -= 1
         
         self.Predictors = Predictors
         self.reset()
@@ -150,6 +156,10 @@ class PredictorSelector:
             
             move, confidence = predictor.play()
             predictor.moveLastTurn = move
+            
+            #confidence = round(confidence, 2)   # round to the nearest 2 decimals
+            
+            #if confidence > 0.9: confidence = 0.9
         
             predictor.confidenceLastTurn = predictor.confidenceThisTurn
             predictor.confidenceThisTurn = confidence
@@ -183,13 +193,15 @@ class PredictorSelector:
         for i, predictor in enumerate(self.Predictors):                  
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
-            confidence = predictor.confidenceLastTurn
-            if confidence >= 1:
-                # only reserved for high confidence
-                rating = 1
-                predictorScores.append((rating, predictor))
-                continue
-            if confidence > 0.99: confidence = 0.99
+            confidence = predictor.confidenceThisTurn
+            #print(confidence)
+            
+#            if confidence >= 1:                             # possible DNA
+#                predictorScores.append((1.0, predictor))
+#                continue
+            
+            maxPredictionRating = 0.99                      # possible DNA
+            if confidence > maxPredictionRating: confidence = maxPredictionRating
             if confidence < 0: confidence = 0
             #confidence = 0.85
                         
@@ -215,12 +227,12 @@ class PredictorSelector:
             if predictorScores[0] != maxRating:
                 assert("Something is wrong. We filtered out predictions that is not the maximum but we got some here")                
             
-            predictorScores = p   
+            predictorScores = p
         else:
             random = rps.random() % len(self.Predictors)
             chosenPredictor = self.Predictors[random]
             rating = 0
-
+            
         if len(predictorScores) == 1:
             rating, chosenPredictor = predictorScores[0]
             if Debug:
@@ -389,10 +401,11 @@ def cached_normcdfi(p, mu=0.0, sigma2=1.0):
     """Call normcdfi and cache the results"""
     global CacheForNormCDFISet 
     for i in CacheForNormCDFISet:
-        if i[2] == mu and i[3] == sigma2 and i[1] == p: return i[0]
+        if i[1] == p and i[2] == mu and i[3] == sigma2: return i[0]
     
-    # p not in cache. Add it
+    # p is not in cache. Add it
     result = normcdfi(p, mu, sigma2)
+    
     cache = (result, p, mu, sigma2)
     CacheForNormCDFISet.append(cache)
     
