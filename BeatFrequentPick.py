@@ -120,4 +120,7 @@ class MBFP:
     def play(self):
         move, confidence = self.predict(self.targetPredictionSize)
         
+        if confidence > 1:
+            confidence = 1
+        
         return (move, confidence)

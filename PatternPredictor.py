@@ -152,8 +152,8 @@ class PatternPredictor:
             
             # confidence = difference between the highest tally and how close it is to targetDifference
             confidence = (sum(moveCounts) - moveCountMax) / targetDifference
-            if confidence > 0.9: 
-                confidence = 0.9
+            if confidence > 1: 
+                confidence = 1
             else:
                 #confidence = (confidence * 0.5) + 0.5
                 confidence = math.log(confidence, targetDifference)
