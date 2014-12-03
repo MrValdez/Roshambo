@@ -43,11 +43,12 @@ class RPSstrategy:
             #print(currentTurn, self.playerWins, lostDifference,self.losingValue,confidence)
             #input()
         
-        if self.playerLosts + self.playerTies > totalTurns / 2:
-            # Late game            
-            if turnsRemaining + self.playerWins < self.playerLosts * 1.5:
-                # Let's make an assumption that we are going to win all of the remaining turns. Will we have enough to win?
-                # If we are going to lose, so might as well play for draws
+        if self.playerLosts + self.playerTies > totalTurns / 3: #dna?
+            # Late game
+            
+            if self.playerWins - self.playerLosts + (turnsRemaining * 2) < self.losingValue:
+                # Let's make an assumption that we running out of turns to win
+                # If we are going to lose, we might as well play for draws
                 confidence = 1
             
         if confidence > 1: confidence = 1
