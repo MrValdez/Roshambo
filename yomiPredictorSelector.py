@@ -56,7 +56,8 @@ class PredictorSelector:
             variant = ",".join([str(s) for s in argv])
             name = "Pattern Predictor [%i]" % (nextSeqSize)
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
-            Predictors.append(p)
+            if PPsize + 1== 5 or PPsize +1== 9:
+                Predictors.append(p)
             nextSeqSize += 1
             argv.append(nextSeqSize)
             PPsize -= 1
