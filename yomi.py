@@ -360,7 +360,7 @@ class Yomi:
                     
         result = p.move(start, rps.randomRange)
         
-        if 0:
+        if 0 and result == "C":
             print ("Current Turn: ", currentTurn)
             print ("Confidence  : ", predictionConfidence)
             pprint (p)
@@ -370,9 +370,7 @@ class Yomi:
         
         if result == "A":   return 0, predictionConfidence
         if result == "B":   return 1, layer2Confidence
-        if result == "C":   
-            #print("C")
-            return 2, layer3Confidence
+        if result == "C":   return 2, layer3Confidence
         
         return -1, 0
 #######        
