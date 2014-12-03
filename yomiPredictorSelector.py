@@ -261,7 +261,9 @@ class PredictorSelector:
 
         # filter out low confidences
         maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
-        p = [p for p in self.Predictors if p.confidenceThisTurn == maxConfidence]
+        
+        # grab the predictors close to the confidence
+        p = [p for p in self.Predictors if p.confidenceThisTurn >= maxConfidence.confidenceThisTurn * 0.75]
         
         if len(p) == 1:
             # only one predictor has high confidence
@@ -270,11 +272,11 @@ class PredictorSelector:
             # many predictors has high confidence. look for highest wins
             maxScore = max(p, key=operator.attrgetter('scoreWins'))
             predictors = p
-            p = [p for p in predictors if p.scoreWins == maxScore]
+            p = [p for p in predictors if p.scoreWins >= maxScore.scoreWins * 0.75]
             
             if len(p) == 1:
                 chosenPredictor = p[0]
-            else:
+            elif len(p) > 1:
                 # there are ties. look for lowest losts
                 maxScore = min(p, key=operator.attrgetter('scoreLosts'))
                 predictors = p
@@ -282,10 +284,17 @@ class PredictorSelector:
                 
                 if len(p) == 1:
                     chosenPredictor = p[-1]
-                else:
+                elif len(p) > 1:
                     # choose at random
                     random = rps.random() % len(p)
                     chosenPredictor = p[random]
+            
+            if len(p) == 0:
+                maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
+                p = [p for p in self.Predictors if p.confidenceThisTurn >= maxConfidence.confidenceThisTurn]
+                
+                random = rps.random() % len(p)
+                chosenPredictor = p[random]
         else:
             # confidences are low. look for highest wins
             maxScore = max(self.Predictors, key=operator.attrgetter('scoreWins'))
