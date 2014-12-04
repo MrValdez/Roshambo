@@ -58,6 +58,7 @@ class PredictorSelector:
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
             if PPsize + 1== 5 or PPsize +1== 9:
                 Predictors.append(p)
+#            Predictors.append(p)
             nextSeqSize += 1
             argv.append(nextSeqSize)
             PPsize -= 1
@@ -199,15 +200,13 @@ class PredictorSelector:
 #            if confidence >= 1:                             # possible DNA
 #                predictorScores.append((1.0, predictor))
 #                continue
-            
+                        
             confidence = 1 - confidence
-            
             maxPredictionRating = 0.99                      # possible DNA
             if confidence > maxPredictionRating: confidence = maxPredictionRating
-            if confidence < 0: confidence = 0
-            #confidence = 0.85
+            if confidence < 0.0: confidence = 0.0
+            #confidence = 0.85            
                         
-            positiveRatings = totalRatings
             if positiveRatings <= 0 or totalRatings <= 0:
                 continue
                         
@@ -220,6 +219,7 @@ class PredictorSelector:
             
             rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)        
             
+            #print(confidence,positiveRatings, rating)
             predictorScores.append((rating, predictor))
 
         if len(predictorScores):
@@ -238,11 +238,6 @@ class PredictorSelector:
             
         if len(predictorScores) == 1:
             rating, chosenPredictor = predictorScores[0]
-            if Debug:
-                p = chosenPredictor
-                print ("%s (%i) Rating: %.3f. Score +%i/-%i" % (p.name, p.moveLastTurn, rating, p.scoreWins, p.scoreLosts))
-        
-                input() 
         elif len(predictorScores) > 1:                       
             # check if the highest rating predictions have different moves.
             # if True, then randomly select from between the moves
@@ -262,12 +257,13 @@ class PredictorSelector:
                 chosenPredictor = predictorScores[0][1]
                 rating = predictorScores[0][0]            
             
-            if Debug:
-                for p in predictorScores:
-                    print ("%s (%i) Rating: %.3f. Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].scoreWins, p[1].scoreLosts))
-            
-                if len(predictorScores):
-                    input()         
+        if 0 or Debug:
+            print("currentTurn", rps.getTurn())
+            for p in predictorScores:
+                print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidenceThisTurn, p[1].scoreWins, p[1].scoreLosts))
+        
+            if len(predictorScores):
+                input()         
 
         return chosenPredictor, rating
     

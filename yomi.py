@@ -240,45 +240,22 @@ class Yomi:
         
         if predictionConfidence == 1:
             stayLayer1Confidence = 1
+            if start == "A":
+                return 0, predictionConfidence
         else:
-            #stayLayer1Confidence = predictionConfidence - math.log((1 - predictionConfidence), 100)
             stayLayer1Confidence = predictionConfidence
-            if stayLayer1Confidence > predictionConfidence:
-                print("overconfidence:", stayLayer1Confidence)
-                stayLayer1Confidence = predictionConfidence     # don't go past the prediction confidence
   
         layer2Confidence = 1 - stayLayer1Confidence
-        layer3Confidence = layer2Confidence * 0.176
+        layer3Confidence = layer2Confidence #* 0.176
         
         # probability in staying in the same layer
-        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
-        stayLayer3Confidence = layer3Confidence * (1 - 0.125)
+        stayLayer2Confidence = layer2Confidence #* (1 - 0.301)
+        stayLayer3Confidence = layer3Confidence #* (1 - 0.125)
         
         # probability in moving to a lower layer
         backLayer1Confidence = 1.0 - stayLayer2Confidence
         backLayer2Confidence = 1.0 - stayLayer3Confidence
-        
-        #test
-        backLayer1Confidence = stayLayer1Confidence
-        stayLayer2Confidence = layer2Confidence * (1 - 0.301)
-        layer3Confidence = layer2Confidence - stayLayer2Confidence
-        
-        #flipped test
-        #layer3Confidence, stayLayer2Confidence = stayLayer2Confidence, layer3Confidence
-        #backLayer1Confidence, stayLayer2Confidence = stayLayer2Confidence, backLayer1Confidence
-        
-        #test return from C to A
-        #backLayer2Confidence = 0
-        #stayLayer3Confidence = 1 - stayLayer1Confidence
-
-        #backLayer2Confidence = stayLayer2Confidence
-        #stayLayer3Confidence = layer3Confidence
-        
-        #backLayer2Confidence = layer3Confidence
-        #stayLayer3Confidence = stayLayer2Confidence
-        
-        #test
-        
+                
         # add yomi win stats
         #yomiLayerWins = self.yomiLayerWins
         
@@ -288,14 +265,17 @@ class Yomi:
         #input()
         
         total = sum(yomiLayerWins)
-        if total:
+        if 1 and total:
             influence1 = yomiLayerWins[0] / total
             influence2 = yomiLayerWins[1] / total
             influence3 = yomiLayerWins[2] / total
 
             if 0:
-                delta1 = .1
-                delta2 = .99
+                delta1 = .5         #dna
+                delta2 = .5
+                
+                delta1 = .9         #dna
+                delta2 = .1
                 # layer A
                 stayLayer1Confidence = (stayLayer1Confidence * delta1) + (influence1 * delta2)
                 backLayer1Confidence = (backLayer1Confidence * delta1) + (influence1 * delta2)
@@ -329,23 +309,24 @@ class Yomi:
         transitionCB = backLayer2Confidence
         transitionCC = stayLayer3Confidence
         
-        normal = (transitionAA + transitionAB)
-        if normal < 1: normal = 1.0
-        transitionAA /= normal
-        transitionAB /= normal
+        if 0:
+            normal = (transitionAA + transitionAB)
+            if normal < 1: normal = 1.0
+            transitionAA /= normal
+            transitionAB /= normal
 
-        normal = (transitionBA + transitionBB + transitionBC)
-        if normal < 1: normal = 1.0
-        transitionBA /= normal
-        transitionBB /= normal
-        transitionBC /= normal
-        
-        normal = (transitionCA + transitionCB + transitionCC)
-        if normal < 1: normal = 1.0
-        transitionCA /= normal
-        transitionCB /= normal
-        transitionCC /= normal
-        
+            normal = (transitionBA + transitionBB + transitionBC)
+            if normal < 1: normal = 1.0
+            transitionBA /= normal
+            transitionBB /= normal
+            transitionBC /= normal
+            
+            normal = (transitionCA + transitionCB + transitionCC)
+            if normal < 1: normal = 1.0
+            transitionCA /= normal
+            transitionCB /= normal
+            transitionCC /= normal
+            
         from collections import OrderedDict
         yomi = OrderedDict((
                 (("A", "A"), transitionAA), (("A", "B"), transitionAB),

@@ -53,17 +53,35 @@ class RPSstrategy:
                     confidence = 1 - math.log(currentTurn, EarlyGame)
                         
         if lostDifference >= self.panicValue:
+            #print("losing at turn", currentTurn)
+            #print(lostDifference)
+            #input()
+            if lostDifference < self.losingValue:
+                confidence = math.log(lostDifference, self.losingValue)
+            else:
+                confidence = (lostDifference / self.losingValue)
+       
             confidence = (lostDifference / self.losingValue)
-            #print(currentTurn, self.playerWins, lostDifference,self.losingValue,confidence)
+            #print(currentTurn, self.playerWins, self.playerLosts, lostDifference, confidence)
             #input()
         
-        if self.playerLosts + self.playerTies > totalTurns / 3: #dna?
+#######        figure out what to do with layer -1
+        
+        if self.playerLosts + self.playerTies > totalTurns / 3: #dna?                               ### rank 5
+        #if currentTurn > self.losingValue:
             # Late game
-            
-            if self.playerWins - self.playerLosts + (turnsRemaining * 2) < self.losingValue:
+       #     if lostDifference > self.panicValue:
+            if self.playerWins - self.playerLosts + (turnsRemaining * 2) < self.losingValue:        ### rank 5/14 (5969)
+            #if self.playerWins - self.playerLosts + (turnsRemaining * 1.8) < self.losingValue:      ### rank 5/18 (5781)
+            #if self.playerWins - self.playerLosts + (turnsRemaining * 2.5) < self.losingValue:      ### rank 9
+            #if self.playerWins - self.playerLosts + (turnsRemaining * 1.9) < self.losingValue:      ### rank 9
+            #if self.playerWins - self.playerLosts + (turnsRemaining * 2.1) < self.losingValue:      ### rank 8
                 # Let's make an assumption that we running out of turns to win
                 # If we are going to lose, we might as well play for draws
                 confidence = 1
+                #print(currentTurn, self.playerWins, self.playerLosts, lostDifference)
+                #input()
+
             
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
