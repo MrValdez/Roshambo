@@ -265,7 +265,7 @@ class Yomi:
         #input()
         
         total = sum(yomiLayerWins)
-        if 1 and total:
+        if 0 and total:
             influence1 = yomiLayerWins[0] / total
             influence2 = yomiLayerWins[1] / total
             influence3 = yomiLayerWins[2] / total
@@ -298,18 +298,85 @@ class Yomi:
                 layer3Confidence     += influence3
                 stayLayer3Confidence += influence3            
 
-        transitionAA = stayLayer1Confidence
-        transitionAB = layer2Confidence
+#        transitionAA = stayLayer1Confidence
+#        transitionAB = layer2Confidence
         
-        transitionBA = backLayer1Confidence
-        transitionBB = stayLayer2Confidence
-        transitionBC = layer3Confidence
+#        transitionBA = backLayer1Confidence
+#        transitionBB = stayLayer2Confidence
+#        transitionBC = layer3Confidence
         
-        transitionCA = stayLayer1Confidence
-        transitionCB = backLayer2Confidence
-        transitionCC = stayLayer3Confidence
+#        transitionCA = stayLayer1Confidence
+#        transitionCB = backLayer2Confidence
+#        transitionCC = stayLayer3Confidence
+
+        transitionAA = predictionConfidence
+        transitionAB = 1 - predictionConfidence
         
-        if 0:
+        transitionBA = predictionConfidence
+        transitionBB = (1 - predictionConfidence) / 2
+        transitionBC = (1 - predictionConfidence) / 2
+        
+        transitionCA = predictionConfidence
+        transitionCB = (1 - predictionConfidence) / 2
+        transitionCC = (1 - predictionConfidence) / 2
+
+###
+
+        transitionAA = predictionConfidence + 0.301
+        transitionAB = (1 - predictionConfidence) - 0.301
+        
+        transitionBA = predictionConfidence + 0.301
+        transitionBB = ((1 - predictionConfidence) / 2) + 0.176
+        transitionBC = ((1 - predictionConfidence) / 2) + 0.125
+        
+        transitionCA = predictionConfidence + 0.301
+        transitionCB = ((1 - predictionConfidence) / 2) + 0.176
+        transitionCC = ((1 - predictionConfidence) / 2) + 0.125
+
+###
+
+        total = sum(yomiLayerWins)
+        if 1 and total:
+            influence1 = yomiLayerWins[0] / total
+            influence2 = yomiLayerWins[1] / total
+            influence3 = yomiLayerWins[2] / total
+            
+            #influence1 += 0.301
+            #influence2 += 0.176
+            #influence3 += 0.125
+        
+            if 0:
+                delta1 = .5         #dna
+                delta2 = .5
+                
+                delta1 = .75         #dna
+                delta2 = .25
+                
+                # layer A
+                transitionAA = (transitionAA * delta1) + (influence1 * delta2)
+                transitionAB = (transitionAB * delta1) + (influence2 * delta2)
+                # layer B
+                transitionBA = (transitionBA * delta1) + (influence1 * delta2)
+                transitionBB = (transitionBB * delta1) + (influence2 * delta2)
+                transitionBC = (transitionBC * delta1) + (influence3 * delta2)
+                # layer C
+                transitionCA = (transitionCA * delta1) + (influence1 * delta2)
+                transitionCB = (transitionCB * delta1) + (influence2 * delta2) 
+                transitionCC = (transitionCC * delta1) + (influence3 * delta2) 
+            else:
+                # layer A
+                transitionAA += influence1
+                transitionAB += influence2
+                # layer B
+                transitionBA += influence1
+                transitionBB += influence2
+                transitionBC += influence3
+                # layer C
+                transitionCA += influence1
+                transitionCB += influence2            
+                transitionCC += influence3            
+        
+        if 1:
             normal = (transitionAA + transitionAB)
             if normal < 1: normal = 1.0
             transitionAA /= normal
