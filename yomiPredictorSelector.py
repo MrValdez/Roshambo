@@ -56,9 +56,9 @@ class PredictorSelector:
             variant = ",".join([str(s) for s in argv])
             name = "Pattern Predictor [%i]" % (nextSeqSize)
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
-            if PPsize + 1== 5 or PPsize +1== 9:
-                Predictors.append(p)
-#            Predictors.append(p)
+#            if PPsize + 1== 5 or PPsize +1== 9:
+#                Predictors.append(p)
+            Predictors.append(p)
             nextSeqSize += 1
             argv.append(nextSeqSize)
             PPsize -= 1
@@ -75,8 +75,8 @@ class PredictorSelector:
     def reset(self):
         self.LastPredictor = None
         self.LastYomiLayer = 0
-        for predictor in self.Predictors:
-            predictor.reset()    
+        #for predictor in self.Predictors:
+        #    predictor.reset()    
             
     def update(self):
         self._updateScore()
