@@ -22,6 +22,8 @@ def isVerbose():
 #define HAVE_SSIZE_T
 #include <Python.h>
 
+#include "wilson.c"
+
 extern int my_history[];
 extern int opp_history[];
 
@@ -114,6 +116,20 @@ rps_enemyName ()
     return PyUnicode_DecodeASCII(current_opponent, strlen(current_opponent), 0);
 }
 
+static PyObject *
+rps_normcdfi (PyObject *self, PyObject *args)
+{
+    double p;
+    if (!PyArg_ParseTuple(args, "d", &p))     //d refers to double, not decimal
+    {
+        printf ("biasedRoshambo received invalid arguments");
+        exit(1);
+        return -1;  //todo: raise error	
+    }
+
+    return PyFloat_FromDouble(normcdfi(p, 0.0, 1.0));      //default: mu=0.0, sigma2=1.0
+}
+
 static PyMethodDef rpsMethods[] = {
     {"myHistory",  rps_myhistory, METH_VARARGS, "Returns player history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1"},
     {"enemyHistory",  rps_enemyhistory, METH_VARARGS, "Returns enemy history.\nIndex 0 returns -1. You should use getTurn() to get current turn.\nIndex starts at 1"},
@@ -122,6 +138,7 @@ static PyMethodDef rpsMethods[] = {
     {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
     {"random",  rps_random, METH_VARARGS, "Returns random number between [0..maxrandom]"},
     {"randomRange",  rps_randomRange, METH_VARARGS, "Returns random number between [0..1]"},
+    {"normcdfi",  rps_normcdfi, METH_VARARGS, "Returns lower bound of Wilson score confidence interval for a Bernoulli parameter"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
