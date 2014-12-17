@@ -238,24 +238,28 @@ class PredictorSelector:
             
         if len(predictorScores) == 1:
             rating, chosenPredictor = predictorScores[0]
-        elif len(predictorScores) > 1:                       
+        elif len(predictorScores) > 1:      
             # check if the highest rating predictions have different moves.
             # if True, then randomly select from between the moves
             Rmoves = [p for p in predictorScores if p[1].moveLastTurn == 0]
             Pmoves = [p for p in predictorScores if p[1].moveLastTurn == 1]
             Smoves = [p for p in predictorScores if p[1].moveLastTurn == 2]
             size = len(predictorScores)
-            
-            if (len(Rmoves) != size or len(Pmoves) != size or len(Smoves) != size):
-                # Randomly select from the moves
-                random = rps.random() % len(predictorScores)
-                chosenPredictor = predictorScores[random]
-                rating = chosenPredictor[0]
-                chosenPredictor = chosenPredictor[1]
+                        
+            # play the move with the highest score
+            finalChoice = None
+            if len(Rmoves) and len(Rmoves) > len(Pmoves) and len(Rmoves) > len(Smoves):
+                finalChoice = Rmoves[0]
+            elif len(Pmoves) and len(Pmoves) > len(Rmoves) and len(Pmoves) > len(Smoves):
+                finalChoice = Pmoves[0]
+            elif len(Smoves) and len(Smoves) > len(Pmoves) and len(Smoves) > len(Rmoves):
+                finalChoice = Smoves[0]
             else:
-                # All the high ratings have the same move. Just use the first one.
-                chosenPredictor = predictorScores[0][1]
-                rating = predictorScores[0][0]            
+                random = rps.random() % len(predictorScores)
+                finalChoice = predictorScores[random]
+            
+            chosenPredictor = finalChoice[1]
+            rating = finalChoice[0]            
             
         if 0 or Debug:
             print("currentTurn", rps.getTurn())
@@ -325,7 +329,7 @@ class PredictorSelector:
         if Debug:
             maxScore = max([p.scoreWins for p in self.Predictors])                
             print("max score: %f " % (maxScore), end="")      
-            maxScore = max([p.confidenceLastTurn for p in self.Predictors])                
+            maxScore = max([p.confidenceThisTurn for p in self.Predictors])                
             print("max confidence: %f " % (maxScore), end="")      
             print("chosen predictor: %s" % (chosenPredictor.name))
             input()
