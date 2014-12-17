@@ -48,7 +48,7 @@ class PredictorSelector:
 #        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
 #        Predictors.append(p)
 
-        PPsize = 12
+        PPsize = 29
         nextSeqSize = 1
         argv = [1]
 
@@ -63,10 +63,10 @@ class PredictorSelector:
             argv.append(nextSeqSize)
             PPsize -= 1
 
-        MBFPsize = 10
+        MBFPsize = 21
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
-#            Predictors.append(p)
+            #Predictors.append(p)
             MBFPsize -= 1
         
         self.Predictors = Predictors
@@ -75,8 +75,8 @@ class PredictorSelector:
     def reset(self):
         self.LastPredictor = None
         self.LastYomiLayer = 0
-        #for predictor in self.Predictors:
-        #    predictor.reset()    
+        for predictor in self.Predictors:
+            predictor.reset()    
             
     def update(self):
         self._updateScore()
