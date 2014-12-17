@@ -190,12 +190,25 @@ class PredictorSelector:
         http://www.evanmiller.org
          How Not To Sort By Average Rating.htm
         """
+
+        # grab the top 3 wins, top 3 wins-lost, top 3 confidences
+        maxWins       = sorted(self.Predictors, key=lambda i: i.scoreWins)
+        maxDiff       = sorted(self.Predictors, key=lambda i: i.scoreWins - i.scoreLosts)
+        maxConfidence = sorted(self.Predictors, key=lambda i: i.confidenceThisTurn)
+        
+        # grab the top predictors by wins, diffs and confidence.
+        # on test, this has worse effect on ranking. (need more testing for confirmation)
+        filteredPredictors = self.Predictors    # no union
+        #filteredPredictors = set(maxWins[:3]) | set(maxDiff[:3]) | set(maxConfidence[:3])   # union
+        #filteredPredictors = set(maxWins[:5]) | set(maxDiff[:5]) | set(maxConfidence[:5])   # union
+        
+
 ##############
 ##todo: add treshold instead?
 #########
         
         predictorScores = []
-        for i, predictor in enumerate(self.Predictors):
+        for i, predictor in enumerate(filteredPredictors):
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             confidence = predictor.confidenceThisTurn
@@ -237,8 +250,8 @@ class PredictorSelector:
             
             predictorScores = p
         else:
-            random = rps.random() % len(self.Predictors)
-            chosenPredictor = self.Predictors[random]
+            random = rps.random() % len(filteredPredictors)
+            chosenPredictor = filteredPredictors[random]
             rating = 0
             
         if len(predictorScores) == 1:
