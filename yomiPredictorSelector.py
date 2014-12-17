@@ -190,9 +190,12 @@ class PredictorSelector:
         http://www.evanmiller.org
          How Not To Sort By Average Rating.htm
         """
+##############
+##todo: add treshold instead?
+#########
         
         predictorScores = []
-        for i, predictor in enumerate(self.Predictors):                  
+        for i, predictor in enumerate(self.Predictors):
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             confidence = predictor.confidenceThisTurn
@@ -212,7 +215,9 @@ class PredictorSelector:
                         
             #z = 1.96        # hardcorded for confidence=95%
             #z = 1.0         # 1.44=85% 1.96=95%
-            z = cached_normcdfi(1 - 0.5 * (1 - confidence))
+            p = 1 - 0.5 * (1 - confidence)
+            #z = cached_normcdfi(p)
+            z = rps.normcdfi(p)
             
             phat = float(positiveRatings) / totalRatings
             n = totalRatings
