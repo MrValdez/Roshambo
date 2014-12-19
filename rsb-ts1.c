@@ -49,7 +49,7 @@ int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
 //#define players   42         /* number of players in the tournament */
-#define players   7         /* number of players in the tournament */
+#define players   8         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 int usePython = 1;
 
@@ -5598,6 +5598,10 @@ void Init_Player_Table (Player_Table crosstable[players+1])
         crosstable[i].pname = python;
     else
         crosstable[i].pname = yomi;
+
+    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
+    strcpy(crosstable[i].name, "R-P-S 20-20-60");
+    crosstable[i].pname = r226bot;
 
     i++;  /* Dan Egnor (USA) */
     strcpy(crosstable[i].name, "Iocaine Powder");
