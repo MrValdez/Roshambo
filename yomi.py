@@ -15,7 +15,8 @@ sys.path.append(r"\Python34\dlls")
 
 import pykov
 from pprint import pprint
-
+from collections import OrderedDict
+        
 import math
 import rps
 import yomiPredictorSelector
@@ -213,15 +214,18 @@ class Yomi:
 
         return yomiChoices
 
+# short RPS 20-20-60: 385 (592, 207, 201)
+# full  RPS 20-20-60: 380 (585, 205, 210)
+
     def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):          
         if ownPlayConfidence > predictionConfidence:
             return -1, ownPlayConfidence
                 
         if ownPlayConfidence == predictionConfidence:
             # flip a coin
-            if rps.randomRange() <= 0.5:
+            if rps.randomRange() < 0.5:
                 return -1, ownPlayConfidence
-       
+                       
 #######
 # monte carlo
 # (reversing player's yomi layer) http://nbviewer.ipython.org/github/fonnesbeck/Bios366/blob/master/notebooks/Section4_2-MCMC.ipynb
@@ -239,171 +243,119 @@ class Yomi:
         # 3 	12.5% 	
         
         if predictionConfidence == 1:
-            stayLayer1Confidence = 1
+            transitionAA = transitionBA = transitionCA = 1
             if start == "A":
                 return 0, predictionConfidence
         else:
-            stayLayer1Confidence = predictionConfidence
-  
-        layer2Confidence = 1 - stayLayer1Confidence
-        layer3Confidence = layer2Confidence #* 0.176
-        
-        # probability in staying in the same layer
-        stayLayer2Confidence = layer2Confidence #* (1 - 0.301)
-        stayLayer3Confidence = layer3Confidence #* (1 - 0.125)
-        
-        # probability in moving to a lower layer
-        backLayer1Confidence = 1.0 - stayLayer2Confidence
-        backLayer2Confidence = 1.0 - stayLayer3Confidence
-                
-        # add yomi win stats
-        #yomiLayerWins = self.yomiLayerWins
-        
-        yomiHistory = self.yomiHistoryWins
-        yomiLayerWins = [yomiHistory.count("0"), yomiHistory.count("1"), yomiHistory.count("2")]                         
-        #print(yomiHistory, yomiLayerWins)
-        #input()
-        
-        total = sum(yomiLayerWins)
-        if 0 and total:
-            influence1 = yomiLayerWins[0] / total
-            influence2 = yomiLayerWins[1] / total
-            influence3 = yomiLayerWins[2] / total
+            transitionAA = transitionBA = transitionCA = predictionConfidence
 
-            if 0:
-                delta1 = .5         #dna
-                delta2 = .5
-                
-                delta1 = .9         #dna
-                delta2 = .1
-                # layer A
-                stayLayer1Confidence = (stayLayer1Confidence * delta1) + (influence1 * delta2)
-                backLayer1Confidence = (backLayer1Confidence * delta1) + (influence1 * delta2)
-                # layer B
-                layer2Confidence     = (layer2Confidence     * delta1) + (influence2 * delta2)
-                stayLayer2Confidence = (stayLayer2Confidence * delta1) + (influence2 * delta2)
-                backLayer2Confidence = (backLayer2Confidence * delta1) + (influence2 * delta2)
-                # layer C
-                layer3Confidence     = (layer3Confidence     * delta1) + (influence3 * delta2)
-                stayLayer3Confidence = (stayLayer3Confidence * delta1) + (influence3 * delta2) 
-            else:        
-                # layer A
-                stayLayer1Confidence += influence1
-                backLayer1Confidence += influence1
-                # layer B
-                layer2Confidence     += influence2
-                stayLayer2Confidence += influence2
-                backLayer2Confidence += influence2
-                # layer C
-                layer3Confidence     += influence3
-                stayLayer3Confidence += influence3            
-
-#        transitionAA = stayLayer1Confidence
-#        transitionAB = layer2Confidence
-        
-#        transitionBA = backLayer1Confidence
-#        transitionBB = stayLayer2Confidence
-#        transitionBC = layer3Confidence
-        
-#        transitionCA = stayLayer1Confidence
-#        transitionCB = backLayer2Confidence
-#        transitionCC = stayLayer3Confidence
-
-        transitionAA = predictionConfidence
-        transitionAB = 1 - predictionConfidence
-        
-        transitionBA = predictionConfidence
-        transitionBB = (1 - predictionConfidence) / 2
-        transitionBC = (1 - predictionConfidence) / 2
-        
-        transitionCA = predictionConfidence
-        transitionCB = (1 - predictionConfidence) / 2
-        transitionCC = (1 - predictionConfidence) / 2
-
-###
-
-        transitionAA = predictionConfidence + 0.301
-        transitionAB = (1 - predictionConfidence) - 0.301
-        
-        transitionBA = predictionConfidence + 0.301
-        transitionBB = ((1 - predictionConfidence) / 2) + 0.176
-        transitionBC = ((1 - predictionConfidence) / 2) + 0.125
-        
-        transitionCA = predictionConfidence + 0.301
-        transitionCB = ((1 - predictionConfidence) / 2) + 0.176
-        transitionCC = ((1 - predictionConfidence) / 2) + 0.125
-
-###
-
-        total = sum(yomiLayerWins)
-        if 1 and total:
-            influence1 = yomiLayerWins[0] / total
-            influence2 = yomiLayerWins[1] / total
-            influence3 = yomiLayerWins[2] / total
-            
-            #influence1 += 0.301
-            #influence2 += 0.176
-            #influence3 += 0.125
-        
-            if 0:
-                delta1 = .5         #dna
-                delta2 = .5
-                
-                delta1 = .75         #dna
-                delta2 = .25
-                
-                # layer A
-                transitionAA = (transitionAA * delta1) + (influence1 * delta2)
-                transitionAB = (transitionAB * delta1) + (influence2 * delta2)
-                # layer B
-                transitionBA = (transitionBA * delta1) + (influence1 * delta2)
-                transitionBB = (transitionBB * delta1) + (influence2 * delta2)
-                transitionBC = (transitionBC * delta1) + (influence3 * delta2)
-                # layer C
-                transitionCA = (transitionCA * delta1) + (influence1 * delta2)
-                transitionCB = (transitionCB * delta1) + (influence2 * delta2) 
-                transitionCC = (transitionCC * delta1) + (influence3 * delta2) 
-            else:
-                # layer A
-                transitionAA += influence1
-                transitionAB += influence2
-                # layer B
-                transitionBA += influence1
-                transitionBB += influence2
-                transitionBC += influence3
-                # layer C
-                transitionCA += influence1
-                transitionCB += influence2            
-                transitionCC += influence3            
-        
         if 1:
-            normal = (transitionAA + transitionAB)
-            if normal < 1: normal = 1.0
+            transitionAB = 1 - transitionAA
+            
+            transitionBB = transitionAB 
+            #transitionBA = (1 - transitionBB) * 0.5 # (1 - 0.301)
+            #transitionBC = (1 - transitionBB) * 0.5 # (0.301)
+            transitionBA = (1 - transitionBB) * (1 - 0.301)
+            transitionBC = (1 - transitionBB) * (0.301)
+            
+            transitionCC = transitionBC
+            transitionCB = (1 - transitionCC) * 0.176
+            transitionCA = (1 - transitionCC) * (1 - 0.176)
+            
+            #transitionCC, transitionCB = transitionCB, transitionCC
+            
+            transitionCA = predictionConfidence
+            transitionCB = (1 - transitionCA) * (1 - 0.176)
+            transitionCC = (1 - transitionCA) * (0.176)        
+        
+        
+        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0] - self.yomiLayerTies[0]
+        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1] - self.yomiLayerTies[1]
+        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2] - self.yomiLayerTies[2]
+        currentTurn = rps.getTurn()
+        
+        layer1ratio = layer1score / currentTurn
+        layer2ratio = layer2score / currentTurn
+        layer3ratio = layer3score / currentTurn
+        
+        
+        transitionAA += layer1ratio
+        transitionBA += layer1ratio
+        transitionCA += layer1ratio
+        
+        transitionAB += layer2ratio
+        transitionBB += layer2ratio
+        transitionCB += layer2ratio
+        
+        transitionBC += layer3ratio
+        transitionCC += layer3ratio
+
+        if 0:
+            print (layer1score, layer2score, layer3score)
+            print (layer1ratio, layer2ratio, layer3ratio)
+            
+            pprint (OrderedDict((
+                (("A", "A"), transitionAA), (("A", "B"), transitionAB),
+                (("B", "A"), transitionBA), (("B", "B"), transitionBB), 
+                (("B", "C"), transitionBC), (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
+                )))
+        
+        transitionAB -= layer1ratio
+        
+        transitionBA -= layer2ratio
+        transitionBC -= layer2ratio
+        
+        transitionCA -= layer3ratio
+        transitionCB -= layer3ratio
+
+        if 0:
+            pprint (OrderedDict((
+                (("A", "A"), transitionAA), (("A", "B"), transitionAB),
+                (("B", "A"), transitionBA), (("B", "B"), transitionBB), 
+                (("B", "C"), transitionBC), (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
+                )))
+
+        # minimum of 0.0
+        transitionAA = max(transitionAA, 0.0)
+        transitionAB = max(transitionAB, 0.0)
+        transitionBA = max(transitionBA, 0.0)
+        transitionBB = max(transitionBB, 0.0)
+        transitionBC = max(transitionBC, 0.0)
+        transitionCA = max(transitionCA, 0.0)
+        transitionCB = max(transitionCB, 0.0)
+        transitionCC = max(transitionCC, 0.0)
+
+        #normalize
+        if 1:
+            normal = transitionAA + transitionAB
             transitionAA /= normal
             transitionAB /= normal
-
-            normal = (transitionBA + transitionBB + transitionBC)
-            if normal < 1: normal = 1.0
+            
+            normal = transitionBA + transitionBB + transitionBC
             transitionBA /= normal
             transitionBB /= normal
             transitionBC /= normal
             
-            normal = (transitionCA + transitionCB + transitionCC)
-            if normal < 1: normal = 1.0
+            normal = transitionCA + transitionCB + transitionCC
             transitionCA /= normal
             transitionCB /= normal
             transitionCC /= normal
+        
+        
             
-        from collections import OrderedDict
         yomi = OrderedDict((
                 (("A", "A"), transitionAA), (("A", "B"), transitionAB),
-                (("B", "A"), transitionBA), (("B", "B"), transitionBB), (("B", "C"), transitionBC),
-                (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)))
+                (("B", "A"), transitionBA), (("B", "B"), transitionBB), 
+                (("B", "C"), transitionBC), (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
+                ))
         p = pykov.Chain(yomi)
                     
         result = p.move(start, rps.randomRange)
         
         if 0:
+            print (layer1score, layer2score, layer3score)
+            print (layer1ratio, layer2ratio, layer3ratio)
+            
             currentTurn = rps.getTurn()
             print ("Current Turn: ", currentTurn)
             print ("Confidence  : ", predictionConfidence)
@@ -412,7 +364,11 @@ class Yomi:
             print ("Result      : ",result)
             input()
         
-        if result == "A":   return 0, predictionConfidence
+        layer1Confidence = transitionAA     # todo
+        layer2Confidence = transitionBB
+        layer3Confidence = transitionCC 
+        
+        if result == "A":   return 0, layer1Confidence
         if result == "B":   return 1, layer2Confidence
         if result == "C":   return 2, layer3Confidence
         
