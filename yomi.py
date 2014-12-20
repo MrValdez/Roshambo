@@ -96,6 +96,10 @@ class Yomi:
         self.VisualDebugger.connect()
         self.reset()
 
+        self.yomiHistoryWins = ""
+        self.yomiHistoryLosts = ""
+        self.yomiHistoryTies = ""
+ 
     def reset(self):        
         self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
         self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
@@ -110,11 +114,7 @@ class Yomi:
         self.yomiModels = [ [], [], [] ]
         
         self.yomiHistory = ""
-        self.yomiHistorySize = 50
-        self.yomiHistoryWins = ""
-        self.yomiHistoryLosts = ""
-        self.yomiHistoryTies = ""
-        self.yomiHistorySize = 1000           # target for DNA
+        self.yomiHistorySize = 800           # target for DNA
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -341,18 +341,27 @@ class Yomi:
         #normalize
         if 1:
             normal = transitionAA + transitionAB
-            transitionAA /= normal
-            transitionAB /= normal
+            if normal > 0:
+                transitionAA /= normal
+                transitionAB /= normal
+            else:
+                transitionAA = 1        # if the sum is 0, then we set transition to self to 1
             
             normal = transitionBA + transitionBB + transitionBC
-            transitionBA /= normal
-            transitionBB /= normal
-            transitionBC /= normal
+            if normal > 0:
+                transitionBA /= normal
+                transitionBB /= normal
+                transitionBC /= normal
+            else:
+                transitionBB = 1        # if the sum is 0, then we set transition to self to 1
             
             normal = transitionCA + transitionCB + transitionCC
-            transitionCA /= normal
-            transitionCB /= normal
-            transitionCC /= normal
+            if normal > 0:
+                transitionCA /= normal
+                transitionCB /= normal
+                transitionCC /= normal
+            else:
+                transitionCC = 1        # if the sum is 0, then we set transition to self to 1
         
         
             
