@@ -112,7 +112,9 @@ class Yomi:
         self.yomiHistory = ""
         self.yomiHistorySize = 50
         self.yomiHistoryWins = ""
-        self.yomiHistoryWinsSize = 5           # target for DNA
+        self.yomiHistoryLosts = ""
+        self.yomiHistoryTies = ""
+        self.yomiHistorySize = 1000           # target for DNA
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -132,28 +134,35 @@ class Yomi:
     def updateScore(self):
         # update score from last turn        
         currentTurn = rps.getTurn()
-        if currentTurn == 0: 
+        if currentTurn == 0:
             return
 
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         layerToWin = -1
+
         # update yomi layers' scores
-        for i, _ in enumerate(self.yomiLayerWins):
-            myMoveLastTurn = self.yomiChoices[i]
-            victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
-            tie = (myMoveLastTurn == enemyMoveLastTurn)
-            lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)            
+        for i, _ in enumerate(self.yomiChoices):
+            yomiMove = self.yomiChoices[i]
+            victory = (yomiMove == ((enemyMoveLastTurn + 1) % 3))
+            tie = (yomiMove == enemyMoveLastTurn)
+            lost = (yomiMove == (enemyMoveLastTurn - 1) % 3)            
             
             if victory:
                 self.yomiLayerWins[i] += 1
                 layerToWin = i
                 self.yomiHistoryWins += str(i)
-                self.yomiHistoryWins = self.yomiHistoryWins[-self.yomiHistoryWinsSize:]
             elif tie:
                 self.yomiLayerTies[i] += 1
+                self.yomiHistoryTies += str(i)
             else:
                 self.yomiLayerLosts[i] += 1
+                self.yomiHistoryLosts += str(i)
 
+        self.yomiHistoryWins  = self.yomiHistoryWins[-self.yomiHistorySize:]
+        self.yomiHistoryLosts = self.yomiHistoryLosts[-self.yomiHistorySize:]
+        self.yomiHistoryTies  = self.yomiHistoryTies[-self.yomiHistorySize:]
+        
+        
         myMoveLastTurn = rps.myHistory(currentTurn)
         victory = (myMoveLastTurn == ((enemyMoveLastTurn + 1) % 3))
         tie = (myMoveLastTurn == enemyMoveLastTurn)
@@ -272,8 +281,12 @@ class Yomi:
         layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0] - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1] - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2] - self.yomiLayerTies[2]
-        currentTurn = rps.getTurn()
-        
+
+        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - self.yomiHistoryTies.count("0")
+        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - self.yomiHistoryTies.count("1")
+        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - self.yomiHistoryTies.count("2")
+
+        currentTurn = rps.getTurn()        
         layer1ratio = layer1score / currentTurn
         layer2ratio = layer2score / currentTurn
         layer3ratio = layer3score / currentTurn
@@ -353,6 +366,7 @@ class Yomi:
         result = p.move(start, rps.randomRange)
         
         if 0:
+            print(self.yomiHistoryWins)
             print (layer1score, layer2score, layer3score)
             print (layer1ratio, layer2ratio, layer3ratio)
             
