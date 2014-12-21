@@ -49,6 +49,8 @@ class PredictorSelector:
 #        Predictors.append(p)
 
         PPsize = 29
+        #PPsize = 32     #(8756 score. rank 5)
+        #PPsize = 39
         nextSeqSize = 1
         argv = [1]
 
@@ -62,13 +64,14 @@ class PredictorSelector:
             nextSeqSize += 1
             argv.append(nextSeqSize)
             PPsize -= 1
-
+                    
         MBFPsize = 21
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
             #Predictors.append(p)
             MBFPsize -= 1
         
+        #Predictors.reverse()
         self.Predictors = Predictors
         self.reset()
         
@@ -213,6 +216,9 @@ class PredictorSelector:
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             confidence = predictor.confidenceThisTurn
+            
+            # experiment: what happens if we use our score as confidence in self?
+            
 
 #            if confidence >= 1:                             # possible DNA
 #                predictorScores.append((1.0, predictor))

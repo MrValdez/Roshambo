@@ -4,8 +4,8 @@ import rps
 Debug = True
 Debug = False
 
-UseByteArray = False
 UseByteArray = True
+UseByteArray = False
 
 class PatternPredictor:
     def __init__(self, variant):        
@@ -23,9 +23,8 @@ class PatternPredictor:
         # DNA variable
         # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
         # higher = weaker?
-        # self.targetDifference = 10
-        self.targetDifference = 5
-        self.targetDifference = 1
+        #self.targetDifference = 5
+        #self.targetDifference = 1
         self.targetDifference = 4
         
     def update(self):
@@ -117,7 +116,7 @@ class PatternPredictor:
 
         return prediction, confidence
      
-    def GetHighestTally(self, History, tally, SequenceLength):            
+    def GetHighestTally(self, History, tally, SequenceLength):                
         # check if we have a tie for maximum.
         maxCount = max(tally)
         numCount = tally.count(maxCount)
@@ -154,9 +153,11 @@ class PatternPredictor:
             confidence = (sum(moveCounts) - moveCountMax) / targetDifference
             if confidence > 1: 
                 confidence = 1
-            else:
+            elif confidence > 0 and targetDifference > 1:
                 #confidence = (confidence * 0.5) + 0.5
-                confidence = math.log(confidence, targetDifference)
+                confidence = math.log(confidence, targetDifference + 0)
+            else:
+                confidence = 0
             
             if Debug:
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
@@ -164,6 +165,57 @@ class PatternPredictor:
             
             return prediction, confidence
 
+        # choose the move the was used last
+        latestR = latestP = latestS = 0             # position of latest move
+        distToR = distToP = distToS = 0             # distance of move to end
+        historySize = len(History)
+        
+        if tally[0] == maxCount:
+            latestR = History.rfind("0")
+            distToR = latestR / historySize
+            distToR = math.log(latestR, historySize + 1)
+        if tally[1] == maxCount:
+            latestP = History.rfind("1")
+            distToP = latestP / historySize
+            distToP = math.log(latestP, historySize + 1)
+        if tally[2] == maxCount:
+            latestS = History.rfind("2")
+            distToS = latestS / historySize
+            distToS = math.log(latestS, historySize + 1)
+            
+        if latestR > latestP or latestR > latestS:
+            prediction = 0
+            confidence = distToR - (distToP + distToS)
+            confidence = distToR
+
+        if latestP > latestR or latestP > latestS:
+            prediction = 1
+            confidence = distToP - (distToR + distToS)
+            confidence = distToP
+
+        if latestS > latestP or latestS > latestR:
+            prediction = 2
+            confidence = distToS - (distToP + distToR)
+            confidence = distToS 
+
+#        numOfTally = -1
+#        if latestR: numOfTally += 1
+#        if latestP: numOfTally += 1
+#        if latestS: numOfTally += 1
+        
+#        confidence /= numOfTally
+
+#        confidence = 1 - confidence
+#        print(maxCount)
+#        print(History)
+#        print(latestR, latestP, latestS)
+#        print(distToR, distToP, distToS)
+#        print(tally)
+#        print(prediction, confidence)
+#        input()
+
+        return prediction, confidence
+                                        
         # if we still have a tie, choose between them using a random number
         sumCount = maxCount * numCount
         
@@ -181,12 +233,9 @@ class PatternPredictor:
                 break
             random -= randomNumber
 
-        if prediction == -1:
-            # prediction not found
-            return -1, 0
-
         # our confidence is based on our random number
         #confidence = tally[prediction] - random 
+        #confidence = 1 - random 
         confidence = 1 - random 
         
         if Debug:

@@ -12,7 +12,8 @@ class RPSstrategy:
         self.playerTies = 0
         self.moveLastTurn = 0
         
-        self.losingValue = 50       # if the lost difference reaches this value, the AI is losing
+        #self.losingValue = 100       # if the lost difference reaches this value, the AI is losing  # rank 8.6
+        self.losingValue = 50       # if the lost difference reaches this value, the AI is losing    # rank 5.6
         self.panicValue = int(self.losingValue * 0.75)  # dna
     
     def update(self):        
@@ -94,7 +95,6 @@ class RPSstrategy:
                 #print("s", panicCheck, self.losingValue)
                 #input()
                 #print("S")
-
             
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
