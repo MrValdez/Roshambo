@@ -146,13 +146,12 @@ class PatternPredictor:
         if moveCountNum == 1:
             index = moveCounts.index(moveCountMax)
             prediction = tally[ index ]
-            #prediction = moveCounts.index(moveCountMax)
             
             # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
             targetDifference = self.targetDifference           
             
             # confidence = difference between the highest tally and how close it is to targetDifference
-            confidence = (sum(moveCounts) - moveCountMax) / targetDifference
+            #confidence = (sum(moveCounts) - moveCountMax) / targetDifference
             confidence = 1
             
             if confidence > 1: 
@@ -164,18 +163,10 @@ class PatternPredictor:
             else:
                 confidence = 0
             
+            #confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
             #confidence = math.log(moveCounts[index], sum(moveCounts))
             #confidence = 0.6           ##
-            #print(moveCounts[index], sum(moveCounts))
-            #print(confidence)
-            #confidence = sum(moveCounts) / moveCountMax
-            #confidence = 1 - confidence
-            #confidence = math.log( moveCountMax, sum(moveCounts))
-#            print (tally)
-#            print (moveCounts)
-#            print (moveCountMax, sum(moveCounts), targetDifference)
-            #confidence = moveCountMax / sum(moveCounts)
-            #confidence = 0.8
+            #confidence = 1
             if Debug:
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
                 input()
@@ -200,42 +191,26 @@ class PatternPredictor:
             distToS = latestS / historySize
             distToS = math.log(latestS, historySize + 0)
             
-        if latestR > latestP or latestR > latestS:
+        if latestR >= latestP or latestR >= latestS:
             prediction = 0
             confidence = distToR - (distToP + distToS)
             confidence = distToR
 
-        if latestP > latestR or latestP > latestS:
+        if latestP >= latestR or latestP >= latestS:
             prediction = 1
             confidence = distToP - (distToR + distToS)
             confidence = distToP
 
-        if latestS > latestP or latestS > latestR:
+        if latestS >= latestP or latestS >= latestR:
             prediction = 2
             confidence = distToS - (distToP + distToR)
             confidence = distToS 
 
         confidence = 1
 
-#        numOfTally = -1
-#        if latestR: numOfTally += 1
-#        if latestP: numOfTally += 1
-#        if latestS: numOfTally += 1
-        
-#        confidence /= numOfTally
-
-#        confidence = 1 - confidence
-#        print(maxCount)
-#        print(History)
-#        print(latestR, latestP, latestS)
-#        print(distToR, distToP, distToS)
-#        print(tally)
-#        print(prediction, confidence)
-#        input()
-
         if prediction != -1:
             return prediction, confidence
-                                        
+
         # if we still have a tie, choose between them using a random number
         sumCount = maxCount * numCount
         
