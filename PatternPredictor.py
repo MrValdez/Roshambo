@@ -147,14 +147,16 @@ class PatternPredictor:
             index = moveCounts.index(moveCountMax)
             prediction = tally[ index ]
             
+            #prediction = index    # bug
+            
             # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
             targetDifference = self.targetDifference           
             
             # confidence = difference between the highest tally and how close it is to targetDifference
-            #confidence = (sum(moveCounts) - moveCountMax) / targetDifference
-            confidence = 1
+            confidence = (sum(moveCounts) - moveCountMax) / targetDifference
+ #           confidence = 1
             
-            if confidence > 1: 
+            if confidence >= 1: 
                 confidence = 1
             elif confidence > 0 and targetDifference > 1:
                 #confidence = (confidence * 0.5) + 0.5
@@ -165,8 +167,12 @@ class PatternPredictor:
             
             #confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
             #confidence = math.log(moveCounts[index], sum(moveCounts))
+            confidence = moveCounts[index] / sum(moveCounts)
+            #print(moveCounts[index], sum(moveCounts))
+            #print (confidence)
             #confidence = 0.6           ##
             #confidence = 1
+            
             if Debug:
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
                 input()
@@ -180,16 +186,16 @@ class PatternPredictor:
         
         if tally[0] == maxCount:
             latestR = History.rfind("0")
-            distToR = latestR / historySize
-            distToR = math.log(latestR, historySize + 0)
+            distToR = latestR / (historySize + 1)
+            #distToR = math.log(latestR, historySize + 0)
         if tally[1] == maxCount:
             latestP = History.rfind("1")
-            distToP = latestP / historySize
-            distToP = math.log(latestP, historySize + 0)
+            distToP = latestP / (historySize + 1)
+            #distToP = math.log(latestP, historySize + 0)
         if tally[2] == maxCount:
             latestS = History.rfind("2")
-            distToS = latestS / historySize
-            distToS = math.log(latestS, historySize + 0)
+            distToS = latestS / (historySize + 1)
+            #distToS = math.log(latestS, historySize + 0)
             
         if latestR >= latestP or latestR >= latestS:
             prediction = 0
@@ -206,7 +212,7 @@ class PatternPredictor:
             confidence = distToS - (distToP + distToR)
             confidence = distToS 
 
-        confidence = 1
+        #confidence = 1
 
         if prediction != -1:
             return prediction, confidence

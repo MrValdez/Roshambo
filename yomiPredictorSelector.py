@@ -49,12 +49,14 @@ class PredictorSelector:
 #        Predictors.append(p)
 
         PPsize = 29
+        PPsize = 28
         #PPsize = 32     #(8756 score. rank 5)
         #PPsize = 39
         nextSeqSize = 1
         argv = [1]
 
         while PPsize > 0:
+            argv.append(nextSeqSize)
             variant = ",".join([str(s) for s in argv])
             name = "Pattern Predictor [%i]" % (nextSeqSize)
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
@@ -62,13 +64,13 @@ class PredictorSelector:
 #                Predictors.append(p)
             Predictors.append(p)
             nextSeqSize += 1
-            argv.append(nextSeqSize)
             PPsize -= 1
                     
         MBFPsize = 21
+        MBFPsize = 1
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
-            #Predictors.append(p)
+        #    Predictors.append(p)
             MBFPsize -= 1
         
         #Predictors.reverse()
