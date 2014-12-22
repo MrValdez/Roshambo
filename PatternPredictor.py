@@ -186,28 +186,28 @@ class PatternPredictor:
         
         if tally[0] == maxCount:
             latestR = History.rfind("0")
-            distToR = latestR / (historySize + 1)
+            distToR = latestR / (historySize + 0)
             #distToR = math.log(latestR, historySize + 0)
         if tally[1] == maxCount:
             latestP = History.rfind("1")
-            distToP = latestP / (historySize + 1)
+            distToP = latestP / (historySize + 0)
             #distToP = math.log(latestP, historySize + 0)
         if tally[2] == maxCount:
             latestS = History.rfind("2")
-            distToS = latestS / (historySize + 1)
+            distToS = latestS / (historySize + 0)
             #distToS = math.log(latestS, historySize + 0)
             
-        if latestR >= latestP or latestR >= latestS:
+        if latestR and (latestR > latestP or latestR > latestS):
             prediction = 0
             confidence = distToR - (distToP + distToS)
             confidence = distToR
 
-        if latestP >= latestR or latestP >= latestS:
+        if latestP and (latestP > latestR or latestP > latestS):
             prediction = 1
             confidence = distToP - (distToR + distToS)
             confidence = distToP
 
-        if latestS >= latestP or latestS >= latestR:
+        if latestS and (latestS > latestP or latestS > latestR):
             prediction = 2
             confidence = distToS - (distToP + distToR)
             confidence = distToS 
@@ -217,6 +217,7 @@ class PatternPredictor:
         if prediction != -1:
             return prediction, confidence
 
+        print("Random PP")
         # if we still have a tie, choose between them using a random number
         sumCount = maxCount * numCount
         
