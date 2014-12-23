@@ -51,10 +51,11 @@ class PredictorSelector:
 #        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
 #        Predictors.append(p)
 
-        #PPsize = 29
-        PPsize = 28
+        PPsize = 29
+        #PPsize = 28
         #PPsize = 32     #(8756 score. rank 5)
         #PPsize = 39
+        PPsize = 10     #(rank 4.9)
         argv = [2]
         nextSeqSize = max(argv) + 1
 
@@ -73,7 +74,8 @@ class PredictorSelector:
         #print([p.variant for p in Predictors])
                     
         MBFPsize = 21
-        #MBFPsize = 1
+        MBFPsize = 1
+        MBFPsize = 2
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
             #Predictors.append(p)

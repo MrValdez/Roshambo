@@ -290,9 +290,9 @@ class Yomi:
                 (("B", "C"), transitionBC), (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
                 )))        
         
-        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
-        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
-        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
+#        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]      # not strong
+#        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
+#        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
         layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - self.yomiHistoryTies.count("0")
         layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - self.yomiHistoryTies.count("1")
