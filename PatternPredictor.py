@@ -145,9 +145,7 @@ class PatternPredictor:
         moveCountNum = moveCounts.count(moveCountMax)
         if moveCountNum == 1:
             index = moveCounts.index(moveCountMax)
-            prediction = tally[ index ]
-            
-            #prediction = index    # bug
+            prediction = index
             
             # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
             targetDifference = self.targetDifference           
@@ -184,7 +182,7 @@ class PatternPredictor:
             if Debug:
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
                 input()
-            
+
             return prediction, confidence
 
         # choose the move the was used last
