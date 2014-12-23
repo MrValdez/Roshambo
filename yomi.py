@@ -294,9 +294,9 @@ class Yomi:
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
-        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0")# - self.yomiHistoryTies.count("0")
-        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1")# - self.yomiHistoryTies.count("1")
-        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2")# - self.yomiHistoryTies.count("2")
+        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - self.yomiHistoryTies.count("0")
+        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - self.yomiHistoryTies.count("1")
+        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - self.yomiHistoryTies.count("2")
 
         layer1ratio = 0
         layer2ratio = 0
