@@ -17,6 +17,9 @@ class Predictor:
         self.module = module(variant)
         self.play = self.module.play
         self.variant = variant
+
+        self.scoreWins = 0
+        self.scoreLosts = 0
         self.reset()
     
     def reset(self):        
@@ -48,14 +51,14 @@ class PredictorSelector:
 #        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
 #        Predictors.append(p)
 
-        PPsize = 29
+        #PPsize = 29
         PPsize = 28
         #PPsize = 32     #(8756 score. rank 5)
         #PPsize = 39
-        nextSeqSize = 1
-        argv = [1]
+        argv = [2]
+        nextSeqSize = max(argv) + 1
 
-        while PPsize > 0:
+        while PPsize >= nextSeqSize:
             argv.append(nextSeqSize)
             variant = ",".join([str(s) for s in argv])
             name = "Pattern Predictor [%i]" % (nextSeqSize)
@@ -64,13 +67,16 @@ class PredictorSelector:
 #                Predictors.append(p)
             Predictors.append(p)
             nextSeqSize += 1
-            PPsize -= 1
+            
+        #Predictors = Predictors[-1:]
+        #print(Predictors[-1].variant)
+        #print([p.variant for p in Predictors])
                     
         MBFPsize = 21
-        MBFPsize = 1
+        #MBFPsize = 1
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
-        #    Predictors.append(p)
+            #Predictors.append(p)
             MBFPsize -= 1
         
         #Predictors.reverse()
@@ -195,6 +201,8 @@ class PredictorSelector:
         Get the highest rank using "lower bound of Wilson score confidence interval for a Bernoulli parameter"
         http://www.evanmiller.org
          How Not To Sort By Average Rating.htm
+        
+        https://news.ycombinator.com/item?id=3792627
         """
 
         # grab the top 3 wins, top 3 wins-lost, top 3 confidences
@@ -262,10 +270,24 @@ class PredictorSelector:
             random = rps.random() % len(filteredPredictors)
             chosenPredictor = filteredPredictors[random]
             rating = 0
+            return chosenPredictor, rating
             
         if len(predictorScores) == 1:
             rating, chosenPredictor = predictorScores[0]
-        elif len(predictorScores) > 1:      
+            return chosenPredictor, rating
+            
+        # there are multiple predictors with the same rating.
+        # let's choose the one with the biggest score (positive - negative)
+        highestScorer = max(predictorScores, key=lambda i: i[1].scoreWins - i[1].scoreLosts)
+        predictorScores = [p for p in predictorScores if p[0] == maxRating]
+        
+        if len(highestScorer) == 1:
+            # in practice, this doesn't happen, but we put in this option to try to minimize 
+            rating, chosenPredictor = predictorScores[0]
+            return chosenPredictor, rating        
+        else:
+            # there are still ties so we choose at random
+            
             # check if the highest rating predictions have different moves.
             # if True, then randomly select from between the moves
             Rmoves = [p for p in predictorScores if p[1].moveLastTurn == 0]
@@ -365,7 +387,7 @@ class PredictorSelector:
         rankConfidence = chosenPredictor.confidenceThisTurn
         return chosenPredictor, rankConfidence
         
-# from stackoverflow. google search: "wilson bernoulli python". (No exact url because I was on mobile Internet and I copy-pasted from phone to pc)
+# http://stackoverflow.com/questions/10029588/python-implementation-of-the-wilson-score-interval
 
 def binconf(p, n, c=0.95):
     '''

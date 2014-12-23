@@ -94,7 +94,7 @@ class PatternPredictor:
             tally[move] += 1
             found = History.find(Seq, found + 1, -SequenceLength)
             
-            # check if we get a tally that is greater than 10 compared to the other tallies.
+            # check if we get a tally that is greater than 150 compared to the other tallies.
             # this is an optimization to quickly end the loop.
             difference = 150
             if tally[0] >= tally[1] + difference and tally[0] >= tally[2] + difference:    
@@ -165,10 +165,18 @@ class PatternPredictor:
             else:
                 confidence = 0
             
+            confidence = (sum(moveCounts) - moveCountMax) / targetDifference
             #confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
             #confidence = math.log(moveCounts[index], sum(moveCounts))
-            confidence = moveCounts[index] / sum(moveCounts)
+            #confidence = moveCounts[index] / sum(moveCounts)
+#            sumOfOtherCounts = ((0 if index == 0 else moveCounts[0]) + 
+#                                (0 if index == 1 else moveCounts[1]) +
+#                                (0 if index == 2 else moveCounts[2]))
+            #confidence = sumOfOtherCounts / moveCounts[index]
+            #confidence = math.log(sumOfOtherCounts, moveCounts[index])
+            #print(moveCounts)
             #print(moveCounts[index], sum(moveCounts))
+            #print(((moveCounts[0] if index != 0 else 0) + (moveCounts[1] if index != 1 else 0) + (moveCounts[2] if index != 2  else 0)))
             #print (confidence)
             #confidence = 0.6           ##
             #confidence = 1
