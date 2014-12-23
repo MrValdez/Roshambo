@@ -306,7 +306,7 @@ class Yomi:
 #        layer2ratio = (layer2score) / currentTurn
 #        layer3ratio = (layer3score) / currentTurn
         
-#        layer1ratio = (layer1score) / 50
+#        layer1ratio = (layer1score) / 50           #not strong
 #        layer2ratio = (layer2score) / 50
 #        layer3ratio = (layer3score) / 50
         

@@ -96,7 +96,7 @@ class PatternPredictor:
             
             # check if we get a tally that is greater than 150 compared to the other tallies.
             # this is an optimization to quickly end the loop.
-            difference = 150
+            difference = 100
             if tally[0] >= tally[1] + difference and tally[0] >= tally[2] + difference:    
                 break
             if tally[1] >= tally[0] + difference and tally[1] >= tally[2] + difference:    
