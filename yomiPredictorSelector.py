@@ -51,11 +51,16 @@ class PredictorSelector:
 #        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
 #        Predictors.append(p)
 
-        PPsize = 29
+        #PPsize = 8      # minimum to work
+        PPsize = 32     #(8756 score. rank 5)
+        #PPsize = 10     #(rank 4.9)
         #PPsize = 28
-        #PPsize = 32     #(8756 score. rank 5)
-        #PPsize = 39
-        PPsize = 10     #(rank 4.9)
+        PPsize = 28 #(1)10.10.7072 (2)12.9.7162
+        PPsize = 10 #(1)8.6.7690 (2)10.8.7473
+        PPsize = 32 #(1)8.8.7593 (2)9.7.7803
+        PPsize = 20 #(1)8.11.6929 (2)8.8.7466
+        PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
+        PPsize = 29 #(1)11.11.6510  (2)7.6.8133
         argv = [2]
         nextSeqSize = max(argv) + 1
 
@@ -218,7 +223,6 @@ class PredictorSelector:
         #filteredPredictors = set(maxWins[:3]) | set(maxDiff[:3]) | set(maxConfidence[:3])   # union
         #filteredPredictors = set(maxWins[:5]) | set(maxDiff[:5]) | set(maxConfidence[:5])   # union
         
-
 ##############
 ##todo: add treshold instead?
 #########
@@ -280,10 +284,10 @@ class PredictorSelector:
             
         # there are multiple predictors with the same rating.
         # let's choose the one with the biggest score (positive - negative)
-        highestScorer = max(predictorScores, key=lambda i: i[1].scoreWins - i[1].scoreLosts)
-        predictorScores = [p for p in predictorScores if p[0] == maxRating]
+        highestScorers = max(predictorScores, key=lambda i: i[1].scoreWins - i[1].scoreLosts)
+        predictorScores = [p for p in predictorScores if p[0] == highestScorers[0]]
         
-        if len(highestScorer) == 1:
+        if len(predictorScores) == 1:
             # in practice, this doesn't happen, but we put in this option to try to minimize 
             rating, chosenPredictor = predictorScores[0]
             return chosenPredictor, rating        
@@ -305,7 +309,7 @@ class PredictorSelector:
                 finalChoice = Pmoves[0]
             elif len(Smoves) and len(Smoves) > len(Pmoves) and len(Smoves) > len(Rmoves):
                 finalChoice = Smoves[0]
-            else:
+            else:               
                 random = rps.random() % len(predictorScores)
                 finalChoice = predictorScores[random]
             

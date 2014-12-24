@@ -114,7 +114,14 @@ class Yomi:
         self.yomiModels = [ [], [], [] ]
         
         self.yomiHistory = ""
-        self.yomiHistorySize = 800           # target for DNA
+        self.yomiHistorySize = 500           # target for DNA
+        self.yomiHistorySize = 500           # ..
+        self.yomiHistorySize = 10           # 8.16.5976
+        self.yomiHistorySize = 50           # 9.15.6494
+        self.yomiHistorySize = 150           # 12.8.7425
+        self.yomiHistorySize = 500           # 8.7.7481
+        self.yomiHistorySize = 1000           # 13.7.7552
+        self.yomiHistorySize = 100           # 6.6.6981
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -281,7 +288,7 @@ class Yomi:
         Debug = True
         Debug = False
 
-        if Debug and currentTurn > 900:
+        if Debug:
             print (start, predictionConfidence)
             
             pprint (OrderedDict((
@@ -294,9 +301,9 @@ class Yomi:
 #        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
 #        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
-        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - self.yomiHistoryTies.count("0")
-        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - self.yomiHistoryTies.count("1")
-        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - self.yomiHistoryTies.count("2")
+        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0")# - self.yomiHistoryTies.count("0")
+        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1")# - self.yomiHistoryTies.count("1")
+        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2")# - self.yomiHistoryTies.count("2")
 
         layer1ratio = 0
         layer2ratio = 0
@@ -305,14 +312,30 @@ class Yomi:
 #        layer1ratio = (layer1score) / currentTurn
 #        layer2ratio = (layer2score) / currentTurn
 #        layer3ratio = (layer3score) / currentTurn
-        
-#        layer1ratio = (layer1score) / 50           #not strong
-#        layer2ratio = (layer2score) / 50
-#        layer3ratio = (layer3score) / 50
-        
-        if layer1score: layer1ratio = (layer1score) / len(self.yomiHistoryWins)
-        if layer2score: layer2ratio = (layer2score) / len(self.yomiHistoryWins)
-        if layer3score: layer3ratio = (layer3score) / len(self.yomiHistoryWins)
+
+#6.8.6981
+        layer1ratio = (layer1score) / 50           #not strong
+        layer2ratio = (layer2score) / 50
+        layer3ratio = (layer3score) / 50
+
+#6.9.7222
+        if layer1score < 0: layer1ratio = (layer1score / len(self.yomiHistoryWins)) 
+        if layer2score < 0: layer2ratio = (layer2score / len(self.yomiHistoryWins)) 
+        if layer3score < 0: layer3ratio = (layer3score / len(self.yomiHistoryWins)) 
+
+#12.15.6227
+#        if layer1score: layer1ratio = (layer1score) / len(self.yomiHistoryWins)
+#        if layer2score: layer2ratio = (layer2score) / len(self.yomiHistoryWins)
+#        if layer3score: layer3ratio = (layer3score) / len(self.yomiHistoryWins)
+
+#9.9.7335
+#        if layer1score > 0: layer1ratio = math.log(layer1score, len(self.yomiHistoryWins))
+#        if layer2score > 0: layer2ratio = math.log(layer2score, len(self.yomiHistoryWins))
+#        if layer3score > 0: layer3ratio = math.log(layer3score, len(self.yomiHistoryWins))
+
+#        if layer1score < 0: layer1ratio = (layer1score / len(self.yomiHistoryWins)) 
+#        if layer2score < 0: layer2ratio = (layer2score / len(self.yomiHistoryWins)) 
+#        if layer3score < 0: layer3ratio = (layer3score / len(self.yomiHistoryWins)) 
         
         transitionAA += layer1ratio
         transitionBA += layer1ratio
@@ -325,7 +348,7 @@ class Yomi:
         transitionBC += layer3ratio
         transitionCC += layer3ratio
 
-        if Debug and currentTurn > 900:
+        if Debug:
             print ("wins  ", self.yomiLayerWins)
             print ("losts ", self.yomiLayerLosts)
             print (layer1score, layer2score, layer3score)
@@ -345,6 +368,10 @@ class Yomi:
         transitionCB -= layer3ratio
 
         if Debug and currentTurn > 900:
+#        if transitionAA + transitionAB > 1 or               \
+#         transitionBA + transitionBB + transitionBC > 1 or  \
+#         transitionCA + transitionCB + transitionCC > 1:
+
             pprint (OrderedDict((
                 (("A", "A"), transitionAA), (("A", "B"), transitionAB),
                 (("B", "A"), transitionBA), (("B", "B"), transitionBB), 

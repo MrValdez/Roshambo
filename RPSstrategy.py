@@ -53,24 +53,24 @@ class RPSstrategy:
                 if EarlyGame > 1:
                     #confidence = currentTurn / EarlyGame
                     confidence = 1 - math.log(currentTurn, EarlyGame)
-                        
-        if lostDifference >= self.panicValue:
+           
+        if currentTurn > 1 and lostDifference >= self.panicValue:
 #            print("losing at turn", currentTurn)
 #            print(self.playerWins)
 #            print(lostDifference)
 #            print(turnsRemaining)
-            #input()
+#            input()
             if lostDifference < self.losingValue:
                 confidence = math.log(lostDifference, self.losingValue)
             else:
                 confidence = (lostDifference / self.losingValue)
        
             confidence = (lostDifference / self.losingValue)
-            #confidence = math.log(lostDifference, self.losingValue)
+            confidence = math.log(lostDifference, self.losingValue)
             #print(currentTurn, self.playerWins, self.playerLosts, lostDifference, confidence)
             #input()
-        
 #######        figure out what to do with layer -1
+            return move, confidence
         
         # are we in the midgame and are we losing?
         if confidence < 1 and self.playerLosts + self.playerTies > totalTurns / 3: #dna?
