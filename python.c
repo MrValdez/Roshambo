@@ -122,12 +122,36 @@ rps_normcdfi (PyObject *self, PyObject *args)
     double p;
     if (!PyArg_ParseTuple(args, "d", &p))     //d refers to double, not decimal
     {
-        printf ("biasedRoshambo received invalid arguments");
+        printf ("rps_normcdfi received invalid arguments");
         exit(1);
         return -1;  //todo: raise error	
     }
 
     return PyFloat_FromDouble(normcdfi(p, 0.0, 1.0));      //default: mu=0.0, sigma2=1.0
+}
+
+
+static PyObject *
+rps_binconf (PyObject *self, PyObject *args)
+{
+    int p, n;
+    double c;
+    if (!PyArg_ParseTuple(args, "iid", &p, &n, &c))     //d refers to double, not decimal
+    {
+        printf ("binconf     received invalid arguments");
+        exit(1);
+        return -1;  //todo: raise error	
+    }
+
+    double theta_low, theta_high;
+    binconf(p, n, c, &theta_low, &theta_high);
+    //if (c != 0) printf("%i, %i, %f, %f, %f\n", p, n, c, theta_low, theta_high);
+    
+    PyObject *pyList = PyList_New(2);
+    PyList_SetItem(pyList, 0, PyFloat_FromDouble(theta_low));
+    PyList_SetItem(pyList, 1, PyFloat_FromDouble(theta_high));
+    
+    return pyList;
 }
 
 static PyMethodDef rpsMethods[] = {
@@ -139,6 +163,7 @@ static PyMethodDef rpsMethods[] = {
     {"random",  rps_random, METH_VARARGS, "Returns random number between [0..maxrandom]"},
     {"randomRange",  rps_randomRange, METH_VARARGS, "Returns random number between [0..1]"},
     {"normcdfi",  rps_normcdfi, METH_VARARGS, "Returns lower bound of Wilson score confidence interval for a Bernoulli parameter"},
+    {"binconf",  rps_binconf, METH_VARARGS, "Returns a list of the lower and upper bound of Wilson score confidence interval for a Bernoulli parameter"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
