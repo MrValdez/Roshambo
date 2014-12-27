@@ -96,9 +96,13 @@ class Yomi:
         self.VisualDebugger.connect()
         self.reset()
 
+        self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
+        self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
+
         self.yomiHistoryWins = ""
         self.yomiHistoryLosts = ""
         self.yomiHistoryTies = ""
+
  
     def reset(self):        
         self.yomiChoices = [0, 0, 0]           # Holds the choices in each yomi layer.
@@ -120,8 +124,18 @@ class Yomi:
         self.yomiHistorySize = 50           # 9.15.6494
         self.yomiHistorySize = 150           # 12.8.7425
         self.yomiHistorySize = 500           # 8.7.7481
-        self.yomiHistorySize = 1000           # 13.7.7552
-        self.yomiHistorySize = 100           # 6.6.6981
+        
+        self.yomiHistorySize = 1000           # 15.9.7073
+        self.yomiHistorySize = 100           # 3.12.6809        # current good
+        #self.yomiHistorySize = 800           # 8.6.8183
+        
+        #self.yomiHistorySize = 900
+#        self.yomiHistorySize = 300          # 5.7.7549
+        self.yomiHistorySize = 50
+        self.yomiHistorySize = 800
+        self.yomiHistorySize = 500          # 9.5.8281
+        self.yomiHistorySize = 100
+        
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -309,21 +323,34 @@ class Yomi:
         layer2ratio = 0
         layer3ratio = 0
 
-#        layer1ratio = (layer1score) / currentTurn
-#        layer2ratio = (layer2score) / currentTurn
-#        layer3ratio = (layer3score) / currentTurn
+        layer1ratio = (layer1score) / currentTurn
+        layer2ratio = (layer2score) / currentTurn
+        layer3ratio = (layer3score) / currentTurn
 
-#6.8.6981
+#6.8.7356
         layer1ratio = (layer1score) / 50           #not strong
         layer2ratio = (layer2score) / 50
         layer3ratio = (layer3score) / 50
 
-#6.9.7222
+        #foo = 16
+        foo = 22    #5.7.7653
+        foo = 42
+        
+        layer1ratio = (layer1score) / foo
+        layer2ratio = (layer2score) / foo
+        layer3ratio = (layer3score) / foo
+        
+#3.10.6809
+
+#todo: recover 3.10
+#        layer1ratio = 0
+#        layer2ratio = 0
+#        layer3ratio = 0
+
         if layer1score < 0: layer1ratio = (layer1score / len(self.yomiHistoryWins)) 
         if layer2score < 0: layer2ratio = (layer2score / len(self.yomiHistoryWins)) 
         if layer3score < 0: layer3ratio = (layer3score / len(self.yomiHistoryWins)) 
 
-#12.15.6227
 #        if layer1score: layer1ratio = (layer1score) / len(self.yomiHistoryWins)
 #        if layer2score: layer2ratio = (layer2score) / len(self.yomiHistoryWins)
 #        if layer3score: layer3ratio = (layer3score) / len(self.yomiHistoryWins)

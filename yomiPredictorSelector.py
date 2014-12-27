@@ -78,9 +78,9 @@ class PredictorSelector:
         #print(Predictors[-1].variant)
         #print([p.variant for p in Predictors])
                     
-        MBFPsize = 21
         MBFPsize = 1
         MBFPsize = 2
+        MBFPsize = 21
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
             #Predictors.append(p)
@@ -222,6 +222,7 @@ class PredictorSelector:
         filteredPredictors = self.Predictors    # no union
         #filteredPredictors = set(maxWins[:3]) | set(maxDiff[:3]) | set(maxConfidence[:3])   # union
         #filteredPredictors = set(maxWins[:5]) | set(maxDiff[:5]) | set(maxConfidence[:5])   # union
+        filteredPredictors = list(filteredPredictors)
         
 ##############
 ##todo: add treshold instead?
@@ -242,12 +243,23 @@ class PredictorSelector:
                         
             confidence = 1 - confidence
             maxPredictionRating = 0.99                      # possible DNA
+            #maxPredictionRating = 1                      # possible DNA
             if confidence > maxPredictionRating: confidence = maxPredictionRating
             if confidence < 0.0: confidence = 0.0
             #confidence = 0.85            
                         
             if positiveRatings <= 0 or totalRatings <= 0:
                 continue
+                
+# weak but there's a possiblity that its an implementation bug                
+#            confidence = 1 - confidence
+#            ratings = rps.binconf(positiveRatings, totalRatings, confidence)
+#            rating = ratings[1] # grab the low end
+#            if math.isnan(rating) == False:
+#                predictorScores.append((rating, predictor))
+                
+                #if rating >= 0.1: print(rating,positiveRatings, totalRatings, confidence)
+#            continue
                         
             #z = 1.96        # hardcorded for confidence=95%
             #z = 1.0         # 1.44=85% 1.96=95%
