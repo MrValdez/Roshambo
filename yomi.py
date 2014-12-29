@@ -131,7 +131,6 @@ class Yomi:
         
         #self.yomiHistorySize = 900
 #        self.yomiHistorySize = 300          # 5.7.7549
-        self.yomiHistorySize = 50
         self.yomiHistorySize = 800
         self.yomiHistorySize = 500          # 9.5.8281
         self.yomiHistorySize = 100
@@ -328,13 +327,18 @@ class Yomi:
         layer3ratio = (layer3score) / currentTurn
 
 #6.8.7356
-        layer1ratio = (layer1score) / 50           #not strong
-        layer2ratio = (layer2score) / 50
-        layer3ratio = (layer3score) / 50
+#        layer1ratio = (layer1score) / 50           #not strong
+#        layer2ratio = (layer2score) / 50
+#        layer3ratio = (layer3score) / 50
 
+        #foo = 64    #start
+        #foo = 100   #end
         #foo = 16
-        foo = 22    #5.7.7653
-        foo = 42
+#        foo = 22    #5.7.7653
+#        foo = 59    #4.10.7080
+#        foo = 50    #4.11.6870
+        foo = 42    #4.5.8347
+        
         
         layer1ratio = (layer1score) / foo
         layer2ratio = (layer2score) / foo

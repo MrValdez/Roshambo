@@ -14,7 +14,30 @@ class RPSstrategy:
         
         #self.losingValue = 100       # if the lost difference reaches this value, the AI is losing  # rank 8.6
         self.losingValue = 50       # if the lost difference reaches this value, the AI is losing    # rank 5.6
-        self.panicValue = int(self.losingValue * 0.75)  # dna
+        self.panicValue = int(self.losingValue * 0.75) #37  # dna
+        self.panicValue = 3 * 3 * 3 #27
+        self.panicValue = 1000  # 9.9.7643
+        self.panicValue = 300   # 8.10.7551
+        self.panicValue = 500   # 7.9.7643
+        self.panicValue = 100   # 7.9.7643
+        self.panicValue = 84    # 8.9.7464
+        self.panicValue = 83    # 8.6.7864
+        self.panicValue = 80    # 6.7.7568
+        self.panicValue = 75    # 8.6.7946
+        self.panicValue = 73    # 7.8.7536
+        self.panicValue = 72    # 7.9.7315
+        self.panicValue = 68    # 8.6.8458
+        self.panicValue = 67    # 8.5.8524
+        self.panicValue = 56    # 7.6.8367
+        self.panicValue = 47    # 10.6.8033
+        self.panicValue = 12    # 10.6.7924
+        self.panicValue = 7     # 8.6.8164
+        self.panicValue = 4     # 4.6.7939
+        self.panicValue = 29    # 3.7/5.8
+        self.panicValue = 13    # 4.8
+        self.panicValue = 37    # 4.5.8347
+        
+        
     
     def update(self):        
         currentTurn = rps.getTurn()
