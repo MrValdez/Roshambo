@@ -104,8 +104,6 @@ class MBFP:
                 print("predictionR, predictionP:             %.2f %.2f" % (self.predictionR, self.predictionP));
                 print("thisTurnProbR, thisTurnProbP:         %.2f %.2f\n" % (thisTurnProbR, thisTurnProbP))
             
-            if Debug:
-                input()
                 
             self.remainingPredictionSize -= 1
             move = biased_roshambo (thisTurnProbR, thisTurnProbP)
@@ -115,6 +113,9 @@ class MBFP:
             elif move == 1:  confidence = thisTurnProbP
             else:            confidence = 1.0 - (thisTurnProbR + thisTurnProbP)
             
+        if Debug:
+            print("Move, Confidence returned:               %i %.2f" % (move, confidence))
+            input()
         return move, confidence
 
     def play(self):

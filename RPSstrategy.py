@@ -75,56 +75,23 @@ class RPSstrategy:
             else:
                 if EarlyGame > 1:
                     #confidence = currentTurn / EarlyGame
+                    #confidence = math.log(currentTurn, EarlyGame)
+                    #confidence = 1 - (currentTurn / EarlyGame)
                     confidence = 1 - math.log(currentTurn, EarlyGame)
            
         if currentTurn > 1 and lostDifference >= self.panicValue:
 #            print("losing at turn", currentTurn)
-#            print(self.playerWins)
+#            print(self.playerWins, self.playerLosts, self.playerTies)
 #            print(lostDifference)
 #            print(turnsRemaining)
 #            input()
-            if lostDifference < self.losingValue:
-                confidence = math.log(lostDifference, self.losingValue)
-            else:
-                confidence = (lostDifference / self.losingValue)
        
-            confidence = (lostDifference / self.losingValue)
+#            confidence = (lostDifference / self.losingValue)
             confidence = math.log(lostDifference, self.losingValue)
             #print(currentTurn, self.playerWins, self.playerLosts, lostDifference, confidence)
             #input()
-#######        figure out what to do with layer -1
-            return move, confidence
+#######        todo: figure out what to do with layer -1
         
-        # are we in the midgame and are we losing?
-        if confidence < 1 and self.playerLosts + self.playerTies > totalTurns / 3: #dna?
-        #if turnsRemaining < self.losingValue * 3: #dna?
-        #if currentTurn > self.losingValue:        
-            # should we panic?
-            panicCheck = self.playerWins - self.playerLosts + (turnsRemaining * 2)        ### rank 5/14 (5969)
-            #panicCheck = self.playerWins - self.playerLosts + (turnsRemaining * 1.8)      ### rank 5/18 (5781)
-            #panicCheck = self.playerWins - self.playerLosts + (turnsRemaining * 2.5)      ### rank 9
-            #panicCheck = self.playerWins - self.playerLosts + (turnsRemaining * 1.9)      ### rank 9
-            #panicCheck = self.playerWins - self.playerLosts + (turnsRemaining * 2.1)      ### rank 8
-            
-            #panicCheck = turnsRemaining - lostDifference
-                        
-            #if panicCheck > self.losingValue:      
-            #if lostDifference > self.panicValue:
-            #if panicCheck < self.losingValue:      
-            
-            if self.playerWins < self.playerLosts:
-                # Let's make an assumption that we running out of turns to win
-                # If we are going to lose, we might as well play for draws
-                
-                # confidence = (panicCheck / self.losingValue)
-                confidence = (lostDifference / (self.losingValue + turnsRemaining))
-                #confidence = math.log(lostDifference, self.losingValue + turnsRemaining)
-                #print(confidence)
-                #confidence = 1
-                #print(turnsRemaining, self.playerWins, self.playerLosts, self.playerTies, lostDifference)
-                #print("s", panicCheck, self.losingValue)
-                #input()
-            
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
         
