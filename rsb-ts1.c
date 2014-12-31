@@ -120,7 +120,7 @@ int biased_roshambo (double prob_rock, double prob_paper)
    //getch();*/   
 
    if ( throw < prob_rock )                   { return(rock); }
-   else if ( throw <= prob_rock + prob_paper ) { return(paper); }
+   else if ( throw < prob_rock + prob_paper ) { return(paper); }
    else /* throw > prob_rock + prob_paper */ { return(scissors); }
 }
 
