@@ -113,15 +113,15 @@ int biased_roshambo (double prob_rock, double prob_paper)
    throw = random() / maxrandom;
    
    /*//printf("\n %f %f %f %i", prob_rock, prob_paper, throw, RAND_MAX ); 
-   prob_rock = ((int)(prob_rock * 1000)) / 1000.0f;
-   prob_paper = ((int)(prob_paper * 1000)) / 1000.0f;
+   //prob_rock = ((int)(prob_rock * 1000)) / 1000.0f;
+   //prob_paper = ((int)(prob_paper * 1000)) / 1000.0f;
    printf("\n%f", throw );
    printf("\n %f %f %f %i", prob_rock, prob_paper, throw, RAND_MAX ); 
    //getch();*/   
 
    if ( throw < prob_rock )                   { return(rock); }
-   else if ( throw < prob_rock + prob_paper ) { return(paper); }
-   else /* throw >= prob_rock + prob_paper */ { return(scissors); }
+   else if ( throw <= prob_rock + prob_paper ) { return(paper); }
+   else /* throw > prob_rock + prob_paper */ { return(scissors); }
 }
 
 /*  Index of RoShamBo Player Algorithms:
