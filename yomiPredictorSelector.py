@@ -5,6 +5,7 @@ import BeatFrequentPick
 import PatternPredictor
 import rps
 
+from pprint import pprint
 Debug = True
 Debug = False
 
@@ -79,8 +80,8 @@ class PredictorSelector:
         #print([p.variant for p in Predictors])
                     
         MBFPsize = 1
-        MBFPsize = 2
-        MBFPsize = 21
+        #MBFPsize = 2
+        #MBFPsize = 21
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
             #Predictors.append(p)
@@ -193,6 +194,7 @@ class PredictorSelector:
         
     def getHighestRank(self):    
         chosenPredictor, rankRating = self.getHighestRank_LowerWilson()
+        #chosenPredictor, rankRating = self.getHighestRank_Toilet()
         #chosenPredictor, rankRating = self.getHighestRank_Naive()
         
         self.LastPredictor = chosenPredictor
@@ -295,33 +297,66 @@ class PredictorSelector:
             return chosenPredictor, rating
             
         # there are multiple predictors with the same rating.
+
         # let's choose the one with the biggest score (positive - negative)
         highestScorers = max(predictorScores, key=lambda i: i[1].scoreWins - i[1].scoreLosts)
         predictorScores = [p for p in predictorScores if p[0] == highestScorers[0]]
+
+        # tally the moves and choose the move with the most tally
         
+        tally = [0, 0, 0]
+        for p in predictorScores:
+            # tally[p[1].moveLastTurn] += 1
+            if p[1].moveLastTurn == 0: tally[0] += 1
+            if p[1].moveLastTurn == 1: tally[1] += 1
+            if p[1].moveLastTurn == 2: tally[2] += 1
+                
+        # let's choose a move at random between them
+#        move = rps.biased_roshambo (tally[0] / sum(tally), tally[1] / sum(tally))
+#        predictorScores = [p for p in predictorScores if p[1].moveLastTurn == move]        
+        
+        # Filter predictorScores to only include the predictors with the maximum tally.
+#        maxTally = max(tally)
+#        talliedScorers = set()
+#        if tally[0] == maxTally: 
+#            rocks = [p for p in predictorScores if p[1].moveLastTurn == 0]
+#            talliedScorers |= set(rocks)
+#        if tally[1] == maxTally: 
+#            papers = [p for p in predictorScores if p[1].moveLastTurn == 1]
+#            talliedScorers |= set(papers)
+#        if tally[2] == maxTally: 
+#            scissors = [p for p in predictorScores if p[1].moveLastTurn == 2]
+#            talliedScorers |= set(scissors)                    
+#        predictorScores = talliedScorers
+        
+#        random = rps.random() % len(predictorScores)
+#        finalChoice = predictorScores[random]
+        
+#        chosenPredictor = finalChoice[1]
+#        rating = finalChoice[0]            
+        
+#        return chosenPredictor, rating
+        
+                
         if len(predictorScores) == 1:
             # in practice, this doesn't happen, but we put in this option to try to minimize 
             rating, chosenPredictor = predictorScores[0]
             return chosenPredictor, rating        
         else:
-            # there are still ties so we choose at random
-            
-            # check if the highest rating predictions have different moves.
-            # if True, then randomly select from between the moves
-            Rmoves = [p for p in predictorScores if p[1].moveLastTurn == 0]
-            Pmoves = [p for p in predictorScores if p[1].moveLastTurn == 1]
-            Smoves = [p for p in predictorScores if p[1].moveLastTurn == 2]
-            size = len(predictorScores)
-                        
             # play the move with the highest score
             finalChoice = None
-            if len(Rmoves) and len(Rmoves) > len(Pmoves) and len(Rmoves) > len(Smoves):
+                    
+            if tally[0] and tally[0] > tally[1] and tally[0] > tally[2]:
+                Rmoves = [p for p in predictorScores if p[1].moveLastTurn == 0]
                 finalChoice = Rmoves[0]
-            elif len(Pmoves) and len(Pmoves) > len(Rmoves) and len(Pmoves) > len(Smoves):
+            elif tally[1] and tally[1] > tally[0] and tally[1] > tally[2]:
+                Pmoves = [p for p in predictorScores if p[1].moveLastTurn == 1]
                 finalChoice = Pmoves[0]
-            elif len(Smoves) and len(Smoves) > len(Pmoves) and len(Smoves) > len(Rmoves):
+            elif tally[2] and tally[2] > tally[0] and tally[2] > tally[1]:
+                Smoves = [p for p in predictorScores if p[1].moveLastTurn == 2]
                 finalChoice = Smoves[0]
             else:               
+                # there are still ties so we choose at random
                 random = rps.random() % len(predictorScores)
                 finalChoice = predictorScores[random]
             
