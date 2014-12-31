@@ -126,7 +126,7 @@ class Yomi:
         self.yomiHistorySize = 500           # 8.7.7481
         
         self.yomiHistorySize = 1000           # 15.9.7073
-        self.yomiHistorySize = 100           # 3.12.6809        # current good
+        self.yomiHistorySize = 100           # 3.12.6809        # current best
         #self.yomiHistorySize = 800           # 8.6.8183
         
         #self.yomiHistorySize = 900
@@ -246,13 +246,13 @@ class Yomi:
 # short RPS 20-20-60: 385 (592, 207, 201)
 # full  RPS 20-20-60: 380 (585, 205, 210)
 
-    def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):          
+    def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):                  
         if ownPlayConfidence > predictionConfidence:
             return -1, ownPlayConfidence
                 
         if ownPlayConfidence == predictionConfidence:
             # flip a coin
-            if rps.randomRange() < 0.5:
+            if rps.randomRange() <= 0.5:
                 return -1, ownPlayConfidence
 
         currentTurn = rps.getTurn()        
@@ -268,11 +268,6 @@ class Yomi:
         if layerLastTurn == 1:  start = "B"
         if layerLastTurn == 2:  start = "C"
 
-        # Benford's law
-        # 1 	30.1% 	
-        # 2 	17.6% 	
-        # 3 	12.5% 	
-        
         if predictionConfidence == 1:
             transitionAA = transitionBA = transitionCA = 1
             if start == "A":
@@ -281,22 +276,57 @@ class Yomi:
             transitionAA = transitionBA = transitionCA = predictionConfidence
 
         transitionAB = 1 - transitionAA
-        
+
+        # Benford's law
+        # 1 	30.1% 	
+        # 2 	17.6% 	
+        # 3 	12.5% 	
+
+##
+# method 1:        
+        Layer2Preference = 0.301
+        Layer3Preference = 0.176
+                                        
         transitionBB = transitionAB 
-        #transitionBA = (1 - transitionBB) * 0.5 # (1 - 0.301)
-        #transitionBC = (1 - transitionBB) * 0.5 # (0.301)
-        transitionBA = (1 - transitionBB) * (1 - 0.301)
-        transitionBC = (1 - transitionBB) * (0.301)
+        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
+        transitionBC = (1 - transitionBB) * (Layer2Preference)
+
         
-        transitionCC = transitionBC
-        transitionCB = (1 - transitionCC) * 0.176
-        transitionCA = (1 - transitionCC) * (1 - 0.176)
-        
-        #transitionCC, transitionCB = transitionCB, transitionCC
-        
+        transitionCA = transitionBC
         transitionCA = predictionConfidence
-        transitionCB = (1 - transitionCA) * (1 - 0.176)
-        transitionCC = (1 - transitionCA) * (0.176)        
+        transitionCB = (1 - transitionCA) * (1 - Layer3Preference)
+        transitionCC = (1 - transitionCA) * (Layer3Preference)        
+
+##
+# method 2
+        #todo: study 1/e = 0.368
+#        Layer2Preference = 0.368
+#        Layer3Preference = 0.101
+                        
+#        transitionBB = transitionAB 
+#        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
+#        transitionBC = (1 - transitionBB) * (Layer2Preference)
+        
+#        transitionCC = transitionBC
+#        transitionCB = (1 - transitionCC) * Layer3Preference
+#        transitionCA = (1 - transitionCC) * (1 - Layer3Preference)
+
+#        transitionCC, transitionCB = transitionCB, transitionCC
+##
+
+#       match rank 8. tournament rank 4
+#        Layer2Preference = 0.368
+#        Layer3Preference = 0.176
+                        
+#        transitionBB = transitionAB 
+#        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
+#        transitionBC = (1 - transitionBB) * (Layer2Preference)
+        
+#        transitionCC = transitionBC
+#        transitionCB = (1 - transitionCC) * Layer3Preference
+#        transitionCA = (1 - transitionCC) * (1 - Layer3Preference)
+
+#        transitionCC, transitionCB = transitionCB, transitionCC
 
         Debug = True
         Debug = False
@@ -308,8 +338,8 @@ class Yomi:
                 (("A", "A"), transitionAA), (("A", "B"), transitionAB),
                 (("B", "A"), transitionBA), (("B", "B"), transitionBB), 
                 (("B", "C"), transitionBC), (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
-                )))        
-        
+                ))) 
+                
 #        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]      # not strong
 #        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
 #        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
@@ -322,9 +352,9 @@ class Yomi:
         layer2ratio = 0
         layer3ratio = 0
 
-        layer1ratio = (layer1score) / currentTurn
-        layer2ratio = (layer2score) / currentTurn
-        layer3ratio = (layer3score) / currentTurn
+#        layer1ratio = (layer1score) / currentTurn
+#        layer2ratio = (layer2score) / currentTurn
+#        layer3ratio = (layer3score) / currentTurn
 
 #6.8.7356
 #        layer1ratio = (layer1score) / 50           #not strong
@@ -337,8 +367,7 @@ class Yomi:
 #        foo = 22    #5.7.7653
 #        foo = 59    #4.10.7080
 #        foo = 50    #4.11.6870
-        foo = 42    #4.5.8347
-        
+        foo = 42    #4.5.8347        
         
         layer1ratio = (layer1score) / foo
         layer2ratio = (layer2score) / foo
@@ -595,11 +624,14 @@ yomi = Yomi()
 strategy = RPSstrategy.RPSstrategy()
 predictorSelector = yomiPredictorSelector.PredictorSelector()
 
+
 #to test specific prediction, uncomment:
 import PatternPredictor
 import BeatFrequentPick
 #import MBFP
 Predictor = None
+
+#strategy = BeatFrequentPick.MBFP(2)
 
 def play(a):
     #to test specific prediction, uncomment:
@@ -614,6 +646,7 @@ def play(a):
     startDebugTurn()
     
     if rps.getTurn() == 0:
+        #print("======", currentOpponent)
         strategy.reset()
         predictorSelector.reset()
         yomi.reset()

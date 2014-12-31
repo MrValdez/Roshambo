@@ -5,7 +5,9 @@ import BeatFrequentPick
 import PatternPredictor
 import rps
 
+import random
 from pprint import pprint
+
 Debug = True
 Debug = False
 
@@ -313,7 +315,8 @@ class PredictorSelector:
                 
         # let's choose a move at random between them
 #        move = rps.biased_roshambo (tally[0] / sum(tally), tally[1] / sum(tally))
-#        predictorScores = [p for p in predictorScores if p[1].moveLastTurn == move]        
+#        predictorScores = [p for p in predictorScores if p[1].moveLastTurn == move][0]
+#        return predictorScores[1], predictorScores[0]
         
         # Filter predictorScores to only include the predictors with the maximum tally.
 #        maxTally = max(tally)
@@ -330,7 +333,7 @@ class PredictorSelector:
 #        predictorScores = talliedScorers
         
 #        random = rps.random() % len(predictorScores)
-#        finalChoice = predictorScores[random]
+#        finalChoice = list(predictorScores)[random]
         
 #        chosenPredictor = finalChoice[1]
 #        rating = finalChoice[0]            
@@ -372,15 +375,46 @@ class PredictorSelector:
                 input()         
 
         return chosenPredictor, rating
-    
+
+    def getHighestRank_Toilet(self):
+        """Get the highest rank using a TOILET algo"""
+
+        # filter out low confidences
+        #maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
+        #p = [p for p in self.Predictors if p.confidenceThisTurn == maxConfidence]
+        
+        
+        p = self.Predictors
+        
+        if len(p) == 1:
+            # only one predictor has high confidence
+            chosenPredictor = p[0]
+        elif len(p) > 1:
+            random.shuffle(p, random = rps.randomRange)
+            
+            # drop the first 37% and grab the best 
+            drop = round(len(p) * 0.37) - 1
+            initial = p[:drop]
+            maxConfidence = max(initial, key=operator.attrgetter('confidenceThisTurn'))
+            maxConfidence = maxConfidence.confidenceThisTurn
+            
+            toCheck = p[drop:]
+            for p in toCheck:
+                if p.confidenceThisTurn >= maxConfidence:
+                    chosenPredictor = p
+                    break
+            else:
+                chosenPredictor = toCheck[-1]
+            
+        rankConfidence = chosenPredictor.confidenceThisTurn
+        return chosenPredictor, rankConfidence
+            
     def getHighestRank_Naive(self):
         """Get the highest rank using a naive algo"""
 
         # filter out low confidences
         maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
-        
-        # grab the predictors close to the confidence
-        p = [p for p in self.Predictors if p.confidenceThisTurn >= maxConfidence.confidenceThisTurn * 0.75]
+        p = [p for p in self.Predictors if p.confidenceThisTurn >= maxConfidence.confidenceThisTurn]
         
         if len(p) == 1:
             # only one predictor has high confidence
@@ -389,7 +423,7 @@ class PredictorSelector:
             # many predictors has high confidence. look for highest wins
             maxScore = max(p, key=operator.attrgetter('scoreWins'))
             predictors = p
-            p = [p for p in predictors if p.scoreWins >= maxScore.scoreWins * 0.75]
+            p = [p for p in predictors if p.scoreWins >= maxScore.scoreWins]
             
             if len(p) == 1:
                 chosenPredictor = p[0]

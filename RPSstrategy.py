@@ -56,7 +56,7 @@ class RPSstrategy:
             self.playerLosts += 1
     
     def play(self):
-        move = rps.random() % 3
+        move = rps.random() % 3           
         confidence = 0
         
         totalTurns = 1000
@@ -65,21 +65,18 @@ class RPSstrategy:
         lostDifference = self.playerLosts - self.playerWins
         #lostDifference = self.playerLosts + self.playerTies - self.playerWins  # doesn't work
         
-        EarlyGame = 20      # DNA
-        if currentTurn <= EarlyGame:
+        EarlyGame = 20      # DNA   (17-21)
+        if currentTurn == 0:
+            confidence = 1
+        elif currentTurn < EarlyGame:
             # at the beginning of the game, we use our own play since we don't have enough information
             # to predict
             #if self.playerWins < self.losingValue:
-            if currentTurn == 0:
-                confidence = 1
-            else:
-                if EarlyGame > 1:
-                    #confidence = currentTurn / EarlyGame
-                    #confidence = math.log(currentTurn, EarlyGame)
-                    #confidence = 1 - (currentTurn / EarlyGame)
-                    confidence = 1 - math.log(currentTurn, EarlyGame)
-           
-        if currentTurn > 1 and lostDifference >= self.panicValue:
+                #confidence = currentTurn / EarlyGame
+                #confidence = math.log(currentTurn, EarlyGame)
+                #confidence = 1 - (currentTurn / EarlyGame)
+                confidence = 1 - math.log(currentTurn, EarlyGame)
+        elif currentTurn > 1 and lostDifference >= self.panicValue:
 #            print("losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)
 #            print(lostDifference)
@@ -94,5 +91,5 @@ class RPSstrategy:
         
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
-        
+
         return move, confidence
