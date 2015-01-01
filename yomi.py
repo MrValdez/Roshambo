@@ -252,7 +252,7 @@ class Yomi:
                 
         if ownPlayConfidence == predictionConfidence:
             # flip a coin
-            if rps.randomRange() <= 0.5:
+            if rps.randomRange() < 0.5:         
                 return -1, ownPlayConfidence
 
         currentTurn = rps.getTurn()        

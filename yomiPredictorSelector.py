@@ -30,8 +30,8 @@ class Predictor:
         self.scoreLosts = 0
         
         self.moveLastTurn = 0
-        self.confidenceThisTurn = 0
-        self.confidenceLastTurn = 0
+        self.confidence = 0
+        self.rankingConfidence = 0
         
     def update(self):
         self.module.update()
@@ -118,7 +118,7 @@ class PredictorSelector:
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
 
             if Debug:
-                print("**%s: move(%i) score(+%i/-%i) confidence(%.2f/%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidenceThisTurn, predictor.confidenceLastTurn), end="")
+                print("**%s: move(%i) score(+%i/-%i) confidence(%.2f) ranking(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
                 if victory:
                     print(" win")
                 elif tie:
@@ -146,7 +146,7 @@ class PredictorSelector:
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
         
             if Debug:
-                print("%s: move(%i) score(+%i/-%i) confidence(%.2f/%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidenceThisTurn, predictor.confidenceLastTurn), end="")
+                print("%s: move(%i) score(+%i/-%i) confidence(%.2f/%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
                 if victory:
                     print(" win")
                 elif tie:
@@ -185,8 +185,7 @@ class PredictorSelector:
             
             #if confidence > 0.9: confidence = 0.9
         
-            predictor.confidenceLastTurn = predictor.confidenceThisTurn
-            predictor.confidenceThisTurn = confidence
+            predictor.confidence = confidence
             
         #2. select the predictors with the highest confidence and score
         move, confidence = self.getHighestRank()
@@ -201,8 +200,7 @@ class PredictorSelector:
         
         self.LastPredictor = chosenPredictor
         move = chosenPredictor.moveLastTurn
-        predictorConfidence = chosenPredictor.confidenceThisTurn
-
+        predictorConfidence = chosenPredictor.confidence
         confidence = rankRating
                 
         return move, confidence 
@@ -219,7 +217,7 @@ class PredictorSelector:
         # grab the top 3 wins, top 3 wins-lost, top 3 confidences
         maxWins       = sorted(self.Predictors, key=lambda i: i.scoreWins)
         maxDiff       = sorted(self.Predictors, key=lambda i: i.scoreWins - i.scoreLosts)
-        maxConfidence = sorted(self.Predictors, key=lambda i: i.confidenceThisTurn)
+        maxConfidence = sorted(self.Predictors, key=lambda i: i.confidence)
         
         # grab the top predictors by wins, diffs and confidence.
         # on test, this has worse effect on ranking. (need more testing for confirmation)
@@ -236,7 +234,7 @@ class PredictorSelector:
         for i, predictor in enumerate(filteredPredictors):
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
-            confidence = predictor.confidenceThisTurn
+            confidence = predictor.confidence
             
             # experiment: what happens if we use our score as confidence in self?
             
@@ -244,39 +242,47 @@ class PredictorSelector:
 #            if confidence >= 1:                             # possible DNA
 #                predictorScores.append((1.0, predictor))
 #                continue
-                        
-            confidence = 1 - confidence
-            maxPredictionRating = 0.99                      # possible DNA
-            #maxPredictionRating = 1                      # possible DNA
-            if confidence > maxPredictionRating: confidence = maxPredictionRating
-            if confidence < 0.0: confidence = 0.0
-            #confidence = 0.85            
-                        
+                                                
             if positiveRatings <= 0 or totalRatings <= 0:
                 continue
                 
-# weak but there's a possiblity that its an implementation bug                
-#            confidence = 1 - confidence
-#            ratings = rps.binconf(positiveRatings, totalRatings, confidence)
-#            rating = ratings[1] # grab the low end
-#            if math.isnan(rating) == False:
-#                predictorScores.append((rating, predictor))
+            if 0:
+                # weak but there's a possiblity that its an implementation bug                
+                #confidence = 1 - confidence
+                ratings = rps.binconf(positiveRatings, predictor.scoreLosts, confidence)
+                rating = ratings[1] # grab the high end
+                rating -= (ratings[1] - ratings[0]) / 2
+                if math.isnan(rating):
+                    #print(positiveRatings, totalRatings, confidence)
+                    rating = 1
+                    #input()
+                    #predictorScores.append((rating, predictor))
+                    
+                    #if rating >= 0.1: print(rating,positiveRatings, totalRatings, confidence)
+    #            continue
+
+            else:
+                confidence = 1 - confidence
+                maxPredictionRating = 0.99                      # possible DNA
+                #maxPredictionRating = 1                      # possible DNA
+                if confidence > maxPredictionRating: confidence = maxPredictionRating
+                if confidence < 0.0: confidence = 0.0
+                #confidence = 0.85            
+
                 
-                #if rating >= 0.1: print(rating,positiveRatings, totalRatings, confidence)
-#            continue
-                        
-            #z = 1.96        # hardcorded for confidence=95%
-            #z = 1.0         # 1.44=85% 1.96=95%
-            p = 1 - 0.5 * (1 - confidence)
-            #z = cached_normcdfi(p)
-            z = rps.normcdfi(p)
-            
-            phat = float(positiveRatings) / totalRatings
-            n = totalRatings
-            
-            rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)        
+                #z = 1.96        # hardcorded for confidence=95%
+                #z = 1.0         # 1.44=85% 1.96=95%
+                p = 1 - 0.5 * (1 - confidence)
+                #z = cached_normcdfi(p)
+                z = rps.normcdfi(p)
+                
+                phat = float(positiveRatings) / totalRatings
+                n = totalRatings
+                
+                rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
             
             #print(confidence,positiveRatings, rating)
+            predictor.rankingConfidence = rating
             predictorScores.append((rating, predictor))
 
         if len(predictorScores):
@@ -344,7 +350,6 @@ class PredictorSelector:
         if len(predictorScores) == 1:
             # in practice, this doesn't happen, but we put in this option to try to minimize 
             rating, chosenPredictor = predictorScores[0]
-            return chosenPredictor, rating        
         else:
             # play the move with the highest score
             finalChoice = None
@@ -369,10 +374,10 @@ class PredictorSelector:
         if 0 or Debug:
             print("currentTurn", rps.getTurn())
             for p in predictorScores:
-                print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidenceThisTurn, p[1].scoreWins, p[1].scoreLosts))
+                print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidence, rating, p[1].scoreWins, p[1].scoreLosts))
         
-            if len(predictorScores):
-                input()         
+            #if len(predictorScores):
+            #    input()         
 
         return chosenPredictor, rating
 
@@ -380,8 +385,8 @@ class PredictorSelector:
         """Get the highest rank using a TOILET algo"""
 
         # filter out low confidences
-        #maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
-        #p = [p for p in self.Predictors if p.confidenceThisTurn == maxConfidence]
+        #maxConfidence = max(self.Predictors, key=operator.attrgetter('confidence'))
+        #p = [p for p in self.Predictors if p.confidence == maxConfidence]
         
         
         p = self.Predictors
@@ -395,26 +400,26 @@ class PredictorSelector:
             # drop the first 37% and grab the best 
             drop = round(len(p) * 0.37) - 1
             initial = p[:drop]
-            maxConfidence = max(initial, key=operator.attrgetter('confidenceThisTurn'))
-            maxConfidence = maxConfidence.confidenceThisTurn
+            maxConfidence = max(initial, key=operator.attrgetter('confidence'))
+            maxConfidence = maxConfidence.confidence
             
             toCheck = p[drop:]
             for p in toCheck:
-                if p.confidenceThisTurn >= maxConfidence:
+                if p.confidence >= maxConfidence:
                     chosenPredictor = p
                     break
             else:
                 chosenPredictor = toCheck[-1]
             
-        rankConfidence = chosenPredictor.confidenceThisTurn
+        rankConfidence = chosenPredictor.confidence
         return chosenPredictor, rankConfidence
             
     def getHighestRank_Naive(self):
         """Get the highest rank using a naive algo"""
 
         # filter out low confidences
-        maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
-        p = [p for p in self.Predictors if p.confidenceThisTurn >= maxConfidence.confidenceThisTurn]
+        maxConfidence = max(self.Predictors, key=operator.attrgetter('confidence'))
+        p = [p for p in self.Predictors if p.confidence >= maxConfidence.confidence]
         
         if len(p) == 1:
             # only one predictor has high confidence
@@ -441,8 +446,8 @@ class PredictorSelector:
                     chosenPredictor = p[random]
             
             if len(p) == 0:
-                maxConfidence = max(self.Predictors, key=operator.attrgetter('confidenceThisTurn'))
-                p = [p for p in self.Predictors if p.confidenceThisTurn >= maxConfidence.confidenceThisTurn]
+                maxConfidence = max(self.Predictors, key=operator.attrgetter('confidence'))
+                p = [p for p in self.Predictors if p.confidence >= maxConfidence.confidence]
                 
                 random = rps.random() % len(p)
                 chosenPredictor = p[random]
@@ -465,13 +470,13 @@ class PredictorSelector:
         if Debug:
             maxScore = max([p.scoreWins for p in self.Predictors])                
             print("max score: %f " % (maxScore), end="")      
-            maxScore = max([p.confidenceThisTurn for p in self.Predictors])                
+            maxScore = max([p.confidence for p in self.Predictors])                
             print("max confidence: %f " % (maxScore), end="")      
             print("chosen predictor: %s" % (chosenPredictor.name))
-            input()
+            #input()
 
             
-        rankConfidence = chosenPredictor.confidenceThisTurn
+        rankConfidence = chosenPredictor.confidence
         return chosenPredictor, rankConfidence
         
 # http://stackoverflow.com/questions/10029588/python-implementation-of-the-wilson-score-interval

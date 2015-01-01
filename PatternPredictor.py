@@ -183,6 +183,11 @@ class PatternPredictor:
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
                 input()
 
+#            if Debug and confidence > 1: 
+#                print(confidence, sum(moveCounts) - moveCountMax)
+#                input()
+                
+            if confidence > 1: confidence = 1
             return prediction, confidence
 
         # choose the move the was used last
@@ -223,7 +228,6 @@ class PatternPredictor:
         if prediction != -1:
             return prediction, confidence
 
-        print("Random PP")
         # if we still have a tie, choose between them using a random number
         sumCount = maxCount * numCount
         
@@ -244,7 +248,8 @@ class PatternPredictor:
         # our confidence is based on our random number
         #confidence = tally[prediction] - random 
         #confidence = 1 - random 
-        confidence = 1 - random 
+        #confidence = 1 - random 
+        confidence = tally[prediction]
         
         if Debug:
             print (random, confidence)

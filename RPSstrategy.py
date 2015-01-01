@@ -35,9 +35,7 @@ class RPSstrategy:
         self.panicValue = 4     # 4.6.7939
         self.panicValue = 29    # 3.7/5.8
         self.panicValue = 13    # 4.8
-        self.panicValue = 37    # 4.5.8347
-        
-        
+        self.panicValue = 37    # 4.5.8347                
     
     def update(self):        
         currentTurn = rps.getTurn()
