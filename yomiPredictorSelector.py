@@ -64,17 +64,20 @@ class PredictorSelector:
         PPsize = 20 #(1)8.11.6929 (2)8.8.7466
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
         PPsize = 29 #(1)11.11.6510  (2)7.6.8133
-        argv = [2]
+        PPsize = 30
+        PPsize = 29
+        #argv = [2]
+        argv = [1]
         nextSeqSize = max(argv) + 1
 
-        while PPsize >= nextSeqSize:
-            argv.append(nextSeqSize)
+        while PPsize + 1 >= nextSeqSize:
             variant = ",".join([str(s) for s in argv])
-            name = "Pattern Predictor [%i]" % (nextSeqSize)
+            name = "Pattern Predictor [%i]" % (len(argv))
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
 #            if PPsize + 1== 5 or PPsize +1== 9:
 #                Predictors.append(p)
             Predictors.append(p)
+            argv.append(nextSeqSize)
             nextSeqSize += 1
             
         #Predictors = Predictors[-1:]
@@ -106,6 +109,8 @@ class PredictorSelector:
     def _updateScore(self):
         currentTurn = rps.getTurn()
         if currentTurn == 0: return
+        if Debug:
+            print("Current Turn: ", currentTurn)
             
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
@@ -116,15 +121,6 @@ class PredictorSelector:
             victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
             tie = (myMoveLastTurn == enemyMoveLastTurn)
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
-
-            if Debug:
-                print("**%s: move(%i) score(+%i/-%i) confidence(%.2f) ranking(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
-                if victory:
-                    print(" win")
-                elif tie:
-                    print(" tie")
-                elif lost:
-                    print(" lost")
 
             if victory:
                 predictor.scoreWins += 1
@@ -145,15 +141,6 @@ class PredictorSelector:
             tie = (myMoveLastTurn == enemyMoveLastTurn)
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
         
-            if Debug:
-                print("%s: move(%i) score(+%i/-%i) confidence(%.2f/%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
-                if victory:
-                    print(" win")
-                elif tie:
-                    print(" tie")
-                elif lost:
-                    print(" lost")
-
             if victory:
                 predictor.scoreWins += 1
             elif tie:
@@ -161,6 +148,26 @@ class PredictorSelector:
                 predictor.scoreLosts += 0
             elif lost:
                 predictor.scoreLosts += 1
+
+        if Debug:
+            for predictor in reversed(sorted(self.Predictors, key=operator.attrgetter('rankingConfidence'))):
+                myMoveLastTurn = (predictor.moveLastTurn + self.LastYomiLayer + 1) % 3
+                
+                print(self.LastYomiLayer, enemyMoveLastTurn)
+                
+                victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
+                tie = (myMoveLastTurn == enemyMoveLastTurn)
+                lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
+                
+                if predictor == self.LastPredictor:
+                    print ("**", end="")
+                print("%s: move(%i) score(+%i/-%i) confidence(%.2f) ranking(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
+                if victory:
+                    print(" win")
+                elif tie:
+                    print(" tie")
+                elif lost:
+                    print(" lost")
     
     def getPrediction(self):
         """
@@ -202,7 +209,7 @@ class PredictorSelector:
         move = chosenPredictor.moveLastTurn
         predictorConfidence = chosenPredictor.confidence
         confidence = rankRating
-                
+                                
         return move, confidence 
     
     def getHighestRank_LowerWilson(self):
@@ -249,20 +256,24 @@ class PredictorSelector:
             if 0:
                 # weak but there's a possiblity that its an implementation bug                
                 #confidence = 1 - confidence
+                #maxPredictionRating = 0.99                      # possible DNA
+                maxPredictionRating = 1                      # possible DNA
+                if confidence > maxPredictionRating: confidence = maxPredictionRating
+                if confidence < 0.0: confidence = 0.0
+
                 ratings = rps.binconf(positiveRatings, predictor.scoreLosts, confidence)
-                rating = ratings[1] # grab the high end
-                rating -= (ratings[1] - ratings[0]) / 2
+                rating = ratings[0]
+                #rating += (ratings[1] - ratings[0]) / 2
                 if math.isnan(rating):
                     #print(positiveRatings, totalRatings, confidence)
-                    rating = 1
+                    rating = confidence
                     #input()
                     #predictorScores.append((rating, predictor))
                     
                     #if rating >= 0.1: print(rating,positiveRatings, totalRatings, confidence)
-    #            continue
 
             else:
-                confidence = 1 - confidence
+                #confidence = 1 - confidence
                 maxPredictionRating = 0.99                      # possible DNA
                 #maxPredictionRating = 1                      # possible DNA
                 if confidence > maxPredictionRating: confidence = maxPredictionRating
@@ -307,8 +318,8 @@ class PredictorSelector:
         # there are multiple predictors with the same rating.
 
         # let's choose the one with the biggest score (positive - negative)
-        highestScorers = max(predictorScores, key=lambda i: i[1].scoreWins - i[1].scoreLosts)
-        predictorScores = [p for p in predictorScores if p[0] == highestScorers[0]]
+        highestScorers = max(predictorScores, key=lambda i: i[1].scoreWins)
+        #predictorScores = [p for p in predictorScores if p[0] == highestScorers[0]]
 
         # tally the moves and choose the move with the most tally
         
@@ -325,30 +336,30 @@ class PredictorSelector:
 #        return predictorScores[1], predictorScores[0]
         
         # Filter predictorScores to only include the predictors with the maximum tally.
-#        maxTally = max(tally)
-#        talliedScorers = set()
-#        if tally[0] == maxTally: 
-#            rocks = [p for p in predictorScores if p[1].moveLastTurn == 0]
-#            talliedScorers |= set(rocks)
-#        if tally[1] == maxTally: 
-#            papers = [p for p in predictorScores if p[1].moveLastTurn == 1]
-#            talliedScorers |= set(papers)
-#        if tally[2] == maxTally: 
-#            scissors = [p for p in predictorScores if p[1].moveLastTurn == 2]
-#            talliedScorers |= set(scissors)                    
-#        predictorScores = talliedScorers
+        maxTally = max(tally)
+        talliedScorers = set()
+        if tally[0] == maxTally: 
+            rocks = [p for p in predictorScores if p[1].moveLastTurn == 0]
+            talliedScorers |= set(rocks)
+        if tally[1] == maxTally: 
+            papers = [p for p in predictorScores if p[1].moveLastTurn == 1]
+            talliedScorers |= set(papers)
+        if tally[2] == maxTally: 
+            scissors = [p for p in predictorScores if p[1].moveLastTurn == 2]
+            talliedScorers |= set(scissors)                    
+        predictorScores = list(talliedScorers)
         
 #        random = rps.random() % len(predictorScores)
+#        random = 0
 #        finalChoice = list(predictorScores)[random]
         
 #        chosenPredictor = finalChoice[1]
 #        rating = finalChoice[0]            
         
 #        return chosenPredictor, rating
-        
                 
         if len(predictorScores) == 1:
-            # in practice, this doesn't happen, but we put in this option to try to minimize 
+            # in practice, this doesn't happen, but we put in this option to try to minimize bugs
             rating, chosenPredictor = predictorScores[0]
         else:
             # play the move with the highest score
@@ -365,19 +376,39 @@ class PredictorSelector:
                 finalChoice = Smoves[0]
             else:               
                 # there are still ties so we choose at random
-                random = rps.random() % len(predictorScores)
-                finalChoice = predictorScores[random]
+                random = rps.random() % len(tally)
+                a = random
+                while True:
+                    # check if the random number points to a empty tally. If the tally is
+                    # empty, check the next tally
+                    if tally[random] == 0:
+                        random = (random + 1) % 3
+                    else:
+                        break
+
+                try:
+                    randomChoice = [p for p in predictorScores if p[1].moveLastTurn == random]
+                    finalChoice = randomChoice[0]
+                except:
+                    print(a, random)
+                    print("-")
+                    print(tally)
+                    print("-")
+                    pprint([p[1].moveLastTurn for p in predictorScores])
+                    print("-")
+                    pprint(randomChoice)
             
             chosenPredictor = finalChoice[1]
             rating = finalChoice[0]            
             
-        if 0 or Debug:
-            print("currentTurn", rps.getTurn())
+        if Debug:
+            currentTurn = rps.getTurn()
+            print("currentTurn", currentTurn)
             for p in predictorScores:
-                print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidence, rating, p[1].scoreWins, p[1].scoreLosts))
-        
-            #if len(predictorScores):
-            #    input()         
+                print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidence, p[1].scoreWins, p[1].scoreLosts))
+                
+            if currentTurn > 57:
+                input()         
 
         return chosenPredictor, rating
 
