@@ -64,7 +64,6 @@ class PredictorSelector:
         PPsize = 20 #(1)8.11.6929 (2)8.8.7466
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
         PPsize = 29 #(1)11.11.6510  (2)7.6.8133
-        PPsize = 30
         PPsize = 29
         #argv = [2]
         argv = [1]

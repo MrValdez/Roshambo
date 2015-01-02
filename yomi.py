@@ -346,16 +346,16 @@ class Yomi:
 #        transitionCB = transitionBC
 #        transitionCC = 1 - (transitionAA + transitionBC)
 ##
-        transitionAA = predictionConfidence * (0.301)
-        transitionBA = predictionConfidence * (0.301)
-        transitionCA = predictionConfidence * (0.301)
+        transitionAA = predictionConfidence * (1)
+        transitionBA = predictionConfidence * (1)
+        transitionCA = predictionConfidence * (1)
         
-        transitionAB = predictionConfidence * (0.176)
-        transitionBB = predictionConfidence * (0.176)
-        transitionCB = predictionConfidence * (0.176)
+        transitionAB = predictionConfidence * (0.201)
+        transitionBB = predictionConfidence * (0.201)
+        transitionCB = predictionConfidence * (0.201)
         
-        transitionBC = predictionConfidence * (0.125)
-        transitionCC = predictionConfidence * (0.125)
+        transitionBC = predictionConfidence * (0.176)
+        transitionCC = predictionConfidence * (0.176)
 ##
 
 ##
@@ -472,11 +472,12 @@ class Yomi:
         layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") #+ int(self.yomiHistoryTies.count("2")/1)
 
         foo = 42
+        foo = 50
         foo = layer1score + layer2score + layer3score
         foo = currentTurn if currentTurn < self.yomiHistorySize else self.yomiHistorySize 
-        foo = self.yomiHistorySize if currentTurn < self.yomiHistorySize else currentTurn 
         foo = max(layer1score, layer2score, layer3score)
-        foo = 50
+        foo = self.yomiHistorySize if currentTurn < self.yomiHistorySize else currentTurn 
+        foo = 42
         
         if foo < 1: 
             layer1ratio = 1
@@ -604,7 +605,6 @@ class Yomi:
         result = p.move(start, rps.randomRange)
         
         if Debug:
-            print ("Confidence  : ", predictionConfidence)
             print ("Normalized:")
             pprint (p)
             print ("Last Turn   : ", start)
