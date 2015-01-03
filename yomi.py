@@ -592,8 +592,19 @@ class Yomi:
                 transitionCC /= normal
             else:
                 transitionCC = 1        # if the sum is 0, then we set transition to self to 1
+
+
+        transitionAA = round(transitionAA, 2)
+        transitionBA = round(transitionBA, 2)
+        transitionCA = round(transitionCA, 2)
         
+        transitionAB = round(transitionAB, 2)
+        transitionBB = round(transitionBB, 2)
+        transitionCB = round(transitionCB, 2)
         
+        transitionBC = round(transitionBC, 2)
+        transitionCC = round(transitionCC, 2)
+                
             
         yomi = OrderedDict((
                 (("A", "A"), transitionAA), (("A", "B"), transitionAB),

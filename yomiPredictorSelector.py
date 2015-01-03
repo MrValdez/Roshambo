@@ -63,8 +63,8 @@ class PredictorSelector:
         PPsize = 32 #(1)8.8.7593 (2)9.7.7803
         PPsize = 20 #(1)8.11.6929 (2)8.8.7466
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
-        PPsize = 29 #(1)11.11.6510  (2)7.6.8133
-        PPsize = 29
+        PPsize = 29 #(1)11.11.6510  (2)7.6.8133     #maximum in paper
+        PPsize = 32
         #argv = [2]
         argv = [1]
         nextSeqSize = max(argv) + 1
@@ -219,7 +219,7 @@ class PredictorSelector:
         
         https://news.ycombinator.com/item?id=3792627
         """
-
+        
         # grab the top 3 wins, top 3 wins-lost, top 3 confidences
         maxWins       = sorted(self.Predictors, key=lambda i: i.scoreWins)
         maxDiff       = sorted(self.Predictors, key=lambda i: i.scoreWins - i.scoreLosts)
