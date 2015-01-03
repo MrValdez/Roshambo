@@ -228,6 +228,8 @@ class PredictorSelector:
         # grab the top predictors by wins, diffs and confidence.
         # on test, this has worse effect on ranking. (need more testing for confirmation)
         filteredPredictors = self.Predictors    # no union
+
+        # warning: set is non-deterministic
         #filteredPredictors = set(maxWins[:3]) | set(maxDiff[:3]) | set(maxConfidence[:3])   # union
         #filteredPredictors = set(maxWins[:5]) | set(maxDiff[:5]) | set(maxConfidence[:5])   # union
         filteredPredictors = list(filteredPredictors)
@@ -336,17 +338,14 @@ class PredictorSelector:
         
         # Filter predictorScores to only include the predictors with the maximum tally.
         maxTally = max(tally)
-        talliedScorers = set()
+        talliedScorers = []
         if tally[0] == maxTally: 
-            rocks = [p for p in predictorScores if p[1].moveLastTurn == 0]
-            talliedScorers |= set(rocks)
+            rocks = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 0]
         if tally[1] == maxTally: 
-            papers = [p for p in predictorScores if p[1].moveLastTurn == 1]
-            talliedScorers |= set(papers)
+            papers = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 1]
         if tally[2] == maxTally: 
-            scissors = [p for p in predictorScores if p[1].moveLastTurn == 2]
-            talliedScorers |= set(scissors)                    
-        predictorScores = list(talliedScorers)
+            scissors = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 2]               
+        predictorScores = talliedScorers
         
 #        random = rps.random() % len(predictorScores)
 #        random = 0
