@@ -23,17 +23,20 @@ class Predictor:
 
         self.scoreWins = 0
         self.scoreLosts = 0
+        self.totalTurns = 0
         self.reset()
     
     def reset(self):        
         self.scoreWins = 0
         self.scoreLosts = 0
+        self.totalTurns = 0
         
         self.moveLastTurn = 0
         self.confidence = 0
         self.rankingConfidence = 0
         
     def update(self):
+        self.totalTurns += 1
         self.module.update()
         
     def play(self):
@@ -108,8 +111,6 @@ class PredictorSelector:
     def _updateScore(self):
         currentTurn = rps.getTurn()
         if currentTurn == 0: return
-        if Debug:
-            print("Current Turn: ", currentTurn)
             
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
@@ -135,7 +136,11 @@ class PredictorSelector:
                 continue
             #predictor.score *= 0.9
 
-            myMoveLastTurn = (predictor.moveLastTurn + self.LastYomiLayer + 1) % 3
+            if self.LastYomiLayer == -1:
+                myMoveLastTurn = (predictor.moveLastTurn + 1) % 3
+            else:
+                myMoveLastTurn = (predictor.moveLastTurn + self.LastYomiLayer + 1) % 3
+
             victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
             tie = (myMoveLastTurn == enemyMoveLastTurn)
             lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
@@ -148,25 +153,33 @@ class PredictorSelector:
             elif lost:
                 predictor.scoreLosts += 1
 
-        if Debug:
-            for predictor in reversed(sorted(self.Predictors, key=operator.attrgetter('rankingConfidence'))):
-                myMoveLastTurn = (predictor.moveLastTurn + self.LastYomiLayer + 1) % 3
-                
-                print(self.LastYomiLayer, enemyMoveLastTurn)
+        if Debug and self.LastYomiLayer >0:
+            print("Current Turn:", currentTurn)
+            print("Enemy Move last turn:", enemyMoveLastTurn)
+            print(" " * 25 + "move layeredMove score confidence ranking")
+            #for predictor in reversed(sorted(self.Predictors, key=operator.attrgetter('rankingConfidence'))):
+            for predictor in sorted(self.Predictors, key=operator.attrgetter('rankingConfidence')):
+                if self.LastYomiLayer == -1:
+                    myMoveLastTurn = (predictor.moveLastTurn + 1) % 3
+                else:
+                    myMoveLastTurn = (predictor.moveLastTurn + self.LastYomiLayer + 1) % 3
                 
                 victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
                 tie = (myMoveLastTurn == enemyMoveLastTurn)
                 lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
                 
-                if predictor == self.LastPredictor:
-                    print ("**", end="")
-                print("%s: move(%i) score(+%i/-%i) confidence(%.2f) ranking(%.2f)" % (predictor.name, predictor.moveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
+                print("%s: %i %i (+%i/-%i) %.2f %.2f" % 
+                    (predictor.name.ljust(24), predictor.moveLastTurn, myMoveLastTurn, predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence), end="")
                 if victory:
-                    print(" win")
+                    print(" win", end="")
                 elif tie:
-                    print(" tie")
+                    print(" tie", end="")
                 elif lost:
-                    print(" lost")
+                    print(" lost", end="")
+                if predictor == self.LastPredictor:
+                    print (" **", end="")
+                print("")
+            input()
     
     def getPrediction(self):
         """
@@ -195,6 +208,11 @@ class PredictorSelector:
             
         #2. select the predictors with the highest confidence and score
         move, confidence = self.getHighestRank()
+        
+        
+#        predictor = self.LastPredictor
+#        print("%s: %i (+%i/-%i) %.2f %.2f" % (predictor.name.ljust(24), predictor.moveLastTurn,predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence))
+        
         
         #3. return the highest ranking
         return move, confidence
@@ -242,7 +260,10 @@ class PredictorSelector:
         for i, predictor in enumerate(filteredPredictors):
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
-            confidence = predictor.confidence
+            #totalRatings = predictor.totalTurns
+
+            #confidence = predictor.confidence
+            confidence = 1 - predictor.confidence       # this is necessary. todo: figure out explanation
             
             # experiment: what happens if we use our score as confidence in self?
             
@@ -274,7 +295,6 @@ class PredictorSelector:
                     #if rating >= 0.1: print(rating,positiveRatings, totalRatings, confidence)
 
             else:
-                #confidence = 1 - confidence
                 maxPredictionRating = 0.99                      # possible DNA
                 #maxPredictionRating = 1                      # possible DNA
                 if confidence > maxPredictionRating: confidence = maxPredictionRating
