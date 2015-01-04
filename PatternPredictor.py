@@ -82,6 +82,7 @@ class PatternPredictor:
 
         # list how many times we see a predicted move
         tally = [0, 0, 0]      # [0] = rock, [1] = paper, [2] = scissor
+        latestFoundSeq = -1
         while found != -1:
             # todo: very slow. optimize
             end = found + len(Seq)
@@ -104,19 +105,22 @@ class PatternPredictor:
             if tally[2] >= tally[0] + difference and tally[2] >= tally[1] + difference:    
                 break
      
-        prediction, confidence = self.GetHighestTally(History, tally, SequenceLength)
+        latestFoundSeq = History.rfind(Seq, 0)
+        
+        prediction, confidence = self.GetHighestTally(History, tally, SequenceLength, latestFoundSeq)
 
         if Debug:
             currentTurn = rps.getTurn()
+            print ("History size:                  ", len(History))
             print ("Sequence to look for:          ", Seq)
-            print ("Position of latest found Seq:  ", History.rfind(Seq, 0, currentTurn - 1))
+            print ("Position of latest found Seq:  ", latestFoundSeq)
             print ("Predicted move:                ", prediction)
             print ("Confidence:                    ", confidence)
             input()
 
         return prediction, confidence
      
-    def GetHighestTally(self, History, tally, SequenceLength):                
+    def GetHighestTally(self, History, tally, SequenceLength, latestFoundSeq):                
         # check if we have a tie for maximum.
         maxCount = max(tally)
         numCount = tally.count(maxCount)
@@ -125,6 +129,8 @@ class PatternPredictor:
             # we don't have a tie for maximum. Get the highest move
             confidence = 1.0
             prediction = tally.index(maxCount)
+            if Debug:
+                print(":Highest tally found")
             return prediction, confidence                            
     
         # we have a tie.
@@ -144,6 +150,9 @@ class PatternPredictor:
         moveCountMax = max(moveCounts)
         moveCountNum = moveCounts.count(moveCountMax)
         if moveCountNum == 1:
+            if Debug:
+                print(":tally has ties. Found one move played the most")
+
             index = moveCounts.index(moveCountMax)
             prediction = index
             
@@ -164,6 +173,11 @@ class PatternPredictor:
                 confidence = 0
             
             confidence = (sum(moveCounts) - moveCountMax) / targetDifference
+            
+            
+            confidence = latestFoundSeq / len(History)
+            
+            
             #confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
             #confidence = math.log(moveCounts[index], sum(moveCounts))
             #confidence = moveCounts[index] / sum(moveCounts)
@@ -180,8 +194,8 @@ class PatternPredictor:
             #confidence = 1
             
             if Debug:
+                print ("target difference: ", targetDifference)
                 print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
-                input()
 
 #            if Debug and confidence > 1: 
 #                print(confidence, sum(moveCounts) - moveCountMax)
@@ -190,7 +204,10 @@ class PatternPredictor:
             if confidence > 1: confidence = 1
             return prediction, confidence
 
-        # choose the move the was used last
+        # choose the move the was used last        
+        if Debug:
+            print(":Grabbing the move that was used last")
+            
         latestR = latestP = latestS = 0             # position of latest move
         distToR = distToP = distToS = 0             # distance of move to end
         historySize = len(History)
