@@ -10,6 +10,11 @@ class RPSstrategy:
         self.playerWins = 0
         self.playerLosts = 0
         self.playerTies = 0
+        
+        self.strategyWins = 0
+        self.strategyLosts = 0
+        self.strategyTies = 0
+        
         self.moveLastTurn = 0
         
         #self.losingValue = 100       # if the lost difference reaches this value, the AI is losing  # rank 8.6
@@ -36,6 +41,8 @@ class RPSstrategy:
         self.panicValue = 29    # 3.7/5.8
         self.panicValue = 13    # 4.8
         self.panicValue = 37    # 4.5.8347                
+        
+        self.panicValue = 37
     
     def update(self):        
         currentTurn = rps.getTurn()
@@ -52,6 +59,18 @@ class RPSstrategy:
             self.playerTies += 1
         elif lost:
             self.playerLosts += 1
+
+        myMoveLastTurn = self.moveLastTurn
+        victory = (myMoveLastTurn == (enemyMoveLastTurn + 1) % 3)
+        tie = (myMoveLastTurn == enemyMoveLastTurn)
+        lost = (myMoveLastTurn == (enemyMoveLastTurn - 1) % 3)
+        
+        if victory:
+            self.strategyWins += 1
+        elif tie:
+            self.strategyLosts += 1
+        elif lost:
+            self.strategyTies += 1
     
     def play(self):
         move = rps.random() % 3           
@@ -61,7 +80,7 @@ class RPSstrategy:
         currentTurn = rps.getTurn()
         turnsRemaining = totalTurns - currentTurn
         lostDifference = self.playerLosts - self.playerWins
-        #lostDifference = self.playerLosts + self.playerTies - self.playerWins  # doesn't work
+        #lostDifference = self.playerLosts + (self.playerTies /2)- self.playerWins  # doesn't work
         
         EarlyGame = 20      # DNA   (17-21)
         if currentTurn == 0:
@@ -72,22 +91,39 @@ class RPSstrategy:
             #if self.playerWins < self.losingValue:
                 #confidence = currentTurn / EarlyGame
                 #confidence = math.log(currentTurn, EarlyGame)
-                #confidence = 1 - (currentTurn / EarlyGame)
+#                confidence = 1 - (currentTurn / EarlyGame)
                 confidence = 1 - math.log(currentTurn, EarlyGame)
-        elif currentTurn > 1 and lostDifference >= self.panicValue:
+        elif lostDifference > 1 and currentTurn >= totalTurns - lostDifference - self.panicValue :
+            # we are nearing the end and we are losing. Play randomly from now on.
+            if turnsRemaining > 1:
+                confidence = (lostDifference) / (turnsRemaining)
+                #confidence = math.log(lostDifference, turnsRemaining)
+            else:
+                # this is the last turn and we are still losing. Play randomly.
+                confidence = 1
+            
 #            print("losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)
-#            print(lostDifference)
+#            print(lostDifference, confidence)
 #            print(turnsRemaining)
 #            input()
-       
-#            confidence = (lostDifference / self.losingValue)
-            confidence = math.log(lostDifference, self.losingValue)
-            #print(currentTurn, self.playerWins, self.playerLosts, lostDifference, confidence)
-            #input()
-#######        todo: figure out what to do with layer -1
+        elif 1 and currentTurn > 1 and lostDifference >= self.panicValue:
+#        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
+#        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
+        
+            if lostDifference > 0:       
+#               confidence = (lostDifference / self.losingValue)
+#                confidence = math.log(lostDifference, self.losingValue)
+                confidence = math.log(lostDifference, self.panicValue)
+
+#            print("losing at turn", currentTurn)
+#            print(self.playerWins, self.playerLosts, self.playerTies)
+#            print(lostDifference, confidence)
+#            print(turnsRemaining)
+#            input()
         
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
 
+        self.moveLastTurn = move
         return move, confidence
