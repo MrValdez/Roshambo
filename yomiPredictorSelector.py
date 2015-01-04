@@ -232,7 +232,7 @@ class PredictorSelector:
         # warning: set is non-deterministic
         #filteredPredictors = set(maxWins[:3]) | set(maxDiff[:3]) | set(maxConfidence[:3])   # union
         #filteredPredictors = set(maxWins[:5]) | set(maxDiff[:5]) | set(maxConfidence[:5])   # union
-        filteredPredictors = list(filteredPredictors)
+        #filteredPredictors = list(filteredPredictors)
         
 ##############
 ##todo: add treshold instead?
@@ -293,7 +293,6 @@ class PredictorSelector:
                 
                 rating = (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
             
-            #print(confidence,positiveRatings, rating)
             predictor.rankingConfidence = rating
             predictorScores.append((rating, predictor))
 
@@ -345,7 +344,6 @@ class PredictorSelector:
             papers = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 1]
         if tally[2] == maxTally: 
             scissors = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 2]               
-        predictorScores = talliedScorers
         
 #        random = rps.random() % len(predictorScores)
 #        random = 0
@@ -356,45 +354,26 @@ class PredictorSelector:
         
 #        return chosenPredictor, rating
                 
-        if len(predictorScores) == 1:
+        if len(talliedScorers) == 1:
             # in practice, this doesn't happen, but we put in this option to try to minimize bugs
-            rating, chosenPredictor = predictorScores[0]
+            rating, chosenPredictor = talliedScorers[0]
         else:
             # play the move with the highest score
             finalChoice = None
-                    
+            
             if tally[0] and tally[0] > tally[1] and tally[0] > tally[2]:
-                Rmoves = [p for p in predictorScores if p[1].moveLastTurn == 0]
+                Rmoves = [p for p in talliedScorers if p[1].moveLastTurn == 0]
                 finalChoice = Rmoves[0]
             elif tally[1] and tally[1] > tally[0] and tally[1] > tally[2]:
-                Pmoves = [p for p in predictorScores if p[1].moveLastTurn == 1]
+                Pmoves = [p for p in talliedScorers if p[1].moveLastTurn == 1]
                 finalChoice = Pmoves[0]
             elif tally[2] and tally[2] > tally[0] and tally[2] > tally[1]:
-                Smoves = [p for p in predictorScores if p[1].moveLastTurn == 2]
+                Smoves = [p for p in talliedScorers if p[1].moveLastTurn == 2]
                 finalChoice = Smoves[0]
             else:               
                 # there are still ties so we choose at random
-                random = rps.random() % len(tally)
-                a = random
-                while True:
-                    # check if the random number points to a empty tally. If the tally is
-                    # empty, check the next tally
-                    if tally[random] == 0:
-                        random = (random + 1) % 3
-                    else:
-                        break
-
-                try:
-                    randomChoice = [p for p in predictorScores if p[1].moveLastTurn == random]
-                    finalChoice = randomChoice[0]
-                except:
-                    print(a, random)
-                    print("-")
-                    print(tally)
-                    print("-")
-                    pprint([p[1].moveLastTurn for p in predictorScores])
-                    print("-")
-                    pprint(randomChoice)
+                random = rps.random() % len(talliedScorers)
+                finalChoice = talliedScorers[random]
             
             chosenPredictor = finalChoice[1]
             rating = finalChoice[0]            
