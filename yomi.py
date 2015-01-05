@@ -133,6 +133,7 @@ class Yomi:
         self.yomiHistorySize = 300          # 5.7.7549
         self.yomiHistorySize = 300          # 5.7.7549 # current best
         
+        self.lastPredictor = None
         
         self.enemyConfidence = 0
         self.totalWins = 0
@@ -248,14 +249,14 @@ class Yomi:
 # short RPS 20-20-60: 385 (592, 207, 201)
 # full  RPS 20-20-60: 380 (585, 205, 210)
 
-    def decideYomiLayer(self, predictionConfidence, ownPlayConfidence):                      
-        if ownPlayConfidence >= predictionConfidence:
-            return -1, ownPlayConfidence
+    def decideYomiLayer(self, predictor, predictionConfidence, ownPlayConfidence):                      
+#        if ownPlayConfidence >= predictionConfidence:
+#            return -1, ownPlayConfidence
                 
-        if ownPlayConfidence == predictionConfidence:
-#             flip a coin
-            if rps.randomRange() < 0.5:         
-                return -1, ownPlayConfidence
+#        if ownPlayConfidence == predictionConfidence:
+##             flip a coin
+#            if rps.randomRange() < 0.5:         
+#                return -1, ownPlayConfidence
         currentTurn = rps.getTurn()        
 
 #######
@@ -269,6 +270,11 @@ class Yomi:
         if layerLastTurn == 1:  start = "B"
         if layerLastTurn == 2:  start = "C"
 
+        if predictor != self.lastPredictor:
+            # if we are using a different predictor, play 1st yomi layer (a reset).
+            return 0, predictionConfidence
+            #start = "A"
+        
         if predictionConfidence == 1:
             transitionAA = transitionBA = transitionCA = 1
             if start == "A":
@@ -299,6 +305,20 @@ class Yomi:
 #        transitionCB = (1 - transitionCA) * (1 - Layer3Preference)
 #        transitionCC = (1 - transitionCA) * (Layer3Preference)        
 
+        transitionAA = predictionConfidence
+        
+        transitionAB = 1- transitionAA
+        
+        transitionBB = (1 - transitionAB) * (1-0.301)
+        transitionBC = (1 - transitionAB) * (0.301)
+        
+        transitionBA = transitionCA = transitionAA
+        transitionCB = transitionBB
+        transitionCC = transitionBC
+        
+        transitionAC = 0
+
+
 # experiment
 
 #        Layer2Preference = 0.301
@@ -326,15 +346,15 @@ class Yomi:
 #        transitionCB = predictionConfidence / 3
 #        transitionCC = predictionConfidence / 3
 
-        transitionAA = predictionConfidence
-        transitionAB = predictionConfidence
-        transitionAC = predictionConfidence
-        transitionBA = predictionConfidence
-        transitionBB = predictionConfidence
-        transitionBC = predictionConfidence
-        transitionCA = predictionConfidence
-        transitionCB = predictionConfidence
-        transitionCC = predictionConfidence
+#        transitionAA = predictionConfidence
+#        transitionAB = predictionConfidence
+#        transitionAC = predictionConfidence
+#        transitionBA = predictionConfidence
+#        transitionBB = predictionConfidence
+#        transitionBC = predictionConfidence
+#        transitionCA = predictionConfidence
+#        transitionCB = predictionConfidence
+#        transitionCC = predictionConfidence
 ##
 #        transitionAA = predictionConfidence * (1 - 0.301)
 #        transitionAB = predictionConfidence * (0.301)
@@ -468,18 +488,24 @@ class Yomi:
 #        layer2ratio = 0
 #        layer3ratio = 0
 
-        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") #+ int(self.yomiHistoryTies.count("0")/1)
-        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") #+ int(self.yomiHistoryTies.count("1")/1)
-        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") #+ int(self.yomiHistoryTies.count("2")/1)
+        layer1score = self.yomiHistoryWins.count("0") #- self.yomiHistoryLosts.count("0") #- int(self.yomiHistoryTies.count("0")/1)
+        layer2score = self.yomiHistoryWins.count("1") #- self.yomiHistoryLosts.count("1") #- int(self.yomiHistoryTies.count("1")/1)
+        layer3score = self.yomiHistoryWins.count("2") #- self.yomiHistoryLosts.count("2") #- int(self.yomiHistoryTies.count("2")/1)
+
+        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0] - self.yomiLayerTies[0]      # not strong
+        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1] - self.yomiLayerTies[1]
+        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2] - self.yomiLayerTies[2]
 
         foo = 50
-        foo = self.yomiHistorySize if currentTurn < self.yomiHistorySize else currentTurn 
         foo = 50
-        foo = max(layer1score, layer2score, layer3score)
-        foo = layer1score + layer2score + layer3score
         foo = 47    #9.8
+        foo = self.yomiHistorySize if currentTurn < self.yomiHistorySize else currentTurn 
+        foo = 20
+        foo = layer1score + layer2score + layer3score
+        foo = max(layer1score, layer2score, layer3score)
         foo = 45    #9.8.beats peterbot (1000wins)
         foo = currentTurn if currentTurn < self.yomiHistorySize else self.yomiHistorySize 
+        foo = 50
         
         if foo < 1: 
             layer1ratio = 1
@@ -497,10 +523,23 @@ class Yomi:
         if layer1ratio < 0: layer1ratio = 0
         if layer2ratio < 0: layer2ratio = 0
         if layer3ratio < 0: layer3ratio = 0
+
+        if layer1ratio > 1: layer1ratio = 1
+        if layer2ratio > 1: layer2ratio = 1
+        if layer3ratio > 1: layer3ratio = 1
+
         
 #        layer1ratio = (layer1score) * 0.301
 #        layer2ratio = (layer2score) * 0.176
 #        layer3ratio = (layer3score) * 0.125
+
+#        layer1ratio = (layer1ratio) * 0.301
+#        layer2ratio = (layer2ratio) * 0.176
+#        layer3ratio = (layer3ratio) * 0.125
+
+#        layer1ratio = (layer1ratio) * (1 - 0.301)
+#        layer2ratio = (layer2ratio) * (0.301)
+#        layer3ratio = (layer3ratio) * (0.176)
 
 #        layer1ratio = 1
 #        layer2ratio = 0
@@ -541,7 +580,7 @@ class Yomi:
 
         if Debug:
             print ("AFter ratio:")
-            print ("Turn: ", currentTurn)
+            print ("Turn: ", currentTurn, "Current layer: ", start)
             print ("raw wins ", self.yomiLayerWins,   "raw losts ", self.yomiLayerLosts, "raw ties ", self.yomiLayerTies)
             
             print ("LayerScore", layer1score, layer2score, layer3score)
@@ -563,7 +602,7 @@ class Yomi:
                 (("B", "A"), transitionBA), (("B", "B"), transitionBB), (("B", "C"), transitionBC),
                 (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
                 )))
-            input()
+#            input()
 
         # minimum of 0.0
         transitionAA = max(transitionAA, 0.0)
@@ -577,11 +616,11 @@ class Yomi:
 
         #normalize
         if 1:
-            normal = transitionAA + transitionAB + transitionAC
+            normal = transitionAA + transitionAB # + transitionAC
             if normal > 0:
                 transitionAA /= normal
                 transitionAB /= normal
-                transitionAC /= normal
+#                transitionAC /= normal
             else:
                 transitionAA = 1        # if the sum is 0, then we set transition to self to 1
 
@@ -600,22 +639,28 @@ class Yomi:
                 transitionCC /= normal
             else:
                 transitionCC = 1        # if the sum is 0, then we set transition to self to 1
+
             
         yomi = OrderedDict((
-                (("A", "A"), transitionAA), (("A", "B"), transitionAB), (("A", "C"), transitionAC),
+                (("A", "A"), transitionAA), (("A", "B"), transitionAB), # (("A", "C"), transitionAC),
                 (("B", "A"), transitionBA), (("B", "B"), transitionBB), (("B", "C"), transitionBC),
                 (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
                 ))
+                
+        if Debug:
+            print ("Normalized:")
+            pprint (yomi)
+            
         p = pykov.Chain(yomi)
                     
         result = p.move(start, rps.randomRange)
         
         if Debug:
-            print ("Normalized:")
+            print ("Final:")
             pprint (p)
             print ("Last Turn   : ", start)
             print ("Result      : ",result)
-            input()
+#            input()
         
         layer1Confidence = transitionAA     # todo
         layer2Confidence = transitionBB
@@ -700,8 +745,10 @@ class Yomi:
 
         if rps.getTurn() == 0:
             layerToUse, layerConfidence = -1, ownPlayConfidence
+            predictor = None
         else:
-            layerToUse, layerConfidence = self.decideYomiLayer(predictionConfidence, ownPlayConfidence)
+            predictor = predictorSelector.LastPredictor
+            layerToUse, layerConfidence = self.decideYomiLayer(predictor, predictionConfidence, ownPlayConfidence)
                             
             if layerConfidence < ownPlayConfidence:
 #                print(layerConfidence, ownPlayConfidence)
@@ -717,6 +764,7 @@ class Yomi:
 #                    layerToUse, layerConfidence = -1, ownPlayConfidence
 
         predictorSelector.LastYomiLayer = layerToUse
+        
         if layerToUse == -1:
             if Debug: print ("Using our play (layer 0).")
             move = ownPlay
@@ -728,6 +776,7 @@ class Yomi:
             move = yomiChoices[layerToUse]
             
         self.layerLastTurn = layerToUse
+        self.lastPredictor = predictor
 
         self.VisualDebugger.SendLayer(layerToUse)
         return move

@@ -42,7 +42,7 @@ class RPSstrategy:
         self.panicValue = 13    # 4.8
         self.panicValue = 37    # 4.5.8347                
         
-        self.panicValue = 37
+        self.panicValue = 2
     
     def update(self):        
         currentTurn = rps.getTurn()
@@ -75,6 +75,7 @@ class RPSstrategy:
     def play(self):
         move = rps.random() % 3           
         confidence = 0
+        return move, confidence
         
         totalTurns = 1000
         currentTurn = rps.getTurn()
@@ -107,14 +108,16 @@ class RPSstrategy:
 #            print(lostDifference, confidence)
 #            print(turnsRemaining)
 #            input()
-        elif 1 and currentTurn > 1 and lostDifference >= self.panicValue:
+#        elif 1 and currentTurn > 1 and lostDifference >= self.panicValue:
+        elif 1 and turnsRemaining > totalTurns * 0.3  and lostDifference >= self.panicValue:
 #        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
 #        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
         
             if lostDifference > 0:       
 #               confidence = (lostDifference / self.losingValue)
+               confidence = (lostDifference / self.panicValue)
 #                confidence = math.log(lostDifference, self.losingValue)
-                confidence = math.log(lostDifference, self.panicValue)
+#                confidence = math.log(lostDifference, self.panicValue)
 
 #            print("losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)

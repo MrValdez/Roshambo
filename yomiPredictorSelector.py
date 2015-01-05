@@ -67,7 +67,8 @@ class PredictorSelector:
         PPsize = 20 #(1)8.11.6929 (2)8.8.7466
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
         PPsize = 29 #(1)11.11.6510  (2)7.6.8133     #maximum in paper
-        PPsize = 32
+        PPsize = 29
+
         #argv = [2]
         argv = [1]
         nextSeqSize = max(argv) + 1
@@ -81,17 +82,18 @@ class PredictorSelector:
             Predictors.append(p)
             argv.append(nextSeqSize)
             nextSeqSize += 1
-            
-        #Predictors = Predictors[-1:]
+        
+        #Predictors = [Predictors[4]]
+        #Predictors = Predictors[0:]
         #print(Predictors[-1].variant)
         #print([p.variant for p in Predictors])
                     
         MBFPsize = 1
         #MBFPsize = 2
-        #MBFPsize = 21
+        MBFPsize = 21
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
-            #Predictors.append(p)
+#            Predictors.append(p)
             MBFPsize -= 1
         
         #Predictors.reverse()
@@ -262,8 +264,8 @@ class PredictorSelector:
             totalRatings = predictor.scoreWins + predictor.scoreLosts
             #totalRatings = predictor.totalTurns
 
-            #confidence = predictor.confidence
-            confidence = 1 - predictor.confidence       # this is necessary. todo: figure out explanation
+            confidence = predictor.confidence
+            #confidence = 1 - predictor.confidence       # this is necessary. todo: figure out explanation
             
             # experiment: what happens if we use our score as confidence in self?
             
@@ -284,7 +286,7 @@ class PredictorSelector:
                 if confidence < 0.0: confidence = 0.0
 
                 ratings = rps.binconf(positiveRatings, predictor.scoreLosts, confidence)
-                rating = ratings[0]
+                rating = ratings[1]
                 #rating += (ratings[1] - ratings[0]) / 2
                 if math.isnan(rating):
                     #print(positiveRatings, totalRatings, confidence)
@@ -404,8 +406,8 @@ class PredictorSelector:
             for p in predictorScores:
                 print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidence, p[1].scoreWins, p[1].scoreLosts))
                 
-            if currentTurn > 57:
-                input()         
+#            if currentTurn > 57:
+            input()         
 
         return chosenPredictor, rating
 

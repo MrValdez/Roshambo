@@ -175,7 +175,7 @@ class PatternPredictor:
             confidence = (sum(moveCounts) - moveCountMax) / targetDifference
             
             
-            confidence = latestFoundSeq / len(History)
+#            confidence = latestFoundSeq / len(History)
             
             
             #confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
