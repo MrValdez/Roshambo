@@ -241,9 +241,9 @@ class PredictorSelector:
         """
         
         # grab the top 3 wins, top 3 wins-lost, top 3 confidences
-        maxWins       = sorted(self.Predictors, key=lambda i: i.scoreWins)
-        maxDiff       = sorted(self.Predictors, key=lambda i: i.scoreWins - i.scoreLosts)
-        maxConfidence = sorted(self.Predictors, key=lambda i: i.confidence)
+#        maxWins       = sorted(self.Predictors, key=lambda i: i.scoreWins)
+#        maxDiff       = sorted(self.Predictors, key=lambda i: i.scoreWins - i.scoreLosts)
+#        maxConfidence = sorted(self.Predictors, key=lambda i: i.confidence)
         
         # grab the top predictors by wins, diffs and confidence.
         # on test, this has worse effect on ranking. (need more testing for confirmation)
@@ -262,7 +262,7 @@ class PredictorSelector:
         for i, predictor in enumerate(filteredPredictors):
             positiveRatings = predictor.scoreWins
             totalRatings = predictor.scoreWins + predictor.scoreLosts
-            #totalRatings = predictor.totalTurns
+#            totalRatings = predictor.totalTurns
 
             confidence = predictor.confidence
             #confidence = 1 - predictor.confidence       # this is necessary. todo: figure out explanation
@@ -457,6 +457,11 @@ class PredictorSelector:
         elif len(p) > 1:
             # many predictors has high confidence. look for highest wins
             maxScore = max(p, key=operator.attrgetter('scoreWins'))
+            
+#            maxScore = 0
+#            for pred in p:
+#                maxScore = max(maxScore, pred.scoreWins - pred.scoreLosts)            
+            
             predictors = p
             p = [p for p in predictors if p.scoreWins >= maxScore.scoreWins]
             

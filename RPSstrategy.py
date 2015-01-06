@@ -75,13 +75,14 @@ class RPSstrategy:
     def play(self):
         move = rps.random() % 3           
         confidence = 0
-        return move, confidence
+#        return move, confidence
         
         totalTurns = 1000
         currentTurn = rps.getTurn()
         turnsRemaining = totalTurns - currentTurn
         lostDifference = self.playerLosts - self.playerWins
         #lostDifference = self.playerLosts + (self.playerTies /2)- self.playerWins  # doesn't work
+        #lostDifference = self.playerLosts + (self.playerTies )- self.playerWins  # doesn't work
         
         EarlyGame = 20      # DNA   (17-21)
         if currentTurn == 0:
@@ -94,22 +95,26 @@ class RPSstrategy:
                 #confidence = math.log(currentTurn, EarlyGame)
 #                confidence = 1 - (currentTurn / EarlyGame)
                 confidence = 1 - math.log(currentTurn, EarlyGame)
-        elif lostDifference > 1 and currentTurn >= totalTurns - lostDifference - self.panicValue :
+#        elif 1 and lostDifference > 1 and currentTurn >= totalTurns - lostDifference + (self.playerTies * 1):
+        elif 1 and self.playerTies + self.playerLosts > 500:
             # we are nearing the end and we are losing. Play randomly from now on.
-            if turnsRemaining > 1:
-                confidence = (lostDifference) / (turnsRemaining)
-                #confidence = math.log(lostDifference, turnsRemaining)
+            if turnsRemaining > 1 and lostDifference > 1:
+                #confidence = (lostDifference) / (turnsRemaining)
+                confidence = math.log(lostDifference, turnsRemaining)
+                confidence = math.log(lostDifference, totalTurns - lostDifference + (self.playerTies * 1))
             else:
                 # this is the last turn and we are still losing. Play randomly.
                 confidence = 1
             
-#            print("losing at turn", currentTurn)
+            confidence = 1
+            
+#            print("A: losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)
 #            print(lostDifference, confidence)
 #            print(turnsRemaining)
 #            input()
 #        elif 1 and currentTurn > 1 and lostDifference >= self.panicValue:
-        elif 1 and turnsRemaining > totalTurns * 0.3  and lostDifference >= self.panicValue:
+        elif 0 and turnsRemaining > totalTurns * 0.3  and lostDifference >= self.panicValue:
 #        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
 #        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
         
@@ -119,11 +124,11 @@ class RPSstrategy:
 #                confidence = math.log(lostDifference, self.losingValue)
 #                confidence = math.log(lostDifference, self.panicValue)
 
-#            print("losing at turn", currentTurn)
-#            print(self.playerWins, self.playerLosts, self.playerTies)
-#            print(lostDifference, confidence)
-#            print(turnsRemaining)
-#            input()
+            print("B: losing at turn", currentTurn)
+            print(self.playerWins, self.playerLosts, self.playerTies)
+            print(lostDifference, confidence)
+            print(turnsRemaining)
+            input()
         
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0

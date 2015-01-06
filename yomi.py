@@ -133,6 +133,8 @@ class Yomi:
         self.yomiHistorySize = 300          # 5.7.7549
         self.yomiHistorySize = 300          # 5.7.7549 # current best
         
+        self.yomiHistorySize = 100          # play with this. check effect of wilson ranking and why mbfp is not affected
+        
         self.lastPredictor = None
         
         self.enemyConfidence = 0
@@ -272,8 +274,8 @@ class Yomi:
 
         if predictor != self.lastPredictor:
             # if we are using a different predictor, play 1st yomi layer (a reset).
-            return 0, predictionConfidence
             #start = "A"
+            return 0, predictionConfidence
         
         if predictionConfidence == 1:
             transitionAA = transitionBA = transitionCA = 1
@@ -305,6 +307,7 @@ class Yomi:
 #        transitionCB = (1 - transitionCA) * (1 - Layer3Preference)
 #        transitionCC = (1 - transitionCA) * (Layer3Preference)        
 
+##
         transitionAA = predictionConfidence
         
         transitionAB = 1- transitionAA
@@ -410,9 +413,9 @@ class Yomi:
 
 #        transitionCC, transitionCB = transitionCB, transitionCC
 
-        #if currentTurn > 100: Debug = True
         if self.layerLastTurn != 0 and self.layerLastTurn != -1: Debug = True
         Debug = True
+        if currentTurn > 700: Debug = True
         Debug = False
 
         if Debug:
@@ -488,14 +491,14 @@ class Yomi:
 #        layer2ratio = 0
 #        layer3ratio = 0
 
-        layer1score = self.yomiHistoryWins.count("0") #- self.yomiHistoryLosts.count("0") #- int(self.yomiHistoryTies.count("0")/1)
-        layer2score = self.yomiHistoryWins.count("1") #- self.yomiHistoryLosts.count("1") #- int(self.yomiHistoryTies.count("1")/1)
-        layer3score = self.yomiHistoryWins.count("2") #- self.yomiHistoryLosts.count("2") #- int(self.yomiHistoryTies.count("2")/1)
 
         layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0] - self.yomiLayerTies[0]      # not strong
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1] - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2] - self.yomiLayerTies[2]
 
+        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - int(self.yomiHistoryTies.count("0")/1)
+        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - int(self.yomiHistoryTies.count("1")/1)
+        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - int(self.yomiHistoryTies.count("2")/1)
         foo = 50
         foo = 50
         foo = 47    #9.8
@@ -504,9 +507,10 @@ class Yomi:
         foo = layer1score + layer2score + layer3score
         foo = max(layer1score, layer2score, layer3score)
         foo = 45    #9.8.beats peterbot (1000wins)
-        foo = currentTurn if currentTurn < self.yomiHistorySize else self.yomiHistorySize 
         foo = 50
+        foo = currentTurn
         
+        foo = currentTurn if currentTurn < self.yomiHistorySize else self.yomiHistorySize 
         if foo < 1: 
             layer1ratio = 1
             layer2ratio = 1
