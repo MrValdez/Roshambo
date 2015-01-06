@@ -85,6 +85,7 @@ class RPSstrategy:
         #lostDifference = self.playerLosts + (self.playerTies )- self.playerWins  # doesn't work
         
         EarlyGame = 20      # DNA   (17-21)
+        EarlyGame = 50
         if currentTurn == 0:
             confidence = 1
         elif currentTurn < EarlyGame:
@@ -93,20 +94,21 @@ class RPSstrategy:
             #if self.playerWins < self.losingValue:
                 #confidence = currentTurn / EarlyGame
                 #confidence = math.log(currentTurn, EarlyGame)
-#                confidence = 1 - (currentTurn / EarlyGame)
-                confidence = 1 - math.log(currentTurn, EarlyGame)
+                confidence = 1 - (currentTurn / EarlyGame)
+#                confidence = 1 - math.log(currentTurn, EarlyGame)
 #        elif 1 and lostDifference > 1 and currentTurn >= totalTurns - lostDifference + (self.playerTies * 1):
-        elif 1 and self.playerTies + self.playerLosts > 500:
+#        elif 1 and self.playerTies + self.playerLosts > 500:
+        elif 1 and currentTurn > 600 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
             # we are nearing the end and we are losing. Play randomly from now on.
             if turnsRemaining > 1 and lostDifference > 1:
                 #confidence = (lostDifference) / (turnsRemaining)
                 confidence = math.log(lostDifference, turnsRemaining)
-                confidence = math.log(lostDifference, totalTurns - lostDifference + (self.playerTies * 1))
+                #confidence = math.log(lostDifference, totalTurns - lostDifference + (self.playerTies * 1))
             else:
                 # this is the last turn and we are still losing. Play randomly.
                 confidence = 1
             
-            confidence = 1
+#            confidence = 1
             
 #            print("A: losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)
