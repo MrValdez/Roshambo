@@ -7,14 +7,14 @@
 int sign(float x);
 float normcdfi(float p, float mu, float sigma2);
 
-float binconf(int p, int n, float c, double *theta_low, double *theta_high)
+float binconf(int positive, int negative, float c, double *theta_low, double *theta_high)
 {
     // default: c=0.95
-    float N = p + n;
+    float N = positive + negative;
 
     if (N == 0.0) return (0.0, 1.0);
 
-    p = p / N;
+    float p = positive / N;
     float z = normcdfi(1 - 0.5 * (1-c), 0.0, 1.0);      //default: mu=0.0, sigma2=1.0
 
     float a1 = 1.0 / (1.0 + z * z / N);
