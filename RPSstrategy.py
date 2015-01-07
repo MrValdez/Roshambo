@@ -75,7 +75,6 @@ class RPSstrategy:
     def play(self):
         move = rps.random() % 3           
         confidence = 0
-#        return move, confidence
         
         totalTurns = 1000
         currentTurn = rps.getTurn()
@@ -85,7 +84,7 @@ class RPSstrategy:
         #lostDifference = self.playerLosts + (self.playerTies )- self.playerWins  # doesn't work
         
         EarlyGame = 20      # DNA   (17-21)
-        EarlyGame = 50
+
         if currentTurn == 0:
             confidence = 1
         elif currentTurn < EarlyGame:
@@ -98,7 +97,7 @@ class RPSstrategy:
 #                confidence = 1 - math.log(currentTurn, EarlyGame)
 #        elif 1 and lostDifference > 1 and currentTurn >= totalTurns - lostDifference + (self.playerTies * 1):
 #        elif 1 and self.playerTies + self.playerLosts > 500:
-        elif 1 and currentTurn > 600 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
+        elif 1 and currentTurn > 925 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
             # we are nearing the end and we are losing. Play randomly from now on.
             if turnsRemaining > 1 and lostDifference > 1:
                 #confidence = (lostDifference) / (turnsRemaining)
@@ -116,7 +115,7 @@ class RPSstrategy:
 #            print(turnsRemaining)
 #            input()
 #        elif 1 and currentTurn > 1 and lostDifference >= self.panicValue:
-        elif 0 and turnsRemaining > totalTurns * 0.3  and lostDifference >= self.panicValue:
+        elif 0 and turnsRemaining > totalTurns * 0.5  and lostDifference >= self.panicValue:
 #        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
 #        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
         
@@ -126,12 +125,14 @@ class RPSstrategy:
 #                confidence = math.log(lostDifference, self.losingValue)
 #                confidence = math.log(lostDifference, self.panicValue)
 
-            print("B: losing at turn", currentTurn)
-            print(self.playerWins, self.playerLosts, self.playerTies)
-            print(lostDifference, confidence)
-            print(turnsRemaining)
-            input()
-        
+#            print("B: losing at turn", currentTurn)
+#            print(self.playerWins, self.playerLosts, self.playerTies)
+#            print(lostDifference, confidence)
+#            print(turnsRemaining)
+#            input()
+#        elif turnsRemaining > totalTurns * 0.5 and self.playerLosts > self.playerWins:
+#            confidence = 1
+            
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
 
