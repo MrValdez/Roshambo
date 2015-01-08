@@ -496,17 +496,13 @@ class Yomi:
 #        layer3ratio = 0
 
 
-        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0] - self.yomiLayerTies[0]      # not strong
+        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0] - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1] - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2] - self.yomiLayerTies[2]
 
-        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - int(self.yomiHistoryTies.count("0")/1)
-        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - int(self.yomiHistoryTies.count("1")/1)
-        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - int(self.yomiHistoryTies.count("2")/1)
-
-        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - int(self.yomiHistoryTies.count("0")/1)
-        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - int(self.yomiHistoryTies.count("1")/1)
-        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - int(self.yomiHistoryTies.count("2")/1)
+#        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0")# - int(self.yomiHistoryTies.count("0")/1)
+#        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1")# - int(self.yomiHistoryTies.count("1")/1)
+#        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2")# - int(self.yomiHistoryTies.count("2")/1)
 
         foo = 50
         foo = 50
