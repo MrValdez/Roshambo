@@ -263,7 +263,6 @@ class Yomi:
         currentTurn = rps.getTurn()        
         
         
-        return 0, predictionConfidence
         
         
 #######
@@ -298,43 +297,42 @@ class Yomi:
         # 3 	12.5% 	
 ##
 # method 1: 5.5       
-#        Layer2Preference = 0.301
-#        Layer3Preference = 0.176
+        Layer2Preference = 0.301
+        Layer3Preference = 0.176
                                         
-#        transitionBB = transitionAB 
-#        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
-#        transitionBC = (1 - transitionBB) * (Layer2Preference)
+        transitionBB = transitionAB 
+        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
+        transitionBC = (1 - transitionBB) * (Layer2Preference)
 
-        
-#        transitionCA = transitionBC
-#        transitionCA = predictionConfidence
-#        transitionCB = (1 - transitionCA) * (1 - Layer3Preference)
-#        transitionCC = (1 - transitionCA) * (Layer3Preference)        
+        transitionAC = transitionBC
+        transitionCA = predictionConfidence
+        transitionCB = (1 - transitionCA) * (1 - Layer3Preference)
+        transitionCC = (1 - transitionCA) * (Layer3Preference)        
 
 ##
-        transitionAA = predictionConfidence
+#        transitionAA = predictionConfidence
         
-        transitionAB = 1- transitionAA
+#        transitionAB = 1- transitionAA
 
-        layer1Preference = 1
-        Layer2Preference = 1 - 0.301
-        Layer3Preference = 0.301
+#        layer1Preference = 1
+#        Layer2Preference = 1 - 0.301
+#        Layer3Preference = 0.301
         
-        f = 0.901
-        f = 0.201
-        layer1Preference = f
-        Layer2Preference = 1 - f
-        Layer3Preference = 0.176
-        Layer3Preference = 0.176
+#        f = 0.901
+#        f = 0.301
+#        layer1Preference = 1 - f
+#        Layer2Preference = f
+#        Layer3Preference = 0.176
+#        Layer3Preference = 0.176
         
-        transitionBB = (1 - transitionAB) * (Layer2Preference)
-        transitionBC = (1 - transitionAB) * (Layer3Preference)
+#        transitionBB = (1 - transitionAB) * (Layer2Preference)
+#        transitionBC = (1 - transitionAB) * (Layer3Preference)
         
-        transitionBA = transitionCA = transitionAA * layer1Preference
-        transitionCB = transitionBB
-        transitionCC = transitionBC
+#        transitionBA = transitionCA = transitionAA * layer1Preference
+#        transitionCB = transitionBB
+#        transitionCC = transitionBC
         
-        transitionAC = transitionBC
+#        transitionAC = transitionBC
 
 
 # experiment
@@ -506,9 +504,9 @@ class Yomi:
         layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - int(self.yomiHistoryTies.count("1")/1)
         layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - int(self.yomiHistoryTies.count("2")/1)
 
-        layer1score = self.yomiHistoryWins.count("0") #- self.yomiHistoryLosts.count("0") - int(self.yomiHistoryTies.count("0")/1)
-        layer2score = self.yomiHistoryWins.count("1") #- self.yomiHistoryLosts.count("1") - int(self.yomiHistoryTies.count("1")/1)
-        layer3score = self.yomiHistoryWins.count("2") #- self.yomiHistoryLosts.count("2") - int(self.yomiHistoryTies.count("2")/1)
+        layer1score = self.yomiHistoryWins.count("0") - self.yomiHistoryLosts.count("0") - int(self.yomiHistoryTies.count("0")/1)
+        layer2score = self.yomiHistoryWins.count("1") - self.yomiHistoryLosts.count("1") - int(self.yomiHistoryTies.count("1")/1)
+        layer3score = self.yomiHistoryWins.count("2") - self.yomiHistoryLosts.count("2") - int(self.yomiHistoryTies.count("2")/1)
 
         foo = 50
         foo = 50
@@ -517,11 +515,11 @@ class Yomi:
         foo = 20
         foo = max(layer1score, layer2score, layer3score)
         foo = 45    #9.8.beats peterbot (1000wins)
-        foo = 50
         foo = layer1score + layer2score + layer3score / 3
         foo = currentTurn
-        
         foo = currentTurn if currentTurn < self.yomiHistorySize else self.yomiHistorySize 
+        foo = 50
+        
         if foo < 1: 
             layer1ratio = 1
             layer2ratio = 1
@@ -577,7 +575,6 @@ class Yomi:
         transitionBC *= layer3ratio
         transitionCC *= layer3ratio
 ##
-
 #        transitionAA += layer1ratio
 #        transitionBA += layer1ratio
 #        transitionCA += layer1ratio

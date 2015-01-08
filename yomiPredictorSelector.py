@@ -120,9 +120,9 @@ class PredictorSelector:
         #print(Predictors[-1].variant)
         #print([p.variant for p in Predictors])
                     
-        MBFPsize = 1
-        #MBFPsize = 2
-        MBFPsize = 21
+#        MBFPsize = 1
+        MBFPsize = 2
+        #MBFPsize = 21
         while MBFPsize > 0:
             p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
             Predictors.append(p)
@@ -306,7 +306,6 @@ class PredictorSelector:
                 totalRatings    = positiveRatings + negativeRatings
                 
             confidence = predictor.confidence
-            #confidence = 1 - predictor.confidence       # this is necessary. todo: figure out explanation
             
             # experiment: what happens if we use our score as confidence in self?
             
