@@ -99,6 +99,7 @@ class PredictorSelector:
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
         PPsize = 29 #(1)11.11.6510  (2)7.6.8133     #maximum in paper
         PPsize = 29
+        PPsize = 10
 
         #argv = [2]
         argv = [1]
