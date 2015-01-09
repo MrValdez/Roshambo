@@ -299,52 +299,17 @@ class Yomi:
         transitionCC = (1 - transitionCA) * (Layer3Preference)        
 
 ##
-        transitionAA = predictionConfidence
-        
-        transitionAB = predictionConfidence
+        transitionAA = predictionConfidence        
+        transitionAB = 1 - predictionConfidence        
+        transitionAC = 0
 
-        layer1Preference = 1
-        Layer2Preference = 1 - 0.301
-        Layer3Preference = 0.301
-        
-        f = 0.901
-        f = 0.901
+        transitionBB = transitionAB / 2
+        transitionBC = transitionAB / 2
+        transitionBA = 1 - (transitionBB + transitionBC)
 
-        #8.18.5322
-        Layer2Preference = 0.1
-        Layer3Preference = 0.1
-
-        #8.17.5837
-        layer1Preference = f
-        Layer2Preference = 0.1
-        Layer3Preference = 0
-
-        #7.11.6345
-        layer1Preference = f
-        Layer2Preference = 0
-        Layer3Preference = 0
-
-        #6.11.6812
-        layer1Preference = 1
-        Layer2Preference = 0
-        Layer3Preference = 0
-
-#        layer1Preference = 0.901
-#        Layer2Preference = (1-0.901)
-#        Layer3Preference = 0
-
-#        Layer2Preference = f
-#        Layer3Preference = 0.176
-        
-        transitionBB = (1 - transitionAB) * (Layer2Preference)
-        transitionBC = (1 - transitionAB) * (Layer3Preference)
-        
-        transitionBA = transitionCA = transitionAA * layer1Preference
-        transitionCB = transitionBB
-        transitionCC = transitionBC
-        
-        transitionAC = transitionBC
-        transitionAB = transitionBB
+        transitionCA = transitionAA
+        transitionCB = transitionAB
+        transitionCC = 0
 
 
 # experiment
@@ -374,28 +339,26 @@ class Yomi:
 #        transitionCA = predictionConfidence
 #        transitionCB = predictionConfidence * 0
 #        transitionCC = predictionConfidence * 0
-##
-#        transitionAA = predictionConfidence * (1 - 0.301)
-#        transitionAB = predictionConfidence * (0.301)
+##        
+        Layer1Preference = 0.9
+        Layer2Preference = 0.09
+        Layer3Preference = 0.01
+
+        Layer1Preference = 1
+        Layer2Preference = 0
+        Layer3Preference = 0
         
-#        transitionBA = predictionConfidence * (1 - 0.301 - 0.176 - 0.125)
-#        transitionBB = predictionConfidence * (0.301 + 0.176 - 0.125)
-#        transitionBC = predictionConfidence * (0.125 * 2)
+        transitionAA = predictionConfidence * Layer1Preference 
+        transitionBA = predictionConfidence * Layer1Preference 
+        transitionCA = predictionConfidence * Layer1Preference 
         
-#        transitionCA = transitionAA
-#        transitionCB = transitionBC
-#        transitionCC = 1 - (transitionAA + transitionBC)
-##
-#        transitionAA = predictionConfidence * (1)
-#        transitionBA = predictionConfidence * (1)
-#        transitionCA = predictionConfidence * (1)
+        transitionAB = predictionConfidence * Layer2Preference 
+        transitionBB = predictionConfidence * Layer2Preference 
+        transitionCB = predictionConfidence * Layer2Preference 
         
-#        transitionAB = predictionConfidence * (0.201)
-#        transitionBB = predictionConfidence * (0.201)
-#        transitionCB = predictionConfidence * (0.201)
-        
-#        transitionBC = predictionConfidence * (0.176)
-#        transitionCC = predictionConfidence * (0.176)
+        transitionAC = predictionConfidence * Layer3Preference 
+        transitionBC = predictionConfidence * Layer3Preference 
+        transitionCC = predictionConfidence * Layer3Preference 
 ##
 
 ##
@@ -706,10 +669,19 @@ class Yomi:
             print ("Result      : ",result)
             input()
         
-        layer1Confidence = transitionAA
-        layer2Confidence = transitionBB
-        layer3Confidence = transitionCC 
-        
+        if start == "A":
+            layer1Confidence = transitionAA
+            layer2Confidence = transitionAB
+            layer3Confidence = transitionAC 
+        elif start == "B":
+            layer1Confidence = transitionBA
+            layer2Confidence = transitionBB
+            layer3Confidence = transitionBC 
+        elif start == "C":
+            layer1Confidence = transitionCA
+            layer2Confidence = transitionCB
+            layer3Confidence = transitionCC 
+
         if result == "A":   return 0, layer1Confidence
         if result == "B":   return 1, layer2Confidence
         if result == "C":   return 2, layer3Confidence
