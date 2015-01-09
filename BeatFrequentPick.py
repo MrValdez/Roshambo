@@ -116,6 +116,9 @@ class MBFP:
         if Debug:
             print("Move, Confidence returned:               %i %.2f" % (move, confidence))
             input()
+        
+        confidence = 1 - confidence
+        
         return move, confidence
 
     def play(self):
