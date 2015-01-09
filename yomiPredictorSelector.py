@@ -19,8 +19,8 @@ scoreBufferLost = 1
 useScoreBuffer = True
 useScoreBuffer = False
 
-scoreReset = False
-scoreReset = True
+scoreReset = False      # perform badly
+scoreReset = True       
 
 class Predictor:
     def __init__(self, module, variant, name=""):
@@ -248,7 +248,6 @@ class PredictorSelector:
 #        predictor = self.LastPredictor
 #        print("%s: %i (+%i/-%i) %.2f %f" % (predictor.name.ljust(24), predictor.moveLastTurn,predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence))
         
-        
         #3. return the highest ranking
         return move, confidence
         
@@ -326,11 +325,12 @@ class PredictorSelector:
 
                 ratings = rps.binconf(positiveRatings, negativeRatings, confidence)
                 #ratings = binconf(positiveRatings, negativeRatings, confidence)
-                rating = ratings[1]
+                rating = float(ratings[1])
                 #rating += (ratings[1] - ratings[0]) / 2
                 
                 if math.isnan(rating): rating = 0
-
+                
+                rating = round(rating,3)        # fix for conversion from C float to Python float                
             else:
                 maxPredictionRating = 0.99                      # possible DNA
                 #maxPredictionRating = 1                      # possible DNA
@@ -437,15 +437,15 @@ class PredictorSelector:
             rating = finalChoice[0]            
 
 #        global Debug
-#        if rps.getTurn() > 590: 
+#        if rps.getTurn() >= 10: 
 #            Debug = True
 #        else:
 #            Debug = False
-            
+        
         if Debug:
             currentTurn = rps.getTurn()
             print("currentTurn", currentTurn)
-            for p in predictorScores:
+            for p in talliedScorers:
                 print ("%s (%i) Wilson Rating: %.3f. Confidence: %.3f Score +%i/-%i" % (p[1].name, p[1].moveLastTurn, p[0], p[1].confidence, p[1].scoreWins, p[1].scoreLosts))
                 
             input()         

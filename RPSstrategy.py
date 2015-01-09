@@ -103,6 +103,8 @@ class RPSstrategy:
                 #confidence = (lostDifference) / (turnsRemaining)
                 confidence = math.log(lostDifference, turnsRemaining)
                 #confidence = math.log(lostDifference, totalTurns - lostDifference + (self.playerTies * 1))
+                
+                confidence = math.log(lostDifference, 50)  # good so far
             else:
                 # this is the last turn and we are still losing. Play randomly.
                 confidence = 1
