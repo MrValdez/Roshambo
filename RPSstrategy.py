@@ -97,16 +97,13 @@ class RPSstrategy:
 #                confidence = 1 - math.log(currentTurn, EarlyGame)
 #        elif 1 and lostDifference > 1 and currentTurn >= totalTurns - lostDifference + (self.playerTies * 1):
 #        elif 1 and self.playerTies + self.playerLosts > 500:
-        elif 1 and currentTurn > 925 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
-            # we are nearing the end and we are losing. Play randomly from now on.
-            if turnsRemaining > 1 and lostDifference > 1:
-                #confidence = (lostDifference) / (turnsRemaining)
-                confidence = math.log(lostDifference, turnsRemaining)
-                #confidence = math.log(lostDifference, totalTurns - lostDifference + (self.playerTies * 1))
-                
-                confidence = math.log(lostDifference, 50)  # good so far
+#        elif 1 and currentTurn > 925 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
+        elif 1 and currentTurn > 925 and self.playerWins - self.playerLosts - self.playerTies < 300:
+            # we are nearing the end and we are losing. Play randomly from now on.           
+            if turnsRemaining > 1 and (self.playerLosts - self.playerWins) > 1:
+                confidence = math.log(lostDifference, 50)
             else:
-                # this is the last turn and we are still losing. Play randomly.
+#                this is the last turn and we are still losing. Play randomly.
                 confidence = 1
             
 #            confidence = 1
