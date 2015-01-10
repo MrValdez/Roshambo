@@ -97,11 +97,13 @@ class PredictorSelector:
         PPsize = 32 #(1)8.8.7593 (2)9.7.7803
         PPsize = 20 #(1)8.11.6929 (2)8.8.7466
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
-        PPsize = 29 #(1)11.11.6510  (2)7.6.8133     #maximum in paper
-        PPsize = 29
-        PPsize = 10
+        
+        
+        PPsize = 29 # 4.13.6389 #maximum in paper
+        PPsize = 9      # 6.10.6657
+        PPsize = 6
+        PPsize = 29 # 4.13.6389 #maximum in paper
 
-        #argv = [2]
         argv = [1]
         nextSeqSize = max(argv) + 1
 
@@ -109,8 +111,6 @@ class PredictorSelector:
             variant = ",".join([str(s) for s in argv])
             name = "Pattern Predictor [%i]" % (len(argv))
             p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
-#            if PPsize + 1== 5 or PPsize +1== 9:
-#                Predictors.append(p)
             Predictors.append(p)
             argv.append(nextSeqSize)
             nextSeqSize += 1
