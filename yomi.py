@@ -328,25 +328,17 @@ class Yomi:
 #        transitionCC = (1 - transitionBC) * (Layer3Preference)        
 #        transitionCA = 1 - (transitionCB + transitionCC)
 
-
-##
-#        transitionAA = predictionConfidence * 1
-#        transitionAB = predictionConfidence * 0
-#        transitionAC = predictionConfidence * 0
-#        transitionBA = predictionConfidence
-#        transitionBB = predictionConfidence * 0
-#        transitionBC = predictionConfidence * 0
-#        transitionCA = predictionConfidence
-#        transitionCB = predictionConfidence * 0
-#        transitionCC = predictionConfidence * 0
-##        
         Layer1Preference = 0.9
         Layer2Preference = 0.09
         Layer3Preference = 0.01
 
-        Layer1Preference = 1
-        Layer2Preference = 0
-        Layer3Preference = 0
+        Layer1Preference = 0.5
+        Layer2Preference = 0.0001
+        Layer3Preference = 0.00001
+
+        Layer1Preference = 1.4
+        Layer2Preference = 0.1
+        Layer3Preference = 0.1
         
         transitionAA = predictionConfidence * Layer1Preference 
         transitionBA = predictionConfidence * Layer1Preference 
@@ -359,23 +351,20 @@ class Yomi:
         transitionAC = predictionConfidence * Layer3Preference 
         transitionBC = predictionConfidence * Layer3Preference 
         transitionCC = predictionConfidence * Layer3Preference 
-##
 
 ##
-# method 2
-        #todo: study 1/e = 0.368
-#        Layer2Preference = 0.368
-#        Layer3Preference = 0.101
-                        
-#        transitionBB = transitionAB 
-#        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
-#        transitionBC = (1 - transitionBB) * (Layer2Preference)
+        transitionAA = predictionConfidence * 1
+        transitionAB = predictionConfidence * 0.01
+        transitionAC = predictionConfidence * 0
         
-#        transitionCC = transitionBC
-#        transitionCB = (1 - transitionCC) * Layer3Preference
-#        transitionCA = (1 - transitionCC) * (1 - Layer3Preference)
+        transitionBA = predictionConfidence * 1
+        transitionBB = predictionConfidence * 0.5
+        transitionBC = predictionConfidence * 0.03
+        
+        transitionCA = predictionConfidence * 1
+        transitionCB = predictionConfidence * 0.3
+        transitionCC = predictionConfidence * 0.01
 
-#        transitionCC, transitionCB = transitionCB, transitionCC
 ##
 
 #       match rank 8. tournament rank 4
@@ -393,8 +382,8 @@ class Yomi:
 #        transitionCC, transitionCB = transitionCB, transitionCC
 
         if transitionAB > 0: Debug = True
-        if currentOpponent >= 1 and currentTurn > 700: Debug = True
         Debug = True
+        if currentOpponent >= 1 and currentTurn > 700: Debug = True
         Debug = False
 
         if Debug:
@@ -492,12 +481,12 @@ class Yomi:
         midInfluence     = 0.0
         lowestInfluence  = 0.
 
-        highestInfluence = 0.9
-        midInfluence     = 0.1
-        lowestInfluence  = 0.
-        
-        if  layer1score >= layer2score >= layer3score:
-            layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
+        highestInfluence = 0
+        midInfluence     = 0
+        lowestInfluence  = 0
+                
+        if   layer1score >= layer2score >= layer3score:
+             layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
         elif layer1score >= layer3score >= layer2score:
              layer1ratio, layer3ratio, layer2ratio = highestInfluence, midInfluence, lowestInfluence
         elif layer2score >= layer1score >= layer3score:
@@ -507,38 +496,45 @@ class Yomi:
         elif layer3score >= layer1score >= layer2score:
              layer3ratio, layer1ratio, layer2ratio = highestInfluence, midInfluence, lowestInfluence
         elif layer3score >= layer2score >= layer1score:
-            layer3ratio, layer2ratio, layer1ratio = highestInfluence, midInfluence, lowestInfluence
+             layer3ratio, layer2ratio, layer1ratio = highestInfluence, midInfluence, lowestInfluence
         else:
-            print(layer1score,layer2score,layer3score)
+            print("Bug: ", layer1score,layer2score,layer3score)
             input()
-            
 
-##
-        transitionAA *= layer1ratio
-        transitionBA *= layer1ratio
-        transitionCA *= layer1ratio
-       
-        transitionAB *= layer2ratio
-        transitionBB *= layer2ratio
-        transitionCB *= layer2ratio
+#        layer1score = self.yomiLayerWins[0] / 1000 
+#        layer2score = self.yomiLayerWins[1] / 1000
+#        layer3score = self.yomiLayerWins[2] / 1000
         
-        transitionAC *= layer3ratio
-        transitionBC *= layer3ratio
-        transitionCC *= layer3ratio
+        layer1ratio *= layer1score
+        layer2ratio *= layer2score
+        layer3ratio *= layer3score
+            
+##
+#        transitionAA *= layer1ratio
+#        transitionBA *= layer1ratio
+#        transitionCA *= layer1ratio
+       
+#        transitionAB *= layer2ratio
+#        transitionBB *= layer2ratio
+#        transitionCB *= layer2ratio
+        
+#        transitionAC *= layer3ratio
+#        transitionBC *= layer3ratio
+#        transitionCC *= layer3ratio
 ##
 
 # current best
-#        transitionAA += layer1ratio
-#        transitionBA += layer1ratio
-#        transitionCA += layer1ratio
+        transitionAA += layer1ratio
+        transitionBA += layer1ratio
+        transitionCA += layer1ratio
         
-#        transitionAB += layer2ratio
-#        transitionBB += layer2ratio
-#        transitionCB += layer2ratio
+        transitionAB += layer2ratio
+        transitionBB += layer2ratio
+        transitionCB += layer2ratio
         
-#        transitionAC += layer3ratio
-#        transitionBC += layer3ratio
-#        transitionCC += layer3ratio
+        transitionAC += layer3ratio
+        transitionBC += layer3ratio
+        transitionCC += layer3ratio
 
 ##
 #        transitionAB -= layer1ratio
@@ -649,6 +645,7 @@ class Yomi:
             layer2Confidence = transitionCB
             layer3Confidence = transitionCC 
 
+#        return 0, 1
         if result == "A":   return 0, layer1Confidence
         if result == "B":   return 1, layer2Confidence
         if result == "C":   return 2, layer3Confidence
