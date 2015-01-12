@@ -22,6 +22,9 @@ import rps
 import yomiPredictorSelector
 import RPSstrategy
 
+import random
+random.seed(0)
+
 Debug = True
 Debug = False
 
@@ -576,6 +579,16 @@ class Yomi:
 #                )))
 #            input()
 
+        transitionAA = round(transitionAA, 8)
+        transitionAB = round(transitionAB, 8)
+        transitionAC = round(transitionAC, 8)
+        transitionBA = round(transitionBA, 8)
+        transitionBB = round(transitionBB, 8)
+        transitionBC = round(transitionBC, 8)
+        transitionCA = round(transitionCA, 8)
+        transitionCB = round(transitionCB, 8)
+        transitionCC = round(transitionCC, 8)
+
         #normalize
         if 1:
             normal = abs(transitionAA) + abs(transitionAB) + abs(transitionAC)
@@ -626,7 +639,12 @@ class Yomi:
             
         p = pykov.Chain(yomi)
                     
-        result = p.move(start, rps.randomRange)
+        def foo(a, b):
+            c = rps.randomRange(a, b)
+            #print(c)
+            return c
+
+        result = p.move(start, foo)
         
         if Debug:
             print ("Final:")
