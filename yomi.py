@@ -339,6 +339,14 @@ class Yomi:
         Layer1Preference = 1.4
         Layer2Preference = 0.1
         Layer3Preference = 0.1
+
+        Layer1Preference = 1
+        Layer2Preference = 0
+        Layer3Preference = 0
+
+        Layer1Preference = 1
+        Layer2Preference = 1
+        Layer3Preference = 1
         
         transitionAA = predictionConfidence * Layer1Preference 
         transitionBA = predictionConfidence * Layer1Preference 
@@ -358,12 +366,13 @@ class Yomi:
         transitionAC = predictionConfidence * 0
         
         transitionBA = predictionConfidence * 1
-        transitionBB = predictionConfidence * 0.5
-        transitionBC = predictionConfidence * 0.03
+        transitionBB = predictionConfidence * 0.05
+        transitionBC = predictionConfidence * 0.2
         
-        transitionCA = predictionConfidence * 1
-        transitionCB = predictionConfidence * 0.3
-        transitionCC = predictionConfidence * 0.01
+        transitionCA = predictionConfidence * 1.0
+        transitionCB = predictionConfidence * 0.001
+        transitionCC = predictionConfidence * 0
+
 
 ##
 
@@ -476,14 +485,9 @@ class Yomi:
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
-# 7.10.7309. beats iocaine
         highestInfluence = 0.9
-        midInfluence     = 0.0
-        lowestInfluence  = 0.
-
-        highestInfluence = 0
-        midInfluence     = 0
-        lowestInfluence  = 0
+        midInfluence     = 0.
+        lowestInfluence  = 0.  
                 
         if   layer1score >= layer2score >= layer3score:
              layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
@@ -501,13 +505,13 @@ class Yomi:
             print("Bug: ", layer1score,layer2score,layer3score)
             input()
 
-#        layer1score = self.yomiLayerWins[0] / 1000 
-#        layer2score = self.yomiLayerWins[1] / 1000
-#        layer3score = self.yomiLayerWins[2] / 1000
+        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
+        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
+        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
         
-        layer1ratio *= layer1score
-        layer2ratio *= layer2score
-        layer3ratio *= layer3score
+        layer1ratio *= layer1score / 1000
+        layer2ratio *= layer2score / 1000
+        layer3ratio *= layer3score / 1000
             
 ##
 #        transitionAA *= layer1ratio
@@ -523,18 +527,17 @@ class Yomi:
 #        transitionCC *= layer3ratio
 ##
 
-# current best
-        transitionAA += layer1ratio
-        transitionBA += layer1ratio
-        transitionCA += layer1ratio
+#        transitionAA += layer1ratio
+#        transitionBA += layer1ratio
+#        transitionCA += layer1ratio
         
-        transitionAB += layer2ratio
-        transitionBB += layer2ratio
-        transitionCB += layer2ratio
+#        transitionAB += layer2ratio
+#        transitionBB += layer2ratio
+#        transitionCB += layer2ratio
         
-        transitionAC += layer3ratio
-        transitionBC += layer3ratio
-        transitionCC += layer3ratio
+#        transitionAC += layer3ratio
+#        transitionBC += layer3ratio
+#        transitionCC += layer3ratio
 
 ##
 #        transitionAB -= layer1ratio
@@ -646,6 +649,7 @@ class Yomi:
             layer3Confidence = transitionCC 
 
 #        return 0, 1
+        layer1Confidence = layer2Confidence = layer3Confidence = 1
         if result == "A":   return 0, layer1Confidence
         if result == "B":   return 1, layer2Confidence
         if result == "C":   return 2, layer3Confidence
