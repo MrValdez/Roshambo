@@ -483,14 +483,14 @@ class Yomi:
 #        layer3ratio = 0
 
 ##
-#experiment. get sorting.
         layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
-        highestInfluence = 0.9
-        midInfluence     = 0.
-        lowestInfluence  = 0.  
+#figure out what to do here
+        highestInfluence = 1.0
+        midInfluence     = 1.
+        lowestInfluence  = 1.  
                 
         if   layer1score >= layer2score >= layer3score:
              layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
@@ -512,22 +512,22 @@ class Yomi:
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
         
-        layer1ratio *= layer1score / 1000
-        layer2ratio *= layer2score / 1000
-        layer3ratio *= layer3score / 1000
+#        layer1ratio *= layer1score / 1000
+#        layer2ratio *= layer2score / 1000
+#        layer3ratio *= layer3score / 1000
             
 ##
-#        transitionAA *= layer1ratio
-#        transitionBA *= layer1ratio
-#        transitionCA *= layer1ratio
+        transitionAA *= layer1ratio
+        transitionBA *= layer1ratio
+        transitionCA *= layer1ratio
        
-#        transitionAB *= layer2ratio
-#        transitionBB *= layer2ratio
-#        transitionCB *= layer2ratio
+        transitionAB *= layer2ratio
+        transitionBB *= layer2ratio
+        transitionCB *= layer2ratio
         
-#        transitionAC *= layer3ratio
-#        transitionBC *= layer3ratio
-#        transitionCC *= layer3ratio
+        transitionAC *= layer3ratio
+        transitionBC *= layer3ratio
+        transitionCC *= layer3ratio
 ##
 
 #        transitionAA += layer1ratio
@@ -578,16 +578,6 @@ class Yomi:
 #                (("C", "A"), transitionCA), (("C", "B"), transitionCB), (("C", "C"), transitionCC)
 #                )))
 #            input()
-
-        transitionAA = round(transitionAA, 8)
-        transitionAB = round(transitionAB, 8)
-        transitionAC = round(transitionAC, 8)
-        transitionBA = round(transitionBA, 8)
-        transitionBB = round(transitionBB, 8)
-        transitionBC = round(transitionBC, 8)
-        transitionCA = round(transitionCA, 8)
-        transitionCB = round(transitionCB, 8)
-        transitionCC = round(transitionCC, 8)
 
         #normalize
         if 1:
