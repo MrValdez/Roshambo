@@ -88,13 +88,8 @@ class RPSstrategy:
         if currentTurn == 0:
             confidence = 1
         elif currentTurn < EarlyGame:
-            # at the beginning of the game, we use our own play since we don't have enough information
-            # to predict
-            #if self.playerWins < self.losingValue:
-                #confidence = currentTurn / EarlyGame
-                #confidence = math.log(currentTurn, EarlyGame)
-                confidence = 1 - (currentTurn / EarlyGame)
-#                confidence = 1 - math.log(currentTurn, EarlyGame)
+            # at the beginning of the game, we use our own play since we don't have enough information to predict
+            confidence = 1 - (currentTurn / EarlyGame)
 #        elif 1 and lostDifference > 1 and currentTurn >= totalTurns - lostDifference + (self.playerTies * 1):
 #        elif 1 and self.playerTies + self.playerLosts > 500:
 #        elif 1 and currentTurn > 925 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
@@ -117,24 +112,6 @@ class RPSstrategy:
 #            print(lostDifference, confidence)
 #            print(turnsRemaining)
 #            input()
-#        elif 1 and currentTurn > 1 and lostDifference >= self.panicValue:
-        elif 0 and turnsRemaining > totalTurns * 0.5  and lostDifference >= self.panicValue:
-#        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
-#        elif currentTurn > (1000 * 0.70) and lostDifference >= self.panicValue:
-        
-            if lostDifference > 0:       
-#               confidence = (lostDifference / self.losingValue)
-               confidence = (lostDifference / self.panicValue)
-#                confidence = math.log(lostDifference, self.losingValue)
-#                confidence = math.log(lostDifference, self.panicValue)
-
-#            print("B: losing at turn", currentTurn)
-#            print(self.playerWins, self.playerLosts, self.playerTies)
-#            print(lostDifference, confidence)
-#            print(turnsRemaining)
-#            input()
-#        elif turnsRemaining > totalTurns * 0.5 and self.playerLosts > self.playerWins:
-#            confidence = 1
             
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0

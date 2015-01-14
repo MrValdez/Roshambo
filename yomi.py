@@ -122,22 +122,7 @@ class Yomi:
         
         self.yomiHistory = ""
         self.yomiHistorySize = 500           # target for DNA
-        self.yomiHistorySize = 500           # ..
-        self.yomiHistorySize = 10           # 8.16.5976
-        self.yomiHistorySize = 50           # 9.15.6494
-        self.yomiHistorySize = 150           # 12.8.7425
-        self.yomiHistorySize = 500           # 8.7.7481
-        
-        self.yomiHistorySize = 1000           # 15.9.7073
-        self.yomiHistorySize = 100           # 3.12.6809        
-        #self.yomiHistorySize = 800           # 8.6.8183
-        
-        #self.yomiHistorySize = 900
-        self.yomiHistorySize = 300          # 5.7.7549
-        
-        self.yomiHistorySize = 100          # play with this. check effect of wilson ranking and why mbfp is not affected
-        self.yomiHistorySize = 100          # 6.6.8062  # current best
-        self.yomiHistorySize = 100          # 6.6.8062  # current best
+        self.yomiHistorySize = 300          # target for DNA
         
         self.lastPredictor = None
         
@@ -286,84 +271,6 @@ class Yomi:
         # 1 	30.1% 	
         # 2 	17.6% 	
         # 3 	12.5% 	
-##
-# method 1: 5.5       
-        Layer2Preference = 0.301
-        Layer3Preference = 0.176
-                                        
-        transitionAB = 1 - transitionAA
-        transitionBB = transitionAB 
-        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
-        transitionBC = (1 - transitionBB) * (Layer2Preference)
-
-        transitionAC = transitionBC
-        transitionCA = predictionConfidence
-        transitionCB = (1 - transitionCA) * (1 - Layer3Preference)
-        transitionCC = (1 - transitionCA) * (Layer3Preference)        
-
-##
-        transitionAA = predictionConfidence        
-        transitionAB = 1 - predictionConfidence        
-        transitionAC = 0
-
-        transitionBB = transitionAB / 2
-        transitionBC = transitionAB / 2
-        transitionBA = 1 - (transitionBB + transitionBC)
-
-        transitionCA = transitionAA
-        transitionCB = transitionAB
-        transitionCC = 0
-
-
-# experiment
-
-#        Layer2Preference = 0.301
-#        Layer3Preference = 0.176
-        
-#        transitionAA = 1 - (predictionConfidence * Layer2Preference)
-#        transitionAB = predictionConfidence * Layer2Preference 
-                                        
-#        transitionBB = transitionAB
-#        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
-#        transitionBC = (1 - transitionBB) * (Layer2Preference)
-        
-#        transitionCB = (1 - transitionBB) * (1 - Layer3Preference)
-#        transitionCC = (1 - transitionBC) * (Layer3Preference)        
-#        transitionCA = 1 - (transitionCB + transitionCC)
-
-        Layer1Preference = 0.9
-        Layer2Preference = 0.09
-        Layer3Preference = 0.01
-
-        Layer1Preference = 0.5
-        Layer2Preference = 0.0001
-        Layer3Preference = 0.00001
-
-        Layer1Preference = 1.4
-        Layer2Preference = 0.1
-        Layer3Preference = 0.1
-
-        Layer1Preference = 1
-        Layer2Preference = 0
-        Layer3Preference = 0
-
-        Layer1Preference = 1
-        Layer2Preference = 1
-        Layer3Preference = 1
-        
-        transitionAA = predictionConfidence * Layer1Preference 
-        transitionBA = predictionConfidence * Layer1Preference 
-        transitionCA = predictionConfidence * Layer1Preference 
-        
-        transitionAB = predictionConfidence * Layer2Preference 
-        transitionBB = predictionConfidence * Layer2Preference 
-        transitionCB = predictionConfidence * Layer2Preference 
-        
-        transitionAC = predictionConfidence * Layer3Preference 
-        transitionBC = predictionConfidence * Layer3Preference 
-        transitionCC = predictionConfidence * Layer3Preference 
-
-##
         transitionAA = predictionConfidence * 1
         transitionAB = predictionConfidence * 0.01
         transitionAC = predictionConfidence * 0
@@ -375,23 +282,6 @@ class Yomi:
         transitionCA = predictionConfidence * 1.0
         transitionCB = predictionConfidence * 0.7
         transitionCC = predictionConfidence * 0.1
-
-
-##
-
-#       match rank 8. tournament rank 4
-#        Layer2Preference = 0.368
-#        Layer3Preference = 0.176
-                        
-#        transitionBB = transitionAB 
-#        transitionBA = (1 - transitionBB) * (1 - Layer2Preference)
-#        transitionBC = (1 - transitionBB) * (Layer2Preference)
-        
-#        transitionCC = transitionBC
-#        transitionCB = (1 - transitionCC) * Layer3Preference
-#        transitionCA = (1 - transitionCC) * (1 - Layer3Preference)
-
-#        transitionCC, transitionCB = transitionCB, transitionCC
 
         if transitionAB > 0: Debug = True
         Debug = True
@@ -416,81 +306,23 @@ class Yomi:
 #        layer2score = self.yomiHistoryWins.count("1") + self.yomiHistoryLosts.count("1") #- int(self.yomiHistoryTies.count("1")/1)
 #        layer3score = self.yomiHistoryWins.count("2") + self.yomiHistoryLosts.count("2") #- int(self.yomiHistoryTies.count("2")/1)
 
-        # 7.6.7887
-#        layer1score = self.yomiHistoryWins.count("0") - int(self.yomiHistoryTies.count("0")/1)
-#        layer2score = self.yomiHistoryWins.count("1") - int(self.yomiHistoryTies.count("1")/1)
-#        layer3score = self.yomiHistoryWins.count("2") - int(self.yomiHistoryTies.count("2")/1)
-
-        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
-        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
-        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
-        
-        foo = 50
-        foo = 50
-        foo = 47    #9.8
-        foo = self.yomiHistorySize if currentTurn < self.yomiHistorySize else currentTurn 
-        foo = 20
-        foo = 45    #9.8.beats peterbot (1000wins)
-        foo = layer1score + layer2score + layer3score / 3
-        foo = currentTurn
-        foo = 50
-        foo = currentTurn if currentTurn < self.yomiHistorySize else self.yomiHistorySize 
-        foo = max(layer1score, layer2score, layer3score)
-        foo = abs(layer1score) + abs(layer2score) + abs(layer3score)
-        
-        foo = 1000
-        
-        if foo < 1: 
-            layer1ratio = 1
-            layer2ratio = 1
-            layer3ratio = 1
-        else:
-            layer1ratio = (layer1score) / foo
-            layer2ratio = (layer2score) / foo
-            layer3ratio = (layer3score) / foo
-        
-#        layer1ratio = 1 - layer1ratio
-#        layer2ratio = 1 - layer2ratio
-#        layer3ratio = 1 - layer3ratio
-
-#        if layer1ratio < 0: layer1ratio = 0
-#        if layer2ratio < 0: layer2ratio = 0
-#        if layer3ratio < 0: layer3ratio = 0
-
-#        if layer1ratio > 1: layer1ratio = 1
-#        if layer2ratio > 1: layer2ratio = 1
-#        if layer3ratio > 1: layer3ratio = 1
-
-#        layer1ratio = 1
-#        layer2ratio = 1
-#        layer3ratio = 1
-
-        
-#        layer1ratio = (layer1score) * 0.301
-#        layer2ratio = (layer2score) * 0.176
-#        layer3ratio = (layer3score) * 0.125
-
-#        layer1ratio = (layer1ratio) * 0.301
-#        layer2ratio = (layer2ratio) * 0.176
-#        layer3ratio = (layer3ratio) * 0.125
-
-#        layer1ratio = (layer1ratio) * (1 - 0.301)
-#        layer2ratio = (layer2ratio) * (0.301)
-#        layer3ratio = (layer3ratio) * (0.176)
-
-#        layer1ratio = 1
-#        layer2ratio = 0
-#        layer3ratio = 0
-
-##
         layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
 #figure out what to do here
         highestInfluence = 1.0
-        midInfluence     = 1.
-        lowestInfluence  = 1.  
+        midInfluence     = 1.0
+        lowestInfluence  = 1.0
+
+        # 5.6.7946. beats iocaine (+57)
+#        highestInfluence = 1.1
+#        midInfluence     = 1.0
+#        lowestInfluence  = 0.3 
+
+#        highestInfluence = 2.1
+#        midInfluence     = 0.8
+#        lowestInfluence  = 0. 
                 
         if   layer1score >= layer2score >= layer3score:
              layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
@@ -508,13 +340,21 @@ class Yomi:
             print("Bug: ", layer1score,layer2score,layer3score)
             input()
 
-        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
-        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
-        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
+        layer1score = self.yomiLayerWins[0] #- self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
+        layer2score = self.yomiLayerWins[1] #- self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
+        layer3score = self.yomiLayerWins[2] #- self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
         
 #        layer1ratio *= layer1score / 1000
 #        layer2ratio *= layer2score / 1000
 #        layer3ratio *= layer3score / 1000
+
+#        if layer1ratio < 0: layer1ratio = 0
+#        if layer2ratio < 0: layer2ratio = 0
+#        if layer3ratio < 0: layer3ratio = 0
+
+#        if layer1ratio > 1: layer1ratio = 1
+#        if layer2ratio > 1: layer2ratio = 1
+#        if layer3ratio > 1: layer3ratio = 1
             
 ##
         transitionAA *= layer1ratio
