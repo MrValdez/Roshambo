@@ -13,7 +13,10 @@ sys.path.append(r"\Python34\lib")
 sys.path.append(r"\Python34\lib\site-packages")
 sys.path.append(r"\Python34\dlls")
 
+import random
+random.seed(0)
 import pykov
+
 from pprint import pprint
 from collections import OrderedDict
         
@@ -21,9 +24,6 @@ import math
 import rps
 import yomiPredictorSelector
 import RPSstrategy
-
-import random
-random.seed(0)
 
 Debug = True
 Debug = False
@@ -369,12 +369,12 @@ class Yomi:
         transitionAC = predictionConfidence * 0
         
         transitionBA = predictionConfidence * 1
-        transitionBB = predictionConfidence * 0.05
+        transitionBB = predictionConfidence * 0.3
         transitionBC = predictionConfidence * 0.2
         
         transitionCA = predictionConfidence * 1.0
-        transitionCB = predictionConfidence * 0.001
-        transitionCC = predictionConfidence * 0
+        transitionCB = predictionConfidence * 0.7
+        transitionCC = predictionConfidence * 0.1
 
 
 ##
@@ -657,10 +657,11 @@ class Yomi:
             layer3Confidence = transitionCC 
 
 #        return 0, 1
-        layer1Confidence = layer2Confidence = layer3Confidence = 1
-        if result == "A":   return 0, layer1Confidence
-        if result == "B":   return 1, layer2Confidence
-        if result == "C":   return 2, layer3Confidence
+#        layer1Confidence = layer2Confidence = layer3Confidence = 1
+        layer1Confidence = layer2Confidence = layer3Confidence = predictionConfidence
+        if result == "A":   return 0, layer1Confidence 
+        if result == "B":   return 1, layer2Confidence 
+        if result == "C":   return 2, layer3Confidence 
         
         return -1, 0
 #######        
@@ -740,14 +741,23 @@ class Yomi:
             predictor = None
         else:
             predictor = predictorSelector.LastPredictor
-            layerToUse, layerConfidence = self.decideYomiLayer(predictor, predictionConfidence, ownPlayConfidence)
-                            
-            if layerConfidence < ownPlayConfidence:
-                layerToUse, layerConfidence = -1, ownPlayConfidence
-            if layerConfidence == ownPlayConfidence:
-                #flip a coin
-                if rps.randomRange() < 0.5:         
+            layerToUse, layerConfidence = self.decideYomiLayer(predictor, predictionConfidence, ownPlayConfidence)                            
+            #print(layerConfidence, ownPlayConfidence)
+#            if layerConfidence < ownPlayConfidence:
+#                layerToUse, layerConfidence = -1, ownPlayConfidence
+            if layerConfidence <= ownPlayConfidence:
+                #if rps.randomRange() < 0.5:         #flip a coin
+#                if rps.randomRange() < 0.4:
+                dice = rps.randomRange() 
+                if dice - ownPlayConfidence <= layerConfidence :
+                    #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
                     layerToUse, layerConfidence = -1, ownPlayConfidence
+
+#            else:
+#            elif ownPlayConfidence >= layerConfidence:
+#                dice = rps.randomRange() 
+#                if dice - ownPlayConfidence < layerConfidence :
+#                    layerToUse, layerConfidence = -1, ownPlayConfidence
 
         predictorSelector.LastYomiLayer = layerToUse
         
