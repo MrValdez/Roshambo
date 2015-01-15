@@ -4,17 +4,24 @@ random.seed(0)
 import yomi
 
 import configparser
-class cDNA:
-    path_input  = "results/input/"
-    path_output = "results/output/"
-    
-    def __init__(self):
-        #self.load("JustRock.txt")
-        self.load("base.txt")
+class cDNA:   
+    def __init__(self, filename):
+        if filename == -1: 
+            self.strategies             = []
+            self.strategy_ranking       = []
+            self.predictors             = []
+            self.predictor_ranking      = []
+            self.yomi_preferences       = [0] * 3 * 3
+            self.yomi_score_preferences = [0] * 3
+        
+            filename = "results/input/base.txt"
+            self.load(filename)
+        else:
+            self.load(filename)
         
     def load(self, filename):
         config = configparser.ConfigParser(allow_no_value=True)
-        config.read(cDNA.path_input + filename)         
+        config.read(filename)         
         
         def cleanup(text):
             text = text.split("#")[0]
@@ -27,11 +34,14 @@ class cDNA:
         self.predictor_ranking      = [cleanup(spam) for spam in config["predictor ranking"]][0]
         self.yomi_preferences       = [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
         self.yomi_score_preferences = [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
+    
         
-        
-dna = cDNA()
+dna = None
 
-def play(a):
+def play(filename):
+    global dna
+    if dna == None:
+        dna = cDNA(filename)
     decision = yomi.play(dna)
 
     return decision
