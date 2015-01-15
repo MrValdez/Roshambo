@@ -5,8 +5,6 @@ sys.path.append(r"\Python34\lib")
 sys.path.append(r"\Python34\lib\site-packages")
 sys.path.append(r"\Python34\dlls")
 
-import random
-random.seed(0)
 import pykov
 
 from pprint import pprint
@@ -82,7 +80,6 @@ class VisualDebugger:
         self.connected = False
 
     def __del__(self):
-        print("deleting")
         self.close()
 
 class Yomi:
@@ -188,7 +185,7 @@ class Yomi:
 
         return yomiChoices
 
-    def decideYomiLayer(self, predictor, predictionConfidence, ownPlayConfidence):                      
+    def decideYomiLayer(self, dna, predictor, predictionConfidence, ownPlayConfidence):                      
         currentTurn = rps.getTurn()              
 
 #######
@@ -213,17 +210,17 @@ class Yomi:
 
         transitionAA = transitionBA = transitionCA = predictionConfidence
        
-        transitionAA = predictionConfidence * 1
-        transitionAB = predictionConfidence * 0.01
-        transitionAC = predictionConfidence * 0
+        transitionAA = predictionConfidence * dna.yomi_preferences[0]
+        transitionAB = predictionConfidence * dna.yomi_preferences[1]
+        transitionAC = predictionConfidence * dna.yomi_preferences[2]
         
-        transitionBA = predictionConfidence * 1
-        transitionBB = predictionConfidence * 0.3
-        transitionBC = predictionConfidence * 0.2
+        transitionBA = predictionConfidence * dna.yomi_preferences[3]
+        transitionBB = predictionConfidence * dna.yomi_preferences[4]
+        transitionBC = predictionConfidence * dna.yomi_preferences[5]
         
-        transitionCA = predictionConfidence * 1.0
-        transitionCB = predictionConfidence * 0.7
-        transitionCC = predictionConfidence * 0.1
+        transitionCA = predictionConfidence * dna.yomi_preferences[6]
+        transitionCB = predictionConfidence * dna.yomi_preferences[7]
+        transitionCC = predictionConfidence * dna.yomi_preferences[8]
 
         if transitionAB > 0: Debug = True
         Debug = True
@@ -252,10 +249,9 @@ class Yomi:
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
-#figure out what to do here
-        highestInfluence = 1.0
-        midInfluence     = 1.0
-        lowestInfluence  = 1.0
+#        highestInfluence = 1.0
+#        midInfluence     = 1.0
+#        lowestInfluence  = 1.0
 
         # 5.6.7946. beats iocaine (+57)
 #        highestInfluence = 1.1
@@ -265,6 +261,10 @@ class Yomi:
 #        highestInfluence = 2.1
 #        midInfluence     = 0.8
 #        lowestInfluence  = 0. 
+
+        highestInfluence = dna.yomi_score_preferences[0]
+        midInfluence     = dna.yomi_score_preferences[1]
+        lowestInfluence  = dna.yomi_score_preferences[2]
                 
         if   layer1score >= layer2score >= layer3score:
              layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
@@ -447,7 +447,7 @@ class Yomi:
         
         return -1, 0
 
-    def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
+    def play(self, dna, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
         self._debugYomiStatUsage()
 
@@ -460,7 +460,7 @@ class Yomi:
             predictor = None
         else:
             predictor = predictorSelector.LastPredictor
-            layerToUse, layerConfidence = self.decideYomiLayer(predictor, predictionConfidence, ownPlayConfidence)                            
+            layerToUse, layerConfidence = self.decideYomiLayer(dna, predictor, predictionConfidence, ownPlayConfidence)                            
 #            if layerConfidence < ownPlayConfidence:
 #                layerToUse, layerConfidence = -1, ownPlayConfidence
             if layerConfidence <= ownPlayConfidence:
@@ -513,9 +513,9 @@ def startDebugTurn():
 import time    
 startTime = time.time()
     
-yomi = Yomi()
-strategy = RPSstrategy.RPSstrategy()
-predictorSelector = yomiPredictorSelector.PredictorSelector()
+yomi = None
+strategy = None
+predictorSelector = None
 
 #to test specific prediction, uncomment:
 import PatternPredictor
@@ -528,7 +528,15 @@ Predictor = None
 #strategy = BeatFrequentPick.MBFP(1)
 #strategy = testBFP.BFP(1)
 
-def play(a):
+def init(dna):
+    global yomi, strategy, predictorSelector
+    
+    yomi = Yomi()
+    strategy = RPSstrategy.RPSstrategy()
+    predictorSelector = yomiPredictorSelector.PredictorSelector(dna)
+    
+
+def play(dna):
     #to test specific prediction, uncomment:
 #    global Predictor
 #    if Predictor == None:
@@ -540,6 +548,9 @@ def play(a):
 #    return (prediction + 1) % 3
         
     startDebugTurn()
+
+    if rps.getTurn() == 0 and yomi == None and strategy == None and predictorSelector == None:
+        init(dna)
     
     if rps.getTurn() == 0:
         #print("======", currentOpponent)
@@ -551,9 +562,9 @@ def play(a):
     ownPlay, ownPlayConfidence = strategy.play()
     
     predictorSelector.update()
-    prediction, predictionConfidence = predictorSelector.getPrediction()
+    prediction, predictionConfidence = predictorSelector.getPrediction(dna)
     
-    decision = yomi.play(predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence)
+    decision = yomi.play(dna, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence)
     
     #to test prediction ranking, uncomment:
     #decision = (prediction + 1) % 3

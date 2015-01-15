@@ -72,50 +72,25 @@ class Predictor:
 class PredictorSelector:
     """PredictorSelector contains all predictors to be used"""
     
-    def __init__(self):
+    def __init__(self, dna):
         Predictors = []
         
-        #PPsize = 8      # minimum to work
-        PPsize = 32     #(8756 score. rank 5)
-        #PPsize = 10     #(rank 4.9)
-        #PPsize = 28
-        PPsize = 28 #(1)10.10.7072 (2)12.9.7162
-        PPsize = 10 #(1)8.6.7690 (2)10.8.7473
-        PPsize = 32 #(1)8.8.7593 (2)9.7.7803
-        PPsize = 20 #(1)8.11.6929 (2)8.8.7466
-        PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
+        for predictor in dna.predictors:
+            if predictor == "none":   
+                continue
                 
-        PPsize = 29 # 4.13.6389 #maximum in paper
-        PPsize = 9      # 6.10.6657
-        PPsize = 6
-        PPsize = 29 # 4.13.6389 #maximum in paper
-
-        argv = [1]
-        nextSeqSize = max(argv) + 1
-
-        while PPsize + 1 >= nextSeqSize:
-            variant = ",".join([str(s) for s in argv])
-            name = "Pattern Predictor [%i]" % (len(argv))
-            p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
-            Predictors.append(p)
-            argv.append(nextSeqSize)
-            nextSeqSize += 1
+            name, value = predictor.split(" ")
+            value = int(value)
+            
+            if name == "pp":
+                variant = ",".join([str(s + 1) for s in range(value)])
+                name = "Pattern Predictor [%i]" % (value)
+                p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
+                Predictors.append(p)
+            if name == "mbfp":
+                p = Predictor(module=BeatFrequentPick.MBFP, variant=value)
+                Predictors.append(p)
         
-        #Predictors = [Predictors[2]]
-#        Predictors = Predictors[:4]
-        #Predictors = Predictors[0:]
-        #print(Predictors[-1].variant)
-        #print([p.variant for p in Predictors])
-                    
-#        MBFPsize = 1
-        MBFPsize = 2
-        #MBFPsize = 21
-        while MBFPsize > 0:
-            p = Predictor(module=BeatFrequentPick.MBFP, variant=MBFPsize)
-            Predictors.append(p)
-            MBFPsize -= 1
-        
-        #Predictors.reverse()
         self.Predictors = Predictors
         self.reset()
         
@@ -204,7 +179,7 @@ class PredictorSelector:
                 print("")
             input()
     
-    def getPrediction(self):
+    def getPrediction(self, dna):
         """
         1. run each predictor.
         2. select the predictors with the highest confidence and score
@@ -230,7 +205,7 @@ class PredictorSelector:
             predictor.confidence = confidence
             
         #2. select the predictors with the highest confidence and score
-        move, confidence = self.getHighestRank()
+        move, confidence = self.getHighestRank(dna)
         
 #        predictor = self.LastPredictor
 #        print("%s: %i (+%i/-%i) %.2f %f" % (predictor.name.ljust(24), predictor.moveLastTurn,predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence))
@@ -238,10 +213,16 @@ class PredictorSelector:
         #3. return the highest ranking
         return move, confidence
         
-    def getHighestRank(self):    
-        chosenPredictor, rankRating = self.getHighestRank_LowerWilson()
-        #chosenPredictor, rankRating = self.getHighestRank_Toilet()
-        #chosenPredictor, rankRating = self.getHighestRank_Naive()
+    def getHighestRank(self, dna):    
+        if dna.predictor_ranking == "wilson":
+            chosenPredictor, rankRating = self.getHighestRank_LowerWilson()
+#        elif dna.predictor_ranking == "toilet":
+#            chosenPredictor, rankRating = self.getHighestRank_Toilet()
+        elif dna.predictor_ranking == "naive":
+            chosenPredictor, rankRating = self.getHighestRank_Naive()
+        else:
+            chosenPredictor, rankRating = None, 0
+            return 0, 0
         
         self.LastPredictor = chosenPredictor
         move = chosenPredictor.moveLastTurn
