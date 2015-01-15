@@ -467,8 +467,8 @@ class Yomi:
                 #if rps.randomRange() < 0.5:         #flip a coin
 #                if rps.randomRange() < 0.4:
                 dice = rps.randomRange() 
+                #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
                 if dice - ownPlayConfidence <= layerConfidence :
-                    #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
                     layerToUse, layerConfidence = -1, ownPlayConfidence
 
         predictorSelector.LastYomiLayer = layerToUse
@@ -568,6 +568,8 @@ def play(dna):
     
     #to test prediction ranking, uncomment:
     #decision = (prediction + 1) % 3
+    #to test strategy, uncomment
+    #decision = ownPlay
       
     if rps.getTurn() == 999:
         global startTime

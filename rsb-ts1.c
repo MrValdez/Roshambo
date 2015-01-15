@@ -6133,7 +6133,7 @@ void exitPython();
 
 int main(int argc, char *argv[]) {
    // YOMI CHANGES
-   // go.exe [training variable] [use python (0,1)]
+   // go.exe [training variable]
    int error = initPython(argc, argv);
    if (error)
        return 1;

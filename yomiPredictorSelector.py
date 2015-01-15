@@ -90,7 +90,7 @@ class PredictorSelector:
             if name == "mbfp":
                 p = Predictor(module=BeatFrequentPick.MBFP, variant=value)
                 Predictors.append(p)
-        
+
         self.Predictors = Predictors
         self.reset()
         
