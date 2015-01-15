@@ -50,7 +50,6 @@ int verbose4 = 1;          /* print the tournament result */
 // My Changes
 #define players   42         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
-int usePython = 1;
 
 /*  Full History Structure (global variables, accessible to the
                             current player during each match)
@@ -92,7 +91,6 @@ void srandom(unsigned int seed)
 }
 //************************************
 
-extern int yomi();
 extern int python();
 
 int flip_biased_coin (double prob)
@@ -5593,10 +5591,7 @@ void Init_Player_Table (Player_Table crosstable[players+1])
 
     i++;  /* YOMI AI */
     strcpy(crosstable[i].name, "Yomi AI");
-    if (usePython)
-        crosstable[i].pname = python;
-    else
-        crosstable[i].pname = yomi;
+    crosstable[i].pname = python;
 
     i++;  /* nuthin' beats rock */
     strcpy(crosstable[i].name, "Good Ole Rock");
@@ -6146,9 +6141,6 @@ int main(int argc, char *argv[]) {
        yomiVariable1 = argv[1];
        //printf("%s", yomiVariable1);
    }
-
-   if (argc > 2)
-       usePython = atoi(argv[2]);
    
    printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
    ///////////////
