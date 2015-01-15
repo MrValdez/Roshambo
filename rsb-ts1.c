@@ -51,7 +51,6 @@ int verbose4 = 1;          /* print the tournament result */
 //#define players   42         /* number of players in the tournament */
 #define players   8         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
-int usePython = 1;
 
 /*  Full History Structure (global variables, accessible to the
                             current player during each match)
@@ -93,7 +92,6 @@ void srandom(unsigned int seed)
 }
 //************************************
 
-extern int yomi();
 extern int python();
 
 int flip_biased_coin (double prob)
@@ -5594,18 +5592,19 @@ void Init_Player_Table (Player_Table crosstable[players+1])
 
     i++;  /* YOMI AI */
     strcpy(crosstable[i].name, "Yomi AI");
-    if (usePython)
-        crosstable[i].pname = python;
-    else
-        crosstable[i].pname = yomi;
-
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
+    crosstable[i].pname = python;
 
     i++;  /* Dan Egnor (USA) */
     strcpy(crosstable[i].name, "Iocaine Powder");
     crosstable[i].pname = iocainebot;
+
+    i++;  /* Rafael Morales (UK) */
+    strcpy(crosstable[i].name, "Inocencio");
+    crosstable[i].pname = inocencio;
+
+    i++;  /* beat opponent's last move */
+    strcpy(crosstable[i].name, "Beat The Last Move");
+    crosstable[i].pname = copybot;    
 
     i++;  /* Jakob Mandelson (USA) */
     strcpy(crosstable[i].name, "Phasenbott");
@@ -5615,17 +5614,13 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "MegaHAL");
     crosstable[i].pname = halbot;
 
-    i++;  /* Russ Williams (USA) */
-    strcpy(crosstable[i].name, "RussRocker4");
-    crosstable[i].pname = russrocker4;
+    i++;  /* Peter Baylie (USA) */
+    strcpy(crosstable[i].name, "Peterbot");
+    crosstable[i].pname = peterbot;
 
-    i++;  /* Jonathan Schaeffer (Can) */
-    strcpy(crosstable[i].name, "Biopic");
-    crosstable[i].pname = biopic;
-
-    i++;  /* Don Beal (UK) */
-    strcpy(crosstable[i].name, "Simple Modeller");
-    crosstable[i].pname = mod1bot;
+    i++;  /* Sunir Shah (Can) */
+    strcpy(crosstable[i].name, "Bugbrain");
+    crosstable[i].pname = sunNervebot;
 
 #if 0
     i++;  /* nuthin' beats rock */
@@ -6155,10 +6150,7 @@ int main(int argc, char *argv[]) {
        yomiVariable1 = argv[1];
        //printf("%s", yomiVariable1);
    }
-   
-   if (argc > 2)
-       usePython = atoi(argv[2]);
-   
+      
    printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
    ///////////////
    

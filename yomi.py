@@ -1,11 +1,3 @@
-#todo:
-# make switching layers contain a cost. going higher has a higher cost. going lower has a lower cost. (this is modelling confidence)
-
-# yomi = we are modelling what layer the opponent is susceptible to
-# changing layer = we are modelling how confident we are that the opponent did not decide to change layer. In future AIs, if the opponent did something unexpected, this has a larger chance to flip.
-
-# perlin noise instead of random?
-
 import sys      # pykov and scipy depedencies
 #sys.path.append(r"\Windows\System32\python34.zip")
 sys.path.append(r"\Python34")
@@ -112,7 +104,7 @@ class Yomi:
         self.yomiLayerWins = [0, 0, 0]         # Count how many times a yomi layer won
         self.yomiLayerLosts = [0, 0, 0]        # Count how many times a yomi layer lost
         
-        #towrite: yomilayerwins and yomilayerlosts are within one shift with each other. Makes sense but write as trivia?
+        #todo: write: yomilayerwins and yomilayerlosts are within one shift with each other. Makes sense but write as trivia?
         
         self.yomiLayerTies = [0, 0, 0]        # Count how many times a yomi layer tied
         self.layerLastTurn = -1        
@@ -146,10 +138,8 @@ class Yomi:
         currentTurn = rps.getTurn()
         if currentTurn == 0:
             return
-#        Update yomi score even if we didn't yomi play last turn.
-#        if self.layerLastTurn == -1:
-#            return
 
+        # Update yomi score even if we didn't yomi play last turn.
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
         layerToWin = -1
 
@@ -184,45 +174,6 @@ class Yomi:
             self.totalWins += 1
         elif lost:
             self.totalLosts += 1
-
-        return
-
-        layerLastTurn = self.layerLastTurn
-        #if layerLastTurn != 0: print(layerLastTurn)
-        if layerLastTurn == -1:
-            return
-                    
-        self.currentYomiModel += str(layerLastTurn)
-        if lost or tie:
-            if len(self.currentYomiModel):
-                failedModel = self.currentYomiModel
-                #print (failedModel)
-                #print(self.yomiModels)
-                if failedModel in self.yomiModels[layerLastTurn]:
-                    print("fail")
-                    self.yomiModels[layerLastTurn].remove(failedModel)
-                self.yomiModels[layerToWin].append(self.currentYomiModel)
-            self.currentYomiModel = ""
-        
-        self.yomiHistory += str(layerLastTurn)
-        self.yomiHistory = self.yomiHistory[-self.yomiHistorySize:]
-                                        
-        if victory:
-            self.enemyConfidence -= rps.randomRange() * 0.1
-        if lost or tie:
-            self.enemyConfidence += rps.randomRange() * 0.1
-            
-        if self.enemyConfidence < 0: self.enemyConfidence = 0
-        if self.enemyConfidence > 1: self.enemyConfidence = 1
-        
-
-    def shouldUseYomi(self, playConfidence):
-        # returns False if we are confident with our play
-        # returns True if we are not confident with our play
-        
-        #todo: check sum here
-            
-        return True
                         
     def getYomiChoices(self, move):    
         # fill up yomiChoices with the moves to be played
@@ -236,9 +187,6 @@ class Yomi:
         if Debug: print ("Yomi Choices:          %i      %i      %i" % (yomiChoices[0], yomiChoices[1], yomiChoices[2]))
 
         return yomiChoices
-
-# short RPS 20-20-60: 385 (592, 207, 201)
-# full  RPS 20-20-60: 380 (585, 205, 210)
 
     def decideYomiLayer(self, predictor, predictionConfidence, ownPlayConfidence):                      
         currentTurn = rps.getTurn()              
@@ -262,15 +210,9 @@ class Yomi:
             transitionAA = transitionBA = transitionCA = 1
             if start == "A":
                 return 0, predictionConfidence
-        else:
-            transitionAA = transitionBA = transitionCA = predictionConfidence
-       
-        #transitionAA = transitionBA = transitionCA = predictionConfidence
 
-        # Benford's law
-        # 1 	30.1% 	
-        # 2 	17.6% 	
-        # 3 	12.5% 	
+        transitionAA = transitionBA = transitionCA = predictionConfidence
+       
         transitionAA = predictionConfidence * 1
         transitionAB = predictionConfidence * 0.01
         transitionAC = predictionConfidence * 0
@@ -504,73 +446,10 @@ class Yomi:
         if result == "C":   return 2, layer3Confidence 
         
         return -1, 0
-#######        
-
-
-#######
-#        random = rps.randomRange()
-
-#        if random < predictionConfidence:
-#            return 0, predictionConfidence      # layer 1
-
-#        return 1, predictionConfidence          # layer 2
-#######
-                    
-#######
-        #return rps.biased_roshambo(0.35,0.25), predictionConfidence     # weak
-#######
-
-#######        
-        # Benford's law
-        # 1 	30.1% 	
-        # 2 	17.6% 	
-        # 3 	12.5% 	
-        # 4 	9.7% 	
-        # 5 	7.9% 	
-        # 6 	6.7% 	
-        # 7 	5.8% 	
-        # 8 	5.1% 	
-        # 9 	4.6% 	
-
-        ratio = 1.0 / 3
-        confidences = [ratio] * 3
-        for i in [0, 1, 2]:
-            yomiConfidence = (self.yomiLayerWins[i] - (self.yomiLayerLosts[i] + self.yomiLayerTies[i])) / currentTurn
-            
-            if i == 0:
-                confidences[i] = (predictionConfidence * 0.67) + (yomiConfidence * 0.33)
-            else:
-                confidences[i] = (confidences[i - 1] * 0.67) + (yomiConfidence * 0.33)
-        
-        #print(confidences, sum(confidences))
-
-        random = rps.randomRange()
-        if random < confidences[0]:
-            return 0, predictionConfidence      # layer 1
-        random -= confidences[0]
-        
-        if random < confidences[1]:
-            return 1, predictionConfidence          # layer 2
-        random -= confidences[1]
-        
-        if random < confidences[2]:
-            return 2, predictionConfidence          # layer 3
-        
-        return -1, ownPlayConfidence
-#######
 
     def play(self, predictorSelector, ownPlay, ownPlayConfidence, prediction, predictionConfidence): 
         self.updateScore()            
         self._debugYomiStatUsage()
-
-        # decide if we need to use the prediction
-        #  - if true, add the yomi layers to the prediction
-        #  - else, use own play
-        # decide which Yomi layer to use
-        #  - (see function comments)
-        #  - if we are not very confident with our Yomi, we stick to our own play
-        # decide if we should change layer
-        #  - some AI variant should change layer easily. some should change reluntanctly
 
 #        prediction = 0
 #        predictionConfidence = 1
@@ -582,7 +461,6 @@ class Yomi:
         else:
             predictor = predictorSelector.LastPredictor
             layerToUse, layerConfidence = self.decideYomiLayer(predictor, predictionConfidence, ownPlayConfidence)                            
-            #print(layerConfidence, ownPlayConfidence)
 #            if layerConfidence < ownPlayConfidence:
 #                layerToUse, layerConfidence = -1, ownPlayConfidence
             if layerConfidence <= ownPlayConfidence:
@@ -592,12 +470,6 @@ class Yomi:
                 if dice - ownPlayConfidence <= layerConfidence :
                     #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
                     layerToUse, layerConfidence = -1, ownPlayConfidence
-
-#            else:
-#            elif ownPlayConfidence >= layerConfidence:
-#                dice = rps.randomRange() 
-#                if dice - ownPlayConfidence < layerConfidence :
-#                    layerToUse, layerConfidence = -1, ownPlayConfidence
 
         predictorSelector.LastYomiLayer = layerToUse
         

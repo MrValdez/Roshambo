@@ -61,8 +61,6 @@ The *argv* is checked:
 
 - The *first argv* is the variable that modifies the AI (e.g. the MBFP variant number in the first paper). 
 
-- The *second argv* is an integer taking 0 or 1. If a value of non-1 is given, it will not use the Python code. This is used during debugging to check our Python code against the C code.
-
 Finally, Python interface is properly closed when the test suite exits.
 
 #Yomi AI
@@ -129,6 +127,9 @@ def isVerbose():
 
 #BeatFrequentPick.py
  For the purpose of the first paper, *yomi.py* will use the AI from *BeatFrequentPick.py*. Pleaes refer to the first paper for more detail on this subsystem.
+
+#PatternPredictor.py
+ For the purpose of the second paper, *yomi.py* will use the AI from *PatternPredictor.py*. Pleaes refer to the second paper for more detail on this subsystem.
  
 #Compiling the test suite
  Run the *compile.bat* to create **go.exe** which is the main program for our modified test suite. It is expected that gcc can be found in the *PATH* environment.

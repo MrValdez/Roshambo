@@ -58,10 +58,6 @@ class Predictor:
             self.scoreLosts = 0
             self.totalTurns = 0
 
-#        self.scoreWins  *= 0.5
-#        self.scoreLosts *= 0.5
-#        self.totalTurns *= 0.5
-        
         self.moveLastTurn = 0
         self.confidence = 0
         self.rankingConfidence = 0
@@ -79,15 +75,6 @@ class PredictorSelector:
     def __init__(self):
         Predictors = []
         
-#        p = Predictor(module=PatternPredictor.PatternPredictor, variant="6,5,4,3,2,1")
-#        Predictors.append(p)
-#        p = Predictor(module=PatternPredictor.PatternPredictor, variant="5,4,3,2,1")
-#        Predictors.append(p)
-#        p = Predictor(module=BeatFrequentPick.MBFP, variant=5)
-#        Predictors.append(p)
-#        p = Predictor(module=BeatFrequentPick.MBFP, variant=4)
-#        Predictors.append(p)
-
         #PPsize = 8      # minimum to work
         PPsize = 32     #(8756 score. rank 5)
         #PPsize = 10     #(rank 4.9)
@@ -97,8 +84,7 @@ class PredictorSelector:
         PPsize = 32 #(1)8.8.7593 (2)9.7.7803
         PPsize = 20 #(1)8.11.6929 (2)8.8.7466
         PPsize = 39 #(1)8.8.7593 (2) 7.7.8022
-        
-        
+                
         PPsize = 29 # 4.13.6389 #maximum in paper
         PPsize = 9      # 6.10.6657
         PPsize = 6
@@ -136,6 +122,7 @@ class PredictorSelector:
     def reset(self):
         self.LastPredictor = None
         self.LastYomiLayer = 0
+        
         # note: resetting against each AI seems to give a better rank. study this further
         for predictor in self.Predictors:
             predictor.reset()    
@@ -149,6 +136,7 @@ class PredictorSelector:
             
         myMoveLastTurn = rps.myHistory(currentTurn)
         enemyMoveLastTurn = rps.enemyHistory(currentTurn)
+        
         # update predictor used last turn
         if self.LastPredictor:
             predictor = self.LastPredictor
@@ -164,7 +152,6 @@ class PredictorSelector:
                 predictor.addLosts(0)
             elif lost:
                 predictor.addLosts(1)
-
 
         # update the rest of the predictors that they should have gained if they were chosen
         for predictor in self.Predictors:
@@ -244,7 +231,6 @@ class PredictorSelector:
             
         #2. select the predictors with the highest confidence and score
         move, confidence = self.getHighestRank()
-        
         
 #        predictor = self.LastPredictor
 #        print("%s: %i (+%i/-%i) %.2f %f" % (predictor.name.ljust(24), predictor.moveLastTurn,predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence))
@@ -389,11 +375,7 @@ class PredictorSelector:
             if p[1].moveLastTurn == 1: tally[1] += 1
             if p[1].moveLastTurn == 2: tally[2] += 1
                 
-        # let's choose a move at random between them
-#        move = rps.biased_roshambo (tally[0] / sum(tally), tally[1] / sum(tally))
-#        predictorScores = [p for p in predictorScores if p[1].moveLastTurn == move][0]
-#        return predictorScores[1], predictorScores[0]
-        
+        # let's choose a move at random between them        
         # Filter predictorScores to only include the predictors with the maximum tally.
         maxTally = max(tally)
         talliedScorers = []
@@ -403,16 +385,7 @@ class PredictorSelector:
             papers = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 1]
         if tally[2] == maxTally: 
             scissors = [talliedScorers.append(p) for p in predictorScores if p[1].moveLastTurn == 2]               
-        
-#        random = rps.random() % len(predictorScores)
-#        random = 0
-#        finalChoice = list(predictorScores)[random]
-        
-#        chosenPredictor = finalChoice[1]
-#        rating = finalChoice[0]            
-        
-#        return chosenPredictor, rating
-                
+                        
         if len(talliedScorers) == 1:
             # in practice, this doesn't happen, but we put in this option to try to minimize bugs
             rating, chosenPredictor = talliedScorers[0]
@@ -436,12 +409,6 @@ class PredictorSelector:
             
             chosenPredictor = finalChoice[1]
             rating = finalChoice[0]            
-
-#        global Debug
-#        if rps.getTurn() >= 10: 
-#            Debug = True
-#        else:
-#            Debug = False
         
         if Debug:
             currentTurn = rps.getTurn()

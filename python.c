@@ -193,7 +193,7 @@ int initPython(int argc, char *argv[])
     PyImport_AppendInittab("rps", &PyInit_rps);
     Py_SetProgramName(argv[0]);
     Py_Initialize();
-    pName = PyUnicode_FromString("yomi");
+    pName = PyUnicode_FromString("main");
     /* Error checking of pName left out */
 
     PyImport_ImportModule("rps");
