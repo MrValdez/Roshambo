@@ -80,8 +80,13 @@ class PredictorSelector:
             if predictor == "none":   
                 continue
                 
-            name, value = predictor.split(" ")
-            value = int(value)
+            if predictor.find(" ") > 0:
+                # Predictor has variant
+                name, value = predictor.split(" ")
+                value = int(value)
+            else:
+                # Predictor has no variant
+                name, value = predictor, None
             
             p = None
             if name == "pp":
