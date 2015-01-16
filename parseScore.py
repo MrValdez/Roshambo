@@ -1,9 +1,11 @@
+import click
+
 import sys
 import os
 
-pathbase = "./results/"             # Note: this string should end with "/"
+pathbase = "./results/output/"             # Note: this string should end with "/"
 
-def FindScore(bot, showAllResults):
+def FindScore(bot, showresults):
     """Get the best and worst score of a bot against Yomi AI"""
     fileList = sorted(os.listdir(pathbase))
     fileList.reverse()      # for SeqPred
@@ -20,7 +22,6 @@ def FindScore(bot, showAllResults):
             print("%s is not txt file" % (filename))
         
         variable = filename.split(".")[0]
-        variable = variable[8:]
             
         with open(pathbase + filename) as f:
             # find the rank of the Yomi AI            
@@ -30,7 +31,7 @@ def FindScore(bot, showAllResults):
                 print ("Warning: %s not found in %s" % (bot, filename))
                 continue
             line = text[text.rfind("\n", 0, found):text.find("\n", found)].strip()
-            if showAllResults:
+            if showresults:
                 print ("%s:\n %s" % (variable, line))
             
             scoreText = line[line.find("Match:") + len("Match:"):]
@@ -38,11 +39,11 @@ def FindScore(bot, showAllResults):
             score = int(score)
             
             if score > bestScore[1]:
-                bestScore[0] = variable
+                bestScore[0] = filename
                 bestScore[1] = score
                 bestScore[2] = line
             if score < worstScore[1]:
-                worstScore[0] = variable
+                worstScore[0] = filename
                 worstScore[1] = score
                 worstScore[2] = line
                 
@@ -69,16 +70,14 @@ def DisplayLatex(bot, bestScore, worstScore):
             (bot, bestScore[0].count(",") + 1, bestScore[1], worstScore[0].count(",") + 1, worstScore[1]))
             # MBFP: (bot, int(bestScore[0]), bestScore[1], int(worstScore[0]), worstScore[1]))
 
-bot = None
-showAllResults = False
-showLatex = False
+@click.command()
+@click.option("--bot", default=None, help="Name of bot to parse")
+@click.option("--showresults", default=False, help="A value of True means the points gained from all variants are shown")
+@click.option("--showlatex", default=False, help="A value of True means that the code for a latex table is outputted instead.")
+def main(bot, showresults = False, showlatex = False):
 
-if len(sys.argv) >= 2: bot = None if sys.argv[1].isdigit() and (int(sys.argv[1]) == 0) else sys.argv[1]         # painful
-if len(sys.argv) >= 3: showAllResults = True if int(sys.argv[2]) > 0 else False
-if len(sys.argv) >= 4: showLatex = True if int(sys.argv[3]) > 0 else False
-
-if bot == None:
-    bots = """Good Ole Rock
+    if bot == None:
+        bots = """Good Ole Rock
 R-P-S 20-20-60
 Rotate R-P-S
 Beat The Last Move
@@ -119,18 +118,21 @@ Inocencio
 Peterbot
 Bugbrain
 Knucklehead""".split("\n")
-else:
-    bots = [bot]
-    
-for currentBot in bots:
-    if showLatex == False and showAllResults == False: 
-        print ("Searching for %s" % currentBot)
-
-    success, bestScore, worstScore, gamesWon, gamesLost, gamesTied = FindScore (currentBot, showAllResults)
-    if success:
-        if showLatex:
-            DisplayLatex(currentBot, bestScore, worstScore)
-        else:
-            DisplayScore(bestScore, worstScore, gamesWon, gamesLost, gamesTied)
     else:
-        print ("\n************ Warning: Best score AI does not match worst score AI. Use a longer search string")
+        bots = [bot]
+        
+    for currentBot in bots:
+        if showlatex == False and showresults == False: 
+            print ("Searching for %s" % currentBot)
+
+        success, bestScore, worstScore, gamesWon, gamesLost, gamesTied = FindScore (currentBot, showresults)
+        if success:
+            if showlatex:
+                DisplayLatex(currentBot, bestScore, worstScore)
+            else:
+                DisplayScore(bestScore, worstScore, gamesWon, gamesLost, gamesTied)
+        else:
+            print ("\n************ Warning: Best score AI does not match worst score AI. Use a longer search string")
+
+if __name__ == "__main__":
+    main()

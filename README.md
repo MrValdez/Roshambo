@@ -158,16 +158,16 @@ def isVerbose():
   
  The format is as follows:
 ```shell
-  parseScore.py [botname] [show all results] [show latex output]
+  parseScore.py [bot] [show results] [show latex]
 ```
 
-  **[botname]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space, use part of the name to circumvent this. 
+  **[bot]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space, use part of the name to circumvent this. 
   
   Note: If the value given is 0, this argument is ignored and all bots are printed (needed for [show latex] argument to work). Future todo: A cleaner approach would be to use something like Click library).
 
-  **[show all results]** is optional. A value of 1 means the points gained from all variants are shown. Any other values gives the default behavior of not showing the results.
+  **[show results]** is optional. A value of True means the points gained from all variants are shown. Any other values gives the default behavior of not showing the results.
   
-  **[show latex output]** is optional. A value of 1 means that the code for a latex table is outputted instead. [botname] must be 0 for this to work. Please refer to the example on how to use. 
+  **[show latex]** is optional. A value of True means that the code for a latex table is outputted instead. [botname] must be 0 for this to work. Please refer to the example on how to use. 
   
 ###Example:
   To show all the results against all bots:
@@ -177,22 +177,22 @@ def isVerbose():
 
   To show the results against the Iocaine bot:
 ```shell
-   python parseScore.py Iocaine
+   python parseScore.py --bot=Iocaine
 ```
 
   To show the results against the RPS 20-20-60 bot:
 ```shell
-   python parseScore.py 20-60
+   python parseScore.py --bot=20-60
 ```
         
   To show the results against the RPS 20-20-60 bot and show our bot's scores with different variants:
 ```shell
-   python parseScore.py 20-60 1
+   python parseScore.py --bot=20-60 --showresults=True
 ```
 
   To show all the results against all bots with latex output:
 ```shell
-   python parseScore.py 0 0 1
+   python parseScore.py --showresults=False --showlatex=True
 ```
    
 ##charts.py
