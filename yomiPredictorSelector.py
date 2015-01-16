@@ -3,6 +3,7 @@ import math
 
 import BeatFrequentPick
 import PatternPredictor
+import justRock
 import rps
 
 import random
@@ -82,13 +83,17 @@ class PredictorSelector:
             name, value = predictor.split(" ")
             value = int(value)
             
+            p = None
             if name == "pp":
                 variant = ",".join([str(s + 1) for s in range(value)])
                 name = "Pattern Predictor [%i]" % (value)
                 p = Predictor(module=PatternPredictor.PatternPredictor, variant=variant, name=name)
-                Predictors.append(p)
-            if name == "mbfp":
+            elif name == "mbfp":
                 p = Predictor(module=BeatFrequentPick.MBFP, variant=value)
+            elif name == "rock":
+                p = Predictor(module=justRock.Rock, variant=None)
+                
+            if p != None:
                 Predictors.append(p)
 
         self.Predictors = Predictors

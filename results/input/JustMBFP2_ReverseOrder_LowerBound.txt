@@ -1,15 +1,11 @@
 [strategies]
-# RPS, none
-RPS
+random
 [strategy ranking]
-# wilson-high, wilson-low, none
 wilson-low
 [predictors]
-# PP ?, MBFP ?, none
 MBFP 2
 MBFP 1
 [predictor ranking]
-# wilson-high, wilson-low, none
 wilson-low
 [yomi preferences]
 AA=1

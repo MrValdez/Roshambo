@@ -1,11 +1,11 @@
 [strategies]
-# RPS, none
-RPS
+# random, none
+random
 [strategy ranking]
 # wilson-high, wilson-low, none
 wilson-high
 [predictors]
-# PP ?, MBFP ?, none
+# PP ?, MBFP ?, rock, none
 PP 1
 PP 2
 PP 3
