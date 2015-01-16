@@ -2,47 +2,70 @@ import os
 import subprocess
 import charts
 
-#pathbase = "./results - Original/"             # Note: this string should end with "/"
-pathbase = "./results/"             # Note: this string should end with "/"
+import configparser
+
+path_input  = "results/input/"
+path_output = "results/output/"
+
+files = ["base.txt"]
+files = ["JustRandom.txt"]
+files = os.listdir(path_input)
 
 MatchPts = 100
 TournamentPts = 100
-argv = [1]
 
 def main():
-    global argv
-    PlayTournament(29)
-    CreateCSV()
-    charts.startPlotting()
+    for file in files:
+        Validate(file)
 
-
-def PlayTournament(size):
-    global argv
-    nextSeqSize = max(argv)
+    print ("")
     
-    while size > 0:
-        size -= 1
-        filename = "results %s.txt" % (str(argv))
-        if filename in os.listdir(pathbase): #file already exists
-            print (filename + " already exists")
-            continue
-            
-        filename = pathbase + filename
-        print ("\nRunning %s..." % (filename), end='')
+    for file in files:
+        PlayTournament(file)
         
-        argument = ",".join([str(s) for s in argv])
-        output = subprocess.check_output(["full.exe", argument], universal_newlines = True)
-        with open(filename, "w") as f:
-            stdout = str(output)
-            f.write(stdout)
+#    CreateCSV()
+#    charts.startPlotting()
+
+def Validate(filename):
+    filename = path_input + filename
+    
+    print ("Validating %s" % (filename))
+    
+    config = configparser.ConfigParser(allow_no_value=True)
+    config.read(filename)
+    
+    def cleanup(text):
+        text = text.split("#")[0]
+        text = text.strip()
+        return text
+
+    [cleanup(spam) for spam in config["strategies"]]
+    [cleanup(spam) for spam in config["strategy ranking"]][0]
+    [cleanup(spam) for spam in config["predictors"]]
+    [cleanup(spam) for spam in config["predictor ranking"]][0]
+    [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
+    [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
+
+def PlayTournament(filename):
+    input_filename = path_input + filename
+    output_filename = path_output + filename
+
+    if filename in os.listdir(path_output): #check if file already exists
+        print (output_filename + " already exists")
+        return
+
+    print ("Running %s..." % (filename), end='')
         
-        header = "Match results"
-        resultMatch = int(GetRank(output, header))
-        header = "Tournament results"
-        resultTournament = int(GetRank(output, header))
-     
-        nextSeqSize += 1
-        argv.append(nextSeqSize)
+    output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
+    with open(output_filename, "w") as f:
+        stdout = str(output)
+        f.write(stdout)
+        print (" done")
+        
+    header = "Match results"
+    resultMatch = int(GetRank(output, header))
+    header = "Tournament results"
+    resultTournament = int(GetRank(output, header))
         
 def GetRank(text, header):
     """
@@ -63,7 +86,7 @@ def GetRank(text, header):
 def CreateCSV(outputFilename = "results"):
     """Create CSV by looking at the rank of the Yomi AI"""
     csv = ["", ""]
-    fileList = sorted(os.listdir(pathbase))
+    fileList = sorted(os.listdir(path_output))
     best = [[0, 100], [0, 100]] #variable, rank
     
     prettyWidth = 18

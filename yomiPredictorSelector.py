@@ -213,9 +213,11 @@ class PredictorSelector:
         #3. return the highest ranking
         return move, confidence
         
-    def getHighestRank(self, dna):    
-        if dna.predictor_ranking == "wilson":
-            chosenPredictor, rankRating = self.getHighestRank_LowerWilson()
+    def getHighestRank(self, dna):
+        if dna.predictor_ranking == "wilson-high":
+            chosenPredictor, rankRating = self.getHighestRank_LowerWilson(higherBound = True)
+        elif dna.predictor_ranking == "wilson-low":
+            chosenPredictor, rankRating = self.getHighestRank_LowerWilson(higherBound = False)
 #        elif dna.predictor_ranking == "toilet":
 #            chosenPredictor, rankRating = self.getHighestRank_Toilet()
         elif dna.predictor_ranking == "naive":
@@ -231,7 +233,7 @@ class PredictorSelector:
                                 
         return move, confidence 
     
-    def getHighestRank_LowerWilson(self):
+    def getHighestRank_LowerWilson(self, higherBound = True):
         """
         Get the highest rank using "lower bound of Wilson score confidence interval for a Bernoulli parameter"
         http://www.evanmiller.org
@@ -293,7 +295,12 @@ class PredictorSelector:
 
                 ratings = rps.binconf(positiveRatings, negativeRatings, confidence)
                 #ratings = binconf(positiveRatings, negativeRatings, confidence)
-                rating = float(ratings[1])
+                
+                if higherBound:
+                    rating = float(ratings[1])
+                else:
+                    rating = float(ratings[0])
+                    
                 #rating += (ratings[1] - ratings[0]) / 2
                 
                 if math.isnan(rating): rating = 0
