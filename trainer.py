@@ -148,8 +148,9 @@ def CreateLatex(filename):
     print ("Building latex for %s." % (filename))
 
     title = filename.split(".")[0]
-    text = r"""The full results are found at Table \ref{table:%s_results}.
+    text = r"""The full results are found at Table \ref{table:%s_results}.""" % (title)
     
+    table = r"""
 \begin{table*}
     \caption{%s results}
     \label{table:%s_results}
@@ -157,7 +158,7 @@ def CreateLatex(filename):
     \begin{tabular}{|l|c|c|c|c|}
         \hline
         \textbf{Vs bot} & \textbf{Total score} & \textbf{Wins} & \textbf{Losts} & \textbf{Ties} \\ \hline
-""" % (title, title, title)
+""" % (title, title)
 
     with open(path_output + filename) as f:
         f.readline()
@@ -186,9 +187,9 @@ def CreateLatex(filename):
             losts = losts.strip()
             ties  = ties.strip()
             
-            text += "%s & %s & %s & %s & %s \\\\ \\hline \n" % (bot, total, wins, losts, ties)
+            table += "%s & %s & %s & %s & %s \\\\ \\hline \n" % (bot, total, wins, losts, ties)
 
-        text = text.strip() + """
+        table = table.strip() + """
         \end{tabular}
     \end{table*}"""
 
@@ -214,9 +215,9 @@ def CreateLatex(filename):
 #                (TournamentRank.strip(), TournamentRankPoints, 
 #                 MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
 
-        text += "\n\n"
-        text += "The Match rank is %s with a total points of %s (%s win, %s losts and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
+        text += " The Match rank is %s with a total points of %s (%s win, %s losts and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
         text += "The Tournament rank is %s with %s points." % (TournamentRank.strip(), TournamentRankPoints)
+        text = text + "\n\n" + table
 
     file = path_output + title + ".tex"
     with open(file, "w") as f:
