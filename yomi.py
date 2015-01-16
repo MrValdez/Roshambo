@@ -401,7 +401,7 @@ class Yomi:
         transitionCA = max(transitionCA, 0.0)
         transitionCB = max(transitionCB, 0.0)
         transitionCC = max(transitionCC, 0.0)
-            
+
         yomi = OrderedDict((
                 (("A", "A"), transitionAA), (("A", "B"), transitionAB), (("A", "C"), transitionAC),
                 (("B", "A"), transitionBA), (("B", "B"), transitionBB), (("B", "C"), transitionBC),

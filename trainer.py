@@ -1,3 +1,6 @@
+import random
+random.seed(0)
+
 import os
 import subprocess
 import charts
@@ -61,6 +64,7 @@ def PlayTournament(filename):
 
     print ("Running %s..." % (filename), end='')
         
+#    output = subprocess.call(["full.exe", input_filename], shell = True)
     output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
     with open(output_filename, "w") as f:
         stdout = str(output)
