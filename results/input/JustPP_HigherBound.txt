@@ -1,0 +1,46 @@
+[strategies]
+# RPS, none
+RPS
+[strategy ranking]
+# wilson-high, wilson-low, none
+wilson-high
+[predictors]
+# PP ?, MBFP ?, none
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+PP 16
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+[predictor ranking]
+# wilson-high, wilson-low, none
+wilson-high
+[yomi preferences]
+AA=1
+AB=0.01
+AC=0
+BA=1
+BB=0.3
+BC=0.2
+CA=1.0
+CB=0.7
+CC=0.1
+[yomi-score preferences]
+A=1.0                 # Highest influence
+B=1.0                 # Mid influence
+C=1.0                 # Lowest influence
