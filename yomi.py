@@ -1,3 +1,6 @@
+import random
+random.seed(0)
+
 import sys      # pykov and scipy depedencies
 #sys.path.append(r"\Windows\System32\python34.zip")
 sys.path.append(r"\Python34")
@@ -249,9 +252,9 @@ class Yomi:
         layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
-#        highestInfluence = 1.0
-#        midInfluence     = 1.0
-#        lowestInfluence  = 1.0
+        highestInfluence = 1.0
+        midInfluence     = 1.0
+        lowestInfluence  = 1.0
 
         # 5.6.7946. beats iocaine (+57)
 #        highestInfluence = 1.1
@@ -461,14 +464,21 @@ class Yomi:
         else:
             predictor = predictorSelector.LastPredictor
             layerToUse, layerConfidence = self.decideYomiLayer(dna, predictor, predictionConfidence, ownPlayConfidence)                            
-#            if layerConfidence < ownPlayConfidence:
-#                layerToUse, layerConfidence = -1, ownPlayConfidence
-            if layerConfidence <= ownPlayConfidence:
-                #if rps.randomRange() < 0.5:         #flip a coin
-#                if rps.randomRange() < 0.4:
-                dice = rps.randomRange() 
-                #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
-                if dice - ownPlayConfidence <= layerConfidence :
+##            if layerConfidence < ownPlayConfidence:
+##                layerToUse, layerConfidence = -1, ownPlayConfidence
+#            if layerConfidence <= ownPlayConfidence:
+#                dice = rps.randomRange() 
+#                if dice - ownPlayConfidence <= layerConfidence :
+#                    layerToUse, layerConfidence = -1, ownPlayConfidence
+
+            #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
+            if layerConfidence == 0:
+                layerToUse, layerConfidence = -1, ownPlayConfidence
+            elif layerConfidence < ownPlayConfidence:
+                layerToUse, layerConfidence = -1, ownPlayConfidence
+            elif layerConfidence == ownPlayConfidence:
+                #flip a coin
+                if rps.randomRange() < 0.5:         
                     layerToUse, layerConfidence = -1, ownPlayConfidence
 
         predictorSelector.LastYomiLayer = layerToUse

@@ -44,7 +44,7 @@ wilson-high
 AA=1
 AB=0.01
 AC=0
-BA=1
+BA=1.0
 BB=0.3
 BC=0.2
 CA=1.0
