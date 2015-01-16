@@ -52,5 +52,5 @@ CB=0.7
 CC=0.1
 [yomi-score preferences]
 A=1.0                 # Highest influence
-B=1.0                 # Mid influence
-C=1.0                 # Lowest influence
+B=0.7                 # Mid influence
+C=0.7                 # Lowest influence
