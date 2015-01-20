@@ -1,3 +1,5 @@
+[info]
+name="Baseline"
 [strategies]
 # random, none
 random
@@ -35,8 +37,8 @@ PP 26
 PP 27
 PP 28
 PP 29
-MBFP 2
 MBFP 1
+MBFP 2
 [predictor ranking]
 # wilson-high, wilson-low, none
 wilson-high

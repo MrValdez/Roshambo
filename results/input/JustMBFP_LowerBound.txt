@@ -1,3 +1,5 @@
+[info]
+name="MBFP\textsubscript{1} Lower Bound"
 [strategies]
 random
 [strategy ranking]

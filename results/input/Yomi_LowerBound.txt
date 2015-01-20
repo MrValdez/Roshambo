@@ -1,8 +1,13 @@
+[info]
+name="Complete Yomi - Lower Bound"
 [strategies]
+# random, none
 random
 [strategy ranking]
-wilson-high
+# wilson-high, wilson-low, none
+wilson-low
 [predictors]
+# PP ?, MBFP ?, rock, none
 PP 1
 PP 2
 PP 3
@@ -32,15 +37,16 @@ PP 26
 PP 27
 PP 28
 PP 29
-MBFP 2
 MBFP 1
+MBFP 2
 [predictor ranking]
-wilson-high
+# wilson-high, wilson-low, none
+wilson-low
 [yomi preferences]
 AA=1
 AB=0.01
 AC=0
-BA=1
+BA=1.0
 BB=0.3
 BC=0.2
 CA=1.0
@@ -48,5 +54,5 @@ CB=0.7
 CC=0.1
 [yomi-score preferences]
 A=1.0                 # Highest influence
-B=1.0                 # Mid influence
-C=1.0                 # Lowest influence
+B=0.7                 # Mid influence
+C=0.45                 # Lowest influence

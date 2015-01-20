@@ -20,8 +20,6 @@ TournamentPts = 100
 def main():
     for file in files:
         Validate(file)
-
-    print ("")
     
     for file in files:
         PlayTournament(file)
@@ -47,6 +45,7 @@ def Validate(filename):
         text = text.strip()
         return text
 
+    #[cleanup(spam) for spam in config["info"]]
     [cleanup(spam) for spam in config["strategies"]]
     [cleanup(spam) for spam in config["strategy ranking"]][0]
     [cleanup(spam) for spam in config["predictors"]]
@@ -154,6 +153,10 @@ def CreateLatex(filename):
     title = filename.split(".")[0]
     text = r"""The full results are found at Table \ref{table:%s_results}.""" % (title)
     
+    config = configparser.ConfigParser(allow_no_value=True)
+    config.read(path_input + filename)
+    description = config["info"]["name"].strip("\"")
+    
     table = r"""
 \begin{table*}
     \caption{%s results}
@@ -161,8 +164,8 @@ def CreateLatex(filename):
     \centering
     \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \textbf{Vs bot} & \textbf{Total score} & \textbf{Wins} & \textbf{Losts} & \textbf{Ties} \\ \hline
-""" % (title, title)
+        \textbf{Vs bot} & \textbf{Total} & \textbf{Wins} & \textbf{Losts} & \textbf{Ties} \\ \hline
+""" % (description, title)
 
     with open(path_output + filename) as f:
         f.readline()

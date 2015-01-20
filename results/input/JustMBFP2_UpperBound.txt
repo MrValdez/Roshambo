@@ -1,9 +1,12 @@
+[info]
+name="MBFP\textsubscript{1} and MBFP\textsubscript{2} Upper Bound"
 [strategies]
 random
 [strategy ranking]
 wilson-high
 [predictors]
 MBFP 1
+MBFP 2
 [predictor ranking]
 wilson-high
 [yomi preferences]

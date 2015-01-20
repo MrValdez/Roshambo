@@ -1,3 +1,5 @@
+[info]
+name="Random Strategy"
 [strategies]
 random
 [strategy ranking]
