@@ -18,7 +18,7 @@ For the source code, please check LICENSE for more information, but the quick su
 
 The Python.dll binary is under the [Python license](https://docs.python.org/3/license.html).
 
-#Artificial Intelligence Dependencies
+#Core Dependencies
  - **gcc**. We used the unofficial windows binaries: rubenvb MinGW-w64 (gcc rubenvb-4.8.0).
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **OS**. We used Windows 8 64-bit, but other than the batch files, the AI code should be cross-platform (note: untested).
@@ -27,6 +27,9 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
 
+#AI dependencies
+ - **pykov**. Used by the Yomi Layer Selector subroutine. Github repository can be found [here](https://github.com/riccardoscalco/Pykov).
+ 
 #Supplied prerequisites
 
 *python3.dll* and *libpython.a* are binary prerequisites and are supplied in this repository. 
