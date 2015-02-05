@@ -7,17 +7,12 @@ import charts
 
 import configparser
 
-path_input  = "results/input/"
-path_output = "results/output/"
-
-files = ["base.txt"]
-files = ["JustRandom.txt"]
-files = os.listdir(path_input)
-
 MatchPts = 100
 TournamentPts = 100
 
-def main():
+def main(path_input = "results/input/", path_output = "results/output/"):
+    files = os.listdir(path_input)
+
     for file in files:
         Validate(file)
     
@@ -26,8 +21,8 @@ def main():
         
     print ("")
     
-    for file in files:
-        CreateLatex(file)
+#    for file in files:
+#        CreateLatex(file)
 
 #    CreateCSV(path_output + "data.txt")
 #    charts.startPlotting()
