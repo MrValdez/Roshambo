@@ -149,11 +149,94 @@ def isVerbose():
 
  The **main()** function runs the script. It is built this way to allow commenting specific behavior for debugging purposes.
  
- The **PlayTournament(size)** function plays the tournament. Size refers to the maximum number of variants that will play. From the size variable, the variants are created with values of **[1..size]**. In our modified RoShamBo Test Suite, these variants are then passed via argv. The results are saved into "**results %s.txt**" where %s is the variant number (zfilled with 0000).
+ The **Validate()** function will validate the configuration file before running the tournament. Refer below on how configuration file works.
+ 
+ The **PlayTournament()** function plays the tournament. All configuration files in the input directory will be run and the output will be saved with the same file name to an output directory.
  
  The **CreateCSV()** function will parse each result and create two csv files with the csv columns: variant variable, rank. The first csv file is for the "Match results" and the second is for the "Tournament results" ("**results_match.csv**" and "**results_tournament.csv**" respectively).
  
  The **charts.startPlotting()** function will create the chart graphics. Refer to charts.py.
+
+###trainer configuration file
+
+ This is actually an INI file and parsed by the *configparser built-in library*. The sections are as follows:
+ 
+- **[info]** contains general information on the configuration. *name* is used to identify this configuration.
+
+- **[strategies]** contains the strategies that will be used. More than one strategy is allowed.
+
+- **[strategy ranking]** contains the algorithm used to rank the strategy. Available options are *wilson-high, wilson-low, none*.
+
+- **[predictors]** contains the predictors that will be used. More than one predictor is allowed. A predictor variant can be used by appending the variant after the predictor name, delimited by space.
+
+- **[predictor ranking]** contains the algorithm used to rank the predictor. Available options are *wilson-high, wilson-low, none*.
+
+- **[yomi preferences]** contains the probabilities used in the markov chain. *AB* is for the probability from Yomi Layer 1 to Yomi Layer 2, *BC* is for the probability from Yomi Layer 2 to 3, and so on. The probabilities must be within [0..1]. 
+
+- **[yomi-score preferences]** contains the influence of the yomi's score in the yomi subroutine. The values are *A*, *B*, and *C*, referring to Yomi Layer 1, 2, and 3, respectively. The values must be within [0..1].
+ 
+ An example of a configuration file is as follows:
+ 
+```ini
+[info]
+name="Baseline"
+[strategies]
+# random, none
+random
+[strategy ranking]
+# wilson-high, wilson-low, none
+wilson-high
+[predictors]
+# PP ?, MBFP ?, rock, none
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+PP 16
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 27
+PP 28
+PP 29
+MBFP 1
+MBFP 2
+[predictor ranking]
+# wilson-high, wilson-low, none
+wilson-high
+[yomi preferences]
+AA=1
+AB=0.01
+AC=0
+BA=1.0
+BB=0.3
+BC=0.2
+CA=1.0
+CB=0.7
+CC=0.1
+[yomi-score preferences]
+A=1.0                 # Highest influence
+B=0.7                 # Mid influence
+C=0.45                 # Lowest influence
+```
 
 ##parseScore.py
  Used to study how many points (wins-losts-ties) our bot got compared to all the bots or against a specific bot.
