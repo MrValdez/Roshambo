@@ -27,7 +27,8 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
  - **click**. Used by *parseScore.py* as helper for arguments.
- 
+ - **pygame**. Used by *debugger.py* to display the debugger.
+  
 #AI dependencies
  - **pykov**. Used by the Yomi Layer Selector subroutine. Github repository can be found [here](https://github.com/riccardoscalco/Pykov).
  
@@ -295,3 +296,15 @@ When imported as a library, you can call the **Plot()** function. It has the fol
 ```
   Plot(filename, title, saveFigure = True)
 ```
+
+##debugger.py
+ Creates a server that receives data from a running instance of *yomi.py*. This program will display a pygame window that shows what Yomi Layer was used against a specific AI at a specific turn. 
+ 
+ A turn is represented by a 10x10 tile. The tile's color represents the Yomi Layer used in that turn. The colors are:
+ 
+- Layer 0: Red
+- Layer 1: Green
+- Layer 2: Blue
+- Layer 3: Magenta (255 Red, 0 Green, 255 Blue)
+ 
+ The arrow keys are used to move the debugger. Restarting the simulation will not clear the debugger but will overwrite the tiles, one line at a time. The [ and ] keys will zoom in and zoom out, respectively.
