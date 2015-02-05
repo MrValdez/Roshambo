@@ -26,11 +26,11 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
 #Tools dependencies
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
- - **click**. Used by *parseScore.py* as helper for arguments.
+ - **click**. Used by *parseScore.py* as a helper for arguments.
  - **pygame**. Used by *debugger.py* to display the debugger.
   
 #AI dependencies
- - **pykov**. Used by the Yomi Layer Selector subroutine. Github repository can be found [here](https://github.com/riccardoscalco/Pykov).
+ - **pykov**. Used by the Yomi Layer Selector subroutine to generate Markov Chains. Github repository can be found [here](https://github.com/riccardoscalco/Pykov).
  
 #Supplied prerequisites
 
@@ -58,11 +58,11 @@ Here are the changes for the test suite. These modifications are necessary to al
   
 ##International RoShamBo Test Suite changes to accomodate Python
 
-*Python.c* holds most of the Python interface.
+*Python.c* holds the cPython interface and the RPS library.
   
-At the start of **main()**, Python is initialized. The python function **isVerbose()** and the corresponding verbose valuable is set.
+At the start of **main()**, Python is initialized. The python function **isVerbose()** and the corresponding verbose variable is set.
   
-The *argv* is checked. This contains the filename for the Yomi configuration file that will modify the AI's behavior (see the section below for more information)
+The *argv* is checked. This contains the filename for the Yomi configuration file that will modify the AI's behavior (see the section below for more information).
 
 Finally, Python interface is properly closed when the test suite exits.
 
@@ -75,7 +75,7 @@ The file *yomi.py* contains the AI that the test suite will use.
 
 ##Basic structure
 
-This is the entry point of the AI. The modified test suite will look for this file and the function **play()**. **play()** must return 0, 1, or 2 (which is the value for rock, paper, and scissors, respectively). **play()** has one parameter: the DNA parameter. This is the parameter that contains the Yomi Configuration.
+This is the entry point of the AI. The modified test suite will look for this file and the function **play()**. **play()** must return 0, 1, or 2 (which is the value for rock, paper, and scissors, respectively). **play()** has one parameter: the DNA parameter. This contains the Yomi Configuration.
  
 This is an example of a simple **play()** function:
 
@@ -89,7 +89,7 @@ This is an example of a simple **play()** function:
   The function **shutdown()** must also exist. This function is called when the program is about to exit. Any cleanups that should be done should be called here.
   
 ##RPS library
-The rps library contains the following test suite related functions:
+The RPS ibrary contains the following functions related to the International RoShamBo Test Suite:
 
 - **rps.getTurn()** returns the current turn. Range is *[0..maxturns - 1]*. If 0 is returned, then this is the first turn and no move has been played yet.
 
@@ -223,7 +223,7 @@ C=0.45                 # Lowest influence
 #Python scripts
 
 ##trainer.py
- Used to play the tournament, create the CSV and plot the charts.
+ Used to run the tournament simulation with different variants, create the CSV and plot the charts.
  
  In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
 
