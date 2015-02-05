@@ -26,7 +26,8 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
 #Tools dependencies
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
-
+ - **click**. Used by *parseScore.py* as helper for arguments.
+ 
 #AI dependencies
  - **pykov**. Used by the Yomi Layer Selector subroutine. Github repository can be found [here](https://github.com/riccardoscalco/Pykov).
  
@@ -158,19 +159,23 @@ def isVerbose():
  Used to study how many points (wins-losts-ties) our bot got compared to all the bots or against a specific bot.
 
  In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
-  
+
  The format is as follows:
 ```shell
-  parseScore.py [bot] [show results] [show latex]
+Usage: parseScore.py [OPTIONS]
+
+Options:
+  --bot TEXT          Name of bot to parse
+  --showresults TEXT  A value of True means the points gained from all variants are shown
+  --showlatex TEXT    A value of True means that the code for a latex table is outputted instead.
+  --help              Show this message and exit.
 ```
 
   **[bot]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space, use part of the name to circumvent this. 
   
-  Note: If the value given is 0, this argument is ignored and all bots are printed (needed for [show latex] argument to work). Future todo: A cleaner approach would be to use something like Click library).
-
   **[show results]** is optional. A value of True means the points gained from all variants are shown. Any other values gives the default behavior of not showing the results.
   
-  **[show latex]** is optional. A value of True means that the code for a latex table is outputted instead. [botname] must be 0 for this to work. Please refer to the example on how to use. 
+  **[show latex]** is optional. A value of True means that the code for a latex table is outputted instead.
   
 ###Example:
   To show all the results against all bots:
