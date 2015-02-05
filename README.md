@@ -62,9 +62,7 @@ Here are the changes for the test suite. These modifications are necessary to al
   
 At the start of **main()**, Python is initialized. The python function **isVerbose()** and the corresponding verbose valuable is set.
   
-The *argv* is checked:
-
-- The *first argv* is the variable that modifies the AI (e.g. the MBFP variant number in the first paper). 
+The *argv* is checked. This contains the filename for the Yomi configuration file that will modify the AI's behavior (see the section below for more information)
 
 Finally, Python interface is properly closed when the test suite exits.
 
@@ -77,13 +75,13 @@ The file *yomi.py* contains the AI that the test suite will use.
 
 ##Basic structure
 
-This is the entry point of the AI. The modified test suite will look for this file and the function **play()**. **play()** must return 0, 1, or 2 (which is the value for rock, paper, and scissors, respectively). **play()** must also accept one parameter. This is the parameter that is sent by the trainer program.
+This is the entry point of the AI. The modified test suite will look for this file and the function **play()**. **play()** must return 0, 1, or 2 (which is the value for rock, paper, and scissors, respectively). **play()** has one parameter: the DNA parameter. This is the parameter that contains the Yomi Configuration.
  
 This is an example of a simple **play()** function:
 
 ```
-   def play(param):
-    return (param + 1) % 3
+   def play(DNA):
+    return 0
 ```
 
   The function **isVerbose()** must also exist. This function should return True if we want the test suite to print the play results of each turn.
@@ -135,32 +133,10 @@ def isVerbose():
 
 #PatternPredictor.py
  For the purpose of the second paper, *yomi.py* will use the AI from *PatternPredictor.py*. Pleaes refer to the second paper for more detail on this subsystem.
- 
-#Compiling the test suite
- Run the *compile.bat* to create **go.exe** which is the main program for our modified test suite. It is expected that gcc can be found in the *PATH* environment.
- 
- We used the filename **go.exe** instead of **rsb-ts1.exe** to increase typing speed during development.
 
-#Python scripts
+#Yomi AI configuration file
 
-##trainer.py
- Used to play the tournament, create the CSV and plot the charts.
- 
- In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
-
- The **main()** function runs the script. It is built this way to allow commenting specific behavior for debugging purposes.
- 
- The **Validate()** function will validate the configuration file before running the tournament. Refer below on how configuration file works.
- 
- The **PlayTournament()** function plays the tournament. All configuration files in the input directory will be run and the output will be saved with the same file name to an output directory.
- 
- The **CreateCSV()** function will parse each result and create two csv files with the csv columns: variant variable, rank. The first csv file is for the "Match results" and the second is for the "Tournament results" ("**results_match.csv**" and "**results_tournament.csv**" respectively).
- 
- The **charts.startPlotting()** function will create the chart graphics. Refer to charts.py.
-
-###trainer configuration file
-
- This is actually an INI file and parsed by the *configparser built-in library*. The sections are as follows:
+ This is actually an INI file and parsed by the *configparser built-in library*. This configuration file changes the behavior of the AI. The sections are as follows:
  
 - **[info]** contains general information on the configuration. *name* is used to identify this configuration.
 
@@ -238,6 +214,28 @@ A=1.0                 # Highest influence
 B=0.7                 # Mid influence
 C=0.45                 # Lowest influence
 ```
+ 
+#Compiling the test suite
+ Run the *compile.bat* to create **go.exe** which is the main program for our modified test suite. It is expected that gcc can be found in the *PATH* environment.
+ 
+ We used the filename **go.exe** instead of **rsb-ts1.exe** to increase typing speed during development.
+
+#Python scripts
+
+##trainer.py
+ Used to play the tournament, create the CSV and plot the charts.
+ 
+ In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
+
+ The **main()** function runs the script. It is built this way to allow commenting specific behavior for debugging purposes.
+ 
+ The **Validate()** function will validate the configuration file before running the tournament. Refer above on how the configuration file works.
+ 
+ The **PlayTournament()** function plays the tournament. All configuration files in the input directory will be run and the output will be saved with the same file name to an output directory.
+ 
+ The **CreateCSV()** function will parse each result and create two csv files with the csv columns: variant variable, rank. The first csv file is for the "Match results" and the second is for the "Tournament results" ("**results_match.csv**" and "**results_tournament.csv**" respectively).
+ 
+ The **charts.startPlotting()** function will create the chart graphics. Refer to charts.py.
 
 ##parseScore.py
  Used to study how many points (wins-losts-ties) our bot got compared to all the bots or against a specific bot.
