@@ -58,13 +58,7 @@ def GeneratePaths(currentGeneration):
     if (os.path.isfile(old_path_input + "unmutated") or 
         os.path.isfile(old_path_input + "mutating")):
         raise Exception("%s has a unmutated/mutating mark. Possible reason: MutateDNA was interrupted" % (old_path_input))
-    
-    # check if the old path output has the same results from old path input
-    outputFiles = os.listdir(old_path_output)
-    for inputFile in os.listdir(old_path_input):
-        if not inputFile in outputFiles:
-            raise Exception("%s not found. Possible reason: trainer haven't been run yet" % (inputFile))
-    
+        
     currentGeneration = int(currentGeneration)
     new_path_input  = basedir + "input_"  + str(currentGeneration + 1) + "/"
     new_path_output = basedir + "output_" + str(currentGeneration + 1) + "/"
@@ -83,6 +77,9 @@ def CloneDNA(new_path_input, new_path_output, old_path_input, old_path_output):
     # copy the files in the old path to the new path
     for file in os.listdir(old_path_input):
         shutil.copy(old_path_input + file, new_path_input)
+
+    for file in os.listdir(old_path_output):
+        shutil.copy(old_path_output + file, new_path_output)
     
     # add a file to mark the input as "unmutated"
     with open(new_path_input + "unmutated", "w") as f:
@@ -141,14 +138,14 @@ def WriteDNA(path_input, Name, newDNA):
 
     return newFile
 
-def _FindMates(path_input, old_path_output):
+def _FindMates(path_input, path_output):
     Population = os.listdir(path_input)
     
     # filter out mutating mark
     Population = [Population for Population in Population if Population != "mutating"]
     
     # Add a fertility probabilty for each DNA.
-    Population = [[Population, _EvaluateDNA(old_path_output + Population)] for Population in Population]
+    Population = [[Population, _EvaluateDNA(path_output + Population)] for Population in Population]
 
     Population.sort(key = lambda a: a[1])
 
@@ -175,16 +172,20 @@ def _FindMates(path_input, old_path_output):
     for file, _ in Population:
         ToPreserve.append(file)
     ToDelete = set(ToPreserve).symmetric_difference(AllFiles)
+    ToDelete.remove("mutating")
     
     for file in ToDelete:
         os.remove(path_input + file)     
+        os.remove(path_output + file)     
     
     # Set the max population size. This can go up or down randomly
-    maxPopulationSize = len(Population) * random.uniform(0.9, 1.1)
+    maxPopulationSize = len(Population) * random.uniform(0.9, 1.3)
     maxPopulationSize = round(maxPopulationSize)
     
     # Set the maximum population size to 47
     maxPopulationSize = min(maxPopulationSize, 47)
+    # Set the minimum population size to 10
+    maxPopulationSize = max(maxPopulationSize, 10)
 
     while maxPopulationSize > 0:
         maxPopulationSize -= 1
@@ -321,7 +322,8 @@ def _MateDNA(path_input, newName, Dominant, Mate):
 def _MutateDNA(path_input, Original):
     # Generate the name of the mutation
     newLastName   = Original[0].split(",")[0]
-    newMiddleName = Original[0].split(" ")[-1].split(".")[0]
+    #newMiddleName = Original[0].split(" ")[-1].split(".")[0]
+    newMiddleName = random.choice(LastNames)
     newFirstName  = random.choice(FirstNames)
 
     newName = filterName(newLastName, newFirstName, newMiddleName)
@@ -386,7 +388,7 @@ def _MutateDNA(path_input, Original):
         
     return newName, newDNA
 
-def RunGA(path_input, old_path_output):
+def RunGA(path_input, path_output):
     # check for "unmutated" mark. If it doesn't exist, throw exception
     if not os.path.isfile(path_input + "unmutated"):
         raise Exception("%s do not have unmutated mark. Possible reason: MutateDNA was interrupted" % (path_input))
@@ -394,7 +396,7 @@ def RunGA(path_input, old_path_output):
     # change "unmutated" mark to "mutating".
     os.rename(path_input + "unmutated", path_input + "mutating")
         
-    _FindMates(path_input, old_path_output)
+    _FindMates(path_input, path_output)
     
     # remove mark for "mutating".
     os.unlink(path_input + "mutating")
@@ -413,9 +415,10 @@ def main():
         print ("Restarting Generation", int(currentGeneration) + 1)
         
     CloneDNA(new_path_input, new_path_output, old_path_input, old_path_output)
-    RunGA(new_path_input, old_path_output)
+    RunGA(new_path_input, new_path_output)
     trainer.main(new_path_input, new_path_output)
     
 if __name__ == "__main__":
     while True:
         main()
+        print("")

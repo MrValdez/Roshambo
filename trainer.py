@@ -15,15 +15,20 @@ TournamentPts = 100
 
 def main(path_input = "results/input/", path_output = "results/output/"):
     files = os.listdir(path_input)
-
+    completed = os.listdir(path_output)
+    
     print ("")
     for file in files:
         Validate(path_input, file)
     
     for i, file in enumerate(files):
-        print ("%i/%i: %s..." % (i, len(files), file), end='')
-        PlayTournament(path_input, path_output, file)    
-        print ("done")
+        print ("%i/%i: %s..." % (i + 1, len(files), file), end='')
+        
+        if file in completed:
+            print (" skipping")
+        else:
+            PlayTournament(path_input, path_output, file)    
+            print ("done")
     print ("")
 
     csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
@@ -49,13 +54,17 @@ def Validate(path_input, filename):
         text = text.strip()
         return text
 
-    #[cleanup(spam) for spam in config["info"]]
-    [cleanup(spam) for spam in config["strategies"]]
-    [cleanup(spam) for spam in config["strategy ranking"]][0]
-    [cleanup(spam) for spam in config["predictors"]]
-    [cleanup(spam) for spam in config["predictor ranking"]][0]
-    [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
-    [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
+    try:
+        #[cleanup(spam) for spam in config["info"]]
+        [cleanup(spam) for spam in config["strategies"]]
+        [cleanup(spam) for spam in config["strategy ranking"]][0]
+        [cleanup(spam) for spam in config["predictors"]]
+        [cleanup(spam) for spam in config["predictor ranking"]][0]
+        [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
+        [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
+    except KeyError as e:
+        print("Error in", filename)
+        raise e
 
 def PlayTournament(path_input, path_output, filename):
     input_filename = path_input + filename
