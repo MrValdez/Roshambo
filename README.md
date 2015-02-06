@@ -28,7 +28,8 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
  - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
  - **click**. Used by *parseScore.py* as a helper for arguments.
  - **pygame**. Used by *debugger.py* to display the debugger.
-  
+ - **roman**. Used by *evolve.py* to differentiate between two exact names.
+ 
 #AI dependencies
  - **pykov**. Used by the Yomi Layer Selector subroutine to generate Markov Chains. Github repository can be found [here](https://github.com/riccardoscalco/Pykov).
  

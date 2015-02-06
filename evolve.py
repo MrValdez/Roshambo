@@ -9,6 +9,8 @@
 
 import os
 import random
+import configparser
+import string
 
 basedir = "DNAVillage/"
 MatingTreshold = 0.3        # how likely two individuals will mate
@@ -16,6 +18,12 @@ MatingTreshold = 0.3        # how likely two individuals will mate
 with open("movie-characters.txt", "r") as f:
     FirstNames = f.read()
     FirstNames = FirstNames.split("\n")
+    
+    #skip the first 4 lines
+    FirstNames = FirstNames[4:]
+    
+    # strip the comma symbol from the names (some line have a comma)
+    FirstNames = [name for name in FirstNames if name.find(",") == -1]
     
 with open("Family-Names.txt", "r") as f:
     LastNames = f.read()
@@ -86,6 +94,23 @@ def _EvaluateDNA(filename):
     rank = float("%s.%s" % (matchRank, tournamentRank.zfill(2)))
     return rank
 
+def WriteDNA(path_input, Name, newDNA):
+    newFile = path_input + Name + ".txt"
+    
+    # Check if name already exists. If it does, add a generation indicator.
+    if os.path.isfile(newFile):
+        generation = 2
+        while True:
+            newFile = path_input + Name + "-" + toRoman(generation) + ".txt"
+            if not os.path.isfile(newFile):
+                break
+            generation += 1
+            
+    with open(newFile, "w") as f:
+        newDNA.write(f)
+
+    return newFile
+
 def _FindMates(path_input, old_path_output):
     Population = os.listdir(path_input)
     
@@ -131,8 +156,12 @@ def _FindMates(path_input, old_path_output):
         
         # If we grabbed the same individual, just mutate it instead.
         if Dominant == Mate:
-            newName, newDNA = _MutateDNA(Dominant)
-            print("Same target")
+            newName, newDNA = _MutateDNA(path_input, Dominant)
+
+            newFile = WriteDNA(path_input, newName, newDNA)
+            print("Writing mutated", newFile)
+            return   #todo. remove at production
+
             continue
         
         # Throw dice to decide if the two needs to mate
@@ -140,13 +169,11 @@ def _FindMates(path_input, old_path_output):
 
         # If one of the partners has low fertility, grab a stranger to mate
         newName  = _MutateName(Dominant[0], Mate[0])
-        newDNA   = _MateDNA(newName, Dominant, Mate)
+        newDNA   = _MateDNA(path_input, newName, Dominant, Mate)
         
         # write newDNA to file
-        newFile = path_input + newName + ".txt"
-        #with open(newFile) as f:
-            #f.write(newDNA)
-        print("mating", newFile)
+        #newFile = WriteDNA(path_input, newName, newDNA)
+        #print("Writing mated", newFile)
 
         # Lower the fertility of both partners. If fertility goes below 2, remove from
         # population. If the population is exhausted, mutate the higher ranking individuals
@@ -169,22 +196,16 @@ def _FindMates(path_input, old_path_output):
         maxPopulationSize -= 1
         Mutating = random.choice(AlphaIndividuals)
 
-        newName, newDNA = _MutateDNA(Mutating)
+        newName, newDNA = _MutateDNA(path_input, Mutating)
         
-        newFile = path_input + newName + ".txt"
-        #with open(newFile) as f:
-            #f.write(newDNA)
-        print("mutanting", newFile)
-
+        newFile = WriteDNA(path_input, newName, newDNA)
+        print("Writing mutated", newFile)
+        return      #todo. debug. remove for full production
+        
 def filterName(newLastName, newFirstName, newMiddleName):
     newLastName   = newLastName
     newFirstName  = newFirstName
     newMiddleName = newMiddleName
-    
-    # strip the symbols from the names (todo)
-    #
-    #
-    #
     
     return newLastName + ", " + newFirstName + " " + newMiddleName    
     
@@ -198,8 +219,8 @@ def _StrangerName():
     return newName        
 
 def _MutateName(DominantName, MateName):
-    # DominantName is the name of the DNA with the most contribution.
-    # MateName is the name of the DNA mated with.
+    # DominantName is the name of the individual with the most contribution.
+    # MateName is the name of the individual mated with.
     
     # Names taken from:
     #  http://www.outpost9.com/files/WordLists.html
@@ -212,18 +233,81 @@ def _MutateName(DominantName, MateName):
     newName = filterName(newLastName, newFirstName, newMiddleName)
     return newName
 
-def _MateDNA(newName, Dominant, Mate):
-    pass
+def _ReadDNA(filename):
+    config = configparser.ConfigParser(allow_no_value=True)
+    config.optionxform=str
+    config.read(filename)       
+    
+    return config
 
-def _MutateDNA(Original):
+def _MateDNA(path_input, newName, Dominant, Mate):
+    # Read both DNA
+    DNA1 = _ReadDNA(path_input + Dominant[0])
+    DNA2 = _ReadDNA(path_input + Mate[0])
+    
+    newDNA = DNA1
+    newDNA["info"]["Mutated from"] = Mate[0]
+      
+    # Select 85-92% of DNA from Dominant, the rest from Mate
+    
+    # Check if Mate has same predictors. If true, higher probability that it will not be deleted
+    # If false, there's a probability that Dominant will remain
+    
+    return newDNA
+    
+def _MutateDNA(path_input, Original):
+    # Generate the name of the mutation
     newLastName   = Original[0].split(",")[0]
-    newMiddleName = random.choice(LastNames)
+    newMiddleName = Original[0].split(" ")[-1].split(".")[0]
     newFirstName  = random.choice(FirstNames)
 
     newName = filterName(newLastName, newFirstName, newMiddleName)
 
-    newDNA = ""
+    # Read the DNA
+    newDNA = _ReadDNA(path_input + Original[0])
     
+    # Mutate the DNA
+    newDNA["info"]["name"] = newName
+    newDNA["info"]["MutateFrom"] = Original[0]
+    
+    # .3% chance to drop a predictor
+    dropPredictorChance = 0.003
+    for predictor in newDNA["predictors"]:
+        if random.uniform(0, 1) < dropPredictorChance:
+            print("removing", predictor)
+            newDNA.remove_option("predictors", predictor)
+            
+    # 1% chance to add a new predictor
+    
+    
+    # 10% chance to mutate
+    # .3% chance to completely change the gene value
+    mutationChance = 0.1
+    geneRewriteChance = 0.03
+    
+    Genes = [("yomi preferences", ("AA", "AB", "AC", "BA", "BB", "BC", "CA", "CB", "CC")),
+             ("yomi-score preferences", ("A", "B", "C"))]
+    
+    for gene, values in Genes:
+        for value in values:
+            if random.uniform(0, 1) < mutationChance:
+                original_value = float(newDNA[gene][value].split("#")[0])
+                delta = 1
+                
+                if random.uniform(0, 1) < geneRewriteChance:
+                    delta = random.uniform(0, 1)
+                    print("replacing", gene, value, delta)
+                else:    
+                    delta = random.uniform(-0.3, 0.3)
+                    delta += original_value
+                    
+                    print("new", gene, value, delta)
+                
+                delta = min(delta, 1.0)
+                delta = max(delta, 0.0)
+                
+                newDNA[gene][value] = str(delta)
+        
     return newName, newDNA
 
 def RunGA(path_input):
