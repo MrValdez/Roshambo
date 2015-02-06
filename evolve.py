@@ -13,7 +13,6 @@ import configparser
 import string
 
 basedir = "DNAVillage/"
-MatingTreshold = 0.3        # how likely two individuals will mate
 
 with open("movie-characters.txt", "r") as f:
     FirstNames = f.read()
@@ -74,10 +73,14 @@ def CloneDNA(currentGeneration):
     return (new_path_input, new_path_output, old_path_output)
 
 def _EvaluateDNA(filename):
-    # We evaluate using the match ranking and the tournament ranking,
+    # We evaluate using the match ranking, the tournament ranking, and the tournament points
     # with a higher priority for match ranking.
+    # We get the inverse of the tournament points since we sort via the lowest.
     matchRankStr      = "Yomi AI is match ranked "
     tournamentRankStr = "Yomi is tournament ranked "
+    tournamentResultStr = """ Tournament results:
+    Player Name          total 
+  1 Yomi AI"""
 
     with open(filename, "r") as f:
         text = f.read()
@@ -91,7 +94,16 @@ def _EvaluateDNA(filename):
             raise Exception ("tournament rank not found")
         tournamentRank = text[found + len(tournamentRankStr):text.find("\n", found)]
         
-    rank = float("%s.%s" % (matchRank, tournamentRank.zfill(2)))
+        found = text.find(tournamentResultStr)
+        if found == -1:
+            raise Exception ("tournament points not found")
+        tournamentPoints = text[found + len(tournamentResultStr):text.find("\n", found + len(tournamentResultStr))]
+        tournamentPoints = tournamentPoints.strip()
+        # 42 players * 1000        
+        maxPoints = 42 * 1000
+        tournamentPoints = str(maxPoints - int(tournamentPoints))
+        
+    rank = float("%s.%s%s" % (matchRank, tournamentRank.zfill(2), tournamentPoints.zfill(4)))
     return rank
 
 def WriteDNA(path_input, Name, newDNA):
@@ -137,8 +149,6 @@ def _FindMates(path_input, old_path_output):
     # filter in one random individual
     middleRandom = random.randint(topRankLen, len(AllPopulation) - lowRankLen)
     Population.append(AllPopulation[middleRandom])
-
-    random.shuffle(Population)
     
     # Set the max population size. This can go up or down randomly
     maxPopulationSize = len(Population) * random.uniform(0.9, 1.1)
@@ -150,9 +160,11 @@ def _FindMates(path_input, old_path_output):
     while maxPopulationSize > 0:
         maxPopulationSize -= 1
                     
-        # Grab two random individual. Todo: Having higher fertility mate more likely
-        Dominant = random.choice(Population)
-        Mate     = random.choice(Population)
+        # Grab two random individual with a bias for those with higher rank        
+        a = random.triangular(0, 1, 0.2)
+        b = random.triangular(0, 1, 0.5)
+        Dominant = Population[int(a * len(Population))]
+        Mate     = Population[int(b * len(Population))]
         
         # If we grabbed the same individual, just mutate it instead.
         if Dominant == Mate:
@@ -163,11 +175,17 @@ def _FindMates(path_input, old_path_output):
             return   #todo. remove at production
 
             continue
+            
+        # swap the two if the mate is dominant
+        if Mate[1] > Dominant[1]:
+            Mate, Dominant = Dominant, Mate
         
-        # Throw dice to decide if the two needs to mate
+        # .3% chance the two will mate
+        MatingTreshold = 0.3
+
         if random.uniform(0, 1) < MatingTreshold: continue
 
-        # If one of the partners has low fertility, grab a stranger to mate
+        # Start mating
         newName  = _MutateName(Dominant[0], Mate[0])
         newDNA   = _MateDNA(path_input, newName, Dominant, Mate)
         
@@ -277,7 +295,20 @@ def _MutateDNA(path_input, Original):
             print("removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
-    # 1% chance to add a new predictor
+    # .5% chance to add a new predictor
+    newPredictorChance = 0.05
+    newPredictorTries = 10
+    if random.uniform(0, 1) < newPredictorChance:
+        while newPredictorTries:
+            newPredictorTries -= 1
+            
+            newPredictor = random.choice(["MBFP", "PP"])
+            newPredictor = "%s %i" % (newPredictor, random.randint(1, 32))
+            
+            if not newPredictor in newDNA["predictors"]:
+                newDNA["predictors"][newPredictor] = None
+                print("Adding new predictor:", newPredictor)
+                break
     
     
     # 10% chance to mutate
