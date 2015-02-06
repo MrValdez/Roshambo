@@ -1,5 +1,7 @@
 *.exe
 *.pyc
+*.png
+*.csv
 __pycache__/
 paper/
 paper */
@@ -7,5 +9,4 @@ dissertation/
 temp/
 commentator/
 Yomi Algo/
-*.png
-*.csv
+DNAvillage/

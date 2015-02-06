@@ -7,30 +7,37 @@ import charts
 
 import configparser
 
+Debug = True
+Debug = False
+
 MatchPts = 100
 TournamentPts = 100
 
 def main(path_input = "results/input/", path_output = "results/output/"):
     files = os.listdir(path_input)
 
+    print ("")
     for file in files:
         Validate(path_input, file)
     
     for file in files:
-        PlayTournament(path_input, path_output, file)
-        
+        PlayTournament(path_input, path_output, file)    
     print ("")
+
+    csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
+    print ("Best Match Result      [%s] with rank of %i" % (bestMatchResult[0], bestMatchResult[1]))
+    print ("Best Tournament Result [%s] with rank of %i (%i)" % (bestTournamentResult[0], bestTournamentResult[1], bestTournamentResult[2]))
     
 #    for file in files:
 #        CreateLatex(file)
 
-#    CreateCSV(path_output + "data.txt")
+#    CreateCSV(path_output, path_output + "data.txt")
 #    charts.startPlotting()
 
 def Validate(path_input, filename):
     filename = path_input + filename
     
-    print ("Validating %s" % (filename))
+    if Debug: print ("Validating %s" % (filename))
     
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(filename)
@@ -53,7 +60,7 @@ def PlayTournament(path_input, path_output, filename):
     output_filename = path_output + filename
 
     if filename in os.listdir(path_output): #check if file already exists
-        print (output_filename + " already exists")
+        if Debug: print (output_filename + " already exists")
         return
 
     print ("Running %s..." % (filename), end='')
@@ -87,14 +94,18 @@ def GetRank(text, header):
     
     return rank
 
-def CreateCSV(output_filename = None):
-    """Create CSV by looking at the rank of the Yomi AI"""
+def GetHighestRank(path_output):
+    """
+    Get the highest possible rank from output directory.
+    Returns csv of all files, best Match Result, and best Tournament Result 
+    """
+    
     csv = ["", ""]
     fileList = sorted(os.listdir(path_output))
-    best = [[0, 100], [0, 100]] #variable, rank
+    best = [[0, 100], [0, 100, 0]] #variable, rank
     
     prettyWidth = 18
-    print("\n\n%s  RANK   VARIABLE" % ("HEADER".ljust(prettyWidth)))
+    if Debug: print("\n\n%s  RANK   VARIABLE" % ("HEADER".ljust(prettyWidth)))
     for filename in fileList:
         if filename[-4:] != ".txt":
             print("%s is not txt file" % (filename))
@@ -109,31 +120,45 @@ def CreateCSV(output_filename = None):
 
             header = "Match results"
             rank = GetRank(text, header)
-            print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
-            #csv[0] += "%s,%s\n" % (variable, rank)
+            #print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
             
             variable = variable[-3:].replace("]","").replace("[","").strip()
             csv[0] += "%s,%s\n" % (variable, rank)
             if int(rank) < best[0][1]:
-                best[0][0] = variable
+                best[0][0] = filename
                 best[0][1] = int(rank)
             
             header = "Tournament results"
             rank = GetRank(text, header)
-            print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
-            #csv[1] += "%s,%s\n" % (variable, rank)
+            #print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
             
             variable = variable[-3:].replace("]","").replace("[","").strip()
             csv[1] += "%s,%s\n" % (variable, rank)
 
             if int(rank) < best[1][1]:
-                best[1][0] = variable
+                best[1][0] = filename
                 best[1][1] = int(rank)    
 
-    print ("\n")
-    print ("Best Match Result      is variant [%s] with rank of %i" % (best[0][0], best[0][1]))
-    print ("Best Tournament Result is variant [%s] with rank of %i" % (best[1][0], best[1][1]))
+                tournamentResultStr = """ Tournament results:
+    Player Name          total 
+  1 Yomi AI"""
+                found = text.find(tournamentResultStr)
+                tournamentPoints = text[found + len(tournamentResultStr):text.find("\n", found + len(tournamentResultStr))]
+                tournamentPoints = tournamentPoints.strip()
 
+                best[1][2] = int(tournamentPoints)
+
+    if Debug: 
+        print ("\n")
+        print ("Best Match Result      [%s] with rank of %i" % (best[0][0], best[0][1]))
+        print ("Best Tournament Result [%s] with rank of %i (%i)" % (best[1][0], best[1][1], best[1][2]))
+    
+    return csv, best[0], best[1]
+
+def CreateCSV(path_output, output_filename = None):
+    """Create CSV from GetHighestRank"""
+    csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
+    
     if outputFilename != None:
         file = "%s_%s.csv" % (outputFilename, "match")
         with open(file, "w") as f:

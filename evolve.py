@@ -12,8 +12,12 @@ import random
 import configparser
 import string
 import shutil
+import roman
 
 import trainer
+
+Debug = True
+Debug = False
 
 basedir = "DNAVillage/"
 
@@ -24,8 +28,9 @@ with open("movie-characters.txt", "r") as f:
     #skip the first 4 lines
     FirstNames = FirstNames[4:]
     
-    # strip the comma symbol from the names (some line have a comma)
+    # don't use names with the symbols ,/
     FirstNames = [name for name in FirstNames if name.find(",") == -1]
+    FirstNames = [name for name in FirstNames if name.find("/") == -1]
     
 with open("Family-Names.txt", "r") as f:
     LastNames = f.read()
@@ -124,7 +129,7 @@ def WriteDNA(path_input, Name, newDNA):
     if os.path.isfile(newFile):
         generation = 2
         while True:
-            newFile = path_input + Name + "-" + toRoman(generation) + ".txt"
+            newFile = path_input + Name + "-" + roman.toRoman(generation) + ".txt"
             if not os.path.isfile(newFile):
                 break
             generation += 1
@@ -165,8 +170,8 @@ def _FindMates(path_input, old_path_output):
     maxPopulationSize = len(Population) * random.uniform(0.9, 1.1)
     maxPopulationSize = round(maxPopulationSize)
     
-    # Set the minimum population size.
-    maxPopulationSize = max(maxPopulationSize, 30)
+    # Set the minimum population size to 47
+    maxPopulationSize = max(maxPopulationSize, 47)
 
     while maxPopulationSize > 0:
         maxPopulationSize -= 1
@@ -182,7 +187,7 @@ def _FindMates(path_input, old_path_output):
             newName, newDNA = _MutateDNA(path_input, Dominant)
 
             newFile = WriteDNA(path_input, newName, newDNA)
-            print("Writing mutated", newFile)
+            if Debug: print("Writing mutated", newFile)
 
             continue
                     
@@ -197,7 +202,7 @@ def _FindMates(path_input, old_path_output):
         
         # write newDNA to file
         newFile = WriteDNA(path_input, newName, newDNA)
-        print("Writing mated", newFile)
+        if Debug: print("Writing mated", newFile)
 
         # Lower the fertility of both partners. If fertility goes below 2, remove from
         # population. If the population is exhausted, mutate the higher ranking individuals
@@ -223,7 +228,7 @@ def _FindMates(path_input, old_path_output):
         newName, newDNA = _MutateDNA(path_input, Mutating)
         
         newFile = WriteDNA(path_input, newName, newDNA)
-        print("Writing mutated", newFile)
+        if Debug: print("Writing mutated", newFile)
         
 def filterName(newLastName, newFirstName, newMiddleName):
     newLastName   = newLastName
@@ -281,7 +286,7 @@ def _MateDNA(path_input, newName, Dominant, Mate):
         for value in values:
             if newDNA[gene][value] != DNA2[gene][value] and \
                random.uniform(0, 1) < (1 - DominantGenesPer):
-                print(" Inheriting from mate", gene, value, DNA2[gene][value])
+                if Debug: print(" Inheriting from mate", gene, value, DNA2[gene][value])
                 newDNA[gene][value] = DNA2[gene][value]
     
     # Check if new DNA will inherit from Mate
@@ -296,7 +301,7 @@ def _MateDNA(path_input, newName, Dominant, Mate):
             #  Mate has predictor that is not in Dominant. Check if we inherit that predictor
             if random.uniform(0, 1) < ChanceToInheritPredictor:
                 newDNA["predictors"][predictor] = None
-                print(" Inheriting predictor from mate", predictor)
+                if Debug: print(" Inheriting predictor from mate", predictor)
     
     return newDNA
     
@@ -319,7 +324,7 @@ def _MutateDNA(path_input, Original):
     dropPredictorChance = 0.07
     for predictor in newDNA["predictors"]:
         if random.uniform(0, 1) < dropPredictorChance:
-            print(" removing", predictor)
+            if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
     # .5% chance to add a new predictor
@@ -334,7 +339,7 @@ def _MutateDNA(path_input, Original):
             
             if not newPredictor in newDNA["predictors"]:
                 newDNA["predictors"][newPredictor] = None
-                print(" Adding new predictor:", newPredictor)
+                if Debug: print(" Adding new predictor:", newPredictor)
                 break
     
     
@@ -354,12 +359,12 @@ def _MutateDNA(path_input, Original):
                 
                 if random.uniform(0, 1) < geneRewriteChance:
                     delta = random.uniform(0, 1)
-                    print(" replacing", gene, value, delta)
+                    if Debug: print(" replacing", gene, value, delta)
                 else:    
                     delta = random.uniform(-0.3, 0.3)
                     delta += original_value
                     
-                    print(" new", gene, value, delta)
+                    if Debug: print(" new", gene, value, delta)
                 
                 delta = min(delta, 1.0)
                 delta = max(delta, 0.0)
@@ -384,6 +389,8 @@ def RunGA(path_input, old_path_output):
 def main():
 #    trainer.main(r"DNAVillage/input_1/", r"DNAVillage/output_1/")
     currentGeneration = SelectDNA()
+    print ("Running Generation", int(currentGeneration) + 1)
+    
     new_path_input, new_path_output, old_path_output = CloneDNA(currentGeneration)
     RunGA(new_path_input, old_path_output)
     trainer.main(new_path_input, new_path_output)
