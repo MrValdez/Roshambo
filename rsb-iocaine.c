@@ -48,7 +48,6 @@ int verbose3 = 1;          /* print result of each match */
 int verbose4 = 1;          /* print the tournament result */
 
 // My Changes
-//#define players   42         /* number of players in the tournament */
 #define players   2         /* number of players in the tournament */
 #define fw        4          /* field width for printed numbers */
 
@@ -5598,177 +5597,6 @@ void Init_Player_Table (Player_Table crosstable[players+1])
     strcpy(crosstable[i].name, "Iocaine Powder");
     crosstable[i].pname = iocainebot;
 
-#if 0
-    i++;  /* nuthin' beats rock */
-    strcpy(crosstable[i].name, "Good Ole Rock");
-    crosstable[i].pname = rockbot;
-
-    i++;  /* 20% rock, 20% paper, 60% scissors, randomly */
-    strcpy(crosstable[i].name, "R-P-S 20-20-60");
-    crosstable[i].pname = r226bot;
-
-    i++;  /* rotate r -> p -> s */
-    strcpy(crosstable[i].name, "Rotate R-P-S");
-    crosstable[i].pname = rotatebot;
-
-    i++;  /* beat opponent's last move */
-    strcpy(crosstable[i].name, "Beat The Last Move");
-    crosstable[i].pname = copybot;
-
-    i++;  /* never repeat the same move */
-    strcpy(crosstable[i].name, "Always Switchin'");
-    crosstable[i].pname = switchbot;
-
-    i++;  /* beat the most frequent opponent choice */
-    strcpy(crosstable[i].name, "Beat Frequent Pick");
-    crosstable[i].pname = freqbot2;
-
-    i++;  /* choose according to the digits of Pi */
-    strcpy(crosstable[i].name, "* Pi");
-    crosstable[i].pname = pibot;
-
-    i++;  /* repeat last play infrequently */
-    strcpy(crosstable[i].name, "* Switch A Lot");
-    crosstable[i].pname = switchalot;
-
-    i++;  /* flatter than normal distribution (cf human) */
-    strcpy(crosstable[i].name, "* Flat");
-    crosstable[i].pname = flatbot3;
-
-    i++;  /* beat flat distributions */
-    strcpy(crosstable[i].name, "* Anti-Flat");
-    crosstable[i].pname = antiflatbot;
-
-    i++;  /* foxtrot sequence: rand +2 rand +1 rand +0 */
-    strcpy(crosstable[i].name, "* Foxtrot");
-    crosstable[i].pname = foxtrotbot;
-
-    i++;  /* De Bruijn sequences of length 81 */
-    strcpy(crosstable[i].name, "* De Bruijn");
-    crosstable[i].pname = debruijn81;
-
-    i++;  /* English text (rsbpc post) */
-    strcpy(crosstable[i].name, "* Text");
-    crosstable[i].pname = textbot;
-
-    i++;  /* exploit most common rotation (min or max) */
-    strcpy(crosstable[i].name, "* Anti-rotn");
-    crosstable[i].pname = antirotnbot;
-
-    i++;  /* copy opponent; shift gears every 111 turns */
-    strcpy(crosstable[i].name, "* Copy-drift");
-    crosstable[i].pname = driftbot;
-
-    i++;  /* add prev pair of moves; shift gears if losing (-3 or -10%) */
-    strcpy(crosstable[i].name, "* Add-react");
-    crosstable[i].pname = addshiftbot3;
-
-    i++;  /* add prev pair of moves; drift over time (200) */
-    strcpy(crosstable[i].name, "* Add-drift");
-    crosstable[i].pname = adddriftbot2;
-#endif
-#ifdef Comment_Block  /* drb: player list */
-
-#endif /* end of Comment_Block */
-#ifdef Comment_Block  /* drb: player list */
-
-    i++;  /* Dan Egnor (USA) */
-    strcpy(crosstable[i].name, "Iocaine Powder");
-    crosstable[i].pname = iocainebot;
-
-    i++;  /* Jakob Mandelson (USA) */
-    strcpy(crosstable[i].name, "Phasenbott");
-    crosstable[i].pname = phasenbott;
-
-    i++;  /* Jason Hutchens (Aus) */
-    strcpy(crosstable[i].name, "MegaHAL");
-    crosstable[i].pname = halbot;
-
-    i++;  /* Russ Williams (USA) */
-    strcpy(crosstable[i].name, "RussRocker4");
-    crosstable[i].pname = russrocker4;
-
-    i++;  /* Jonathan Schaeffer (Can) */
-    strcpy(crosstable[i].name, "Biopic");
-    crosstable[i].pname = biopic;
-
-    i++;  /* Don Beal (UK) */
-    strcpy(crosstable[i].name, "Simple Modeller");
-    crosstable[i].pname = mod1bot;
-
-    i++;  /* Don Beal (UK) */
-    strcpy(crosstable[i].name, "Simple Predictor");
-    crosstable[i].pname = predbot;
-
-    i++;  /* Andreas Junghanns (Ger) */
-    strcpy(crosstable[i].name, "Robertot");
-    crosstable[i].pname = robertot;
-
-    i++;  /* Jack van Rijswijk (Net) */
-    strcpy(crosstable[i].name, "Boom");
-    crosstable[i].pname = boom;
-
-    i++;  /* Rudi Cilibrasi (USA) */
-    strcpy(crosstable[i].name, "Shofar");
-    crosstable[i].pname = shofar;
-
-    i++;  /* Dan Bothell, C Lebiere, R West (USA) */
-    strcpy(crosstable[i].name, "ACT-R Lag2");
-    crosstable[i].pname = actr_lag2_decay;
-
-    i++;  /* Markian Hlynka (Can) */
-    strcpy(crosstable[i].name, "Majikthise");
-    crosstable[i].pname = markov5;
-
-    i++;  /* Markian Hlynka (Can) */
-    strcpy(crosstable[i].name, "Vroomfondel");
-    crosstable[i].pname = markovbails;
-
-    i++;  /* Aaron Davidson (Can) */
-    strcpy(crosstable[i].name, "Granite");
-    crosstable[i].pname = granite;
-
-    i++;  /* Aaron Davidson (Can) */
-    strcpy(crosstable[i].name, "Marble");
-    crosstable[i].pname = marble;
-
-    i++;  /* Neil Burch (Can) */
-    strcpy(crosstable[i].name, "ZQ Bot");
-    crosstable[i].pname = zq_move;
-
-    i++;  /* Lourdes Pena (Mex) */
-    strcpy(crosstable[i].name, "Sweet Rocky");
-    crosstable[i].pname = sweetrock;
-
-    i++;  /* Lourdes Pena (Mex) */
-    strcpy(crosstable[i].name, "Piedra");
-    crosstable[i].pname = piedra;
-
-    i++;  /* Thad Frogley (UK) */
-    strcpy(crosstable[i].name, "Mixed Strategy");
-    crosstable[i].pname = mixed_strategy;
-
-    i++;  /* Mark James (Can) */
-    strcpy(crosstable[i].name, "Multi-strategy");
-    crosstable[i].pname = multibot;
-
-    i++;  /* Rafael Morales (UK) */
-    strcpy(crosstable[i].name, "Inocencio");
-    crosstable[i].pname = inocencio;
-
-    i++;  /* Peter Baylie (USA) */
-    strcpy(crosstable[i].name, "Peterbot");
-    crosstable[i].pname = peterbot;
-
-    i++;  /* Sunir Shah (Can) */
-    strcpy(crosstable[i].name, "Bugbrain");
-    crosstable[i].pname = sunNervebot;
-
-    i++;  /* Sunir Shah (Can) */
-    strcpy(crosstable[i].name, "Knucklehead");
-    crosstable[i].pname = sunCrazybot;
-
-#endif /* end of Comment_Block -- be sure to change the #define players value */
 #ifdef Comment_Block  /* use these to comment out a block of players */
 
     i++;  /* Michael Schatz et al (USA) */
@@ -5949,32 +5777,58 @@ void Print_Scaled_Results (Player_Table crosstable[players+1])
 void Print_M_Results (Player_Table crosstable[players+1])
 {
     int i, j, win, draw, loss;
+    
+    int YomiRank = 1000;        // Yomi Changes
 
     printf(" Match results (draw <= %d): \n\n", g_drawn);
     printf("    ");
     printf("%-*s ", nameleng, crosstable[0].name);
     printf("   total  W  L  D ");
-    for (j = 1; j <= players; j++) {
-        printf(" %*d", fw-2, j);
+
+    if (verbose4)
+    {
+        for (j = 1; j <= players; j++) {
+            printf(" %*d", fw-2, j);
+        }
     }
     printf("\n");
+    
     for (i = 1; i <= players; i++) {
         printf(" %2d ", i);
         printf("%-*s ", nameleng, crosstable[i].name);
         printf(" %*d ", fw+2, crosstable[i].result[0]);
+
         win = 0; loss = 0; draw = -1;
         for (j = 1; j <= players; j++) {
             if ( crosstable[i].result[j] == 2 ) { win++; }
             if ( crosstable[i].result[j] == 0 ) { loss++; }
             if ( crosstable[i].result[j] == 1 ) { draw++; }
         }
+        
         printf(" %2d %2d %2d ", win, loss, draw);
-        for (j = 1; j <= players; j++) {
-            printf(" %*d", fw-2, crosstable[i].result[j]);
+        
+        if (verbose4)
+        {
+            for (j = 1; j <= players; j++) {
+                printf(" %*d", fw-2, crosstable[i].result[j]);
+            }
         }
+           
         printf("\n");
+        
+        // Yomi Changes
+        if (strcmp("Yomi AI", crosstable[i].name) == 0)
+        {
+            YomiRank = i;
+            if (verbose4 == 0)
+                break;
+        }
+        // Yomi Changes
     }
-    printf("\n");
+    if (verbose4)
+        printf("\n");
+    
+    printf("\n   Yomi AI is match ranked %i\n", YomiRank);
 }
 
 void Print_MSorted_Results (Player_Table crosstable[players+1])
@@ -6085,7 +5939,7 @@ void Play_Tournament (Player_Table crosstable[players+1])
         }
         
         // YOMI CHANGES
-        if (verbose4 == 0 && i >= 1) 
+        if (i >= 1) 
         {   
             //printf(" (playing the rest of the tournament)\n\n");
             verbose3 = 0;
@@ -6103,13 +5957,13 @@ void Play_Tournament (Player_Table crosstable[players+1])
     if (verbose2) { Print_T_Results (crosstable); }
 }
 
-char *yomiVariable1 = 0;
+char *yomiVariable1;
 int initPython(int argc, char *argv[]);
 void exitPython();
 
 int main(int argc, char *argv[]) {
    // YOMI CHANGES
-   // go.exe [training variable]
+   // go.exe [training variable] [use python (0,1)]
    int error = initPython(argc, argv);
    if (error)
        return 1;
@@ -6118,7 +5972,8 @@ int main(int argc, char *argv[]) {
    if (verbose1 == -1)
        return 1;
 
-   verbose4 = 0;// during development, we are not interested in our standing. set to 0 during debug
+   verbose4 = 0; // during development, we are not interested in our standing. set to 0 during debug
+   verbose4 = 1;
    
    if (argc > 1)
    {
@@ -6126,7 +5981,7 @@ int main(int argc, char *argv[]) {
        yomiVariable1 = argv[1];
        //printf("%s", yomiVariable1);
    }
-      
+   
    printf("");  //print an empty string to init print. otherwise, printing in Python would delay the prints in C
    ///////////////
    
@@ -6149,14 +6004,17 @@ int main(int argc, char *argv[]) {
       /* Print_Match_Results (crosstable); */
    }
 
+   g_drawn = 50.6 / sqrt(tourneys);
+   
    if (verbose4)
    {
-       g_drawn = 50.6 / sqrt(tourneys);
        printf(" Final results (draw value = %d):\n", g_drawn);
-       
+   
        Print_Scaled_Results (crosstable);   
-       Print_Match_Results (crosstable);
-    }
+   }
+   
+   Print_Match_Results (crosstable);
+
    /* add one for luck (compare to last iteration)
    g_drawn++;
    Print_Match_Results (crosstable);
@@ -6165,7 +6023,7 @@ int main(int argc, char *argv[]) {
 /// Quick post of score that's better than our ai
     int j, rank = 0;
 
-    printf("\n Tournament results: \n\n");
+    printf("\n Tournament results:\n");
     printf("    ");
     printf("%-*s ", nameleng, crosstable[0].name);
     printf("  total \n");
@@ -6179,7 +6037,7 @@ int main(int argc, char *argv[]) {
             rank+= 1;
         }
     }
-    printf("\n\n   Yomi is ranked %d", rank);
+    printf("\n   Yomi is tournament ranked %d", rank);
     printf("\n");
     printf("\n");
 

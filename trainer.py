@@ -14,10 +14,10 @@ def main(path_input = "results/input/", path_output = "results/output/"):
     files = os.listdir(path_input)
 
     for file in files:
-        Validate(file)
+        Validate(path_input, file)
     
     for file in files:
-        PlayTournament(file)
+        PlayTournament(path_input, path_output, file)
         
     print ("")
     
@@ -27,7 +27,7 @@ def main(path_input = "results/input/", path_output = "results/output/"):
 #    CreateCSV(path_output + "data.txt")
 #    charts.startPlotting()
 
-def Validate(filename):
+def Validate(path_input, filename):
     filename = path_input + filename
     
     print ("Validating %s" % (filename))
@@ -48,7 +48,7 @@ def Validate(filename):
     [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
     [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
 
-def PlayTournament(filename):
+def PlayTournament(path_input, path_output, filename):
     input_filename = path_input + filename
     output_filename = path_output + filename
 
@@ -59,7 +59,8 @@ def PlayTournament(filename):
     print ("Running %s..." % (filename), end='')
         
 #    output = subprocess.call(["full.exe", input_filename], shell = True)
-    output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
+#    output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
+    output = subprocess.check_output(["iocaine.exe", input_filename], universal_newlines = True)
     with open(output_filename, "w") as f:
         stdout = str(output)
         f.write(stdout)
@@ -78,7 +79,7 @@ def GetRank(text, header):
     headerStart = text.find(header)
     found = text.find("Yomi AI", headerStart)
     if found == -1:
-        raise exception("MAJOR PARSING ERROR. Yomi AI text not found.")
+        raise Exception("MAJOR PARSING ERROR. Yomi AI text not found.")
         
     end = text.find("Yomi AI", found)
     start = end - 4

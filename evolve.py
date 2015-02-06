@@ -11,6 +11,9 @@ import os
 import random
 import configparser
 import string
+import shutil
+
+import trainer
 
 basedir = "DNAVillage/"
 
@@ -51,6 +54,12 @@ def CloneDNA(currentGeneration):
         os.path.isfile(old_path_input + "mutating")):
         raise Exception("%s has a unmutated/mutating mark. Possible reason: MutateDNA was interrupted" % (old_path_input))
     
+    # check if the old path output has the same results from old path input
+    outputFiles = os.listdir(old_path_output)
+    for inputFile in os.listdir(old_path_input):
+        if not inputFile in outputFiles:
+            raise Exception("%s not found. Possible reason: trainer haven't been run yet" % (inputFile))
+    
     currentGeneration = int(currentGeneration)
     new_path_input  = basedir + "input_"  + str(currentGeneration + 1) + "/"
     new_path_output = basedir + "output_" + str(currentGeneration + 1) + "/"
@@ -61,9 +70,11 @@ def CloneDNA(currentGeneration):
 
     # create directory
     os.mkdir(new_path_input)
-    #os.mkdir(new_path_output)
+    os.mkdir(new_path_output)
     
     # copy the files in the old path to the new path
+    for file in os.listdir(old_path_input):
+        shutil.copy(old_path_input + file, new_path_input)
     
     # add a file to mark the input as "unmutated"
     with open(new_path_input + "unmutated", "w") as f:
@@ -357,7 +368,7 @@ def _MutateDNA(path_input, Original):
         
     return newName, newDNA
 
-def RunGA(path_input):
+def RunGA(path_input, old_path_output):
     # check for "unmutated" mark. If it doesn't exist, throw exception
     if not os.path.isfile(path_input + "unmutated"):
         raise Exception("%s do not have unmutated mark. Possible reason: MutateDNA was interrupted" % (path_input))
@@ -365,20 +376,17 @@ def RunGA(path_input):
     # change "unmutated" mark to "mutating".
     os.rename(path_input + "unmutated", path_input + "mutating")
         
-    _FindMates(path_input)
+    _FindMates(path_input, old_path_output)
     
     # remove mark for "mutating".
-    #os.unlink(path_input + "mutating")
+    os.unlink(path_input + "mutating")
     
 def main():
-    _FindMates("DNAVillage/input_0/", "DNAVillage/output_0/")
-
-    #currentGeneration = SelectDNA()
-    #path_input, path_output, new_path_output = CloneDNA(currentGeneration)
-    #RunGA(path_input, new_path_output)
-    
-    #import trainer
-    #trainer.main(path_input, path_output)
+#    trainer.main(r"DNAVillage/input_1/", r"DNAVillage/output_1/")
+    currentGeneration = SelectDNA()
+    new_path_input, new_path_output, old_path_output = CloneDNA(currentGeneration)
+    RunGA(new_path_input, old_path_output)
+    trainer.main(new_path_input, new_path_output)
     
 if __name__ == "__main__":
     main()
