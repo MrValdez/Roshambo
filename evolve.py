@@ -129,7 +129,7 @@ def _FindMates(path_input, old_path_output):
     # filter out mutating mark
     Population = [Population for Population in Population if Population != "mutating"]
     
-    # Add a fertility probabilty for each DNA. Todo: Higher ranking = higher fertility.
+    # Add a fertility probabilty for each DNA.
     Population = [[Population, _EvaluateDNA(old_path_output + Population)] for Population in Population]
 
     Population.sort(key = lambda a: a[1])
@@ -172,14 +172,9 @@ def _FindMates(path_input, old_path_output):
 
             newFile = WriteDNA(path_input, newName, newDNA)
             print("Writing mutated", newFile)
-            return   #todo. remove at production
 
             continue
-            
-        # swap the two if the mate is dominant
-        if Mate[1] > Dominant[1]:
-            Mate, Dominant = Dominant, Mate
-        
+                    
         # .3% chance the two will mate
         MatingTreshold = 0.3
 
@@ -190,8 +185,8 @@ def _FindMates(path_input, old_path_output):
         newDNA   = _MateDNA(path_input, newName, Dominant, Mate)
         
         # write newDNA to file
-        #newFile = WriteDNA(path_input, newName, newDNA)
-        #print("Writing mated", newFile)
+        newFile = WriteDNA(path_input, newName, newDNA)
+        print("Writing mated", newFile)
 
         # Lower the fertility of both partners. If fertility goes below 2, remove from
         # population. If the population is exhausted, mutate the higher ranking individuals
@@ -218,7 +213,6 @@ def _FindMates(path_input, old_path_output):
         
         newFile = WriteDNA(path_input, newName, newDNA)
         print("Writing mutated", newFile)
-        return      #todo. debug. remove for full production
         
 def filterName(newLastName, newFirstName, newMiddleName):
     newLastName   = newLastName
@@ -264,12 +258,34 @@ def _MateDNA(path_input, newName, Dominant, Mate):
     DNA2 = _ReadDNA(path_input + Mate[0])
     
     newDNA = DNA1
-    newDNA["info"]["Mutated from"] = Mate[0]
+    newDNA["info"]["Dominant Parent"] = Dominant[0]
+    newDNA["info"]["Mate"] = Mate[0]
       
     # Select 85-92% of DNA from Dominant, the rest from Mate
+    DominantGenesPer = random.uniform(0.85, 0.92)
+    Genes = [("yomi preferences", ("AA", "AB", "AC", "BA", "BB", "BC", "CA", "CB", "CC")),
+             ("yomi-score preferences", ("A", "B", "C"))]
     
-    # Check if Mate has same predictors. If true, higher probability that it will not be deleted
-    # If false, there's a probability that Dominant will remain
+    for gene, values in Genes:
+        for value in values:
+            if newDNA[gene][value] != DNA2[gene][value] and \
+               random.uniform(0, 1) < (1 - DominantGenesPer):
+                print(" Inheriting from mate", gene, value, DNA2[gene][value])
+                newDNA[gene][value] = DNA2[gene][value]
+    
+    # Check if new DNA will inherit from Mate
+    predictors1 = set(DNA1["predictors"])
+    predictors2 = set(DNA2["predictors"])
+    
+    # Have a 1% chance to inherit new predictor
+    ChanceToInheritPredictor = 0.01
+    
+    for predictor in predictors1.symmetric_difference(predictors2):
+        if not predictor in predictors1:
+            #  Mate has predictor that is not in Dominant. Check if we inherit that predictor
+            if random.uniform(0, 1) < ChanceToInheritPredictor:
+                newDNA["predictors"][predictor] = None
+                print(" Inheriting predictor from mate", predictor)
     
     return newDNA
     
@@ -288,11 +304,11 @@ def _MutateDNA(path_input, Original):
     newDNA["info"]["name"] = newName
     newDNA["info"]["MutateFrom"] = Original[0]
     
-    # .3% chance to drop a predictor
-    dropPredictorChance = 0.003
+    # 7% chance to drop a predictor
+    dropPredictorChance = 0.07
     for predictor in newDNA["predictors"]:
         if random.uniform(0, 1) < dropPredictorChance:
-            print("removing", predictor)
+            print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
     # .5% chance to add a new predictor
@@ -307,7 +323,7 @@ def _MutateDNA(path_input, Original):
             
             if not newPredictor in newDNA["predictors"]:
                 newDNA["predictors"][newPredictor] = None
-                print("Adding new predictor:", newPredictor)
+                print(" Adding new predictor:", newPredictor)
                 break
     
     
@@ -327,12 +343,12 @@ def _MutateDNA(path_input, Original):
                 
                 if random.uniform(0, 1) < geneRewriteChance:
                     delta = random.uniform(0, 1)
-                    print("replacing", gene, value, delta)
+                    print(" replacing", gene, value, delta)
                 else:    
                     delta = random.uniform(-0.3, 0.3)
                     delta += original_value
                     
-                    print("new", gene, value, delta)
+                    print(" new", gene, value, delta)
                 
                 delta = min(delta, 1.0)
                 delta = max(delta, 0.0)
