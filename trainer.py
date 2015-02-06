@@ -23,6 +23,7 @@ def main(path_input = "results/input/", path_output = "results/output/"):
     
     for i, file in enumerate(files):
         print ("%i/%i: %s..." % (i + 1, len(files), file), end='')
+        if file == "mutating": continue     # skip evolve's mutating mark
         
         if file in completed:
             print (" skipping")
