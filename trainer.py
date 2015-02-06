@@ -20,8 +20,10 @@ def main(path_input = "results/input/", path_output = "results/output/"):
     for file in files:
         Validate(path_input, file)
     
-    for file in files:
+    for i, file in enumerate(files):
+        print ("%i/%i: %s..." % (i, len(files), file), end='')
         PlayTournament(path_input, path_output, file)    
+        print ("done")
     print ("")
 
     csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
@@ -62,16 +64,13 @@ def PlayTournament(path_input, path_output, filename):
     if filename in os.listdir(path_output): #check if file already exists
         if Debug: print (output_filename + " already exists")
         return
-
-    print ("Running %s..." % (filename), end='')
-        
+    
 #    output = subprocess.call(["full.exe", input_filename], shell = True)
 #    output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
     output = subprocess.check_output(["iocaine.exe", input_filename], universal_newlines = True)
     with open(output_filename, "w") as f:
         stdout = str(output)
         f.write(stdout)
-        print (" done")
         
     header = "Match results"
     resultMatch = int(GetRank(output, header))

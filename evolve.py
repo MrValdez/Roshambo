@@ -46,7 +46,7 @@ def SelectDNA():
 
     return currentGeneration
     
-def CloneDNA(currentGeneration):
+def GeneratePaths(currentGeneration):    
     old_path_input  = basedir + "input_"  + currentGeneration + "/"
     old_path_output = basedir + "output_" + currentGeneration + "/"
     
@@ -73,6 +73,9 @@ def CloneDNA(currentGeneration):
     if os.path.isdir(new_path_input) or os.path.isdir(new_path_output):
         raise Exception("%s, %s already exists" % (new_path_input, new_path_output))
 
+    return new_path_input, new_path_output, old_path_input, old_path_output
+
+def CloneDNA(new_path_input, new_path_output, old_path_input, old_path_output):
     # create directory
     os.mkdir(new_path_input)
     os.mkdir(new_path_output)
@@ -86,7 +89,6 @@ def CloneDNA(currentGeneration):
         f.write(old_path_input)
         f.write(old_path_output)
     
-    return (new_path_input, new_path_output, old_path_output)
 
 def _EvaluateDNA(filename):
     # We evaluate using the match ranking, the tournament ranking, and the tournament points
@@ -166,12 +168,23 @@ def _FindMates(path_input, old_path_output):
     middleRandom = random.randint(topRankLen, len(AllPopulation) - lowRankLen)
     Population.append(AllPopulation[middleRandom])
     
+    # delete the individuals that are not in the population
+    ToPreserve = []
+    AllFiles = set(os.listdir(path_input))
+    
+    for file, _ in Population:
+        ToPreserve.append(file)
+    ToDelete = set(ToPreserve).symmetric_difference(AllFiles)
+    
+    for file in ToDelete:
+        os.remove(path_input + file)     
+    
     # Set the max population size. This can go up or down randomly
     maxPopulationSize = len(Population) * random.uniform(0.9, 1.1)
     maxPopulationSize = round(maxPopulationSize)
     
-    # Set the minimum population size to 47
-    maxPopulationSize = max(maxPopulationSize, 47)
+    # Set the maximum population size to 47
+    maxPopulationSize = min(maxPopulationSize, 47)
 
     while maxPopulationSize > 0:
         maxPopulationSize -= 1
@@ -389,11 +402,20 @@ def RunGA(path_input, old_path_output):
 def main():
 #    trainer.main(r"DNAVillage/input_1/", r"DNAVillage/output_1/")
     currentGeneration = SelectDNA()
-    print ("Running Generation", int(currentGeneration) + 1)
+    print ("Starting Generation", int(currentGeneration) + 1)
     
-    new_path_input, new_path_output, old_path_output = CloneDNA(currentGeneration)
+    new_path_input, new_path_output, old_path_input, old_path_output = GeneratePaths(currentGeneration)
+    
+    #check if we need to run trainer on the previous generation
+    if len(os.listdir(old_path_output)) != len(os.listdir(old_path_input)):
+        print ("Re-training previous generation")
+        trainer.main(old_path_input, old_path_output)
+        print ("Restarting Generation", int(currentGeneration) + 1)
+        
+    CloneDNA(new_path_input, new_path_output, old_path_input, old_path_output)
     RunGA(new_path_input, old_path_output)
     trainer.main(new_path_input, new_path_output)
     
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
