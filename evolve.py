@@ -28,8 +28,9 @@ with open("movie-characters.txt", "r") as f:
     #skip the first 4 lines
     FirstNames = FirstNames[4:]
     
-    # don't use names with the symbols ,/\
+    # don't use names with the symbols ,?/\
     FirstNames = [name for name in FirstNames if name.find(",") == -1]
+    FirstNames = [name for name in FirstNames if name.find("?") == -1]
     FirstNames = [name for name in FirstNames if name.find("/") == -1]
     FirstNames = [name for name in FirstNames if name.find("\\") == -1]
     
@@ -206,7 +207,7 @@ def _FindMates(path_input, path_output):
             continue
                     
         # .3% chance the two will mate
-        MatingTreshold = 0.3
+        MatingTreshold = 0.03
 
         if random.uniform(0, 1) < MatingTreshold: continue
 
@@ -219,7 +220,7 @@ def _FindMates(path_input, path_output):
         maxPopulationSize -= 1
         if Debug: print("Writing mated", newFile)
 
-    newIndividualSize = random.randint(3, 5)
+    newIndividualSize = random.randint(0, 3)
     while newIndividualSize > 0:
         # add new individuals to the population
         Mutating = random.choice(AlphaIndividuals)
@@ -316,10 +317,10 @@ def _MateDNA(path_input, newName, Dominant, Mate):
                 if Debug: print(" Inheriting from mate", gene, value, DNA2[gene][value])
                 newDNA[gene][value] = DNA2[gene][value]
 
-    # 8% chance to mutate
-    # 1% chance to completely change the gene value
-    mutationChance = 0.08
-    geneRewriteChance = 0.01
+    # 4% chance to mutate
+    # 30% chance to completely change the gene value
+    mutationChance = 0.04
+    geneRewriteChance = 0.30
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
         
     # Check if new DNA will inherit from Mate
@@ -376,10 +377,10 @@ def _MutateDNA(path_input, Original):
                 if Debug: print(" Adding new predictor:", newPredictor)
                 newPredictorTries -= random.randint(1, 10)
     
-    # 10% chance to mutate
-    #  3% chance to completely change the gene value
-    mutationChance = 0.1
-    geneRewriteChance = 0.03    
+    # 9% chance to mutate
+    # 35% chance to completely change the gene value
+    mutationChance = 0.09
+    geneRewriteChance = 0.35
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
         
     return newName, newDNA
