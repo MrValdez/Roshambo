@@ -116,11 +116,13 @@ def _EvaluateDNA(filename):
             raise Exception ("tournament points not found")
         tournamentPoints = text[found + len(tournamentResultStr):text.find("\n", found + len(tournamentResultStr))]
         tournamentPoints = tournamentPoints.strip()
+        originalTournamentPts = tournamentPoints
         # 42 players * 1000        
         maxPoints = 42 * 1000
         tournamentPoints = str(maxPoints - int(tournamentPoints))
         
-    rank = float("%s.%s%s" % (matchRank, tournamentRank.zfill(2), tournamentPoints.zfill(4)))
+    rank = float("%s.%s%s" % (matchRank, tournamentRank.zfill(2), tournamentPoints.zfill(len(maxPoints))))
+    if Debug: print("%s rank: %s (%s %s %s)" % (filename, rank, matchRank, tournamentRank, originalTournamentPts))
     return rank
 
 def WriteDNA(path_input, Name, newDNA):
@@ -177,6 +179,7 @@ def _FindMates(path_input, path_output):
     ToDelete.remove("mutating")
     
     for file in ToDelete:
+        if Debug: print("deleting", file)
         os.remove(path_input + file)     
         os.remove(path_output + file)     
     
@@ -358,7 +361,14 @@ def _MutateDNA(path_input, Original):
     # 7% chance to drop a predictor
     dropPredictorChance = 0.07
     for predictor in newDNA["predictors"]:
-        if random.uniform(0, 1) < dropPredictorChance:
+        if len(newDNA["predictors"]) and random.uniform(0, 1) < dropPredictorChance:
+            if Debug: print(" removing", predictor)
+            newDNA.remove_option("predictors", predictor)
+
+    # 1% chance to drop a predictor
+    dropPredictorChance = 0.01
+    for predictor in newDNA["predictors"]:
+        if len(newDNA["predictors"]) and random.uniform(0, 1) < dropPredictorChance:
             if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
