@@ -22,14 +22,18 @@ def main(path_input = "results/input/", path_output = "results/output/"):
         Validate(path_input, file)
     
     for i, file in enumerate(files):
-        print ("%i/%i: %s..." % (i + 1, len(files), file), end='')
+        print ("%i/%i: %s " % (i + 1, len(files), file), end='')
         if file == "mutating": continue     # skip evolve's mutating mark
         
         if file in completed:
-            print (" skipping")
+            print ("[skipping] ", end='')
         else:
             PlayTournament(path_input, path_output, file)    
-            print ("done")
+            print ("[done] ", end='')
+
+        resultMatch, resultTournament = ReadRank(path_output + file)
+        print("(Rank: %i. %i)..." % (resultMatch, resultTournament))
+            
     print ("")
 
     csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
@@ -76,16 +80,22 @@ def PlayTournament(path_input, path_output, filename):
         return
     
 #    output = subprocess.call(["full.exe", input_filename], shell = True)
-#    output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
-    output = subprocess.check_output(["iocaine.exe", input_filename], universal_newlines = True)
+    output = subprocess.check_output(["full.exe", input_filename], universal_newlines = True)
+#    output = subprocess.check_output(["iocaine.exe", input_filename], universal_newlines = True)
     with open(output_filename, "w") as f:
         stdout = str(output)
         f.write(stdout)
+
+def ReadRank(results_filename):
+    with open(results_filename, "r")  as f:
+        output = f.read()
         
     header = "Match results"
     resultMatch = int(GetRank(output, header))
     header = "Tournament results"
     resultTournament = int(GetRank(output, header))
+    
+    return (resultMatch, resultTournament)
         
 def GetRank(text, header):
     """

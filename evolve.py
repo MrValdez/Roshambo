@@ -121,7 +121,7 @@ def _EvaluateDNA(filename):
         maxPoints = 42 * 1000
         tournamentPoints = str(maxPoints - int(tournamentPoints))
         
-    rank = float("%s.%s%s" % (matchRank, tournamentRank.zfill(2), tournamentPoints.zfill(len(maxPoints))))
+    rank = float("%s.%s%s" % (matchRank, tournamentRank.zfill(2), tournamentPoints.zfill(len(str(maxPoints)))))
     if Debug: print("%s rank: %s (%s %s %s)" % (filename, rank, matchRank, tournamentRank, originalTournamentPts))
     return rank
 
@@ -156,8 +156,8 @@ def _FindMates(path_input, path_output):
     AllPopulation = Population
     Population = []
     
-    # filter in the top ranking individuals (30% + 1)
-    topRankLen = int((len(AllPopulation) * 0.3) + 1)
+    # filter in the top ranking individuals (10% + 1)
+    topRankLen = int((len(AllPopulation) * 0.1) + 1)
     AlphaIndividuals = AllPopulation[0:topRankLen]
     Population.extend(AlphaIndividuals)
     
@@ -320,10 +320,10 @@ def _MateDNA(path_input, newName, Dominant, Mate):
                 if Debug: print(" Inheriting from mate", gene, value, DNA2[gene][value])
                 newDNA[gene][value] = DNA2[gene][value]
 
-    # 4% chance to mutate
-    # 30% chance to completely change the gene value
-    mutationChance = 0.04
-    geneRewriteChance = 0.30
+    # 3% chance to mutate
+    # 1% chance to completely change the gene value
+    mutationChance = 0.3
+    geneRewriteChance = 0.1
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
         
     # Check if new DNA will inherit from Mate
@@ -387,10 +387,10 @@ def _MutateDNA(path_input, Original):
                 if Debug: print(" Adding new predictor:", newPredictor)
                 newPredictorTries -= random.randint(1, 10)
     
-    # 9% chance to mutate
-    # 35% chance to completely change the gene value
-    mutationChance = 0.09
-    geneRewriteChance = 0.35
+    # 15% chance to mutate
+    # 05% chance to completely change the gene value
+    mutationChance = 0.15
+    geneRewriteChance = 0.05
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
         
     return newName, newDNA
