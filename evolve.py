@@ -90,6 +90,7 @@ def CloneDNA(new_path_input, new_path_output, old_path_input, old_path_output):
     
 
 def _EvaluateDNA(filename):
+    # This returns the fitness of an individual
     # We evaluate using the match ranking, the tournament ranking, and the tournament points
     # with a higher priority for match ranking.
     # We get the inverse of the tournament points since we sort via the lowest.
@@ -148,7 +149,7 @@ def _FindMates(path_input, path_output):
     # filter out mutating mark
     Population = [Population for Population in Population if Population != "mutating"]
     
-    # Add a fertility probabilty for each DNA.
+    # Add fitness for each DNA.
     Population = [[Population, _EvaluateDNA(path_output + Population)] for Population in Population]
 
     Population.sort(key = lambda a: a[1])
@@ -156,18 +157,14 @@ def _FindMates(path_input, path_output):
     AllPopulation = Population
     Population = []
     
-    # filter in the top ranking individuals (10% + 1)
-    topRankLen = int((len(AllPopulation) * 0.1) + 1)
+    # filter in the top ranking individuals (35% + 1)
+    topRankLen = int((len(AllPopulation) * 0.35) + 1)
     AlphaIndividuals = AllPopulation[0:topRankLen]
     Population.extend(AlphaIndividuals)
-    
-    # filter in the low ranking individuals (5% + 1)
-    lowRankLen = int((len(AllPopulation) * 0.05) + 1)
-    Population.extend(AllPopulation[-lowRankLen:])
-    
+        
     # filter in one random individual
-    middleRandom = random.randint(topRankLen, len(AllPopulation) - lowRankLen)
-    Population.append(AllPopulation[middleRandom])
+    randomIndividual = random.randint(topRankLen, len(AllPopulation) - 1)
+    Population.append(AllPopulation[randomIndividual])
     
     # delete the individuals that are not in the population
     ToPreserve = []
@@ -187,15 +184,15 @@ def _FindMates(path_input, path_output):
     maxPopulationSize = len(Population) * random.uniform(0.8, 1.5)
     maxPopulationSize = round(maxPopulationSize)
     
-    # Set the maximum population size to 47
-    maxPopulationSize = min(maxPopulationSize, 47)
+    # Set the maximum population size to 32
+    maxPopulationSize = min(maxPopulationSize, 32)
     # Set the minimum population size to 10
     maxPopulationSize = max(maxPopulationSize, 10)
 
     while maxPopulationSize > 0:                    
         # Grab two random individual with a bias for those with higher rank        
         a = random.triangular(0, 1, 0.2)
-        b = random.triangular(0, 1, 0.5)
+        b = random.triangular(0, 1, 0.6)
         Dominant = Population[int(a * len(Population))]
         Mate     = Population[int(b * len(Population))]
         
@@ -209,8 +206,8 @@ def _FindMates(path_input, path_output):
 
             continue
                     
-        # .3% chance the two will mate
-        MatingTreshold = 0.03
+        # .15% chance the two will mate
+        MatingTreshold = 0.15
 
         if random.uniform(0, 1) < MatingTreshold: continue
 
@@ -320,10 +317,10 @@ def _MateDNA(path_input, newName, Dominant, Mate):
                 if Debug: print(" Inheriting from mate", gene, value, DNA2[gene][value])
                 newDNA[gene][value] = DNA2[gene][value]
 
-    # 3% chance to mutate
+    # 50% chance to mutate
     # 1% chance to completely change the gene value
-    mutationChance = 0.3
-    geneRewriteChance = 0.1
+    mutationChance = 0.5
+    geneRewriteChance = 0.01
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
         
     # Check if new DNA will inherit from Mate
@@ -387,9 +384,9 @@ def _MutateDNA(path_input, Original):
                 if Debug: print(" Adding new predictor:", newPredictor)
                 newPredictorTries -= random.randint(1, 10)
     
-    # 15% chance to mutate
-    # 05% chance to completely change the gene value
-    mutationChance = 0.15
+    # 60% chance to mutate
+    # 5% chance to completely change the gene value
+    mutationChance = 0.60
     geneRewriteChance = 0.05
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
         
