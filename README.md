@@ -22,7 +22,8 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
  - **gcc**. We used the unofficial windows binaries: rubenvb MinGW-w64 (gcc rubenvb-4.8.0).
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **OS**. We used Windows 8 64-bit, but other than the batch files, the AI code should be cross-platform (note: untested).
-
+ - **SIMD oriented Fast Mersenne Twister(SFMT)**. We used this library for the AI's RNG. The original code can be found [here](http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/index.html)
+ 
 #Tools dependencies
  - **Python 3.x**. We used Python 3.3 32-bit.
  - **matplotlib** and **numpy**. Used by *charts.py* to generate the charts.
@@ -42,6 +43,8 @@ The Python.dll binary is under the [Python license](https://docs.python.org/3/li
 *libpython.a* can be built by using *.\python_c_api\compile_libpython.bat* and *pexports.exe*. More information about compiling can be found at *.\python_c_api\python_links.txt*
     
 *compile_python.bat* is used for testing purposes. It compiles a simple python+c program. This is a simple program to check that the compiled binaries worked.
+
+*SFMT libray* is used for the AI's RNG. The entire source code is included with no changes and can be found [online](http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/SFMT/index.html).
 
 #International RoShamBo Test Suite changes
 Here are the changes for the test suite. These modifications are necessary to allow the addition of our AI as well as accomodate our version of gcc.
@@ -100,7 +103,7 @@ The RPS ibrary contains the following functions related to the International RoS
 
 - **rps.biased_roshambo(rockProb, paperProb)** returns 0, 1, or 2. This is determined by the parameters supplied. For example, **biased_roshambo(1.0, 0.0)** returns 0, 100% of the time while **biased_roshambo(0.4, 0.2)** will return 0, 1 or 2 at the probability of 40%, 20%, 40% respectively.    
 
-- **rps.random()** returns a random number using the test suite's random function. We should use this rather than Python's **math.random()** to ensure that we are using the same RNG as the AIs in the test suite. We theorized that Python's math library will also use the same RNG as the test suite, but we did not test for this.
+- **rps.random()** returns a random number using the SFMT library. We should use this rather than Python's **math.random()** to ensure that we are using the same RNG as the AIs in the test suite. We theorized that Python's math library will also use the same RNG as the test suite, but we did not test for this.
 
 - **rps.randomRange()** functions similarly to **rps.random()** but returns a floating number between [0..1].
 

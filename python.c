@@ -21,8 +21,12 @@ def isVerbose():
 
 #define HAVE_SSIZE_T
 #include <Python.h>
+#include <SFMT.h>
 
 #include "wilson.c"
+
+sfmt_t sfmt;
+int seed = 0;
 
 extern int my_history[];
 extern int opp_history[];
@@ -71,9 +75,16 @@ rps_getTurn(PyObject *self, PyObject *args)
     return PyLong_FromLong(my_history[0]);
 }
 
-extern int biased_roshambo (double prob_rock, double prob_paper);
-extern long random ();
-extern float maxrandom;
+// SFMT version of rsb-ts's biased_roshambo
+int biased_roshambo_SFMT (double prob_rock, double prob_paper)
+{
+   /* roshambo with given probabilities of rock, paper, or scissors */
+   double throw = sfmt_genrand_real1(&sfmt);
+   
+   if ( throw < prob_rock )                   { return(0); }
+   else if ( throw < prob_rock + prob_paper ) { return(1); }
+   else /* throw > prob_rock + prob_paper */ { return(2); }
+}
 
 static PyObject *
 rps_biased_roshambo(PyObject *self, PyObject *args)
@@ -100,13 +111,17 @@ rps_biased_roshambo(PyObject *self, PyObject *args)
 static PyObject *
 rps_random ()
 {
-    return PyLong_FromLong(random());
+    long x = sfmt_genrand_uint32(&sfmt);
+
+    return PyLong_FromLong(x);
 }
 
 static PyObject *
 rps_randomRange ()
 {
-    return PyFloat_FromDouble(random() / maxrandom);
+    double x = sfmt_genrand_real1(&sfmt);
+
+    return PyFloat_FromDouble(x);
 }
 
 extern char current_opponent[50];
@@ -215,6 +230,9 @@ int initPython(int argc, char *argv[])
         fprintf(stderr, "Failed to load \"%s\"\n", argv[1]);
         return 1;
     }
+
+    // Initialize random seed.
+    sfmt_init_gen_rand(&sfmt, seed);
     
     return 0;
 }
