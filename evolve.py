@@ -16,10 +16,14 @@ import roman
 
 import trainer
 
-Debug = True
 Debug = False
+Debug = True
 
 basedir = "DNAVillage/"
+
+# (category, key, should have [0-1] limit?)
+Genes = [("yomi preferences", ("AA", "AB", "AC", "BA", "BB", "BC", "CA", "CB", "CC"), True),
+         ("yomi-score preferences", ("A", "B", "C"), False)]
 
 with open("movie-characters.txt", "r") as f:
     FirstNames = f.read()
@@ -40,7 +44,7 @@ with open("Family-Names.txt", "r") as f:
 
 def SelectDNA():
     # get the latest generation number
-    generations = [directory.split("_")[1] for directory in os.listdir(basedir)]
+    generations = [directory.split("_")[1] for directory in os.listdir(basedir) if os.path.isdir(basedir + directory)]
     generations = [int(generations) for generations in generations]
 
     currentGeneration = max(generations)
@@ -157,15 +161,17 @@ def _FindMates(path_input, path_output):
     AllPopulation = Population
     Population = []
     
-    # filter in the top ranking individuals (35% + 1)
-    topRankLen = int((len(AllPopulation) * 0.35) + 1)
-    AlphaIndividuals = AllPopulation[0:topRankLen]
-    Population.extend(AlphaIndividuals)
-        
-    # filter in one random individual
-    randomIndividual = random.randint(topRankLen, len(AllPopulation) - 1)
-    Population.append(AllPopulation[randomIndividual])
-    
+    # filter in the top ranking individuals (55%)
+    maxPopulationSize = int((len(AllPopulation) * 0.55))
+            
+    # Set the maximum population size to 25-32
+    maxPopulationSize = min(maxPopulationSize, random.randint(25, 32))
+    # Set the minimum population size to 10
+    maxPopulationSize = max(maxPopulationSize, 10)
+
+    AlphaIndividuals = AllPopulation[0:maxPopulationSize]
+    Population = AlphaIndividuals
+
     # delete the individuals that are not in the population
     ToPreserve = []
     AllFiles = set(os.listdir(path_input))
@@ -179,58 +185,48 @@ def _FindMates(path_input, path_output):
         if Debug: print("deleting", file)
         os.remove(path_input + file)     
         os.remove(path_output + file)     
-    
-    # Set the max population size. This can go up or down randomly
-    maxPopulationSize = len(Population) * random.uniform(0.8, 1.5)
-    maxPopulationSize = round(maxPopulationSize)
-    
-    # Set the maximum population size to 32
-    maxPopulationSize = min(maxPopulationSize, 32)
-    # Set the minimum population size to 10
-    maxPopulationSize = max(maxPopulationSize, 10)
-
-    while maxPopulationSize > 0:                    
-        # Grab two random individual with a bias for those with higher rank        
-        a = random.triangular(0, 1, 0.2)
-        b = random.triangular(0, 1, 0.6)
-        Dominant = Population[int(a * len(Population))]
-        Mate     = Population[int(b * len(Population))]
         
-        # If we grabbed the same individual, just mutate it instead.
-        if Dominant == Mate:
-            newName, newDNA = _MutateDNA(path_input, Dominant)
-
-            newFile = WriteDNA(path_input, newName, newDNA)
-            maxPopulationSize -= 1
-            if Debug: print("Writing mutated", newFile)
-
-            continue
-                    
+    for newIndividualSize in range(random.randint(0, 5)):
+        # either create new individuals to the population, or mate
+       
         # .15% chance the two will mate
         MatingTreshold = 0.15
 
-        if random.uniform(0, 1) < MatingTreshold: continue
+        if random.uniform(0, 1) > MatingTreshold: 
+            # Create new individual
+            Mutating = random.choice(AlphaIndividuals)
 
-        # Start mating
-        newName  = _MutateName(Dominant[0], Mate[0])
-        newDNA   = _MateDNA(path_input, newName, Dominant, Mate)
+            newName, newDNA = _MutateDNA(path_input, Mutating)
+            newName = _StrangerName()
+            
+            newFile = WriteDNA(path_input, newName, newDNA)
+            if Debug: print("Writing mutated", newFile)
         
-        # write newDNA to file
-        newFile = WriteDNA(path_input, newName, newDNA)
-        maxPopulationSize -= 1
-        if Debug: print("Writing mated", newFile)
+        else:
+            # Let's mate two individuals
 
-    newIndividualSize = random.randint(0, 3)
-    while newIndividualSize > 0:
-        # add new individuals to the population
-        Mutating = random.choice(AlphaIndividuals)
+            # Grab two random individual with a bias for those with higher rank        
+            a = random.triangular(0, 1, 0.2)
+            b = random.triangular(0, 1, 0.6)
+            Dominant = Population[int(a * len(Population))]
+            Mate     = Population[int(b * len(Population))]
+            
+            # If we grabbed the same individual, just mutate it instead.
+            if Dominant == Mate:
+                newName, newDNA = _MutateDNA(path_input, Dominant)
 
-        newName, newDNA = _MutateDNA(path_input, Mutating)
-        newName = _StrangerName()
-        
-        newFile = WriteDNA(path_input, newName, newDNA)
-        newIndividualSize -= 1
-        if Debug: print("Writing mutated", newFile)
+                newFile = WriteDNA(path_input, newName, newDNA)
+                maxPopulationSize -= 1
+                if Debug: print("Writing mutated", newFile)
+
+                continue
+                        
+            newName  = _MutateName(Dominant[0], Mate[0])
+            newDNA   = _MateDNA(path_input, newName, Dominant, Mate)
+            
+            # write newDNA to file
+            newFile = WriteDNA(path_input, newName, newDNA)
+            if Debug: print("Writing mated", newFile)
         
 def filterName(newLastName, newFirstName, newMiddleName):
     newLastName   = newLastName
@@ -270,11 +266,8 @@ def _ReadDNA(filename):
     
     return config
 
-def _MutateGene(mutationChance, geneRewriteChance, newDNA):
-    Genes = [("yomi preferences", ("AA", "AB", "AC", "BA", "BB", "BC", "CA", "CB", "CC")),
-             ("yomi-score preferences", ("A", "B", "C"))]
-    
-    for gene, values in Genes:
+def _MutateGene(mutationChance, geneRewriteChance, newDNA):    
+    for gene, values, hasLimit in Genes:
         for value in values:
             if random.uniform(0, 1) < mutationChance:
                 original_value = float(newDNA[gene][value].split("#")[0])
@@ -289,8 +282,10 @@ def _MutateGene(mutationChance, geneRewriteChance, newDNA):
                     
                     if Debug: print(" new", gene, value, delta)
                 
-                delta = min(delta, 1.0)
-                delta = max(delta, 0.0)
+                
+                if not hasLimit:
+                    delta = min(delta, 1.0)
+                    delta = max(delta, 0.0)
                 
                 newDNA[gene][value] = str(delta)
 
@@ -307,8 +302,6 @@ def _MateDNA(path_input, newName, Dominant, Mate):
       
     # Select 90% of DNA from Dominant, the rest from Mate
     DominantGenesPer = 0.9
-    Genes = [("yomi preferences", ("AA", "AB", "AC", "BA", "BB", "BC", "CA", "CB", "CC")),
-             ("yomi-score preferences", ("A", "B", "C"))]
     
     for gene, values in Genes:
         for value in values:

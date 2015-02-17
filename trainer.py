@@ -7,8 +7,8 @@ import charts
 
 import configparser
 
-Debug = True
 Debug = False
+Debug = True
 
 MatchPts = 100
 TournamentPts = 100
@@ -17,22 +17,30 @@ def main(path_input = "results/input/", path_output = "results/output/"):
     files = os.listdir(path_input)
     completed = os.listdir(path_output)
     
+    basepath, DNA_Name, _ = path_input.split("/")
+    
     print ("")
     for file in files:
         Validate(path_input, file)
     
-    for i, file in enumerate(files):
-        print ("%i/%i: %s " % (i + 1, len(files), file), end='')
-        if file == "mutating": continue     # skip evolve's mutating mark
+    with open(basepath + "/" + DNA_Name + ".txt", "w") as f:
+        if Debug: print("\n".join(files))
         
-        if file in completed:
-            print ("[skipping] ", end='')
-        else:
-            PlayTournament(path_input, path_output, file)    
-            print ("[done] ", end='')
+        for i, file in enumerate(files):
+            print ("%i/%i: %s " % (i + 1, len(files), file), end='')
+            if file == "mutating": continue     # skip evolve's mutating mark
+            
+            if file in completed:
+                print ("[skipping] ", end='')
+            else:
+                PlayTournament(path_input, path_output, file)    
+                print ("[done] ", end='')
 
-        resultMatch, resultTournament = ReadRank(path_output + file)
-        print("(Rank: %i. %i)..." % (resultMatch, resultTournament))
+            resultMatch, resultTournament = ReadRank(path_output + file)
+            rank = "(Rank: %i. %i)" % (resultMatch, resultTournament)
+            print(rank)
+            
+            f.write("%s %s\n" % (rank, file))
             
     print ("")
 
