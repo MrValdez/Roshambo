@@ -357,6 +357,25 @@ class Yomi:
 
 ##
 
+        # normalize
+        normal = transitionAA + transitionAB + transitionAC
+        if normal:
+            transitionAA /= normal
+            transitionAB /= normal
+            transitionAC /= normal
+
+        normal = transitionBA + transitionBB + transitionBC
+        if normal:
+            transitionBA /= normal
+            transitionBB /= normal
+            transitionBC /= normal
+
+        normal = transitionCA + transitionCB + transitionCC
+        if normal:
+            transitionCA /= normal
+            transitionCB /= normal
+            transitionCC /= normal
+
         if Debug:
             print ("AFter ratio:")
             print ("Turn: ", currentTurn, "Current layer: ", start)
