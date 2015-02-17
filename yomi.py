@@ -230,6 +230,25 @@ class Yomi:
         if currentOpponent >= 1 and currentTurn > 700: Debug = True
         Debug = False
 
+        # normalize
+        normal = transitionAA + transitionAB + transitionAC
+        if normal:
+            transitionAA /= normal
+            transitionAB /= normal
+            transitionAC /= normal
+
+        normal = transitionBA + transitionBB + transitionBC
+        if normal:
+            transitionBA /= normal
+            transitionBB /= normal
+            transitionBC /= normal
+
+        normal = transitionCA + transitionCB + transitionCC
+        if normal:
+            transitionCA /= normal
+            transitionCB /= normal
+            transitionCC /= normal
+
         if Debug:
             print (start, predictionConfidence)
             
