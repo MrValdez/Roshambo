@@ -13,6 +13,7 @@ import configparser
 import string
 import shutil
 import roman
+import time
 
 import trainer
 
@@ -186,7 +187,7 @@ def _FindMates(path_input, path_output):
         os.remove(path_input + file)     
         os.remove(path_output + file)     
         
-    for newIndividualSize in range(random.randint(0, 5)):
+    for newIndividualSize in range(random.randint(3, 10)):
         # either create new individuals to the population, or mate
        
         # .15% chance the two will mate
@@ -303,7 +304,7 @@ def _MateDNA(path_input, newName, Dominant, Mate):
     # Select 90% of DNA from Dominant, the rest from Mate
     DominantGenesPer = 0.9
     
-    for gene, values in Genes:
+    for gene, values, hasLimit in Genes:
         for value in values:
             if newDNA[gene][value] != DNA2[gene][value] and \
                random.uniform(0, 1) < DominantGenesPer:
@@ -407,9 +408,12 @@ def main():
     
     #check if we need to run trainer on the previous generation
     if len(os.listdir(old_path_output)) != len(os.listdir(old_path_input)):
-        print ("Re-training previous generation")
+        print ("Re-training previous generation (generation %s)" % (currentGeneration))
         trainer.main(old_path_input, old_path_output)
         print ("Restarting Generation", int(currentGeneration) + 1)
+
+    if len(os.listdir(old_path_input)) == 0:
+        raise Exception("Warning: Generation is empty. Double check folder")
         
     CloneDNA(new_path_input, new_path_output, old_path_input, old_path_output)
     RunGA(new_path_input, new_path_output)
@@ -417,5 +421,8 @@ def main():
     
 if __name__ == "__main__":
     while True:
+        startTimer = time.perf_counter()
         main()
-        print("")
+        endTimer = time.perf_counter()
+        elapsedTime = endTimer - startTimer
+        print("Elapsed time: %f mins\n" % (elapsedTime / 60.0))
