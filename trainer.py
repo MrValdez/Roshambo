@@ -45,8 +45,6 @@ def main(path_input = "results/input/", path_output = "results/output/"):
     print ("")
 
     csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
-    print ("Best Match Result      [%s] with rank of %i" % (bestMatchResult[0], bestMatchResult[1]))
-    print ("Best Tournament Result [%s] with rank of %i (%i)" % (bestTournamentResult[0], bestTournamentResult[1], bestTournamentResult[2]))
     
 #    for file in files:
 #        CreateLatex(file)
@@ -132,7 +130,7 @@ def GetHighestRank(path_output):
     best = [[0, 100], [0, 100, 0]] #variable, rank
     
     prettyWidth = 18
-    if Debug: print("\n\n%s  RANK   VARIABLE" % ("HEADER".ljust(prettyWidth)))
+    #if Debug: print("\n\n%s  RANK   VARIABLE" % ("HEADER".ljust(prettyWidth)))
     for filename in fileList:
         if filename[-4:] != ".txt":
             print("%s is not txt file" % (filename))
@@ -147,7 +145,7 @@ def GetHighestRank(path_output):
 
             header = "Match results"
             rank = GetRank(text, header)
-            #print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
+            #if Debug: print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
             
             variable = variable[-3:].replace("]","").replace("[","").strip()
             csv[0] += "%s,%s\n" % (variable, rank)
@@ -157,7 +155,7 @@ def GetHighestRank(path_output):
             
             header = "Tournament results"
             rank = GetRank(text, header)
-            #print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
+            #if Debug: print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
             
             variable = variable[-3:].replace("]","").replace("[","").strip()
             csv[1] += "%s,%s\n" % (variable, rank)
