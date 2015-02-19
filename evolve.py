@@ -268,6 +268,7 @@ def _ReadDNA(filename):
     return config
 
 def _MutateGene(mutationChance, geneRewriteChance, newDNA):    
+    # mutate genes
     for gene, values, hasLimit in Genes:
         for value in values:
             if random.uniform(0, 1) < mutationChance:
@@ -298,6 +299,7 @@ def _MateDNA(path_input, newName, Dominant, Mate):
     DNA2 = _ReadDNA(path_input + Mate[0])
     
     newDNA = DNA1
+    newDNA["info"]["name"] = newName
     newDNA["info"]["Dominant Parent"] = Dominant[0]
     newDNA["info"]["Mate"] = Mate[0]
       
@@ -330,7 +332,7 @@ def _MateDNA(path_input, newName, Dominant, Mate):
             if random.uniform(0, 1) < ChanceToInheritPredictor:
                 newDNA["predictors"][predictor] = None
                 if Debug: print(" Inheriting predictor from mate", predictor)
-    
+     
     return newDNA
     
 def _MutateDNA(path_input, Original):
@@ -383,7 +385,29 @@ def _MutateDNA(path_input, Original):
     mutationChance = 0.60
     geneRewriteChance = 0.05
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
-        
+    
+    # mutate ranking system
+    # 0.1% chance to change ranking system
+    changeRankingSystemChance = 0.01
+    rankingDNAs = ["strategy ranking", "predictor ranking"]
+
+    for rankingDNA in rankingDNAs:
+        if random.uniform(0, 1) < changeRankingSystemChance:
+            
+            rankingSystems = ["wilson-low", "wilson-high"]
+            newRankingSystem = random.choice(rankingSystems)
+            
+            if not newRankingSystem in newDNA[rankingDNA]:
+                # add new ranking system. remove all ranking system that is not the new
+                # system. We do it this way to preserve section order
+                newDNA[rankingDNA][newRankingSystem] = None
+                currentRankingSystems = [rank for rank in newDNA[rankingDNA]] 
+                for rank in currentRankingSystems:
+                    if rank != newRankingSystem:
+                        newDNA.remove_option(rankingDNA, rank)
+                
+                if Debug: print("Changing %s from %s to %s" % (rankingDNA, currentRankingSystems, newRankingSystem))
+
     return newName, newDNA
 
 def RunGA(path_input, path_output):
