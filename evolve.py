@@ -129,7 +129,7 @@ def _EvaluateDNA(filename):
         
     rank = float("%s.%s%s" % (matchRank, tournamentRank.zfill(2), tournamentPoints.zfill(len(str(maxPoints)))))
     if Debug: print("%s rank: %s (%s %s %s)" % (filename, rank, matchRank, tournamentRank, originalTournamentPts))
-    return rank
+    return rank, (int(matchRank), int(tournamentRank))
 
 def WriteDNA(path_input, Name, newDNA):
     newFile = path_input + Name + ".txt"
@@ -155,22 +155,34 @@ def _FindMates(path_input, path_output):
     Population = [Population for Population in Population if Population != "mutating"]
     
     # Add fitness for each DNA.
-    Population = [[Population, _EvaluateDNA(path_output + Population)] for Population in Population]
+    
+    # We have two fitness evaluation, one for the ranking (match + tournament rank) and another for the tournament rank.
+    # We do this so we won't lose individuals with a high tournament rank but low match rank.
+    RankingPopulation = [[Population, _EvaluateDNA(path_output + Population)[0]] for Population in Population]
+    RankingPopulation.sort(key = lambda a: a[1])
 
-    Population.sort(key = lambda a: a[1])
-
-    AllPopulation = Population
+    PointsPopulation = [[Population, _EvaluateDNA(path_output + Population)[1]] for Population in Population]
+    PointsPopulation.sort(key = lambda a: (a[1][1], a[1][0]))       # sort by tournament rank, then match rank
+    PointsPopulation = [[Population[0], _EvaluateDNA(path_output + Population[0])[0]] for Population in PointsPopulation]
+    
     Population = []
     
     # filter in the top ranking individuals (55%)
-    maxPopulationSize = int((len(AllPopulation) * 0.55))
+    maxPopulationSize = int((len(RankingPopulation) * 0.55))
             
     # Set the maximum population size to 25-32
     maxPopulationSize = min(maxPopulationSize, random.randint(25, 32))
     # Set the minimum population size to 10
     maxPopulationSize = max(maxPopulationSize, 10)
 
-    AlphaIndividuals = AllPopulation[0:maxPopulationSize]
+    AlphaIndividuals = RankingPopulation[0:maxPopulationSize]
+    
+    # add in the individuals from the high points population to the alpha individuals
+    PointsPopulation = PointsPopulation[0:5]
+    for individual in PointsPopulation:
+        if not individual in AlphaIndividuals:
+            AlphaIndividuals.append(individual)
+
     Population = AlphaIndividuals
 
     # delete the individuals that are not in the population
@@ -349,7 +361,7 @@ def _MutateDNA(path_input, Original):
     
     # Mutate the DNA
     newDNA["info"]["name"] = newName
-    newDNA["info"]["MutateFrom"] = Original[0]
+    newDNA["info"]["Mutate From"] = Original[0].split(".")[0]
     
     # 7% chance to drop a predictor
     dropPredictorChance = 0.07
