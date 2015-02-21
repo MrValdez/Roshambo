@@ -17,8 +17,8 @@ import time
 
 import trainer
 
-Debug = False
 Debug = True
+Debug = False
 
 basedir = "DNAVillage/"
 
@@ -291,7 +291,7 @@ def _MutateGene(mutationChance, geneRewriteChance, newDNA):
                     delta = random.uniform(0, 1)
                     if Debug: print(" replacing", gene, value, delta)
                 else:    
-                    delta = random.uniform(-0.5, 0.5)
+                    delta = random.uniform(-0.1, 0.1)
                     delta += original_value
                     
                     if Debug: print(" new", gene, value, delta)
@@ -363,22 +363,15 @@ def _MutateDNA(path_input, Original):
     newDNA["info"]["name"] = newName
     newDNA["info"]["Mutate From"] = Original[0].split(".")[0]
     
-    # 7% chance to drop a predictor
-    dropPredictorChance = 0.07
-    for predictor in newDNA["predictors"]:
-        if len(newDNA["predictors"]) and random.uniform(0, 1) < dropPredictorChance:
-            if Debug: print(" removing", predictor)
-            newDNA.remove_option("predictors", predictor)
-
-    # 1% chance to drop a predictor
+    # .1% chance to drop a predictor
     dropPredictorChance = 0.01
     for predictor in newDNA["predictors"]:
         if len(newDNA["predictors"]) and random.uniform(0, 1) < dropPredictorChance:
             if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
-    # 3% chance to add a new predictor
-    newPredictorChance = 0.03
+    # 3% chance to add 1-10 new predictors
+    newPredictorChance = 0.3
     newPredictorTries = 10
     if random.uniform(0, 1) < newPredictorChance:
         while newPredictorTries > 0:
