@@ -225,29 +225,10 @@ class Yomi:
         transitionCB = predictionConfidence * dna.yomi_preferences[7]
         transitionCC = predictionConfidence * dna.yomi_preferences[8]
 
-        if transitionAB > 0: Debug = True
         Debug = True
-        if currentOpponent >= 1 and currentTurn > 700: Debug = True
+        if transitionAB > 0: Debug = True
+        if currentOpponent >= 0 and currentTurn > 700: Debug = True
         Debug = False
-
-        # normalize
-        normal = transitionAA + transitionAB + transitionAC
-        if normal:
-            transitionAA /= normal
-            transitionAB /= normal
-            transitionAC /= normal
-
-        normal = transitionBA + transitionBB + transitionBC
-        if normal:
-            transitionBA /= normal
-            transitionBB /= normal
-            transitionBC /= normal
-
-        normal = transitionCA + transitionCB + transitionCC
-        if normal:
-            transitionCA /= normal
-            transitionCB /= normal
-            transitionCC /= normal
 
         if Debug:
             print (start, predictionConfidence)
@@ -283,10 +264,6 @@ class Yomi:
 #        highestInfluence = 2.1
 #        midInfluence     = 0.8
 #        lowestInfluence  = 0. 
-
-        highestInfluence = dna.yomi_score_preferences[0]
-        midInfluence     = dna.yomi_score_preferences[1]
-        lowestInfluence  = dna.yomi_score_preferences[2]
                 
         if   layer1score >= layer2score >= layer3score:
              layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
@@ -303,6 +280,10 @@ class Yomi:
         else:
             print("Bug: ", layer1score,layer2score,layer3score)
             input()
+
+#        layer1ratio = dna.yomi_score_preferences[0]
+#        layer2ratio = dna.yomi_score_preferences[1]
+#        layer3ratio = dna.yomi_score_preferences[2]
 
         layer1score = self.yomiLayerWins[0] #- self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] #- self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
@@ -356,26 +337,6 @@ class Yomi:
 #        transitionCB -= layer3ratio
 
 ##
-
-        # normalize
-        normal = transitionAA + transitionAB + transitionAC
-        if normal:
-            transitionAA /= normal
-            transitionAB /= normal
-            transitionAC /= normal
-
-        normal = transitionBA + transitionBB + transitionBC
-        if normal:
-            transitionBA /= normal
-            transitionBB /= normal
-            transitionBC /= normal
-
-        normal = transitionCA + transitionCB + transitionCC
-        if normal:
-            transitionCA /= normal
-            transitionCB /= normal
-            transitionCC /= normal
-
         if Debug:
             print ("AFter ratio:")
             print ("Turn: ", currentTurn, "Current layer: ", start)
@@ -404,7 +365,30 @@ class Yomi:
 
         #normalize
         if 1:
-            normal = abs(transitionAA) + abs(transitionAB) + abs(transitionAC)
+            def shift(transition1, transition2, transition3):
+                if transition1 < 0:
+                    shift = abs(transition1)
+                    transition1 += shift
+                    transition2 += shift
+                    transition3 += shift
+                if transition2 < 0:
+                    shift = abs(transition2)
+                    transition2 += shift
+                    transition2 += shift
+                    transition2 += shift
+                if transition3 < 0:
+                    shift = abs(transition3)
+                    transition3 += shift
+                    transition3 += shift
+                    transition3 += shift
+                    
+                return transition1, transition2, transition3
+
+            transitionAA, transitionAB, transitionAC = shift(transitionAA, transitionAB, transitionAC)
+            transitionBA, transitionBB, transitionBC = shift(transitionBA, transitionBB, transitionBC)
+            transitionCA, transitionCB, transitionCC = shift(transitionCA, transitionCB, transitionCC)
+
+            normal = transitionAA + transitionAB + transitionAC
             if Debug: print(normal)
             if normal > 0:
                 transitionAA /= normal
@@ -413,7 +397,7 @@ class Yomi:
             else:
                 transitionAA = 1        # if the sum is 0, then we set transition to self to 1
 
-            normal = abs(transitionBA) + abs(transitionBB) + abs(transitionBC)
+            normal = transitionBA + transitionBB + transitionBC
             if normal > 0:
                 transitionBA /= normal
                 transitionBB /= normal
@@ -421,13 +405,14 @@ class Yomi:
             else:
                 transitionBB = 1        # if the sum is 0, then we set transition to self to 1
             
-            normal = abs(transitionCA) + abs(transitionCB) + abs(transitionCC)
+            normal = transitionCA + transitionCB + transitionCC
             if normal > 0:
                 transitionCA /= normal
                 transitionCB /= normal
                 transitionCC /= normal
             else:
                 transitionCC = 1        # if the sum is 0, then we set transition to self to 1
+            
 
         # minimum of 0.0
         transitionAA = max(transitionAA, 0.0)
@@ -454,7 +439,7 @@ class Yomi:
                     
         def foo(a, b):
             c = rps.randomRange(a, b)
-            #print(c)
+            if Debug: print(c)
             return c
 
         result = p.move(start, foo)
