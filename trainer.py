@@ -7,8 +7,8 @@ import charts
 
 import configparser
 
-Debug = False
 Debug = True
+Debug = False
 
 MatchPts = 100
 TournamentPts = 100
@@ -23,9 +23,7 @@ def main(path_input = "results/input/", path_output = "results/output/"):
     for file in files:
         Validate(path_input, file)
     
-    with open(basepath + "/" + DNA_Name + ".txt", "w") as f:
-        if Debug: print("\n".join(files))
-        
+    with open(basepath + "/" + DNA_Name + ".txt", "w") as f:        
         for i, file in enumerate(files):
             print ("%i/%i: %s " % (i + 1, len(files), file), end='')
             if file == "mutating": continue     # skip evolve's mutating mark
@@ -44,7 +42,7 @@ def main(path_input = "results/input/", path_output = "results/output/"):
             
     print ("")
 
-    csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
+    csv, bestMatchResult, bestTournamentResult, AIList = GetHighestRank(path_output)
     
 #    for file in files:
 #        CreateLatex(file)
@@ -128,6 +126,7 @@ def GetHighestRank(path_output):
     csv = ["", ""]
     fileList = sorted(os.listdir(path_output))
     best = [[0, 100], [0, 100, 0]] #variable, rank
+    AIList = []
     
     prettyWidth = 18
     #if Debug: print("\n\n%s  RANK   VARIABLE" % ("HEADER".ljust(prettyWidth)))
@@ -143,26 +142,25 @@ def GetHighestRank(path_output):
             # find the rank of the Yomi AI            
             text = f.read()
 
-            header = "Match results"
-            rank = GetRank(text, header)
+            matchRank = GetRank(text, "Match results")
             #if Debug: print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))            
             
             variable = variable[-3:].replace("]","").replace("[","").strip()
-            csv[0] += "%s,%s\n" % (variable, rank)
-            if int(rank) < best[0][1]:
+            csv[0] += "%s,%s\n" % (variable, matchRank)
+            if int(matchRank) < best[0][1]:
                 best[0][0] = filename
-                best[0][1] = int(rank)
+                best[0][1] = int(matchRank)
             
-            header = "Tournament results"
-            rank = GetRank(text, header)
+            tournamentRank = GetRank(text, "Tournament results")
             #if Debug: print ("%s]  %s     %s" % (header.ljust(prettyWidth), rank.rjust(2), variable))
             
             variable = variable[-3:].replace("]","").replace("[","").strip()
-            csv[1] += "%s,%s\n" % (variable, rank)
+            csv[1] += "%s,%s\n" % (variable, tournamentRank)
 
-            if int(rank) < best[1][1]:
+            
+            if int(tournamentRank) < best[1][1]:
                 best[1][0] = filename
-                best[1][1] = int(rank)    
+                best[1][1] = int(tournamentRank)    
 
                 tournamentResultStr = """ Tournament results:
     Player Name          total 
@@ -173,16 +171,25 @@ def GetHighestRank(path_output):
 
                 best[1][2] = int(tournamentPoints)
 
-    if Debug: 
-        print ("\n")
-        print ("Best Match Result      [%s] with rank of %i" % (best[0][0], best[0][1]))
-        print ("Best Tournament Result [%s] with rank of %i (%i)" % (best[1][0], best[1][1], best[1][2]))
+            AIList.append((filename, (int(matchRank), int(tournamentRank))))
+            
+    AIList.sort(key = lambda a:(a[1][0], a[1][1]))
+
+    print ("\n")
+
+    print ("Best Match Result")
+    for AI in AIList:
+        if AI[1][0] != best[0][1]:  break
+        
+        print(" Rank %i.%i [%s]" % (AI[1][0], AI[1][1], AI[0]))
+
+    print ("Best Tournament Result [%s] with rank of %i (%i)" % (best[1][0], best[1][1], best[1][2]))
     
-    return csv, best[0], best[1]
+    return csv, best[0], best[1], AIList
 
 def CreateCSV(path_output, output_filename = None):
     """Create CSV from GetHighestRank"""
-    csv, bestMatchResult, bestTournamentResult = GetHighestRank(path_output)
+    csv, bestMatchResult, bestTournamentResult, AIList = GetHighestRank(path_output)
     
     if outputFilename != None:
         file = "%s_%s.csv" % (outputFilename, "match")
