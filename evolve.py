@@ -209,6 +209,7 @@ def _FindMates(path_input, path_output):
             # Create new individual
             Mutating = random.choice(AlphaIndividuals)
 
+            _CreateNewDNA(path_input, Mutating[0])
             newName, newDNA = _MutateDNA(path_input, Mutating)
             newName = _StrangerName()
             
@@ -294,15 +295,74 @@ def _MutateGene(mutationChance, geneRewriteChance, newDNA):
                     delta = random.uniform(-0.1, 0.1)
                     delta += original_value
                     
-                    if Debug: print(" new", gene, value, delta)
-                
-                
+                    if Debug: print(" new", gene, value, delta)                
+                 
                 if not hasLimit:
+                    # Gene has a range of [0-1]
                     delta = min(delta, 1.0)
                     delta = max(delta, 0.0)
                 
                 newDNA[gene][value] = str(delta)
 
+    def shift(transition1, transition2, transition3):
+        changed = False
+        transition1, transition2, transition3 = float(transition1), float(transition2), float(transition3)
+    
+        if transition1 < 0:
+            shift = abs(transition1)
+            transition1 += shift
+            transition2 += shift
+            transition3 += shift
+            changed = True
+        if transition2 < 0:
+            shift = abs(transition2)
+            transition2 += shift
+            transition2 += shift
+            transition2 += shift
+            changed = True
+        if transition3 < 0:
+            shift = abs(transition3)
+            transition3 += shift
+            transition3 += shift
+            transition3 += shift
+            changed = True
+            
+        return str(transition1), str(transition2), str(transition3), changed
+
+    # The genes for the transition cannot be negative. However, the mutation code 
+    # above allows for negative numbers. A negative number will "push" or shift
+    # all other transition values forward
+
+    newDNA["yomi preferences"]["AA"],   \
+    newDNA["yomi preferences"]["AB"],   \
+    newDNA["yomi preferences"]["AC"],   \
+    changed =  \
+    shift(newDNA["yomi preferences"]["AA"], newDNA["yomi preferences"]["AB"], newDNA["yomi preferences"]["AC"])
+    
+    if Debug and changed: 
+        print(" Shifted yomi preferences. New values: \n  AA %s\n  AB %s\n  AC %s" % 
+            (newDNA["yomi preferences"]["AA"], newDNA["yomi preferences"]["AB"], newDNA["yomi preferences"]["AC"]))
+    
+    newDNA["yomi preferences"]["BA"],   \
+    newDNA["yomi preferences"]["BB"],   \
+    newDNA["yomi preferences"]["BC"],   \
+    changed =  \
+    shift(newDNA["yomi preferences"]["BA"], newDNA["yomi preferences"]["BB"], newDNA["yomi preferences"]["BC"])
+
+    if Debug and changed: 
+        print(" Shifted yomi preferences. New values: \n  BA %s\n  BB %s\n  BC %s" % 
+            (newDNA["yomi preferences"]["BA"], newDNA["yomi preferences"]["BB"], newDNA["yomi preferences"]["BC"]))
+                
+    newDNA["yomi preferences"]["CA"],   \
+    newDNA["yomi preferences"]["CB"],   \
+    newDNA["yomi preferences"]["CC"],   \
+    changed =  \
+    shift(newDNA["yomi preferences"]["CA"], newDNA["yomi preferences"]["CB"], newDNA["yomi preferences"]["CC"])
+
+    if Debug and changed: 
+        print(" Shifted yomi preferences. New values: \n  CA %s\n  CB %s\n  CC %s" % 
+            (newDNA["yomi preferences"]["CA"], newDNA["yomi preferences"]["CB"], newDNA["yomi preferences"]["CC"]))    
+            
     return newDNA
 
 def _MateDNA(path_input, newName, Dominant, Mate):
@@ -346,6 +406,40 @@ def _MateDNA(path_input, newName, Dominant, Mate):
                 if Debug: print(" Inheriting predictor from mate", predictor)
      
     return newDNA
+    
+def _CreateNewDNA(path_input, filename):
+    """ Create a new DNA with complete predictors and a default ranking system of 'wilson-high' """
+    newDNA = _ReadDNA(path_input + filename)
+
+    for i in range(1, 21 + random.randint(-4, +4)):
+        newPredictor = "PP %i" % (i)
+            
+        if not newPredictor in newDNA["predictors"]:
+            newDNA["predictors"][newPredictor] = None
+
+    for i in range(1, 2 + random.randint(0, 2)):
+        newPredictor = "MBFP %i" % (i)
+            
+        if not newPredictor in newDNA["predictors"]:
+            newDNA["predictors"][newPredictor] = None
+
+    rankingDNAs = ["strategy ranking", "predictor ranking"]
+
+    for rankingDNA in rankingDNAs:
+        defaultRankingSystem = "wilson-high"
+        currentRankingSystems = [rank for rank in newDNA[rankingDNA]] 
+        for rank in currentRankingSystems:
+            if rank != defaultRankingSystem:
+                newDNA.remove_option(rankingDNA, rank)
+        
+        if not defaultRankingSystem in newDNA[rankingDNA]:
+            newDNA[rankingDNA][defaultRankingSystem] = None
+
+    if Debug:
+        print("Created new DNA for %s with predictors:" % (path_input))
+        for p in newDNA["predictors"]:
+            print (p, end =", ")
+        print("")
     
 def _MutateDNA(path_input, Original):
     # Generate the name of the mutation
