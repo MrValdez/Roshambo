@@ -227,7 +227,7 @@ class Yomi:
 
         Debug = True
         if transitionAB > 0: Debug = True
-        if currentOpponent >= 0 and currentTurn > 700: Debug = True
+        if currentOpponent >= 18 and currentTurn > 700: Debug = True
         Debug = False
 
         if Debug:
@@ -256,14 +256,7 @@ class Yomi:
         midInfluence     = 1.0
         lowestInfluence  = 1.0
 
-        # 5.6.7946. beats iocaine (+57)
-#        highestInfluence = 1.1
-#        midInfluence     = 1.0
-#        lowestInfluence  = 0.3 
-
-#        highestInfluence = 2.1
-#        midInfluence     = 0.8
-#        lowestInfluence  = 0. 
+        highestInfluence, midInfluence, lowestInfluence = dna.yomi_score_preferences            
                 
         if   layer1score >= layer2score >= layer3score:
              layer1ratio, layer2ratio, layer3ratio = highestInfluence, midInfluence, lowestInfluence
@@ -281,17 +274,13 @@ class Yomi:
             print("Bug: ", layer1score,layer2score,layer3score)
             input()
 
-#        layer1ratio = dna.yomi_score_preferences[0]
-#        layer2ratio = dna.yomi_score_preferences[1]
-#        layer3ratio = dna.yomi_score_preferences[2]
-
         layer1score = self.yomiLayerWins[0] #- self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] #- self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] #- self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
         
-#        layer1ratio *= layer1score / 1000
-#        layer2ratio *= layer2score / 1000
-#        layer3ratio *= layer3score / 1000
+        layer1ratio *= layer1score / 1000
+        layer2ratio *= layer2score / 1000
+        layer3ratio *= layer3score / 1000
 
 #        if layer1ratio < 0: layer1ratio = 0
 #        if layer2ratio < 0: layer2ratio = 0
@@ -302,30 +291,30 @@ class Yomi:
 #        if layer3ratio > 1: layer3ratio = 1
             
 ##
-        transitionAA *= layer1ratio
-        transitionBA *= layer1ratio
-        transitionCA *= layer1ratio
+#        transitionAA *= layer1ratio
+#        transitionBA *= layer1ratio
+#        transitionCA *= layer1ratio
        
-        transitionAB *= layer2ratio
-        transitionBB *= layer2ratio
-        transitionCB *= layer2ratio
+#        transitionAB *= layer2ratio
+#        transitionBB *= layer2ratio
+#        transitionCB *= layer2ratio
         
-        transitionAC *= layer3ratio
-        transitionBC *= layer3ratio
-        transitionCC *= layer3ratio
+#        transitionAC *= layer3ratio
+#        transitionBC *= layer3ratio
+#        transitionCC *= layer3ratio
 ##
 
-#        transitionAA += layer1ratio
-#        transitionBA += layer1ratio
-#        transitionCA += layer1ratio
+        transitionAA += layer1ratio
+        transitionBA += layer1ratio
+        transitionCA += layer1ratio
         
-#        transitionAB += layer2ratio
-#        transitionBB += layer2ratio
-#        transitionCB += layer2ratio
+        transitionAB += layer2ratio
+        transitionBB += layer2ratio
+        transitionCB += layer2ratio
         
-#        transitionAC += layer3ratio
-#        transitionBC += layer3ratio
-#        transitionCC += layer3ratio
+        transitionAC += layer3ratio
+        transitionBC += layer3ratio
+        transitionCC += layer3ratio
 
 ##
 #        transitionAB -= layer1ratio
