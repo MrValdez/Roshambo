@@ -167,8 +167,8 @@ def _FindMates(path_input, path_output):
     
     Population = []
     
-    # filter in the top ranking individuals (55%)
-    maxPopulationSize = int((len(RankingPopulation) * 0.55))
+    # filter in the top ranking individuals (75%)
+    maxPopulationSize = int((len(RankingPopulation) * 0.75))
             
     # Set the maximum population size to 25-32
     maxPopulationSize = min(maxPopulationSize, random.randint(25, 32))
