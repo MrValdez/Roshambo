@@ -248,9 +248,9 @@ class Yomi:
 #        layer2score = self.yomiHistoryWins.count("1") + self.yomiHistoryLosts.count("1") #- int(self.yomiHistoryTies.count("1")/1)
 #        layer3score = self.yomiHistoryWins.count("2") + self.yomiHistoryLosts.count("2") #- int(self.yomiHistoryTies.count("2")/1)
 
-        layer1score = self.yomiLayerWins[0] - self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
-        layer2score = self.yomiLayerWins[1] - self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
-        layer3score = self.yomiLayerWins[2] - self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
+        layer1score = self.yomiLayerWins[0] #- self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
+        layer2score = self.yomiLayerWins[1] #- self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
+        layer3score = self.yomiLayerWins[2] #- self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
 
         highestInfluence = 1.0
         midInfluence     = 1.0
@@ -282,13 +282,13 @@ class Yomi:
         layer2ratio *= layer2score / 1000
         layer3ratio *= layer3score / 1000
 
-#        if layer1ratio < 0: layer1ratio = 0
-#        if layer2ratio < 0: layer2ratio = 0
-#        if layer3ratio < 0: layer3ratio = 0
+        if layer1ratio < 0: layer1ratio = 0
+        if layer2ratio < 0: layer2ratio = 0
+        if layer3ratio < 0: layer3ratio = 0
 
-#        if layer1ratio > 1: layer1ratio = 1
-#        if layer2ratio > 1: layer2ratio = 1
-#        if layer3ratio > 1: layer3ratio = 1
+        if layer1ratio > 1: layer1ratio = 1
+        if layer2ratio > 1: layer2ratio = 1
+        if layer3ratio > 1: layer3ratio = 1
             
 ##
 #        transitionAA *= layer1ratio
