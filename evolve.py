@@ -167,11 +167,11 @@ def _FindMates(path_input, path_output):
     
     Population = []
     
-    # filter in the top ranking individuals (75%)
-    maxPopulationSize = int((len(RankingPopulation) * 0.75))
+    # filter in the top ranking individuals (55%)
+    maxPopulationSize = int((len(RankingPopulation) * 0.55))
             
-    # Set the maximum population size to 25-32
-    maxPopulationSize = min(maxPopulationSize, random.randint(25, 32))
+    # Set the maximum population size to 35-42
+    maxPopulationSize = min(maxPopulationSize, random.randint(35, 42))
     # Set the minimum population size to 10
     maxPopulationSize = max(maxPopulationSize, 10)
 
@@ -199,7 +199,7 @@ def _FindMates(path_input, path_output):
         os.remove(path_input + file)     
         os.remove(path_output + file)     
         
-    for newIndividualSize in range(random.randint(3, 10)):
+    for newIndividualSize in range(random.randint(18, 25)):
         # either create new individuals to the population, or mate
        
         # .15% chance the two will mate
@@ -292,7 +292,7 @@ def _MutateGene(mutationChance, geneRewriteChance, newDNA):
                     delta = random.uniform(0, 1)
                     if Debug: print(" replacing", gene, value, delta)
                 else:    
-                    delta = random.uniform(-0.1, 0.1)
+                    delta = random.uniform(-0.2, 0.2)
                     delta += original_value
                     
                     if Debug: print(" new", gene, value, delta)                
@@ -464,9 +464,9 @@ def _MutateDNA(path_input, Original):
             if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
-    # 3% chance to add 1-10 new predictors
+    # 3% chance to add 1-3 new predictors
     newPredictorChance = 0.3
-    newPredictorTries = 10
+    newPredictorTries = 3
     if random.uniform(0, 1) < newPredictorChance:
         while newPredictorTries > 0:
             newPredictorTries -= 1
@@ -477,10 +477,10 @@ def _MutateDNA(path_input, Original):
             if not newPredictor in newDNA["predictors"]:
                 newDNA["predictors"][newPredictor] = None
                 if Debug: print(" Adding new predictor:", newPredictor)
-                newPredictorTries -= random.randint(1, 10)
+                newPredictorTries -= random.randint(1, 3)
     
     # 60% chance to mutate
-    # 5% chance to completely change the gene value
+    # .5% chance to completely change the gene value
     mutationChance = 0.60
     geneRewriteChance = 0.05
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
