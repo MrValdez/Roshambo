@@ -220,9 +220,10 @@ def _FindMates(path_input, path_output):
             # Let's mate two individuals
 
             # Grab two random individual with a bias for those with higher rank        
-            a = random.triangular(0, 1, 0.2)
+            #a = random.triangular(0, 1, 0.2)
+            a = random.uniform(0, 0.3)
             b = random.triangular(0, 1, 0.6)
-            Dominant = Population[int(a * len(Population))]
+            Dominant = Population[int(round(a * len(Population)))]
             Mate     = Population[int(b * len(Population))]
             
             # If we grabbed the same individual, just mutate it instead.
@@ -292,7 +293,7 @@ def _MutateGene(mutationChance, geneRewriteChance, newDNA):
                     delta = random.uniform(0, 1)
                     if Debug: print(" replacing", gene, value, delta)
                 else:    
-                    delta = random.uniform(-0.2, 0.2)
+                    delta = random.uniform(-0.2, 0.5)
                     delta += original_value
                     
                     if Debug: print(" new", gene, value, delta)                
@@ -457,15 +458,15 @@ def _MutateDNA(path_input, Original):
     newDNA["info"]["name"] = newName
     newDNA["info"]["Mutate From"] = Original[0].split(".")[0]
     
-    # .1% chance to drop a predictor
-    dropPredictorChance = 0.01
+    # 1% chance to drop a predictor
+    dropPredictorChance = 0.1
     for predictor in newDNA["predictors"]:
         if len(newDNA["predictors"]) and random.uniform(0, 1) < dropPredictorChance:
             if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
             
-    # 3% chance to add 1-3 new predictors
-    newPredictorChance = 0.3
+    # 2% chance to add 1-3 new predictors
+    newPredictorChance = 0.2
     newPredictorTries = 3
     if random.uniform(0, 1) < newPredictorChance:
         while newPredictorTries > 0:
@@ -480,14 +481,14 @@ def _MutateDNA(path_input, Original):
                 newPredictorTries -= random.randint(1, 3)
     
     # 60% chance to mutate
-    # .5% chance to completely change the gene value
+    # 14% chance to completely change the gene value
     mutationChance = 0.60
-    geneRewriteChance = 0.05
+    geneRewriteChance = 0.14
     newDNA = _MutateGene(mutationChance, geneRewriteChance, newDNA)
     
     # mutate ranking system
-    # 0.1% chance to change ranking system
-    changeRankingSystemChance = 0.01
+    # 1% chance to change ranking system
+    changeRankingSystemChance = 0.1
     rankingDNAs = ["strategy ranking", "predictor ranking"]
 
     for rankingDNA in rankingDNAs:
