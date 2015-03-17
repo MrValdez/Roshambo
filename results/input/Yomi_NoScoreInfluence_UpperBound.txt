@@ -1,5 +1,6 @@
 [info]
 name="Yomi No Score Influence Upper Bound"
+rng = gcc       # use the original rng
 [strategies]
 random
 [strategy ranking]

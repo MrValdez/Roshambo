@@ -21,12 +21,22 @@ def isVerbose():
 
 #define HAVE_SSIZE_T
 #include <Python.h>
-#include <SFMT.h>
 
 #include "wilson.c"
 
+// mersenne random
+#include <SFMT.h>
 sfmt_t sfmt;
 int seed = 0;
+//
+
+// gcc random
+extern int biased_roshambo (double prob_rock, double prob_paper);
+extern long random ();
+extern float maxrandom;
+//
+
+int useMersenne = 1;
 
 extern int my_history[];
 extern int opp_history[];
@@ -111,17 +121,50 @@ rps_biased_roshambo(PyObject *self, PyObject *args)
 static PyObject *
 rps_random ()
 {
-    long x = sfmt_genrand_uint32(&sfmt);
+    if (useMersenne)
+    {
+        long x = sfmt_genrand_uint32(&sfmt);
 
-    return PyLong_FromLong(x);
+        return PyLong_FromLong(x);
+    }
+    else
+    {
+        return PyLong_FromLong(random());
+    }
 }
 
 static PyObject *
 rps_randomRange ()
 {
-    double x = sfmt_genrand_real1(&sfmt);
+    if (useMersenne)
+    {
+        double x = sfmt_genrand_real1(&sfmt);
 
-    return PyFloat_FromDouble(x);
+        return PyFloat_FromDouble(x);
+    }
+    else
+    {
+        return PyFloat_FromDouble(random() / maxrandom);
+    }
+}
+
+static PyObject *
+rps_randomMersenne (PyObject *self, PyObject *args)
+{
+    int change;
+    if (!PyArg_ParseTuple(args, "p", &change))  // p = bool
+    {
+        printf ("rps_randomMersenne received invalid arguments");
+        exit(1);
+        return -1;  //todo: raise error	
+    }
+
+    if (change)
+        useMersenne = 1;
+    else
+        useMersenne = 0;
+        
+    return Py_None;
 }
 
 extern char current_opponent[50];
@@ -177,6 +220,7 @@ static PyMethodDef rpsMethods[] = {
     {"biased_roshambo",  rps_biased_roshambo, METH_VARARGS, "Returns 0, 1 or 2. Takes two double arguments: prob_rock and prob_paper"},
     {"random",  rps_random, METH_VARARGS, "Returns random number between [0..maxrandom]"},
     {"randomRange",  rps_randomRange, METH_VARARGS, "Returns random number between [0..1]"},
+    {"randomMersenne",  rps_randomMersenne, METH_VARARGS, "Sets the RNG used. If true, Mersenne RNG is used"},
     {"normcdfi",  rps_normcdfi, METH_VARARGS, "Returns lower bound of Wilson score confidence interval for a Bernoulli parameter"},
     {"binconf",  rps_binconf, METH_VARARGS, "Returns a list of the lower and upper bound of Wilson score confidence interval for a Bernoulli parameter"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
