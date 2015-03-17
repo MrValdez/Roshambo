@@ -1,5 +1,6 @@
 [info]
 name="Yomi - No Predictors, Score Influence"
+rng = gcc       # use the original rng
 [strategies]
 random
 [strategy ranking]

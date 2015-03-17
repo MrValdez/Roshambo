@@ -1,5 +1,6 @@
 [info]
 name="MBFP\textsubscript{1} Lower Bound"
+rng = gcc       # use the original rng
 [strategies]
 random
 [strategy ranking]

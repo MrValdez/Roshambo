@@ -1,3 +1,4 @@
+import rps
 import random
 random.seed(0)
 
@@ -34,7 +35,13 @@ class cDNA:
         self.predictor_ranking      = [cleanup(spam) for spam in config["predictor ranking"]][0]
         self.yomi_preferences       = [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
         self.yomi_score_preferences = [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
-    
+        
+        # check if we should use Mersenne or the gcc rng
+        if "rng" in config["info"] and \
+            cleanup(config["info"]["rng"]).lower() == "gcc":
+            rps.randomMersenne(False)
+        else:
+            rps.randomMersenne(True)
         
 dna = None
 

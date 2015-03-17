@@ -1,5 +1,6 @@
 [info]
 name="Baseline"
+rng = gcc       # use the original rng
 [strategies]
 # random, none
 random

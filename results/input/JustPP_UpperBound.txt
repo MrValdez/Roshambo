@@ -1,5 +1,6 @@
 [info]
 name="HBSP (WS=1 to WS=29) Upper Bound"
+rng = gcc       # use the original rng
 [strategies]
 random
 [strategy ranking]
