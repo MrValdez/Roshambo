@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Krisa, Smalley Khosraviani
+Dominant Parent = Krisa, played Dimillo.txt
+Mate = Demone, Attila Anstead.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7243290302122567
+AB = 0.0
+AC = 0.0
+BA = 1.188036196921339
+BB = 0.5473435347393936
+BC = 0.40834737927749193
+CA = 0.7607423640995759
+CB = 0.9161429578752571
+CC = 0.22585847571139456
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

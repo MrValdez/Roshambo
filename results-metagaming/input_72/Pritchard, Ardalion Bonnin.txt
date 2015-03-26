@@ -1,0 +1,41 @@
+[info]
+Mutate From = Andre, Colette Lethebinh
+name = Andre, Farr Seiz
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 5
+PP 6
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.3036582027971688
+AB = 0.10025061938429536
+AC = 0.12619456599878803
+BA = 1.0565737738611287
+BB = 1.105229113972672
+BC = 0.3372319381604542
+CA = 1.080738418918983
+CB = 1.4818948140587602
+CC = 0.6666658501791528
+
+[yomi-score preferences]
+A = 0.12378979005370694
+B = 0.0
+C = 0.0
+

@@ -1,0 +1,47 @@
+[info]
+Mutate From = Krisa, objector Krisa
+name = Krisa, Baoa Forgues
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.8692691631883211
+AB = 0.06562209524039586
+AC = 0.0
+BA = 0.20709735700296594
+BB = 0.36822635093655415
+BC = 0.22141812704512356
+CA = 1.2871397086946113
+CB = 0.9953625482693587
+CC = 0.2296574346096921
+
+[yomi-score preferences]
+A = 0.0
+B = 0.2080964698913218
+C = 0.0
+

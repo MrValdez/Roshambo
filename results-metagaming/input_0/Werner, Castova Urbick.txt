@@ -1,0 +1,50 @@
+[info]
+name = Kiens, Bod Firment
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Kiens, Pease Bushnik
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+MBFP 30
+MBFP 32
+MBFP 25
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.47620790091309606
+AB = -0.021715109475171746
+AC = -0.13878378943790412
+BA = 0.7471197854691622
+BB = -0.06862329906662
+BC = 0.7090559068472703
+CA = 0.8603818449265129
+CB = 0.5852218203506073
+CC = -0.01737029841665976
+
+[yomi-score preferences]
+A = 0.21306131019206695
+B = 0.4491359642465995
+C = 0.5423800987505296
+

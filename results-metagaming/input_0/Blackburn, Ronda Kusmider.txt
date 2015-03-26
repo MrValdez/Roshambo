@@ -1,0 +1,49 @@
+[info]
+name = Ogrodnik, Scuz Koens
+Mutate From = Ogrodnik, Arliss Coord
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.81052234947436
+AB = 0.0
+AC = 0.031900575634419004
+BA = 1.005664300525749
+BB = 0.8579925233680952
+BC = 0.5089730163155238
+CA = 1.036650903398104
+CB = 0.20487830860560852
+CC = 0.5919809742558892
+
+[yomi-score preferences]
+A = 0.9230456971334542
+B = 0.5498792113664268
+C = 0.2681787024697929
+

@@ -1,0 +1,46 @@
+[info]
+name = Carrmtce, Soji Doshi
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Haggarty, Ashton Hulen
+Dominant Parent = Carrmtce, Daddy Silvester.txt
+Mate = Doshi, Eichmann Loong.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6208768040220466
+AB = -0.13366820044432842
+AC = -0.09299987017869281
+BA = 0.8061339702455474
+BB = 0.15949271697116219
+BC = 0.6671592508806541
+CA = 0.9160391545059235
+CB = 0.17944019539277511
+CC = -0.34332733685626093
+
+[yomi-score preferences]
+A = 0.91748085283234
+B = 0.5598924533708897
+C = 0.07611336794185584
+

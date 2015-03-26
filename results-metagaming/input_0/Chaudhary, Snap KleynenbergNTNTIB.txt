@@ -1,0 +1,47 @@
+[info]
+Mutate From = Fanthome, Phelps Peptis
+name = Fanthome, Bourdon Breton
+Dominant Parent = Fanthome, Nastia Garrett.txt
+Mate = Oxendine, objector Goddard.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6858288287371279
+AB = 0.0
+AC = 0.0
+BA = 1.19879660932008
+BB = 0.49011695948124817
+BC = 0.3182312043430132
+CA = 1.7327358603392604
+CB = 0.6148716567717017
+CC = 0.28680847255817943
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

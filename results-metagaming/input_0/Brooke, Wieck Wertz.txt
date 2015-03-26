@@ -1,0 +1,45 @@
+[info]
+name = Dunik, waitress Lu
+MutateFrom = Banville, Alito Banville.txt
+Dominant Parent = Hayden, Myriam Baccari.txt
+Mate = Anhorn, Varrick Banville.txt
+Mutate From = Dunik, Mattes Corpening
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 8
+PP 11
+PP 12
+PP 20
+PP 23
+PP 25
+PP 26
+PP 28
+PP 29
+MBFP 1
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.8230766332059088
+AB = -0.018202968946813683
+AC = 0
+BA = 0.9315268738601842
+BB = 0.8379313693474769
+BC = 0.44337130716197315
+CA = 1.1659810126492827
+CB = 1.0169903591479827
+CC = 0.33890718565160516
+
+[yomi-score preferences]
+A = 0.885692430029899
+B = 0.36306270715037475
+C = 0.17466876488291505
+

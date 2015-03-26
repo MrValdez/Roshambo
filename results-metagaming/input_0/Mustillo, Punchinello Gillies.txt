@@ -1,0 +1,56 @@
+[info]
+name = Leibovitz, Carmelita Watters
+Dominant Parent = Leibovitz, Barb Barty.txt
+Mate = Leibovitz, Murry Soong.txt
+MutateFrom = Leibovitz, Nussbaum Leibovitz.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 4
+PP 7
+PP 8
+PP 9
+PP 11
+PP 12
+PP 13
+PP 14
+PP 16
+PP 17
+PP 18
+PP 19
+PP 22
+PP 23
+PP 25
+PP 26
+PP 27
+PP 28
+PP 29
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.4333788510643988
+AB = 0.24034529045623776
+AC = 0.0783607643176687
+BA = 0.5448544926026441
+BB = 0.4110334339475457
+BC = 0.4705405677170208
+CA = 0.4570990648330858
+CB = 0.413605669641659
+CC = 0.1941483921377758
+
+[yomi-score preferences]
+A = 0.5704670037565637
+B = 0.6086854720799361
+C = 0.45                 # Lowest influence
+

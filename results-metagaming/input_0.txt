@@ -1,0 +1,158 @@
+(Rank: 11. 18) Abadines, Claggart Piske.txt
+(Rank: 3. 8) Andre, Colette Lethebinh.txt
+(Rank: 15. 22) Anhorn, Antoine Anhorn.txt
+(Rank: 13. 22) Anhorn, Bern Anhorn.txt
+(Rank: 17. 22) Anhorn, Capone Anhorn.txt
+(Rank: 13. 22) Anhorn, Careen Anhorn.txt
+(Rank: 13. 22) Anhorn, Chiyoko Anhorn.txt
+(Rank: 13. 22) Anhorn, Clarke Anhorn-II.txt
+(Rank: 13. 22) Anhorn, Clarke Anhorn.txt
+(Rank: 13. 22) Anhorn, Clarke Mejury.txt
+(Rank: 13. 22) Anhorn, Corbett Anhorn.txt
+(Rank: 13. 22) Anhorn, Cravat Anhorn.txt
+(Rank: 13. 22) Anhorn, Dog Anhorn.txt
+(Rank: 13. 22) Anhorn, Efron Anhorn-II.txt
+(Rank: 8. 17) Anhorn, Hendricks Banville.txt
+(Rank: 14. 22) Anhorn, Holler Anhorn.txt
+(Rank: 11. 22) Anhorn, Loafer Anhorn.txt
+(Rank: 12. 22) Anhorn, Munsang Magnuson.txt
+(Rank: 12. 22) Anhorn, Nadia Anhorn.txt
+(Rank: 14. 22) Anhorn, Tractor Anhorn.txt
+(Rank: 13. 22) Anhorn, Turner Anhorn.txt
+(Rank: 13. 15) Anhorn, Varrick Banville.txt
+(Rank: 6. 12) Bailie, Gros Chafin.txt
+(Rank: 17. 23) Banville, Lanford Anhorn.txt
+(Rank: 11. 19) Banville, Yuen Banville.txt
+(Rank: 11. 17) Banville, Zeno Anhorn.txt
+(Rank: 7. 16) base.txt
+(Rank: 8. 15) Bazerman, De Sladek.txt
+(Rank: 8. 18) Bierbrier, Carla Carrmtce.txt
+(Rank: 10. 17) Blackburn, Ronda Kusmider.txt
+(Rank: 6. 12) Bolon, Marbe Sydor.txt
+(Rank: 4. 17) Braunstien, Patel Polashock.txt
+(Rank: 5. 5) Brent, Cohen Makino.txt
+(Rank: 11. 18) Brivet, d'Este Oanes.txt
+(Rank: 7. 17) Brooke, Wieck Wertz.txt
+(Rank: 3. 10) Bryan, Conovan Bunner.txt
+(Rank: 3. 10) Bryan, Escape Marcom.txt
+(Rank: 3. 10) Bryan, Holcroft Horgan.txt
+(Rank: 3. 10) Bryan, objector Bryan-II.txt
+(Rank: 3. 10) Bryan, objector Bryan.txt
+(Rank: 3. 10) Bryan, objector Demone.txt
+(Rank: 3. 10) Bryan, objector Fanthome.txt
+(Rank: 3. 10) Bryan, played Fanthome.txt
+(Rank: 3. 10) Bryan, played Higham.txt
+(Rank: 3. 10) Bryan, Salier Oxendine.txt
+(Rank: 3. 10) Bryan, Tufan Horgan.txt
+(Rank: 9. 17) Callanan, Medora Lipscomb.txt
+(Rank: 8. 21) Carrmtce, Daddy Silvester.txt
+(Rank: 12. 22) Carrmtce, Soji Doshi.txt
+(Rank: 7. 22) Casper, Cleo Nys.txt
+(Rank: 3. 7) Chaudhary, OPERA Dimillo.txt
+(Rank: 3. 7) Chaudhary, Snap KleynenbergNTNTIB.txt
+(Rank: 3. 10) Chauvin, Killian Orth.txt
+(Rank: 4. 6) Chauvin, Turnbull Andre.txt
+(Rank: 7. 13) Chiabaut, Maleb Bayno.txt
+(Rank: 7. 22) Chiu, Cothran Knipe.txt
+(Rank: 10. 14) Choquette, notary Bame.txt
+(Rank: 7. 13) Cogan, Geothe Glast.txt
+(Rank: 12. 21) Dacal, Partlow Ince.txt
+(Rank: 9. 17) DDOCDB, Cafe Parkash.txt
+(Rank: 12. 16) Denemark, Stroud LeClaire.txt
+(Rank: 7. 15) Doczy, Harbison Drinnan.txt
+(Rank: 5. 19) Doshi, Eichmann Loong.txt
+(Rank: 16. 22) Dost, Bandy Leibovitz.txt
+(Rank: 8. 19) Dost, Bardinet Abbatantuono.txt
+(Rank: 10. 18) Dost, Easton Leibovitz.txt
+(Rank: 12. 22) Dost, Marygold Leibovitz.txt
+(Rank: 11. 17) Dost, Vadime Leibovitz.txt
+(Rank: 12. 22) Dumouchel, Overman Belzile.txt
+(Rank: 11. 17) Dupuis-Mignault, Bannion David.txt
+(Rank: 9. 19) Ensing, Kopatski Sooley.txt
+(Rank: 8. 15) Ferrer, Franchette Choquette.txt
+(Rank: 6. 15) Ferrer, Tamise Bovee.txt
+(Rank: 12. 20) Ferrero, Loyse Lyliston.txt
+(Rank: 3. 9) FISOPN, McGurk Shelton.txt
+(Rank: 10. 22) Gooley, Papers Guzman.txt
+(Rank: 4. 6) Gursahaney, Hitty Sathe.txt
+(Rank: 14. 22) Haggarty, Ashton Hulen.txt
+(Rank: 16. 22) Hammonds, Brothers Biersach.txt
+(Rank: 11. 22) Hernandez, Carmel Eisen.txt
+(Rank: 8. 22) Hershberger, Wolfe Filkins.txt
+(Rank: 11. 18) Hetzel, Burgher Brewton.txt
+(Rank: 3. 10) Hink, Arcati Mejury.txt
+(Rank: 10. 22) Howie, Trottola Asghar.txt
+(Rank: 14. 22) Hutcherson, camp Haufe.txt
+(Rank: 24. 23) JustMBFP2_LowerBound.txt
+(Rank: 19. 22) JustMBFP2_UpperBound.txt
+(Rank: 23. 23) JustMBFP_LowerBound.txt
+(Rank: 15. 23) JustMBFP_UpperBound.txt
+(Rank: 9. 16) JustPP_LowerBound.txt
+(Rank: 12. 18) JustPP_UpperBound.txt
+(Rank: 38. 28) JustYomi.txt
+(Rank: 38. 32) JustYomiWithScoreInfluence.txt
+(Rank: 11. 18) Kawaguchi, Josquin Hofmann.txt
+(Rank: 7. 17) Kiens, Fieldale Bierbrier.txt
+(Rank: 7. 20) Kiens, Pease Bushnik.txt
+(Rank: 3. 9) Krisa, Doutreval Fanthome.txt
+(Rank: 3. 9) Krisa, Faccino Fanthome.txt
+(Rank: 3. 9) Krisa, Faccino Horgan.txt
+(Rank: 3. 9) Krisa, Faello Bryan.txt
+(Rank: 9. 19) Krisa, Goro Krisa.txt
+(Rank: 3. 9) Krisa, News Demone.txt
+(Rank: 3. 9) Krisa, objector Bryan-II.txt
+(Rank: 3. 9) Krisa, objector Bryan.txt
+(Rank: 3. 9) Krisa, played Bryan.txt
+(Rank: 3. 9) Krisa, played Demone-II.txt
+(Rank: 3. 9) Krisa, played Demone.txt
+(Rank: 3. 9) Krisa, played Dimillo.txt
+(Rank: 3. 9) Krisa, Zlatka Andre.txt
+(Rank: 9. 22) Laferriere, Lottie Seeley.txt
+(Rank: 11. 19) Leibovitz, Balthasar Leibovitz.txt
+(Rank: 9. 18) Leibovitz, Barb Barty.txt
+(Rank: 17. 22) Leibovitz, Bonaparte Gittins.txt
+(Rank: 13. 18) Leibovitz, Bradmore Leibovitz.txt
+(Rank: 9. 18) Leibovitz, commuter Laliberte.txt
+(Rank: 10. 19) Leibovitz, Convention Dost.txt
+(Rank: 11. 18) Leibovitz, Giron Leibovitz.txt
+(Rank: 16. 22) Leibovitz, Hobe Leibovitz.txt
+(Rank: 17. 18) Leibovitz, Horseface Leibovitz.txt
+(Rank: 16. 22) Leibovitz, Kolla Leibovitz.txt
+(Rank: 12. 19) Leibovitz, Lopes Gores.txt
+(Rank: 9. 18) Leibovitz, Nussbaum Leibovitz.txt
+(Rank: 11. 19) Leibovitz, Stanislaw Leibovitz.txt
+(Rank: 16. 22) Leibovitz, Steen Leibovitz.txt
+(Rank: 13. 19) Leibovitz, Tama Dost.txt
+(Rank: 6. 16) Longfield, Bing Soong.txt
+(Rank: 18. 23) McCully, Rattigan Kikuchi.txt
+(Rank: 8. 16) McGeown, Valvert Halicki.txt
+(Rank: 10. 19) Mukhopadhyay, Mobley Craig.txt
+(Rank: 10. 22) Mulero, Darrel Yun.txt
+(Rank: 14. 22) Mustillo, Punchinello Gillies.txt
+(Rank: 6. 5) O'Dacre, Birnbaum Ning.txt
+(Rank: 19. 23) Oakley, Prairie Cogwell.txt
+(Rank: 3. 6) Olmstead, Leeland Lehtovaara.txt
+(Rank: 8. 15) Pellegrini, Gelsey Sheidafar.txt
+(Rank: 12. 22) Rajczi, L'Aubergiste Gowin.txt
+(Rank: 23. 25) RandomStrategyOnly.txt
+(Rank: 12. 18) Roy, Derelict Hodges.txt
+(Rank: 10. 20) Sapena, Nickie Hippert.txt
+(Rank: 13. 18) Schedulers, Kline Mangum.txt
+(Rank: 12. 17) Soong, Gopowalla McFadden.txt
+(Rank: 10. 18) Soong, Stingo Leibovitz.txt
+(Rank: 7. 18) Stanley, Nemours Ortiz.txt
+(Rank: 7. 16) Suffern, Yoshioka Saltsider.txt
+(Rank: 5. 11) Takefman, Duo Gilligan.txt
+(Rank: 7. 18) Valdez, New-guy Estrada.txt
+(Rank: 9. 17) Valdez, Vaillant Abel.txt
+(Rank: 9. 12) Van Vrouwerff, Ghiselin Lenox.txt
+(Rank: 15. 22) Vetrie, Borneo Terwey.txt
+(Rank: 7. 15) Viehweg, Bedroom Algood.txt
+(Rank: 16. 22) Vieiro, Races Neely.txt
+(Rank: 10. 20) Walpole, Russo Ceponis.txt
+(Rank: 9. 22) Werner, Castova Urbick.txt
+(Rank: 10. 18) Yomi_LowerBound.txt
+(Rank: 15. 20) Yomi_NoScoreInfluence_LowerBound.txt
+(Rank: 8. 19) Yomi_NoScoreInfluence_UpperBound.txt
+(Rank: 7. 16) Yomi_UpperBound.txt
+(Rank: 9. 18) Zolmer, Minissi O'Neil.txt

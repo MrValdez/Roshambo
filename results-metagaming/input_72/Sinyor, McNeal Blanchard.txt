@@ -1,0 +1,46 @@
+[info]
+Mutate From = Brent, Cohen Makino
+name = Brent, Barny Wignall
+Dominant Parent = Krisa, Izz Klowak.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.2381648173418065
+AB = 0.29613789576494126
+AC = 0.08646246240126876
+BA = 0.4196500887658374
+BB = 0.17992924100046248
+BC = 0.5632541889800426
+CA = 0.1826769904292871
+CB = 0.24888001490147316
+CC = 0.46895244875833747
+
+[yomi-score preferences]
+A = 0.0
+B = 0.170822182389689
+C = 0.12259874567317297
+

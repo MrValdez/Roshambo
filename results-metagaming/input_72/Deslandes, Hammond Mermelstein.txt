@@ -1,0 +1,45 @@
+[info]
+Mutate From = Bluschke, Dacoit Bluschke
+name = Bluschke, Spec Goyer
+Dominant Parent = Bluschke, Filiba Bluschke.txt
+Mate = Bluschke, Salier Krisa.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.1909054077629126
+AB = 0.07772188015119147
+AC = 0.44820883401529393
+BA = 1.2580631054896045
+BB = 0.22952322171424866
+BC = 0.08904294067890677
+CA = 1.18072461851569
+CB = 0.9371610718545227
+CC = 0.21872786419792672
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.17872218430543707
+

@@ -1,0 +1,49 @@
+[info]
+name = Hoque, Pookie Emory
+Mutate From = Hoque, Conchi Fargis
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7163565564652281
+AB = 0.0
+AC = 0.0
+BA = 0.946880807229784
+BB = 0.816697588513505
+BC = 0.36187320681763735
+CA = 1.0
+CB = 0.9020366986800405
+CC = 0.44909926743226614
+
+[yomi-score preferences]
+A = 1.0
+B = 0.46923910629337257
+C = 0.20753010568715957
+

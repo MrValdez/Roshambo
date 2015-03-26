@@ -1,0 +1,44 @@
+[info]
+Mutate From = Beaulieu, Roelofs Pratt
+name = Beaulieu, Twist Credico
+Dominant Parent = Krisa, played Demone.txt
+Mate = Bryan, objector Fanthome.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+PP 28
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.3774879189345874
+AB = 0.34529921923352197
+AC = 0.01759884508144849
+BA = 1.642443770134442
+BB = 0.4884313550982527
+BC = 0.8954719813075867
+CA = 1.4033319096347476
+CB = 0.9003381069044181
+CC = 0.3934373482794492
+
+[yomi-score preferences]
+A = 0.056864528814944804
+B = 0.4481066191825263
+C = 0.0
+

@@ -1,0 +1,48 @@
+[info]
+Mutate From = Godden, Marya MacKenzie
+name = Krisa, played Bryan
+Dominant Parent = Krisa, played Demone-II.txt
+Mate = Bryan, Tufan Horgan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7592005060919199
+AB = 0.0
+AC = 0.0
+BA = 1.5062561919110855
+BB = 0.8413915822641852
+BC = 0.1582676670350194
+CA = 1.3787854169380465
+CB = 0.9579204056895855
+CC = 0.31667982736739186
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

@@ -1,0 +1,49 @@
+[info]
+name = Bierbrier, Lew Kinnaird
+MutateFrom = Estrada, Roland-Jr Bambico.txt
+Mutate From = Bierbrier, Carla Carrmtce
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 26
+MBFP 6
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6208768040220466
+AB = -0.13366820044432842
+AC = -0.018780963280190965
+BA = 0.9
+BB = 0.15949271697116219
+BC = 0.3983040209885242
+CA = 0.9160391545059235
+CB = 0.17944019539277511
+CC = -0.2720036878637962
+
+[yomi-score preferences]
+A = 0.91748085283234
+B = 0.4777750260044488
+C = 0.1                # Lowest influence
+

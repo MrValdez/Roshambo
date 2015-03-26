@@ -1,0 +1,44 @@
+[info]
+Mutate From = Andre, Colette Lethebinh
+name = Andre, Munsang Holmquist
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+MBFP 19
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5948603827846382
+AB = 0.32929506635585165
+AC = 0.0
+BA = 1.0565737738611287
+BB = 1.138348382043547
+BC = 0.3372319381604542
+CA = 0.8860172601262837
+CB = 1.4818948140587602
+CC = 0.6894840168009215
+
+[yomi-score preferences]
+A = 0.5892831067250218
+B = 0.0
+C = 0.0
+

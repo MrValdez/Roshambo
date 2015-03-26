@@ -1,0 +1,59 @@
+[info]
+name = Beals, Dumond Anolik
+Dominant Parent = Longfield, Bryon Bnrlsi.txt
+Mate = Soong, Data B1.txt
+Mutate From = Beals, Moukali Bartley
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 28
+MBFP 1
+MBFP 30
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.0
+AB = 0.027753889372733376
+AC = 0.0
+BA = 0.8523502105295757
+BB = 0.913913090889082
+BC = 0.05302008805829311
+CA = 1.4453620935664115
+CB = 0.6759305281253831
+CC = 0.03364103589588413
+
+[yomi-score preferences]
+A = 0.937825493571437
+B = 0.9620093641141307
+C = 0.5015685790516422
+

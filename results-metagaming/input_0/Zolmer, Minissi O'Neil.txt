@@ -1,0 +1,49 @@
+[info]
+name = Vermette, Faucon Ricketson
+Mutate From = Vermette, Forewoman Co-ordinator
+Dominant Parent = Vermette, MacTavish Badza.txt
+Mate = Firment, Eislin Bottis.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.0960140322799787
+AB = 0.12304366099502125
+AC = 0.010256372657131696
+BA = 0.9955367779730552
+BB = 0.7805732792310736
+BC = 0.8062349238980522
+CA = 1.4555915531669514
+CB = 0.7558860063068902
+CC = 0.020575246825497676
+
+[yomi-score preferences]
+A = 0.3259439044599104
+B = 0.2418881221779588
+C = 0.37957474862725166
+

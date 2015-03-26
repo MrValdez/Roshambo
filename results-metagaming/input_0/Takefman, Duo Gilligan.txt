@@ -1,0 +1,48 @@
+[info]
+name = Cogan, Peep-Bo Langdon
+Mutate From = Cogan, Geothe Glast
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.8005673066862815
+AB = 0.0
+AC = 0.0
+BA = 1.1144488004115785
+BB = 0.6435863685492973
+BC = 0.3596627514718393
+CA = 1.111367527652557
+CB = 0.9020366986800405
+CC = 0.4209662055532103
+
+[yomi-score preferences]
+A = 0.927233490865629
+B = 0.5112615400078495
+C = 0.20470864925657012
+

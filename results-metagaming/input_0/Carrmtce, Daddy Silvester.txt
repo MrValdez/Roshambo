@@ -1,0 +1,44 @@
+[info]
+name = Haggarty, Terrance Deatrick
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Haggarty, Ashton Hulen
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.563710967051954
+AB = -0.13366820044432842
+AC = -0.06306881245785015
+BA = 0.7234259528290504
+BB = -0.06260738278285272
+BC = 0.6671592508806541
+CA = 0.8745649747002558
+CB = 0.5023482261605775
+CC = 0.02620813854264581
+
+[yomi-score preferences]
+A = 0.32962999287782124
+B = 0.5002040889534073
+C = 0.536300709650663
+

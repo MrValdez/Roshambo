@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, objector Krisa
+name = Krisa, Trigger Maltese
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.6990610031814923
+AB = 0.8492938361561788
+AC = 0.0
+BA = 1.937243975650994
+BB = 0.19170402519819008
+BC = 0.11857972393267516
+CA = 1.2598333812208768
+CB = 1.3175196466010457
+CC = 0.15572083715569437
+
+[yomi-score preferences]
+A = 0.12282391381046764
+B = 0.0
+C = 0.0
+

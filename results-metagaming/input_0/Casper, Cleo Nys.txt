@@ -1,0 +1,54 @@
+[info]
+name = Dacal, Andreny Lenzi
+Dominant Parent = Valdez, Data Estrada.txt
+Mate = Abel, Somchart Younan.txt
+MutateFrom = Rintala, Ni Bushell.txt
+Mutate From = Dacal, Partlow Ince
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 6
+PP 9
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+PP 16
+PP 17
+PP 18
+PP 20
+PP 23
+PP 25
+PP 27
+PP 29
+MBFP 1
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.0166971027915244
+AB = -0.07199812885225317
+AC = -0.1399492048020794
+BA = 0.49225678226456737
+BB = 0.1460260016178773
+BC = -1.1123119287673442
+CA = 1.54406833592244
+CB = 0.24215259103066217
+CC = 1.1267247232058915
+
+[yomi-score preferences]
+A = 0.4732014563646067
+B = 1.0
+C = 0.41689268776000943
+

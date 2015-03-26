@@ -1,0 +1,47 @@
+[info]
+Mutate From = Schoch, Ochrochine Pietropaolo
+name = Bryan, Tufan Horgan
+Dominant Parent = Bryan, Salier Oxendine.txt
+Mate = Horgan, played Ashby.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7921693560612658
+AB = 0.0
+AC = 0.0
+BA = 1.4822179686403034
+BB = 0.8413915822641852
+BC = 0.1582676670350194
+CA = 1.0841924300312238
+CB = 0.9579204056895855
+CC = 0.31667982736739186
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

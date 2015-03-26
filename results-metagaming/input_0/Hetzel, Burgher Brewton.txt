@@ -1,0 +1,50 @@
+[info]
+name = Cogan, Wardrobe Lafata
+Mutate From = Cogan, Geothe Glast
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+PP 16
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7998312920253078
+AB = 0.054688523731413696
+AC = 0.032912598931755854
+BA = 1.196869510497473
+BB = 0.702436480490831
+BC = 0.27332129874569755
+CA = 1.0721921904362843
+CB = 0.9049355894554346
+CC = 0.3955499523055283
+
+[yomi-score preferences]
+A = 1.0
+B = 0.5991596740413536
+C = 0.2657866117348781
+

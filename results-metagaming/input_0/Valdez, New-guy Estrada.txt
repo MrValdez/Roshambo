@@ -1,0 +1,58 @@
+[info]
+name="name="Experiment 1 for SFMT"
+[strategies]
+# random, none
+random
+[strategy ranking]
+# wilson-high, wilson-low, none
+wilson-high
+[predictors]
+# PP ?, MBFP ?, rock, none
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+PP 16
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 27
+PP 28
+PP 29
+MBFP 1
+MBFP 2
+[predictor ranking]
+# wilson-high, wilson-low, none
+wilson-high
+[yomi preferences]
+AA=0.8
+AB=0.1
+AC=0.01
+BA=0.6
+BB=0.3
+BC=0.2
+CA=1.0
+CB=0.7
+CC=0.1
+[yomi-score preferences]
+A=1.0                 # Highest influence
+B=0.7                 # Mid influence
+C=0.45                 # Lowest influence

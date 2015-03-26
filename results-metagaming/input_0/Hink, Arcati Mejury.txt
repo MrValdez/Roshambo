@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Krisa, Pampasano Paunins
+Dominant Parent = Krisa, played Dimillo.txt
+Mate = Demone, Attila Anstead.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6901939565811075
+AB = 0.0
+AC = 0.0
+BA = 1.5424655327287182
+BB = 0.6685196429222047
+BC = 0.3467898454236795
+CA = 1.1394016040414934
+CB = 0.9161429578752571
+CC = 0.12520930752112214
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

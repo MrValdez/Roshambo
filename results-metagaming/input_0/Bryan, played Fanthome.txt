@@ -1,0 +1,47 @@
+[info]
+Mutate From = Schoch, Ochrochine Pietropaolo
+name = Bryan, played Fanthome
+Dominant Parent = Bryan, Conovan Bunner.txt
+Mate = Fanthome, Kesler Ashby.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6907987126899957
+AB = 0.0
+AC = 0.0
+BA = 1.0417296831240574
+BB = 0.6649869438563389
+BC = 0.20417596142412994
+CA = 1.1918318473676743
+CB = 1.1090936989467945
+CC = 0.2296574346096921
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

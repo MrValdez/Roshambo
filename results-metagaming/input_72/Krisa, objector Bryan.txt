@@ -1,0 +1,48 @@
+[info]
+Mutate From = Godden, Marya MacKenzie
+name = Krisa, objector Bryan
+Dominant Parent = Krisa, Zlatka Andre.txt
+Mate = Bryan, played Fanthome.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.1818801534131047
+AB = 0.0
+AC = 0.0
+BA = 1.0565737738611287
+BB = 0.5166066473964466
+BC = 0.20417596142412994
+CA = 1.2394857780311428
+CB = 1.0522281236080766
+CC = 0.2296574346096921
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

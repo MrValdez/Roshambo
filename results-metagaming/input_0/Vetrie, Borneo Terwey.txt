@@ -1,0 +1,47 @@
+[info]
+Mutate From = Bryan, played Higham
+name = Bryan, Mingo Fondacaro
+Dominant Parent = Bryan, Holcroft Horgan.txt
+Mate = Higham, Manov Wadkins.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+PP 9
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.5606539599766585
+AB = 0.2622031410501037
+AC = 0.46654022983062365
+BA = 1.2281803806136729
+BB = 0.31257939916051136
+BC = 0.36480036558322243
+CA = 0.4727450561381884
+CB = 1.0099226246201032
+CC = 0.23765666728259266
+
+[yomi-score preferences]
+A = 0.0
+B = 0.3904349008153017
+C = 0.0
+

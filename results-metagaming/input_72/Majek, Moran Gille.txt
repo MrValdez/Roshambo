@@ -1,0 +1,43 @@
+[info]
+Mutate From = Bluschke, Dacoit Bluschke
+name = Bluschke, Tome Bosworth
+Dominant Parent = Bluschke, Filiba Bluschke.txt
+Mate = Bluschke, Salier Krisa.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.1577011089711213
+AB = 0.0
+AC = 0.22449277720738753
+BA = 1.2580631054896045
+BB = 0.5287543443174769
+BC = 0.08904294067890677
+CA = 1.2816008191559307
+CB = 1.119340663027665
+CC = 0.33074659763770664
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.13520730334626618
+

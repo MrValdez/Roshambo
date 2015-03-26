@@ -1,0 +1,42 @@
+[info]
+Mutate From = Andre, Colette Lethebinh
+name = Andre, Guisseppi Spitzer
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.4830195024772448
+AB = 0.0021359911796775544
+AC = 0.0
+BA = 1.29133120487937
+BB = 1.279267199504487
+BC = 0.21356506850118745
+CA = 1.05439043718691
+CB = 1.4789936717225987
+CC = 0.284089686576924
+
+[yomi-score preferences]
+A = 0.8562527244530176
+B = 0.0
+C = 0.0
+

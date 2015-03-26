@@ -1,0 +1,61 @@
+[info]
+name = Soong, Brecker Barrell
+Dominant Parent = Leibovitz, Barb Barty.txt
+Mate = Leibovitz, Nussbaum Leibovitz.txt
+MutateFrom = Soong, Joaquin Muthuswamy.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 11
+PP 12
+PP 13
+PP 14
+PP 16
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 27
+PP 28
+PP 29
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.4333788510643988
+AB = 0.0
+AC = 0.0
+BA = 0.7909857529152642
+BB = 0.40236339635609925
+BC = 0.9630219170964228
+CA = 0.1480012936588614
+CB = 0.6182479143428681
+CC = 0.0
+
+[yomi-score preferences]
+A = 1.0
+B = 0.5434790552653166
+C = 0.45                 # Lowest influence
+

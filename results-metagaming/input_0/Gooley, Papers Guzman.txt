@@ -1,0 +1,44 @@
+[info]
+name = Carrmtce, Samia Swanston
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Carrmtce, Daddy Silvester
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.5952982940234288
+AB = -0.13366820044432842
+AC = 0.03555681423490456
+BA = 0.7234259528290504
+BB = -0.06260738278285272
+BC = 0.7320867276995648
+CA = 0.8745649747002558
+CB = 0.5636333341725137
+CC = 0.03596018063282655
+
+[yomi-score preferences]
+A = 0.4198768040929556
+B = 0.46084573404829715
+C = 0.536300709650663
+

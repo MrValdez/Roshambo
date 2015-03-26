@@ -1,0 +1,49 @@
+[info]
+name = Hoque, Bradshaw Zaid
+Mutate From = Hoque, Conchi Fargis
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7135643831224968
+AB = 0.0
+AC = 0.0
+BA = 1.1144488004115785
+BB = 0.7021778287846783
+BC = 0.27332129874569755
+CA = 1.0721921904362843
+CB = 0.9020366986800405
+CC = 0.4209662055532103
+
+[yomi-score preferences]
+A = 0.9959663929150537
+B = 0.5112615400078495
+C = 0.20753010568715957
+

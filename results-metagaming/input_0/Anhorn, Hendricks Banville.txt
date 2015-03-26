@@ -1,0 +1,44 @@
+[info]
+name = Banville, Gootfried Lindberg
+MutateFrom = Banville, Alito Banville.txt
+Dominant Parent = Anhorn, Clarke Anhorn-II.txt
+Mate = Banville, Yuen Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 8
+PP 11
+PP 12
+PP 20
+PP 23
+PP 25
+PP 26
+PP 28
+PP 29
+MBFP 1
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7916479691105851
+AB = 0.01
+AC = 0
+BA = 0.8806369216008214
+BB = 0.3
+BC = 0.45473364541368355
+CA = 1.0
+CB = 0.8499217430698516
+CC = 0.39380795178170946
+
+[yomi-score preferences]
+A = 1.0
+B = 0.46923910629337257
+C = 0.24289212612729155
+
