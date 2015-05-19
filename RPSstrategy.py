@@ -60,35 +60,32 @@ class RPSstrategy:
         turnsRemaining = totalTurns - currentTurn
         lostDifference = self.playerLosts - self.playerWins
         
-        EarlyGame = 20      # DNA   (17-21)
+        EarlyGame = 20              # DNA
+        LateGame = 1000 * 0.90      # DNA   (last 10%)
+        isWinning = (self.playerWins - self.playerLosts) > 50
 
         if currentTurn == 0:
             confidence = 1
         elif currentTurn < EarlyGame:
             # at the beginning of the game, we use our own play since we don't have enough information to predict
             confidence = 1 - (currentTurn / EarlyGame)
-#        elif 1 and lostDifference > 1 and currentTurn >= totalTurns - lostDifference + (self.playerTies * 1):
-#        elif 1 and self.playerTies + self.playerLosts > 500:
-#        elif 1 and currentTurn > 925 and self.playerWins - (self.playerTies + self.playerLosts) < 300:
-#        elif 1 and currentTurn > 925 and self.playerWins - self.playerLosts - self.playerTies < 300:
-        elif 1 and currentTurn >= 900 and self.playerWins - self.playerLosts <= 50:
+        elif currentTurn >= LateGame and isWinning == False:
             # we are nearing the end and we are losing. Play randomly from now on.           
-            if turnsRemaining > 1 and (self.playerLosts - self.playerWins) > 1:
-                #confidence = math.log(lostDifference, 50)
-                confidence = math.log(lostDifference, turnsRemaining)
-                confidence = lostDifference / turnsRemaining
-                confidence = lostDifference / 100
-            else:
-#                this is the last turn and we are still losing. Play randomly.
-                confidence = 1
+            x = self.playerLosts - self.playerWins
             
-#            confidence = 1
+            # make sure confidence stay in range of (0-1)
+            if x < -50: x = -50
+            if x > +50: x = +50
+            
+            confidence = math.log((((50 - x) / 100) * 9) + 1, 10)
             
 #            print("A: losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)
 #            print(lostDifference, confidence)
 #            print(turnsRemaining)
 #            input()
+        else:
+            confidence = 0
             
         if confidence > 1: confidence = 1
         if confidence < 0: confidence = 0
