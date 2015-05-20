@@ -161,7 +161,9 @@ class PatternPredictor:
 
             return prediction, confidence
 
-        # choose the move the was used last        
+        # choose the move the was used last
+        confidence /= 2
+        
         if Debug:
             print(":Grabbing the move that was used last")
             
@@ -195,6 +197,8 @@ class PatternPredictor:
             return prediction, confidence
 
         # if we still have a tie, choose between them using a random number
+        raise BaseException #shouldn't get here.
+        
         sumCount = maxCount * numCount
         
         for i, count in enumerate(tally):
@@ -211,8 +215,6 @@ class PatternPredictor:
                 break
             random -= randomNumber
 
-        raise BaseException #shouldn't get here.
-        
         # our confidence is based on our random number
         #confidence = tally[prediction] - random 
         #confidence = 1 - random 
