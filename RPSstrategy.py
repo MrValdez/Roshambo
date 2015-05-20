@@ -2,7 +2,25 @@ import rps
 import math
 
 class RPSstrategy:
-    def __init__(self):
+    def __init__(self, dna):
+        ## todo: move to own class
+        ## Strategy Selector
+        variant = dna.strategies[0].split(" ")[1:]
+
+        if len (variant) == 0:
+            earlygame = 0.02    # 20 turns
+            lategame = 1.0 - 0.1      # last 10%
+            panicvalue = 50
+        else:
+            earlygame = float(variant[0])
+            lategame = 1.0 - float(variant[1])
+            panicvalue = int(variant[2])
+
+        self.EarlyGame = int(1000 * earlygame)
+        self.LateGame = int(1000 * lategame)
+        self.PanicValue = panicvalue
+        ##
+        
         self.reset()
         
     def reset(self):
@@ -16,13 +34,7 @@ class RPSstrategy:
         self.strategyTies = 0
         
         self.moveLastTurn = 0
-        
-        # dna
-        #self.losingValue = 100         # if the lost difference reaches this value, the AI is losing 
-        self.losingValue = 50           # if the lost difference reaches this value, the AI is losing
-        self.panicValue = int(self.losingValue * 0.75) #37  # dna
-        self.panicValue = 2
-    
+            
     def update(self):        
         currentTurn = rps.getTurn()
         myMoveLastTurn = rps.myHistory(currentTurn)
@@ -60,24 +72,23 @@ class RPSstrategy:
         turnsRemaining = totalTurns - currentTurn
         lostDifference = self.playerLosts - self.playerWins
         
-        EarlyGame = 20              # DNA
-        LateGame = 1000 * 0.90      # DNA   (last 10%)
-        isWinning = (self.playerWins - self.playerLosts) > 50
+        isWinning = (self.playerWins - self.playerLosts) > self.PanicValue
 
         if currentTurn == 0:
             confidence = 1
-        elif currentTurn < EarlyGame:
+        elif currentTurn < self.EarlyGame:
             # at the beginning of the game, we use our own play since we don't have enough information to predict
-            confidence = 1 - (currentTurn / EarlyGame)
-        elif currentTurn >= LateGame and isWinning == False:
+            confidence = 1 - (currentTurn / self.EarlyGame)
+        elif currentTurn >= self.LateGame and isWinning == False:
             # we are nearing the end and we are losing. Play randomly from now on.           
             x = self.playerLosts - self.playerWins
             
             # make sure confidence stay in range of (0-1)
-            if x < -50: x = -50
-            if x > +50: x = +50
+            if x < -self.PanicValue: x = -self.PanicValue
+            if x > +self.PanicValue: x = +self.PanicValue
             
-            confidence = math.log((((50 - x) / 100) * 9) + 1, 10)
+            # confidence = math.log((((50 - x) / (100)) * 9) + 1, 10) #original
+            confidence = math.log((((self.PanicValue - x) / (self.PanicValue * 2)) * 9) + 1, 10)
             
 #            print("A: losing at turn", currentTurn)
 #            print(self.playerWins, self.playerLosts, self.playerTies)

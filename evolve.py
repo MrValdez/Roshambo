@@ -464,6 +464,24 @@ def _MutateDNA(path_input, Original):
         if len(newDNA["predictors"]) and random.uniform(0, 1) < dropPredictorChance:
             if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
+
+    # 2% chance to mutate random strategy (custom code)
+    newRandomVariant = 0.2
+    if random.uniform(0, 1) < newRandomVariant:
+        randomVariant = newDNA["strategies"][randomVariant]
+        randomVariant = randomVariant.split(" ")
+        if len(randomVariant) < 1:
+            # this variant has no options. Let's add some default
+            randomVariant.append(0.02)      # early game
+            randomVariant.append(0.1)       # late game
+            randomVariant.append(50)        # panic value
+        
+        randomVariant[2] += random.uniform(-0.01, +0.01)
+        randomVariant[3] += random.uniform(-0.01, +0.01)
+        randomVariant[4] += random.uniform(-5, 5)
+        randomVariant = " ".join(randomVariant)
+        
+        newDNA["strategies"][randomVariant] = None
             
     # 2% chance to add 1-3 new predictors
     newPredictorChance = 0.2

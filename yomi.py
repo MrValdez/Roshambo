@@ -554,7 +554,7 @@ def init(dna):
     global yomi, strategy, predictorSelector
     
     yomi = Yomi()
-    strategy = RPSstrategy.RPSstrategy()
+    strategy = RPSstrategy.RPSstrategy(dna)
     predictorSelector = yomiPredictorSelector.PredictorSelector(dna)
     
 
