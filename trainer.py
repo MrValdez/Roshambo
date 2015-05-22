@@ -286,3 +286,4 @@ def CreateLatex(filename):
   
 if __name__ == "__main__":
     main()
+    #main(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")

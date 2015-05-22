@@ -304,6 +304,11 @@ class Yomi:
 #        transitionCC *= layer3ratio
 ##
 
+        weight = dna.yomi_score_preferences_weight         # yomi-score preference weight .
+        layer1ratio *= weight
+        layer2ratio *= weight
+        layer3ratio *= weight
+        
         transitionAA += layer1ratio
         transitionBA += layer1ratio
         transitionCA += layer1ratio

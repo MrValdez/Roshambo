@@ -465,7 +465,7 @@ def _MutateDNA(path_input, Original):
             if Debug: print(" removing", predictor)
             newDNA.remove_option("predictors", predictor)
 
-    # 0.5% chance to mutate random strategy (custom code)
+    # 0.05% chance to mutate random strategy (custom code)
     newRandomVariant = 0.05
     if random.uniform(0, 1) < newRandomVariant:
         randomVariant = [strategy for strategy in newDNA["strategies"]][0]
@@ -484,6 +484,16 @@ def _MutateDNA(path_input, Original):
         if "random" in newDNA["strategies"]:
             newDNA.remove_option("strategies", "random")
         newDNA["strategies"][randomVariant] = None
+
+    # 5% chance to mutate yomi-score preference weight (custom code)
+    if "yomi-score preferences weight" not in newDNA or \
+       "weight" not in newDNA["yomi-score preferences weight"]:
+        newDNA["yomi-score preferences weight"]["weight"] = 1.0
+    
+    newRandomVariant = 0.05
+    if random.uniform(0, 1) < newRandomVariant:
+        delta = random.uniform(-0.1, 0.1)
+        newDNA["yomi-score preferences weight"]["weight"] += delta
             
     # 2% chance to add 1-3 new predictors
     newPredictorChance = 0.2
