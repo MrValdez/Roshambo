@@ -14,7 +14,7 @@ class RPSstrategy:
         else:
             earlygame = float(variant[0])
             lategame = 1.0 - float(variant[1])
-            panicvalue = int(variant[2])
+            panicvalue = int(float(variant[2]))
 
         self.EarlyGame = int(1000 * earlygame)
         self.LateGame = int(1000 * lategame)
