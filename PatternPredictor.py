@@ -125,9 +125,11 @@ class PatternPredictor:
         maxCount = max(tally)
         numCount = tally.count(maxCount)
 
+        confidence = maxCount / sum(tally)
+
         if numCount == 1:
             # we don't have a tie for maximum. Get the highest move
-            confidence = 1.0
+            #confidence = 1.0
             prediction = tally.index(maxCount)
             if Debug:
                 print(":Highest tally found")
@@ -150,7 +152,10 @@ class PatternPredictor:
         moveCountMax = max(moveCounts)
         moveCountNum = moveCounts.count(moveCountMax)
         
-        confidence = moveCountNum / 3
+        #confidence = moveCountNum / 3
+#        if moveCountNum == 2: confidence = 0.5
+#        elif moveCountNum == 3: confidence = 1/3
+#        else: confidence = 1
         
         if moveCountNum == 1:
             if Debug:
@@ -162,7 +167,7 @@ class PatternPredictor:
             return prediction, confidence
 
         # choose the move the was used last
-        confidence /= 2
+        #confidence /= 2
         
         if Debug:
             print(":Grabbing the move that was used last")
