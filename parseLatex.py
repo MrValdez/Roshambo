@@ -5,7 +5,7 @@ def CreateLatex(path_input, path_output, filename):
     print ("Building latex for %s." % (filename))
 
     title = filename.split(".")[0]
-    text = r"""The full results are found at Table \ref{table:%s_results}.""" % (title)
+    text = r"""The full results are found in Table \ref{table:%s_results}. A summary can be found at Table \ref{table:ranking_summary}.""" % (title)
     
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(path_input + filename)
@@ -76,7 +76,7 @@ def CreateLatex(path_input, path_output, filename):
 #                (TournamentRank.strip(), TournamentRankPoints, 
 #                 MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
 
-        text += " The Match rank is %s with a total points of %s (%s win, %s losts and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
+        text += " The Match rank is %s with a total score of %s points (%s win, %s losts, and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
         text += "The Tournament rank is %s with %s points." % (TournamentRank.strip(), TournamentRankPoints)
         text = text + "\n\n" + table
 
@@ -91,4 +91,5 @@ def ParseLatex(path_input = "results/input/", path_output = "results/output/"):
         CreateLatex(path_input, path_output, file)
         
 if __name__ == "__main__":
-    ParseLatex()
+    #ParseLatex()
+    ParseLatex(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")
