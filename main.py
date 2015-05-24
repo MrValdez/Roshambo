@@ -38,7 +38,7 @@ class cDNA:
         
         if "yomi-score preferences weight" in config:
             # late addition to GA
-            self.yomi_score_preferences_weight = [cleanup(spam) for spam in config["yomi-score preferences weight"]][0]
+            self.yomi_score_preferences_weight = [float(cleanup(spam)) for spam in config["yomi-score preferences weight"].values()][0]
         else:
             self.yomi_score_preferences_weight = 1
  

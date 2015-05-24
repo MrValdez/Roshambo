@@ -486,14 +486,17 @@ def _MutateDNA(path_input, Original):
         newDNA["strategies"][randomVariant] = None
 
     # 5% chance to mutate yomi-score preference weight (custom code)
-    if "yomi-score preferences weight" not in newDNA or \
-       "weight" not in newDNA["yomi-score preferences weight"]:
-        newDNA["yomi-score preferences weight"]["weight"] = 1.0
-    
     newRandomVariant = 0.05
+    if "yomi-score preferences weight" not in newDNA:
+        newDNA.add_section("yomi-score preferences weight")
+    
+    if "weight" not in newDNA["yomi-score preferences weight"]: 
+        newDNA["yomi-score preferences weight"]["weight"] = "1.0"
+    
     if random.uniform(0, 1) < newRandomVariant:
-        delta = random.uniform(-0.1, 0.1)
-        newDNA["yomi-score preferences weight"]["weight"] += delta
+        delta = float(newDNA["yomi-score preferences weight"]["weight"])
+        delta += random.uniform(-0.05, 0.05)
+        newDNA["yomi-score preferences weight"]["weight"] = str(delta)
             
     # 2% chance to add 1-3 new predictors
     newPredictorChance = 0.2
