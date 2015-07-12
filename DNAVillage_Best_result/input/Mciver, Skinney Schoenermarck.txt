@@ -1,0 +1,48 @@
+[info]
+Mutate From = Kriz, Kameragul Laviolette
+name = Kriz, Foljambe Eskew
+Dominant Parent = Balkenhol, Duncannon Swazey.txt
+Mate = Chaudhary, OPERA Dimillo.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 13
+MBFP 31
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7979350193210031
+AB = 0.040855185551973205
+AC = 0.0010009789017761395
+BA = 1.340990997065259
+BB = 1.4126771159692793
+BC = 0.08024831785390607
+CA = 0.7693511608898227
+CB = 1.9783366873509975
+CC = 0.79021771189246
+
+[yomi-score preferences]
+A = 0.5305188065221249
+B = 0.22234810783897357
+C = 0.39595481815915035
+
+[yomi-score preferences weight]
+weight = 1.0
+

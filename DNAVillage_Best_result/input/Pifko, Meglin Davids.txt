@@ -1,0 +1,46 @@
+[info]
+Mutate From = Mc Alpine, Doc Peterson
+name = Mc Alpine, Kivel Beitinjaneh
+Dominant Parent = Chauvin, Killian Orth.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+PP 11
+MBFP 2
+PP 32
+MBFP 14
+PP 21
+PP 19
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.3277146550700984
+AB = 0.8640874268221096
+AC = 0.19497023618435533
+BA = 1.4324811984079004
+BB = 0.4813948762272129
+BC = 0.3372319381604542
+CA = 1.5172026118889534
+CB = 0.7983360236752953
+CC = 0.7384833129997259
+
+[yomi-score preferences]
+A = 0.8429073938306276
+B = 0.1671757801047215
+C = 0.012006679929515901
+
+[yomi-score preferences weight]
+weight = 1.0
+

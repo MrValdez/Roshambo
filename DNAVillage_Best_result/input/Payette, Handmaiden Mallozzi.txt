@@ -1,0 +1,46 @@
+[info]
+Mutate From = Mc Alpine, Doc Peterson
+name = Mc Alpine, Bridges Tevlin
+Dominant Parent = Chauvin, Killian Orth.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+PP 11
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.4656040099245604
+AB = 0.36556263760583235
+AC = 0.2889201467662935
+BA = 1.7421250081769957
+BB = 1.290953346543373
+BC = 0.3372319381604542
+CA = 1.1138202630936334
+CB = 0.7983360236752953
+CC = 0.6444708722352802
+
+[yomi-score preferences]
+A = 1.0
+B = 0.0
+C = 0.09309119188186574
+
+[yomi-score preferences weight]
+weight = 1.0
+

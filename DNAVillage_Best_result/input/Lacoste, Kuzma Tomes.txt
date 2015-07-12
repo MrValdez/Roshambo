@@ -1,0 +1,45 @@
+[info]
+Mutate From = Balkenhol, Duncannon Swazey
+name = Balkenhol, Moll Fulmer
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 31
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.4701693259760165
+AB = 0.2645771455584796
+AC = 0.7646899101596079
+BA = 1.1888246561147437
+BB = 0.4419997433015402
+BC = 0.425735982346681
+CA = 0.6346349609392589
+CB = 2.3188460954445205
+CC = 1.0704399076908124
+
+[yomi-score preferences]
+A = 0.531673386767493
+B = 0.737500036858295
+C = 0.0
+
+[yomi-score preferences weight]
+weight = 1.0
+

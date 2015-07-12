@@ -1,0 +1,48 @@
+[info]
+Mutate From = Duffy, Perichole Swinburne
+name = Duffy, Lubert Appell
+Dominant Parent = Kriz, Kameragul Laviolette.txt
+Mate = Reavis, Aslar Hattingh-II.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 18
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.663453150746705
+AB = 0.0
+AC = 0.0
+BA = 1.966629332914789
+BB = 0.8505432647512245
+BC = 0.42790419893596876
+CA = 1.7291941314423003
+CB = 1.3206082452281112
+CC = 0.9753799803646075
+
+[yomi-score preferences]
+A = 0.36660136210274
+B = 0.20466484577434962
+C = 0.0
+
+[yomi-score preferences weight]
+weight = 1.0
+

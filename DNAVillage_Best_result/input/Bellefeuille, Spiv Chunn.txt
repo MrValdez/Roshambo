@@ -1,0 +1,45 @@
+[info]
+Mutate From = Mc Alpine, Doc Peterson
+name = Mc Alpine, Cholita Galvin
+Dominant Parent = Chauvin, Killian Orth.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6605707632941854
+AB = 0.2396143336835605
+AC = 0.24828679708604146
+BA = 1.4378588285162732
+BB = 1.105229113972672
+BC = 0.3372319381604542
+CA = 1.2433865974229432
+CB = 0.7983360236752953
+CC = 0.5416001478637649
+
+[yomi-score preferences]
+A = 1.0
+B = 0.42130902175672275
+C = 0.116689853000124
+
+[yomi-score preferences weight]
+weight = 1.0
+

@@ -1,0 +1,46 @@
+[info]
+Mutate From = Mc Alpine, Doc Peterson
+name = Mc Alpine, Faucon Ricketson
+Dominant Parent = Chauvin, Killian Orth.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+PP 11
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.9676468307216874
+AB = 0.33362920917561617
+AC = 0.09531449892056632
+BA = 1.3141787217709804
+BB = 1.105229113972672
+BC = 0.3372319381604542
+CA = 1.2433865974229432
+CB = 0.9593380392037302
+CC = 0.6940002403643744
+
+[yomi-score preferences]
+A = 1.0
+B = 0.0
+C = 0.1114331155204703
+
+[yomi-score preferences weight]
+weight = 1.0
+

@@ -1,0 +1,46 @@
+[info]
+Mutate From = Greenfield, Loranza Crawley
+name = Greenfield, Questadt Hermann-Kendall
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.049805466374724
+AB = 0.3635511329876376
+AC = 0.5635500179251588
+BA = 0.38334366637002815
+BB = 0.7065265397828568
+BC = 0.09986971792924032
+CA = 1.2755214701276574
+CB = 1.418302116319964
+CC = 0.7359573335787406
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.10703011599340667
+
+[yomi-score preferences weight]
+weight = 1.0
+

@@ -1,0 +1,47 @@
+[info]
+Mutate From = Duffy, Perichole Swinburne
+name = Duffy, Lupat Nss
+Dominant Parent = Kriz, Kameragul Laviolette.txt
+Mate = Reavis, Aslar Hattingh-II.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+MBFP 18
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.6364093073662707
+AB = 0.0725356308905779
+AC = 0.0
+BA = 1.9866908054118932
+BB = 0.8727965672946711
+BC = 0.42790419893596876
+CA = 2.213042058456415
+CB = 0.768697997023521
+CC = 0.8331144011895537
+
+[yomi-score preferences]
+A = 0.18586727779690826
+B = 0.0
+C = 0.26785909556734433
+
+[yomi-score preferences weight]
+weight = 1.0
+

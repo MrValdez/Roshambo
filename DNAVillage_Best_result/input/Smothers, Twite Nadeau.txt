@@ -1,0 +1,43 @@
+[info]
+Mutate From = Tilton, Morevitch Smothers
+name = Tilton, Metclaf Feddersen
+Dominant Parent = Elks, Ringman Shonuck.txt
+Mate = Chamayou, Funk Naufal.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+PP 14
+MBFP 2
+MBFP 27
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.9855060672691995
+AB = 0.010811278087241027
+AC = 0.2707941661049488
+BA = 1.7888127507624974
+BB = 0.7849690606042026
+BC = 0.8438194842954747
+CA = 1.087316955619869
+CB = 2.466443000611143
+CC = 0.6497947236103627
+
+[yomi-score preferences]
+A = 0.2694218655861886
+B = 0.5510579258645367
+C = 0.2929040995188037
+
+[yomi-score preferences weight]
+weight = 1.0
+

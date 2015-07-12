@@ -1,0 +1,46 @@
+[info]
+Mutate From = Eimer, Trimm Averette
+name = Mc Alpine, Antoni Greenfield
+Dominant Parent = Mc Alpine, Doc Peterson.txt
+Mate = Greenfield, Loranza Crawley.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+PP 11
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.9748402257607331
+AB = 0.0
+AC = 0.0802626117299225
+BA = 1.6677648699589653
+BB = 0.37145700261848474
+BC = 0.1585064066610673
+CA = 1.3023960789322966
+CB = 0.8253226200259358
+CC = 0.27839470290730794
+
+[yomi-score preferences]
+A = 0.28104768081499
+B = 0.3092063075435347
+C = 0.046896734230801096
+
+[yomi-score preferences weight]
+weight = 1.0
+

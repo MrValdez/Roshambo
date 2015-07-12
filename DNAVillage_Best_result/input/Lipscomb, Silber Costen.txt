@@ -1,0 +1,47 @@
+[info]
+Mutate From = Mciver, Skinney Schoenermarck-II
+name = Mciver, Sylph Brogdon
+Dominant Parent = Balkenhol, Duncannon Swazey.txt
+Mate = Chaudhary, OPERA Dimillo.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 5
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 13
+MBFP 31
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7979350193210031
+AB = 0.040855185551973205
+AC = 0.06283637042932
+BA = 1.1500597005179138
+BB = 1.593341453047551
+BC = 0.30543554218760427
+CA = 1.1883784599275364
+CB = 1.9783366873509975
+CC = 0.79021771189246
+
+[yomi-score preferences]
+A = 0.5305188065221249
+B = 0.46777273044176454
+C = 0.6475566760054966
+
+[yomi-score preferences weight]
+weight = 1.0
+

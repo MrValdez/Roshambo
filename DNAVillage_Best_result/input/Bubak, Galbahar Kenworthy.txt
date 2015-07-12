@@ -1,0 +1,48 @@
+[info]
+Mutate From = Balkenhol, Duncannon Swazey
+name = Balkenhol, Morisani Potvin
+
+[strategies]
+random 0.02623904084034631 0.09377739502147722 49.034352159719816
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 13
+MBFP 31
+MBFP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.4701693259760165
+AB = 0.3920109754192665
+AC = 0.0
+BA = 1.454742851897023
+BB = 0.8775043780445761
+BC = 0.425735982346681
+CA = 0.845987783203177
+CB = 2.086290066032571
+CC = 1.3791253987959768
+
+[yomi-score preferences]
+A = 0.531673386767493
+B = 0.5893773366488808
+C = 0.02832377821897919
+
+[yomi-score preferences weight]
+weight = 1.0
+

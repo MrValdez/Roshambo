@@ -1,0 +1,47 @@
+[info]
+Mutate From = Bellis, Marmaduke Akbas
+name = Bellis, Sai Rumley
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+MBFP 2
+PP 32
+PP 21
+MBFP 8
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.461103602022565
+AB = 0.0
+AC = 0.0
+BA = 0.4730851693471916
+BB = 1.082038210788014
+BC = 0.9449944948339892
+CA = 1.483910260981833
+CB = 1.012051584838289
+CC = 0.09964748133088705
+
+[yomi-score preferences]
+A = 0.0
+B = 0.4098848901217432
+C = 0.4543144260859767
+
+[yomi-score preferences weight]
+weight = 1.0
+

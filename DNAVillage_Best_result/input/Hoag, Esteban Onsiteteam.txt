@@ -1,0 +1,49 @@
+[info]
+Mutate From = Reavis, Aslar Hattingh-II
+name = Reavis, editor Jakubowski
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.9748402257607331
+AB = 0.26083319272878075
+AC = 0.02538330580334322
+BA = 1.8179262444530737
+BB = 0.37145700261848474
+BC = 0.2647779246776666
+CA = 1.3216407229924498
+CB = 0.052447206383517075
+CC = 0.23491417208934579
+
+[yomi-score preferences]
+A = 0.36780597806400744
+B = 0.0
+C = 0.046896734230801096
+
+[yomi-score preferences weight]
+weight = 1.003274371896193
+
