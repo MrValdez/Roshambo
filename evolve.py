@@ -109,7 +109,7 @@ def _EvaluateDNA(filename):
         text = f.read()
         found = text.find(matchRankStr)
         if found == -1:
-            raise Exception ("match rank not found")
+            raise Exception ("match rank not found for {}".format(filename))
         matchRank = text[found + len(matchRankStr):text.find("\n", found)]
         
         found = text.find(tournamentRankStr)
@@ -167,8 +167,8 @@ def _FindMates(path_input, path_output):
     
     Population = []
     
-    # filter in the top ranking individuals (55%)
-    maxPopulationSize = int((len(RankingPopulation) * 0.55))
+    # filter in the top ranking individuals (15%)
+    maxPopulationSize = int((len(RankingPopulation) * 0.15))
             
     # Set the maximum population size to 35-42
     maxPopulationSize = min(maxPopulationSize, random.randint(35, 42))
@@ -194,10 +194,14 @@ def _FindMates(path_input, path_output):
     ToDelete = set(ToPreserve).symmetric_difference(AllFiles)
     ToDelete.remove("mutating")
     
-    for file in ToDelete:
-        if Debug: print("deleting", file)
-        os.remove(path_input + file)     
-        os.remove(path_output + file)     
+    try:
+        for file in ToDelete:
+            if Debug: print("deleting", file)
+            os.remove(path_input + file)     
+            os.remove(path_output + file)     
+    except PermissionError:
+        #ignore permission errors.        
+        pass
         
     for newIndividualSize in range(random.randint(18, 25)):
         # either create new individuals to the population, or mate
