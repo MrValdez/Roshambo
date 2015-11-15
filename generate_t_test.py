@@ -1,16 +1,17 @@
 '''
 This script will generate a csv of the match and tournament results with or without Yomi, for different individual predictors.
-    1. Generate the configuration for all individual predictors with and without Yomi
-    2. Run the trainer for all the configurations
-    3. Generate the csv based on the results
-    4. From the csv, generate the latex table (todo)    
+    1. Generate the configuration for all individual predictors with and without Yomi (todo)
+    2. Run the trainer for all the configurations (todo)
+    3. Gather the data from the results
+    4. From the csv, generate the latex table (todo)
 '''
 import os
+import csv
 
 from collections import OrderedDict
 from scipy.stats import ttest_ind, ttest_rel
 
-def generate_csv(path):
+def gather_data(path):
     match_title = "Yomi AI is match ranked"
     tournament_title = "Yomi is tournament ranked"
     completed = os.listdir(path)
@@ -69,27 +70,69 @@ def generate_csv(path):
                 print(" {}: {}".format(key, value))
             del results[title]
     result_str = "\n".join(results_list)
+    
+    #print(result_str)
+    print("Match rank difference between yomi and without yomi: %i" % (difference))
+    print("Average match rank difference: %f" % (difference / len(results_list)))
 
+    return results
+ 
+def printData(results):
     #final_output = "Test, Match, Tournament, Yomi Match, Yomi Tournament\n"
     #print (final_output)
         
     # show the inputs
-    #print(result_str)
     print("{}| No yomi | Yomi".format(" ".ljust(10)))
     print("--------------------------")
     for key, data in results.items():
-        no_yomi, yomi = str(data['match']), str(data['yomi_match'])
         title = key
+        no_yomi, yomi = str(data['match']), str(data['yomi_match'])
         print("{}| {} | {}".format(title.ljust(10),
                                    no_yomi.rjust(7),
                                    yomi.rjust(2)))
+    
 
+def createLatex(results):
+    description = "t-tests data"
+    title = "t_test_data"
+    table = r"""
+\begin{table}
+\centering
+\resizebox{.80\width}{!}{\begin{minipage}[t]{\textwidth}
+    \caption{%s results}
+    \label{table:%s}
+    \centering
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{AI variant} & {\specialcell[b]{\textbf{Match results}\\\textbf{without Yomi}}} & {\specialcell[b]{\textbf{Match results}\\\textbf{with Yomi}}} \\ \hline
+""" % (description, title)
+    
+    for key, data in results.items():
+        title = key.split()
+        if title[0][:3] == "HSP":  title[0] = title[0][:3] + r" (WS=" + title[0][3:] + ")"
+        if title[0][:4] == "MBFP": title[0] = title[0][:4] + r"\textsubscript{" + title[0][4:] + "}"
+        title = title[0] + r"\\" + " ".join(title[1:])
+        title = title.replace("LB", "Lower bound WSCI")
+        title = title.replace("UB", "Upper bound WSCI")
+        no_yomi, yomi = data['match'], data['yomi_match']
+ 
+        #table += "%s & %s & %s \\\\ \\hline \n" % (title, no_yomi, yomi)
+        table += "\specialcell[x]{%s} & %s & %s \\\\ \\hline \n" % (title, no_yomi, yomi)
+
+    table = table.strip() + """
+    \end{tabular}
+\end{minipage} }
+\end{table}"""
+
+    file = "t_test.tex"
+    with open(file, "w") as f:
+        f.write(table)
+    print("\nT-test table saved to " + file)
+
+def t_tests(results):
     no_yomi_results = [d['match'] for d in results.values()]
     yomi_results = [d['yomi_match'] for d in results.values()]
     
-    print("Match rank difference between yomi and without yomi: %i" % (difference))
-    print("Average match rank difference: %f" % (difference / len(results_list)))
-
     print("")
     print("t-test for two independent samples: ")
     t, prob = ttest_ind(no_yomi_results, yomi_results, equal_var=False)
@@ -100,15 +143,18 @@ def generate_csv(path):
     print("t-test on two related samples: ")
     t, prob = ttest_rel(no_yomi_results, yomi_results)
     print(" t-statistic:        {}\n two-tailed p-value: {}".format(t, prob))
+
                      
 # from openoffice calc:
-# one-paired: 4.35681893802403E-006
 # average: -1.6451612903
+# one-paired: 4.35681893802403E-006
 # two-paired: 8.71363787604805E-006
 
 def main(path_input = 't_test_data/input/', path_output = 't_test_data/output/'):
-    csv = generate_csv(path_output)
-
+    data = gather_data(path_output)
+    #printData(data)
+    t_tests(data)
+    createLatex(data)
 
 if __name__ == "__main__":
     main()
