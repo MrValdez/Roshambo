@@ -5,20 +5,20 @@ def CreateLatex(path_input, path_output, filename):
     print ("Building latex for %s." % (filename))
 
     title = filename.split(".")[0]
-    text = r"""The full results are found in Table \ref{table:%s_results}. A summary can be found at Table \ref{table:ranking_summary}.""" % (title)
+    text = r"""The full results are found in Table \ref{table:%s_results} with the winning matches highlighted. A summary can be found at Table \ref{table:ranking_summary}.""" % (title)
     
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(path_input + filename)
     description = config["info"]["name"].strip("\"")
     
     table = r"""
-\begin{table*}
-    \caption{%s results}
+\begin{table}
+    \caption{Results of %s against the different bots}
     \label{table:%s_results}
     \centering
     \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \textbf{Vs bot} & \textbf{Total} & \textbf{Wins} & \textbf{Losts} & \textbf{Ties} \\ \hline
+        \textbf{Bot} & \textbf{Total} & \textbf{Wins} & \textbf{Losses} & \textbf{Ties} \\ \hline
 """ % (description, title)
 
     with open(path_output + filename) as f:
@@ -48,11 +48,13 @@ def CreateLatex(path_input, path_output, filename):
             losts = losts.strip()
             ties  = ties.strip()
             
-            table += "%s & %s & %s & %s & %s \\\\ \\hline \n" % (bot, total, wins, losts, ties)
-
+            highlight = ""
+            if int(total) >= 50:
+                highlight = r"\rowcolor{HighlightRowColor} "
+            table += "%s%s & %s & %s & %s & %s \\\\ \\hline \n" % (highlight, bot, total, wins, losts, ties)
         table = table.strip() + """
         \end{tabular}
-    \end{table*}"""
+    \end{table}"""
 
         line = None
         while True:
@@ -76,7 +78,7 @@ def CreateLatex(path_input, path_output, filename):
 #                (TournamentRank.strip(), TournamentRankPoints, 
 #                 MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
 
-        text += " The Match rank is %s with a total score of %s points (%s win, %s losts, and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
+        text += " The Match rank is %s with a total score of %s points (%s win, %s losses, and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
         text += "The Tournament rank is %s with %s points." % (TournamentRank.strip(), TournamentRankPoints)
         text = text + "\n\n" + table
 
@@ -91,5 +93,6 @@ def ParseLatex(path_input = "results/input/", path_output = "results/output/"):
         CreateLatex(path_input, path_output, file)
         
 if __name__ == "__main__":
-    #ParseLatex()
-    ParseLatex(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")
+    ParseLatex()
+    #ParseLatex(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")
+    #ParseLatex(path_input = "DNAVillage_Best_result/input/", path_output = "DNAVillage_Best_result/output/")
