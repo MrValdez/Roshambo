@@ -18,7 +18,7 @@ def CreateLatex(path_input, path_output, filename):
     \centering
     \begin{tabular}{|l|c|c|c|c|}
         \hline
-        \textbf{Bot} & \textbf{Total} & \textbf{Wins} & \textbf{Losses} & \textbf{Ties} \\ \hline
+        \textbf{Bot} & \textbf{Total} & \textbf{Wins} & \textbf{Losts} & \textbf{Ties} \\ \hline
 """ % (description, title)
 
     with open(path_output + filename) as f:
@@ -78,7 +78,7 @@ def CreateLatex(path_input, path_output, filename):
 #                (TournamentRank.strip(), TournamentRankPoints, 
 #                 MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
 
-        text += " The Match rank is %s with a total score of %s points (%s win, %s losses, and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
+        text += " The Match rank is %s with a total score of %s points (%s win, %s losts, and %s ties). " % (MatchRank.strip(), MatchRankTotals, MatchRankWins, MatchRankLosts, MatchRankDraws)
         text += "The Tournament rank is %s with %s points." % (TournamentRank.strip(), TournamentRankPoints)
         text = text + "\n\n" + table
 
@@ -93,6 +93,7 @@ def ParseLatex(path_input = "results/input/", path_output = "results/output/"):
         CreateLatex(path_input, path_output, file)
         
 if __name__ == "__main__":
-    ParseLatex()
+    #ParseLatex()
     #ParseLatex(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")
+    ParseLatex(path_input = "DNAVillage/input_190/", path_output = "DNAVillage/output_190/")
     #ParseLatex(path_input = "DNAVillage_Best_result/input/", path_output = "DNAVillage_Best_result/output/")
