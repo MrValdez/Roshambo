@@ -7,6 +7,7 @@ This script will generate a csv of the match and tournament results with or with
 '''
 import os
 import csv
+import numpy as np
 
 from collections import OrderedDict
 from scipy.stats import ttest_ind, ttest_rel
@@ -19,6 +20,10 @@ def gather_data(path):
     results = OrderedDict()
 
     for file in completed:
+        # we are only interested in lower bound
+        if file.find("UB") >= 0:
+            continue
+    
         match_rank = -1
         tournament_rank = -1
         
@@ -39,7 +44,9 @@ def gather_data(path):
                 raise
 
 #        print ("{}\n Match: {}\n Tournament {}".format(file, match_rank, tournament_rank))
-        title = file.replace(".txt", "").strip()
+        title = file
+        title = title.replace(".txt", "").strip()
+        title = title.replace(" LB", "").strip()
 
         if "Yomi" not in file:
             key_match = "match"
@@ -104,7 +111,7 @@ def createLatex(results):
     \centering
     \begin{tabular}{|l|c|c|}
         \hline
-        \textbf{AI variant} & {\specialcell[b]{\textbf{Match results}\\\textbf{without Yomi}}} & {\specialcell[b]{\textbf{Match results}\\\textbf{with Yomi}}} \\ \hline
+        \textbf{Predictor used} & {\specialcell[b]{\textbf{Match results}\\\textbf{without Yomi}}} & {\specialcell[b]{\textbf{Match results}\\\textbf{with Yomi}}} \\ \hline
 """ % (description, title)
     
     for key, data in results.items():
@@ -112,8 +119,7 @@ def createLatex(results):
         if title[0][:3] == "HSP":  title[0] = title[0][:3] + r" (WS=" + title[0][3:] + ")"
         if title[0][:4] == "MBFP": title[0] = title[0][:4] + r"\textsubscript{" + title[0][4:] + "}"
         title = title[0] + r"\\" + " ".join(title[1:])
-        title = title.replace("LB", "Lower bound WSCI")
-        title = title.replace("UB", "Upper bound WSCI")
+                
         no_yomi, yomi = data['match'], data['yomi_match']
  
         #table += "%s & %s & %s \\\\ \\hline \n" % (title, no_yomi, yomi)
@@ -132,7 +138,11 @@ def createLatex(results):
 def t_tests(results):
     no_yomi_results = [d['match'] for d in results.values()]
     yomi_results = [d['yomi_match'] for d in results.values()]
-    
+
+    print("")
+    print("Mean for no yomi group: ", np.mean(no_yomi_results))
+    print("Mean for yomi group: ", np.mean(yomi_results))
+
     print("")
     print("t-test for two independent samples: ")
     t, prob = ttest_ind(no_yomi_results, yomi_results, equal_var=False)
@@ -152,7 +162,7 @@ def t_tests(results):
 
 def main(path_input = 't_test_data/input/', path_output = 't_test_data/output/'):
     data = gather_data(path_output)
-    #printData(data)
+    printData(data)
     t_tests(data)
     createLatex(data)
 
