@@ -13,7 +13,7 @@ Debug = False
 MatchPts = 100
 TournamentPts = 100
 
-def main(path_input = "results/input/", path_output = "results/output/"):
+def main(path_input, path_output):
     files = os.listdir(path_input)
     completed = os.listdir(path_output)
     
@@ -129,7 +129,8 @@ def GetHighestRank(path_output):
     #if Debug: print("\n\n%s  RANK   VARIABLE" % ("HEADER".ljust(prettyWidth)))
     for filename in fileList:
         if filename[-4:] != ".txt":
-            print("%s is not txt file" % (filename))
+            print("skipping %s" % (filename))
+            continue
                 
         start = filename.find("[")
         end = filename.find("]")
@@ -198,6 +199,6 @@ def CreateCSV(path_output, output_filename = None):
             f.write(csv[1])
   
 if __name__ == "__main__":
-    main()
-    #main(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")
+    main(path_input = "results/input/", path_output = "results/output/")
+    #main(path_input = "DNAVillage/input_1/", path_output = "DNAVillage/output_1/")
    
