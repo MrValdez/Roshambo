@@ -4,7 +4,7 @@ import sys
 import os
 
 pathbase = "./results/output/"             # Note: this string should end with "/"
-pathbase = "./DNAVillage/output_0/"             # Note: this string should end with "/"
+pathbase = "./DNAVillage/output_197/"             # Note: this string should end with "/"
 
 def FindScore(bot, showresults):
     """Get the best and worst score of a bot against Yomi AI"""

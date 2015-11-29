@@ -463,6 +463,7 @@ class Yomi:
 #                    layerToUse, layerConfidence = -1, ownPlayConfidence
 
             #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
+
             if layerConfidence == 0:
                 layerToUse, layerConfidence = -1, ownPlayConfidence
             elif layerConfidence < ownPlayConfidence:

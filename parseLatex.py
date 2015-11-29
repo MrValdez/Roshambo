@@ -86,14 +86,14 @@ def CreateLatex(path_input, path_output, filename):
     with open(file, "w") as f:
         f.write(text)
 
-def ParseLatex(path_input = "results/input/", path_output = "results/output/"):
+def ParseLatex(path_input, path_output):
     files = os.listdir(path_output)
 
     for file in files:
         CreateLatex(path_input, path_output, file)
         
 if __name__ == "__main__":
-    #ParseLatex()
+    ParseLatex(path_input = "results/input/", path_output = "results/output/")
     #ParseLatex(path_input = "DNAVillage/input_0/", path_output = "DNAVillage/output_0/")
-    ParseLatex(path_input = "DNAVillage/input_190/", path_output = "DNAVillage/output_190/")
+    #ParseLatex(path_input = "DNAVillage/input_190/", path_output = "DNAVillage/output_190/")
     #ParseLatex(path_input = "DNAVillage_Best_result/input/", path_output = "DNAVillage_Best_result/output/")
