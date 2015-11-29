@@ -1,0 +1,43 @@
+[info]
+Mutate From = Sellers, Jackman Blethen
+name = Coursol, Chiyoko Testing
+Dominant Parent = Coursol, Faire Roberto.txt
+Mate = Testing, Wachtmeister Greveling.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5542106261883954
+AB = 0.0
+AC = 0.018435293998546765
+BA = 0.7714198294990199
+BB = 0.9948681340711593
+BC = 0.4459236617230392
+CA = 1.5489764816930465
+CB = 1.1118403214004744
+CC = 0.19378326117307634
+
+[yomi-score preferences]
+A = 0.01805924527754324
+B = 0.0
+C = 0.39586709972692274
+
+[yomi-score preferences weight]
+weight = 1.0
+

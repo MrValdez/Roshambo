@@ -1,0 +1,43 @@
+[info]
+Mutate From = Rondeau, Thor Chapdelaine
+name = Rondeau, Cristo Russell
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.6486266001930536
+AB = 0.10218747894510377
+AC = 0.5113413643489257
+BA = 0.6162800252742667
+BB = 1.340414667659484
+BC = 0.8301646195608519
+CA = 0.8768660366016457
+CB = 0.8698255695213388
+CC = 0.16391352320102692
+
+[yomi-score preferences]
+A = 0.418868104480701
+B = 0.0
+C = 0.3945047698678245
+
+[yomi-score preferences weight]
+weight = 1.0
+

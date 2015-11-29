@@ -1,0 +1,45 @@
+[info]
+Mutate From = Monfre, Corey Syssupport
+name = Monfre, Gitano Hupe
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 5
+PP 6
+PP 13
+MBFP 2
+PP 32
+PP 21
+MBFP 8
+PP 14
+PP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.2640909471916695
+AB = 0.11772977894702646
+AC = 0.0
+BA = 0.4211549843116175
+BB = 1.3052706657422448
+BC = 0.43509329733044
+CA = 1.1105906729067225
+CB = 1.2397804959168086
+CC = 0.998562308793898
+
+[yomi-score preferences]
+A = 0.08147699565547994
+B = 0.6693919916536026
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

@@ -1,0 +1,47 @@
+[info]
+Mutate From = Tilton, Tornadoes Bellis
+name = Tilton, Rhodes Varmazis
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5542106261883954
+AB = 0.0
+AC = 0.0
+BA = 0.4730851693471916
+BB = 1.0422228404539862
+BC = 0.6039412663999932
+CA = 1.5489764816930465
+CB = 1.012051584838289
+CC = 0.20304388892881506
+
+[yomi-score preferences]
+A = 0.01805924527754324
+B = 0.0
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

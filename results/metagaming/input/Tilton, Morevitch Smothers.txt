@@ -1,0 +1,47 @@
+[info]
+Mutate From = Elks, McNaulty Chamayou
+name = Elks, Norris Shalmon
+Dominant Parent = Elks, Ringman Shonuck.txt
+Mate = Chamayou, Funk Naufal.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.6260755233855009
+AB = 0.010811278087241027
+AC = 0.2707941661049488
+BA = 1.9445181957222628
+BB = 0.3886849364589374
+BC = 0.7576039219664368
+CA = 1.087316955619869
+CB = 2.036280546182387
+CC = 0.6497947236103627
+
+[yomi-score preferences]
+A = 0.2694218655861886
+B = 0.3219880066774983
+C = 0.4798789280417019
+
+[yomi-score preferences weight]
+weight = 1.0
+

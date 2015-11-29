@@ -1,0 +1,45 @@
+[info]
+Mutate From = Kriz, Kameragul Laviolette
+name = Kriz, Weepy Bellefeuille
+Dominant Parent = Balkenhol, Duncannon Swazey.txt
+Mate = Chaudhary, OPERA Dimillo.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 8
+PP 10
+PP 11
+MBFP 27
+MBFP 14
+PP 21
+MBFP 13
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.0672478038054376
+AB = 0.24776244107053563
+AC = 0.0010009789017761395
+BA = 1.358129457243403
+BB = 1.4542149427868356
+BC = 0.3182312043430132
+CA = 0.15903316064139095
+CB = 2.393217987364256
+CC = 0.79021771189246
+
+[yomi-score preferences]
+A = 0.5305188065221249
+B = 0.25749689314220736
+C = 0.018270509087584152
+
+[yomi-score preferences weight]
+weight = 1.0
+

@@ -1,0 +1,46 @@
+[info]
+Mutate From = Mc Alpine, Doc Peterson
+name = Mc Alpine, Fleissig Younkin
+Dominant Parent = Chauvin, Killian Orth.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 3
+PP 4
+PP 8
+PP 10
+PP 11
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.4881001067024449
+AB = 0.0
+AC = 0.045382991666942235
+BA = 1.3469540262247393
+BB = 1.105229113972672
+BC = 0.6256013862943213
+CA = 1.680397807712271
+CB = 0.617023779938839
+CC = 0.7384833129997259
+
+[yomi-score preferences]
+A = 1.0
+B = 0.05909795823463121
+C = 0.1114331155204703
+
+[yomi-score preferences weight]
+weight = 1.0
+

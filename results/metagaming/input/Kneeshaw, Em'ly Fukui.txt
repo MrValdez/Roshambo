@@ -1,0 +1,45 @@
+[info]
+Mutate From = Sellers, Jackman Blethen
+name = Sellers, Tayeh Weiser
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+PP 25
+MBFP 32
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.013826534291791
+AB = 0.3270847304411079
+AC = 0.46109454091500696
+BA = 0.7855820611935429
+BB = 0.5317931441254861
+BC = 0.2727342587489582
+CA = 0.34658884626630715
+CB = 1.4030077328172117
+CC = 0.7773404880748003
+
+[yomi-score preferences]
+A = 0.30050538847672964
+B = 0.0
+C = 0.09767402623113679
+
+[yomi-score preferences weight]
+weight = 1.0
+

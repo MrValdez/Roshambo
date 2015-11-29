@@ -1,0 +1,46 @@
+[info]
+Mutate From = Sherlock, Vernon Bromley
+name = Sherlock, Supervisor Ioannou
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 2
+PP 5
+PP 8
+PP 10
+PP 11
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+MBFP 29
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.0799799037795825
+AB = 0.0
+AC = 0.0
+BA = 0.8909238596539266
+BB = 1.4195147038884184
+BC = 0.8936859522406497
+CA = 1.2871397086946113
+CB = 0.9539533584587191
+CC = 1.0569638464741
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.32085833606402336
+
+[yomi-score preferences weight]
+weight = 1.0
+

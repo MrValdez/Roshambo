@@ -1,0 +1,43 @@
+[info]
+Mutate From = Coursol, Faire Roberto
+name = Coursol, casting Hartleb
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 2
+PP 4
+PP 6
+PP 10
+MBFP 2
+MBFP 23
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.0143623954533023
+AB = 0.37168069746008786
+AC = 0.3239113547302247
+BA = 0.7838226581040053
+BB = 1.3493107726224038
+BC = 0.7901463537002402
+CA = 0.7008174245595068
+CB = 1.2576711909526337
+CC = 0.28684998005993034
+
+[yomi-score preferences]
+A = 0.30050538847672964
+B = 0.0
+C = 0.09713337045438004
+
+[yomi-score preferences weight]
+weight = 1.0
+

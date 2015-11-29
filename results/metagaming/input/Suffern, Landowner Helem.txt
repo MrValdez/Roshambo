@@ -1,0 +1,47 @@
+[info]
+Mutate From = Bellis, Marmaduke Akbas
+name = Bellis, Phonies Ashford
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+MBFP 2
+MBFP 27
+PP 21
+MBFP 8
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.317377017501521
+AB = 0.4765842321302282
+AC = 0.3917972155911314
+BA = 0.6908391447757792
+BB = 1.2121760013554155
+BC = 0.7599613574438364
+CA = 1.4969534949650078
+CB = 0.820757008018809
+CC = 0.09964748133088705
+
+[yomi-score preferences]
+A = 0.28088316421834825
+B = 0.04655789306085517
+C = 0.6760549327524866
+
+[yomi-score preferences weight]
+weight = 1.0
+

@@ -1,0 +1,47 @@
+[info]
+Mutate From = Elks, McNaulty Chamayou
+name = Tilton, Chadwick Sherlock
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Sherlock, Vernon Bromley.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.8256269159971548
+AB = 0.0
+AC = 0.2707941661049488
+BA = 0.8294212806711112
+BB = 0.9330753202575719
+BC = 0.8936859522406497
+CA = 1.2039675459498347
+CB = 0.7576039219664368
+CC = 0.6453588318198438
+
+[yomi-score preferences]
+A = 0.114952241925461
+B = 0.0
+C = 0.32085833606402336
+
+[yomi-score preferences weight]
+weight = 1.0
+

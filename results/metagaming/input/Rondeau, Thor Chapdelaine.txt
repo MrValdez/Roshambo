@@ -1,0 +1,44 @@
+[info]
+Mutate From = McWherter, Giuranna Hornacek
+name = McWherter, Reveler Osiakwan
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.6260755233855009
+AB = 0.0
+AC = 0.0
+BA = 0.6162800252742667
+BB = 1.340414667659484
+BC = 0.8301646195608519
+CA = 1.0514076218002937
+CB = 0.8698255695213388
+CC = 0.16391352320102692
+
+[yomi-score preferences]
+A = 0.418868104480701
+B = 0.0
+C = 0.3945047698678245
+
+[yomi-score preferences weight]
+weight = 1.0
+

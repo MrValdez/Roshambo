@@ -1,0 +1,47 @@
+[info]
+Mutate From = Bellis, Marmaduke Akbas
+name = Bellis, Irvine Meany
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+MBFP 2
+PP 32
+PP 21
+MBFP 8
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.317377017501521
+AB = 0.17819852487922672
+AC = 0.0
+BA = 0.4730851693471916
+BB = 1.2994390138961884
+BC = 0.6071719180819238
+CA = 1.339531898814747
+CB = 1.012051584838289
+CC = 0.7576039219664368
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

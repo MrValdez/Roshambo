@@ -1,0 +1,43 @@
+[info]
+Mutate From = Helton, Fritz-Patrick Bagwell
+name = Helton, Azusa Sompong
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.8931447629143057
+AB = 0.0
+AC = 0.0
+BA = 0.7838226581040053
+BB = 1.379207925637756
+BC = 0.4459236617230392
+CA = 1.0514076218002937
+CB = 0.9060315574792455
+CC = 0.48544416538378954
+
+[yomi-score preferences]
+A = 0.30050538847672964
+B = 0.0
+C = 0.09767402623113679
+
+[yomi-score preferences weight]
+weight = 1.0
+

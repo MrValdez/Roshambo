@@ -1,0 +1,48 @@
+[info]
+Mutate From = Sherlock, Vernon Bromley
+name = Sherlock, Dorkin Makinson
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.8256269159971548
+AB = 0.2905518121433517
+AC = 0.0
+BA = 0.8294212806711112
+BB = 1.0388640708885173
+BC = 1.0283865702727746
+CA = 1.3345830582701437
+CB = 0.7576039219664368
+CC = 0.8216730568088377
+
+[yomi-score preferences]
+A = 0.019327817837726774
+B = 0.0
+C = 0.07594018357832188
+
+[yomi-score preferences weight]
+weight = 1.0
+
