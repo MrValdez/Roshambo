@@ -1,0 +1,16 @@
+*.exe
+*.pyc
+*.png
+*.csv
+*.tex
+__pycache__/
+paper/
+paper */
+dissertation/
+temp/
+commentator/
+Yomi Algo/
+DNAVillage*
+Family-Names.txt
+movie-characters.txt
+presentation
