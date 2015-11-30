@@ -99,7 +99,7 @@ The RPS ibrary contains the following functions related to the International RoS
 
 - **rps.myHistory(turn)** returns the AI's move at *turn*. Turn's range is between *[1..maxturns]*.
 
-- **rps.enmeyHistory(turn)** returns the enemy's move at *turn*. Turn's range is between *[1..maxturns]*.
+- **rps.enemyHistory(turn)** returns the enemy's move at *turn*. Turn's range is between *[1..maxturns]*.
 
 - **rps.biased_roshambo(rockProb, paperProb)** returns 0, 1, or 2. This is determined by the parameters supplied. For example, **biased_roshambo(1.0, 0.0)** returns 0, 100% of the time while **biased_roshambo(0.4, 0.2)** will return 0, 1 or 2 at the probability of 40%, 20%, 40% respectively.    
 
@@ -109,7 +109,7 @@ The RPS ibrary contains the following functions related to the International RoS
 
 - **rps.enemyName()** returns name of current enemy. Used for debugging. Don't use this to check opponent's name when deciding the AI's move.
 
-## Simpliest example of AI-to-test suite interface
+## Simplest example of AI-to-test suite interface
 
 ```
 def play(param):
@@ -133,10 +133,10 @@ def isVerbose():
 ```
 
 #BeatFrequentPick.py
- For the purpose of the first paper, *yomi.py* will use the AI from *BeatFrequentPick.py*. Pleaes refer to the first paper for more detail on this subsystem.
+ For the purpose of the first paper, *yomi.py* will use the AI from *BeatFrequentPick.py*. Please refer to the first paper for more detail on this subsystem.
 
 #PatternPredictor.py
- For the purpose of the second paper, *yomi.py* will use the AI from *PatternPredictor.py*. Pleaes refer to the second paper for more detail on this subsystem.
+ For the purpose of the second paper, *yomi.py* will use the AI from *PatternPredictor.py*. Please refer to the second paper for more detail on this subsystem.
 
 #Yomi AI configuration file
 
