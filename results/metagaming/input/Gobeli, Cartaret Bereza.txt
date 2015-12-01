@@ -1,0 +1,44 @@
+[info]
+Mutate From = Helton, Luda Monfre-II
+name = Helton, Rache Van Es
+Dominant Parent = Helton, Fritz-Patrick Bagwell.txt
+Mate = Monfre, Corey Syssupport.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.668043711606196
+AB = 0.0
+AC = 0.0
+BA = 0.6022601337784219
+BB = 1.3270232434832474
+BC = 0.5653568817280175
+CA = 1.463039620227931
+CB = 0.19384786495766548
+CC = 0.5133369684759084
+
+[yomi-score preferences]
+A = 0.2866468568187849
+B = 0.0
+C = 0.5105251803030917
+
+[yomi-score preferences weight]
+weight = 1.0
+

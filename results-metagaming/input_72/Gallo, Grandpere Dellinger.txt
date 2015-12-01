@@ -1,0 +1,46 @@
+[info]
+Mutate From = Olmstead, Leeland Lehtovaara
+name = Olmstead, Harkness Rudzinski
+Dominant Parent = Rowell, Nuget Jewett.txt
+Mate = Delle, Clooney Moorcroft.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7238891424783563
+AB = 0.0
+AC = 0.32665321665931024
+BA = 1.339476829714112
+BB = 0.6084936616849659
+BC = 0.8228583240392136
+CA = 1.2793990532554518
+CB = 0.9451749112134908
+CC = 0.27155789486849435
+
+[yomi-score preferences]
+A = 0.4573908232512541
+B = 0.0
+C = 0.06784425340732458
+

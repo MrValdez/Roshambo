@@ -219,11 +219,11 @@ class PredictorSelector:
         
 #        predictor = self.LastPredictor
 #        print("%s: %i (+%i/-%i) %.2f %f" % (predictor.name.ljust(24), predictor.moveLastTurn,predictor.scoreWins, predictor.scoreLosts, predictor.confidence, predictor.rankingConfidence))
-        
+
         #3. return the highest ranking
         return move, confidence
         
-    def getHighestRank(self, dna):
+    def getHighestRank(self, dna):              
         if dna.predictor_ranking == "wilson-high":
             chosenPredictor, rankRating = self.getHighestRank_LowerWilson(higherBound = True)
         elif dna.predictor_ranking == "wilson-low":
@@ -235,12 +235,12 @@ class PredictorSelector:
         else:
             chosenPredictor, rankRating = None, 0
             return 0, 0
-        
+
         self.LastPredictor = chosenPredictor
         move = chosenPredictor.moveLastTurn
         predictorConfidence = chosenPredictor.confidence
         confidence = rankRating
-                                
+        
         return move, confidence 
     
     def getHighestRank_LowerWilson(self, higherBound = True):
@@ -251,6 +251,11 @@ class PredictorSelector:
         
         https://news.ycombinator.com/item?id=3792627
         """
+        
+        if len(self.Predictors) == 1:
+            # there is only one predictor. choose that immediately
+            predictor = self.Predictors[0]
+            return (predictor, predictor.confidence)
         
         # grab the top 3 wins, top 3 wins-lost, top 3 confidences
 #        maxWins       = sorted(self.Predictors, key=lambda i: i.scoreWins)

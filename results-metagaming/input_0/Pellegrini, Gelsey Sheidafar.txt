@@ -1,0 +1,48 @@
+[info]
+name = Cogan, Mirte Soucy
+Mutate From = Cogan, Geothe Glast
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7862693004832246
+AB = 0.0
+AC = 0.001527175913326767
+BA = 1.0926632905757396
+BB = 0.7021778287846783
+BC = 0.34825171635178964
+CA = 1.0721921904362843
+CB = 0.8373656035383317
+CC = 0.4209662055532103
+
+[yomi-score preferences]
+A = 0.9385872767938156
+B = 0.4659718946426337
+C = 0.2949526503318418
+

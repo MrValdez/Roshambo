@@ -77,9 +77,9 @@ This is the internal name of our AI before we decided to simplify the program fo
 
 The file *yomi.py* contains the AI that the test suite will use.
 
-##Basic structure
+##Basic AI structure
 
-This is the entry point of the AI. The modified test suite will look for this file and the function **play()**. **play()** must return 0, 1, or 2 (which is the value for rock, paper, and scissors, respectively). **play()** has one parameter: the DNA parameter. This contains the Yomi Configuration.
+This is the entry point of the AI. The modified test suite will look for this file and the function **play()**. **play()** must return 0, 1, or 2 (which are the values for rock, paper, and scissors, respectively). **play()** has one parameter: the DNA parameter. This contains the Yomi Configuration.
  
 This is an example of a simple **play()** function:
 
@@ -99,17 +99,17 @@ The RPS ibrary contains the following functions related to the International RoS
 
 - **rps.myHistory(turn)** returns the AI's move at *turn*. Turn's range is between *[1..maxturns]*.
 
-- **rps.enmeyHistory(turn)** returns the enemy's move at *turn*. Turn's range is between *[1..maxturns]*.
+- **rps.enemyHistory(turn)** returns the enemy's move at *turn*. Turn's range is between *[1..maxturns]*.
 
 - **rps.biased_roshambo(rockProb, paperProb)** returns 0, 1, or 2. This is determined by the parameters supplied. For example, **biased_roshambo(1.0, 0.0)** returns 0, 100% of the time while **biased_roshambo(0.4, 0.2)** will return 0, 1 or 2 at the probability of 40%, 20%, 40% respectively.    
 
-- **rps.random()** returns a random number using the SFMT library. We should use this rather than Python's **math.random()** to ensure that we are using the same RNG as the AIs in the test suite. We theorized that Python's math library will also use the same RNG as the test suite, but we did not test for this.
+- **rps.random()** returns a random number using the SFMT library. This is used rather than Python's **math.random()** to ensure consistency.
 
 - **rps.randomRange()** functions similarly to **rps.random()** but returns a floating number between [0..1].
 
 - **rps.enemyName()** returns name of current enemy. Used for debugging. Don't use this to check opponent's name when deciding the AI's move.
 
-## Simpliest example of AI-to-test suite interface
+## Simplest example of AI-to-test suite interface
 
 ```
 def play(param):
@@ -133,14 +133,14 @@ def isVerbose():
 ```
 
 #BeatFrequentPick.py
- For the purpose of the first paper, *yomi.py* will use the AI from *BeatFrequentPick.py*. Pleaes refer to the first paper for more detail on this subsystem.
+ For the purpose of the first paper, *yomi.py* will use the AI from *BeatFrequentPick.py*. Please refer to the first paper for more detail on this subsystem.
 
 #PatternPredictor.py
- For the purpose of the second paper, *yomi.py* will use the AI from *PatternPredictor.py*. Pleaes refer to the second paper for more detail on this subsystem.
+ For the purpose of the second paper, *yomi.py* will use the AI from *PatternPredictor.py*. Please refer to the second paper for more detail on this subsystem.
 
 #Yomi AI configuration file
 
- This is actually an INI file and parsed by the *configparser built-in library*. This configuration file changes the behavior of the AI. The sections are as follows:
+ This is actually an INI file and parsed by the *configparser* built-in library. This configuration file changes the behavior of the AI. The sections are as follows:
  
 - **[info]** contains general information on the configuration. *name* is used to identify this configuration.
 
@@ -155,6 +155,8 @@ def isVerbose():
 - **[yomi preferences]** contains the probabilities used in the markov chain. *AB* is for the probability from Yomi Layer 1 to Yomi Layer 2, *BC* is for the probability from Yomi Layer 2 to 3, and so on. The probabilities must be within [0..1]. 
 
 - **[yomi-score preferences]** contains the influence of the yomi's score in the yomi subroutine. The values are *A*, *B*, and *C*, referring to Yomi Layer 1, 2, and 3, respectively. The values must be within [0..1].
+ 
+- **[yomi-score preferences weight]** *(optional)* is used to increase or decrease the influence of the yomi-score preference. The values must be within [0..1].
  
  An example of a configuration file is as follows:
  
@@ -217,6 +219,8 @@ CC=0.1
 A=1.0                 # Highest influence
 B=0.7                 # Mid influence
 C=0.45                 # Lowest influence
+[yomi-score preferences weight]
+weight = 1.0
 ```
  
 #Compiling the test suite
@@ -227,24 +231,24 @@ C=0.45                 # Lowest influence
 #Python scripts
 
 ##trainer.py
- Used to run the tournament simulation with different variants, create the CSV and plot the charts.
+ Used to run the tournament simulation with different variants, create the CSV, and plot the charts.
  
- In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
+ In the script code, *pathbase* is used to tell the script where the results will be stored. Note: this string should end with "/".
 
- The **main()** function runs the script. It is built this way to allow commenting specific behavior for debugging purposes.
+ The **main()** function runs the script. It was built this way to allow commenting out specific behavior for debugging purposes.
  
  The **Validate()** function will validate the configuration file before running the tournament. Refer above on how the configuration file works.
  
- The **PlayTournament()** function plays the tournament. All configuration files in the input directory will be run and the output will be saved with the same file name to an output directory.
+ The **PlayTournament()** function plays the tournament. Each configuration files in the input directory is run and the output will be saved with the same file name to an output directory.
  
  The **CreateCSV()** function will parse each result and create two csv files with the csv columns: variant variable, rank. The first csv file is for the "Match results" and the second is for the "Tournament results" ("**results_match.csv**" and "**results_tournament.csv**" respectively).
  
  The **charts.startPlotting()** function will create the chart graphics. Refer to charts.py.
 
 ##parseScore.py
- Used to study how many points (wins-loss-ties) our bot got compared to all the bots or against a specific bot.
-
- In the script code, pathbase is used to tell the script where the results will be stored. Note: this string should end with "/".
+ Used to study how many points (wins-loss-ties) the variant got compared to either all the bots or against a specific bot.
+ 
+ In the script code, *pathbase* is used to tell the script where the results will be stored. Note: this string should end with /.
 
  The format is as follows:
 ```shell
@@ -257,7 +261,7 @@ Options:
   --help              Show this message and exit.
 ```
 
-  **[bot]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space, use part of the name to circumvent this. 
+  **[bot]** is optional and contains the name of the bot (a part of the bot's name is enough). Does not accept space due to coding limitations, so use part of the bot's name to circumvent this (this can be fixed in the source code, but the partial name is good enough for the purpose of the research). 
   
   **[show results]** is optional. A value of True means the points gained from all variants are shown. Any other values gives the default behavior of not showing the results.
   
@@ -288,13 +292,24 @@ Options:
 ```shell
    python parseScore.py --showresults=False --showlatex=True
 ```
+
+##parseLatex.py
+  Used to create the \LaTeX tables from the results of the bots found in a specified directory. The \LaTeX tables are saved in a .tex file in the output directory.
+ 
+  Note that to change the behavior for this script, it has to be directly modified. Also note the trailing slash at the end of the path.
+ 
+  For example, to create the latex for the input and output directory, we use the following modifications:
+```shell
+ ParseLatex(path_input = "input/", path_output = "output/")
+```
+
    
 ##charts.py
  Used to generate a matplot chart from the csv generated by *trainer.py*
  
  When used from the command prompt, it generates a matplot chart from "**results_match.csv**" and "**results_tournament.csv**", and saves it as "**results_match.png**" and "**results_tournament.png**"
  
-When imported as a library, you can call the **Plot()** function. It has the following paramters:
+When imported as a library, you can call the **Plot()** function. It has the following parameters:
 ```
   Plot(filename, title, saveFigure = True)
 ```

@@ -1,0 +1,60 @@
+[info]
+name = Kawaguchi, Skeates Cobb
+Dominant Parent = Longfield, Bryon Bnrlsi.txt
+Mate = Soong, Data B1.txt
+Mutate From = Kawaguchi, Josquin Hofmann
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 28
+MBFP 1
+MBFP 30
+MBFP 29
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.0392461614250326
+AB = 0.011760040054053018
+AC = 0.0011334818573955907
+BA = 1.1114216877772716
+BB = 0.8086610383629669
+BC = 0.03896367436036011
+CA = 1.5041890644856388
+CB = 0.6487551276135178
+CC = 0.133918923629044
+
+[yomi-score preferences]
+A = 0.9995419976547324
+B = 1.0
+C = 0.23080280108129755
+

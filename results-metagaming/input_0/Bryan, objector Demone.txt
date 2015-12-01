@@ -1,0 +1,47 @@
+[info]
+Mutate From = Schoch, Ochrochine Pietropaolo
+name = Bryan, objector Demone
+Dominant Parent = Bryan, Escape Marcom.txt
+Mate = Demone, played Horgan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.21856073618425
+AB = 0.0
+AC = 0.0
+BA = 1.0072371871289407
+BB = 0.6194106181911849
+BC = 0.1582676670350194
+CA = 1.5340787649379655
+CB = 0.9010548303508675
+CC = 0.20502695336161939
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

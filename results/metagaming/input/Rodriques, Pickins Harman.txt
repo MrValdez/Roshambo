@@ -1,0 +1,41 @@
+[info]
+Mutate From = Kamminga, Rage Weisenberg
+name = Kamminga, Kallie Ruck
+Dominant Parent = Helton, Fritz-Patrick Bagwell.txt
+Mate = Monfre, Corey Syssupport.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 5
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.333158614714062
+AB = 0.0
+AC = 0.0
+BA = 0.7028951968095907
+BB = 1.3270232434832474
+BC = 0.7867309678529779
+CA = 1.6383793756639378
+CB = 0.7510053235647618
+CC = 0.6615597473123439
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.9758075447083738
+
+[yomi-score preferences weight]
+weight = 1.0
+

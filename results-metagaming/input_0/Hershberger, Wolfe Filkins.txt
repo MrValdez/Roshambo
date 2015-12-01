@@ -1,0 +1,54 @@
+[info]
+name = Dacal, Staples Nishiyama
+Dominant Parent = Valdez, Data Estrada.txt
+Mate = Abel, Somchart Younan.txt
+MutateFrom = Rintala, Ni Bushell.txt
+Mutate From = Dacal, Partlow Ince
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 6
+PP 9
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+PP 16
+PP 17
+PP 18
+PP 20
+PP 23
+PP 25
+PP 27
+PP 29
+MBFP 1
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.9836222301883072
+AB = -0.07077498476882331
+AC = -0.17724578311338113
+BA = 0.5817340882991977
+BB = 0.08139234212613383
+BC = -1.161459404233659
+CA = 1.4870560755929583
+CB = 0.22644673723112377
+CC = 1.1267247232058915
+
+[yomi-score preferences]
+A = 0.536230571164449
+B = 1.0
+C = 0.45066436359261736
+

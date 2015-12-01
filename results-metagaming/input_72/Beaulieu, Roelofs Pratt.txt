@@ -1,0 +1,45 @@
+[info]
+Mutate From = Krisa, objector Bryan-II
+name = Krisa, Bueller Kenol
+Dominant Parent = Krisa, played Demone.txt
+Mate = Bryan, objector Fanthome.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+PP 28
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5262510972893728
+AB = 0.0
+AC = 0.011806265332519467
+BA = 1.4694162988891586
+BB = 0.4884313550982527
+BC = 0.48770837995016947
+CA = 1.147455455066192
+CB = 0.9003381069044181
+CC = 0.7154376274914057
+
+[yomi-score preferences]
+A = 0.056864528814944804
+B = 0.0
+C = 0.0
+

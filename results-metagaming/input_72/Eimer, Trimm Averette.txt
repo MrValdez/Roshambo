@@ -1,0 +1,45 @@
+[info]
+Mutate From = Chauvin, Turnbull Andre
+name = Chauvin, Bonnie Peluso
+Dominant Parent = Chauvin, Killian Orth.txt
+Mate = Andre, Colette Lethebinh.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.67178060716539
+AB = 0.0
+AC = 0.0
+BA = 1.3141787217709804
+BB = 1.105229113972672
+BC = 0.3372319381604542
+CA = 1.2433865974229432
+CB = 1.4818948140587602
+CC = 0.7384833129997259
+
+[yomi-score preferences]
+A = 1.0
+B = 0.0
+C = 0.0
+

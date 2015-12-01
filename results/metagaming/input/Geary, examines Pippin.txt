@@ -1,0 +1,47 @@
+[info]
+Mutate From = Duffy, Perichole Swinburne
+name = Duffy, Corner Dallal
+Dominant Parent = Kriz, Kameragul Laviolette.txt
+Mate = Reavis, Aslar Hattingh-II.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+MBFP 27
+MBFP 14
+MBFP 18
+PP 31
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.2060319451151242
+AB = 0.0
+AC = 0.2897167038054329
+BA = 2.0612072261743606
+BB = 0.8505432647512245
+BC = 0.42790419893596876
+CA = 1.7291941314423003
+CB = 1.3539095213120047
+CC = 0.749869571783086
+
+[yomi-score preferences]
+A = 0.39380795178170946
+B = 0.14203316309900677
+C = 0.14302338568599682
+
+[yomi-score preferences weight]
+weight = 1.0
+

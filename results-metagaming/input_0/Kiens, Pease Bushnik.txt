@@ -1,0 +1,47 @@
+[info]
+name = Sapena, Outlaw Sollee
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Sapena, Nickie Hippert
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.47620790091309606
+AB = -0.0743598144925528
+AC = -0.06306881245785015
+BA = 0.7471197854691622
+BB = -0.04457792138023271
+BC = 0.7940926660668087
+CA = 0.9149598537049374
+CB = 0.5516145352989555
+CC = 0.02620813854264581
+
+[yomi-score preferences]
+A = 0.21306131019206695
+B = 0.37521220270904265
+C = 0.5329151835868365
+

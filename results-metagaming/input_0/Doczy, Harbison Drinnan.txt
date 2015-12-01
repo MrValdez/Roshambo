@@ -1,0 +1,48 @@
+[info]
+name = DDOCDB, Sutton Gendre
+Mutate From = DDOCDB, Cafe Parkash
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7330747866880011
+AB = 0.0
+AC = 0.0
+BA = 1.018429643385955
+BB = 0.8435018503633127
+BC = 0.31191166102035384
+CA = 0.9861046652378607
+CB = 0.9863238710564438
+CC = 0.2829125385282707
+
+[yomi-score preferences]
+A = 1.0
+B = 0.4597903052527969
+C = 0.16031194692502862
+

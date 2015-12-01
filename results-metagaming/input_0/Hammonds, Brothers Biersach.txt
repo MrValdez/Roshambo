@@ -1,0 +1,53 @@
+[info]
+name = Rintala, Lachaille Drenan
+Dominant Parent = Valdez, Data Estrada.txt
+Mate = Abel, Somchart Younan.txt
+MutateFrom = Rintala, Ni Bushell.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 6
+PP 9
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+PP 16
+PP 17
+PP 18
+PP 20
+PP 23
+PP 25
+PP 27
+PP 29
+MBFP 1
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.1604385654699483
+AB = -0.012890286746152599
+AC = -0.17724578311338113
+BA = 0.5770064889049569
+BB = 0.24085296550791135
+BC = -1.1416970727344087
+CA = 1.5066770222571197
+CB = 0.12879970748662356
+CC = 1.0804050619608194
+
+[yomi-score preferences]
+A = 0.536230571164449
+B = 1.0
+C = 0.3573545829839807
+

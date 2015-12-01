@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Bluschke, Laverne Krisa
+Dominant Parent = Bluschke, Attilio Ivancevic.txt
+Mate = Krisa, objector Krisa.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7243290302122567
+AB = 0.0
+AC = 0.0
+BA = 1.5640792630942033
+BB = 0.31230016554700335
+BC = 0.20417596142412994
+CA = 1.171425167021263
+CB = 1.1555479132547333
+CC = 0.2296574346096921
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

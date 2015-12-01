@@ -125,9 +125,11 @@ class PatternPredictor:
         maxCount = max(tally)
         numCount = tally.count(maxCount)
 
+        confidence = maxCount / sum(tally)
+
         if numCount == 1:
             # we don't have a tie for maximum. Get the highest move
-            confidence = 1.0
+            #confidence = 1.0
             prediction = tally.index(maxCount)
             if Debug:
                 print(":Highest tally found")
@@ -149,62 +151,24 @@ class PatternPredictor:
         prediction = -1
         moveCountMax = max(moveCounts)
         moveCountNum = moveCounts.count(moveCountMax)
+        
+        #confidence = moveCountNum / 3
+#        if moveCountNum == 2: confidence = 0.5
+#        elif moveCountNum == 3: confidence = 1/3
+#        else: confidence = 1
+        
         if moveCountNum == 1:
             if Debug:
                 print(":tally has ties. Found one move played the most")
 
             index = moveCounts.index(moveCountMax)
             prediction = index
-            
-            # targetDifference is the max number of counted tally where the AI becomes very confident of its answer
-            targetDifference = self.targetDifference           
-            
-            # confidence = difference between the highest tally and how close it is to targetDifference
-            confidence = (sum(moveCounts) - moveCountMax) / targetDifference
- #           confidence = 1
-            
-            if confidence >= 1: 
-                confidence = 1
-            elif confidence > 0 and targetDifference > 1:
-                #confidence = (confidence * 0.5) + 0.5
-                confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
-                #print(confidence)
-            else:
-                confidence = 0
-            
-            confidence = (sum(moveCounts) - moveCountMax) / targetDifference
-            
-            
-#            confidence = latestFoundSeq / len(History)
-            
-            
-            #confidence = math.log(sum(moveCounts) - moveCountMax, targetDifference + 1)
-            #confidence = math.log(moveCounts[index], sum(moveCounts))
-            #confidence = moveCounts[index] / sum(moveCounts)
-#            sumOfOtherCounts = ((0 if index == 0 else moveCounts[0]) + 
-#                                (0 if index == 1 else moveCounts[1]) +
-#                                (0 if index == 2 else moveCounts[2]))
-            #confidence = sumOfOtherCounts / moveCounts[index]
-            #confidence = math.log(sumOfOtherCounts, moveCounts[index])
-            #print(moveCounts)
-            #print(moveCounts[index], sum(moveCounts))
-            #print(((moveCounts[0] if index != 0 else 0) + (moveCounts[1] if index != 1 else 0) + (moveCounts[2] if index != 2  else 0)))
-            #print (confidence)
-            #confidence = 0.6           ##
-            #confidence = 1
-            
-            if Debug:
-                print ("target difference: ", targetDifference)
-                print (moveCounts[prediction], sum(moveCounts), moveCountMax - sum(moveCounts), confidence)
 
-#            if Debug and confidence > 1: 
-#                print(confidence, sum(moveCounts) - moveCountMax)
-#                input()
-                
-            if confidence > 1: confidence = 1
             return prediction, confidence
 
-        # choose the move the was used last        
+        # choose the move the was used last
+        #confidence /= 2
+        
         if Debug:
             print(":Grabbing the move that was used last")
             
@@ -227,25 +191,19 @@ class PatternPredictor:
             
         if latestR and (latestR > latestP or latestR > latestS):
             prediction = 0
-            confidence = distToR - (distToP + distToS)
-            confidence = distToR
 
         if latestP and (latestP > latestR or latestP > latestS):
             prediction = 1
-            confidence = distToP - (distToR + distToS)
-            confidence = distToP
 
         if latestS and (latestS > latestP or latestS > latestR):
             prediction = 2
-            confidence = distToS - (distToP + distToR)
-            confidence = distToS 
-
-        #confidence = 1
 
         if prediction != -1:
             return prediction, confidence
 
         # if we still have a tie, choose between them using a random number
+        raise BaseException #shouldn't get here.
+        
         sumCount = maxCount * numCount
         
         for i, count in enumerate(tally):

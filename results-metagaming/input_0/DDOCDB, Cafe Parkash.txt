@@ -1,0 +1,49 @@
+[info]
+name = Hoque, Ladi Neal
+Mutate From = Hoque, Conchi Fargis
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6889450590010104
+AB = 0.0
+AC = 0.0
+BA = 1.018429643385955
+BB = 0.8442333448338958
+BC = 0.31191166102035384
+CA = 0.9861046652378607
+CB = 0.9020366986800405
+CC = 0.3722023244746989
+
+[yomi-score preferences]
+A = 0.9633775443679657
+B = 0.4957514762190133
+C = 0.16031194692502862
+

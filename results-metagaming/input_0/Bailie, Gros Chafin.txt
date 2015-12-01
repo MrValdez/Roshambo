@@ -1,0 +1,45 @@
+[info]
+Mutate From = Bryan, objector Demone
+name = Bryan, Reppe Giguere
+Dominant Parent = Bryan, Escape Marcom.txt
+Mate = Demone, played Horgan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5823757008724473
+AB = 0.0
+AC = 0.0
+BA = 1.35139055016152
+BB = 0.6194106181911849
+BC = 0.028003331894906114
+CA = 1.7384574280651808
+CB = 0.9010548303508675
+CC = 0.16712215422270696
+
+[yomi-score preferences]
+A = 0.0
+B = 0.015149027434657208
+C = 0.08816916304238942
+

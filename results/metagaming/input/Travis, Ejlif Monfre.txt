@@ -1,0 +1,44 @@
+[info]
+Mutate From = Helton, Fritz-Patrick Bagwell
+name = Travis, Ejlif Monfre
+Dominant Parent = Travis, Redband Faust.txt
+Mate = Monfre, Corey Syssupport.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.612613355218548
+AB = 0.10863182464885857
+AC = 0.007442649125969258
+BA = 0.4211549843116175
+BB = 1.5718194109474475
+BC = 0.46050757537376974
+CA = 1.1105906729067225
+CB = 0.8354059177331864
+CC = 0.21533340973743167
+
+[yomi-score preferences]
+A = 0.3473702047348646
+B = 0.5795829977256396
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

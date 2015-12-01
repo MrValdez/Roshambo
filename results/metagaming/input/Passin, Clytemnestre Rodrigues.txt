@@ -1,0 +1,45 @@
+[info]
+Mutate From = Helton, Fritz-Patrick Bagwell
+name = Helton, NdurinF. Shingler
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+random 0.015131516366962881 0.10052203817524938 50.16323236688919
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+PP 23
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.4994870553384538
+AB = 0.0
+AC = 0.0704556688087915
+BA = 0.35581454598460416
+BB = 1.5718194109474475
+BC = 0.4459236617230392
+CA = 1.0514076218002937
+CB = 0.870659790411955
+CC = 0.15023872947896247
+
+[yomi-score preferences]
+A = 0.18050120608798415
+B = 0.0
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

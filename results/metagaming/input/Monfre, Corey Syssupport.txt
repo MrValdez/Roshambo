@@ -1,0 +1,48 @@
+[info]
+Mutate From = Bellis, Marmaduke Akbas
+name = Bellis, Hector Kaudel
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+MBFP 2
+PP 32
+PP 21
+MBFP 8
+PP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.317377017501521
+AB = 0.0
+AC = 0.0
+BA = 0.4211549843116175
+BB = 1.3270232434832474
+BC = 0.6039412663999932
+CA = 1.1105906729067225
+CB = 0.9325571177447463
+CC = 0.5133369684759084
+
+[yomi-score preferences]
+A = 0.2866468568187849
+B = 0.5795829977256396
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

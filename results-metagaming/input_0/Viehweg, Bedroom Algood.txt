@@ -1,0 +1,45 @@
+[info]
+name = Brooke, Wulfgar Lyliston
+MutateFrom = Banville, Alito Banville.txt
+Dominant Parent = Hayden, Myriam Baccari.txt
+Mate = Anhorn, Varrick Banville.txt
+Mutate From = Brooke, Wieck Wertz
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 8
+PP 11
+PP 12
+PP 20
+PP 23
+PP 25
+PP 26
+PP 28
+PP 29
+MBFP 1
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.8230766332059088
+AB = 0.006622847306502422
+AC = 0.0
+BA = 0.9769893483292262
+BB = 0.8379313693474769
+BC = 0.38533869225009465
+CA = 1.1659810126492827
+CB = 0.38063856410506536
+CC = 0.2596762923553673
+
+[yomi-score preferences]
+A = 0.8779350739125035
+B = 0.3289405873575071
+C = 0.159437108955991
+

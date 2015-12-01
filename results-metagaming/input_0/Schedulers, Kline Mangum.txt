@@ -1,0 +1,60 @@
+[info]
+name = Herndon, Fairbairn Kauffeldt
+Dominant Parent = Longfield, Bryon Bnrlsi.txt
+Mate = Soong, Data B1.txt
+Mutate From = Herndon, Mountolive Tibi
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 10
+PP 11
+PP 12
+PP 13
+PP 14
+PP 15
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 28
+MBFP 1
+MBFP 30
+MBFP 29
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.0392461614250326
+AB = 0.06619089616588558
+AC = 0.03064467865006454
+BA = 1.0666208406506894
+BB = 0.7926242072608354
+BC = 0.004396470472673872
+CA = 1.5023826529343285
+CB = 0.6140917107587002
+CC = 0.0038278248908700935
+
+[yomi-score preferences]
+A = 0.9884680095180085
+B = 0.9081264053291802
+C = 0.3572799066374757
+

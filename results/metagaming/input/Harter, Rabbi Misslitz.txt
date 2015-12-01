@@ -1,0 +1,43 @@
+[info]
+Mutate From = Rondeau, Thor Chapdelaine
+name = Rondeau, VI Haggerty
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.6260755233855009
+AB = 0.0
+AC = 0.06756279267939425
+BA = 0.09064689039119589
+BB = 1.340414667659484
+BC = 0.683615295039994
+CA = 1.0541725186609483
+CB = 0.8698255695213388
+CC = 0.5557579102087413
+
+[yomi-score preferences]
+A = 0.418868104480701
+B = 0.0
+C = 0.2088420194142419
+
+[yomi-score preferences weight]
+weight = 1.0
+

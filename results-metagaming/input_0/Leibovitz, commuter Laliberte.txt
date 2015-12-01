@@ -1,0 +1,60 @@
+[info]
+name = Leibovitz, commuter Laliberte
+Dominant Parent = Leibovitz, Nussbaum Leibovitz.txt
+Mate = Leibovitz, Crupi Leibovitz.txt
+MutateFrom = Leibovitz, Balthasar Leibovitz.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 11
+PP 12
+PP 13
+PP 14
+PP 16
+PP 17
+PP 18
+PP 19
+PP 20
+PP 21
+PP 22
+PP 24
+PP 25
+PP 26
+PP 27
+PP 28
+PP 29
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.47244749521827634
+AB = 0.0
+AC = 0.0
+BA = 1.0
+BB = 1.0
+BC = 0.25577780636346326
+CA = 0.7561439075238033
+CB = 0.28476630194038577
+CC = 0.1941483921377758
+
+[yomi-score preferences]
+A = 1.0
+B = 0.48887395599576244
+C = 0.2287561404827101
+

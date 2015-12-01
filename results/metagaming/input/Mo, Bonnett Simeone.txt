@@ -1,0 +1,48 @@
+[info]
+Mutate From = Mciver, Skinney Schoenermarck
+name = Mciver, Trades Fitz
+Dominant Parent = Balkenhol, Duncannon Swazey.txt
+Mate = Chaudhary, OPERA Dimillo.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 11
+PP 13
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 13
+PP 28
+MBFP 17
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7979350193210031
+AB = 0.06638966260703089
+AC = 0.19544135686113795
+BA = 1.7601956780522139
+BB = 1.5657813485886183
+BC = 0.08024831785390607
+CA = 0.7693511608898227
+CB = 2.4075542225531836
+CC = 0.9973611985158645
+
+[yomi-score preferences]
+A = 1.0
+B = 0.4554383535559052
+C = 0.3009887611037309
+
+[yomi-score preferences weight]
+weight = 1.0
+

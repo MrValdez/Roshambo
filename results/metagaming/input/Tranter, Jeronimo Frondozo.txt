@@ -1,0 +1,43 @@
+[info]
+Mutate From = Gobeli, Cartaret Bereza
+name = Gobeli, DeFarge Pieron
+Dominant Parent = Helton, Fritz-Patrick Bagwell.txt
+Mate = Monfre, Corey Syssupport.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 3.1086284601601393
+AB = 0.4785147953735332
+AC = 0.23368957459901674
+BA = 0.4950386342481404
+BB = 1.5582349853758954
+BC = 0.7077962763132247
+CA = 1.6519053381525735
+CB = 0.5603135010570048
+CC = 0.5133369684759084
+
+[yomi-score preferences]
+A = 0.1417874935416089
+B = 0.0
+C = 0.9711679609753008
+
+[yomi-score preferences weight]
+weight = 1.0
+

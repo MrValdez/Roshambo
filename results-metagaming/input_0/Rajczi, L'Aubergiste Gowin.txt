@@ -1,0 +1,44 @@
+[info]
+name = Bierbrier, Krantz Costen
+MutateFrom = Bierbrier, Carla Carrmtce.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 10
+PP 12
+PP 13
+PP 14
+PP 15
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.9133134935276384
+AB = -0.13366820044432842
+AC = 0.07611275704311005
+BA = 0.6005936736022504
+BB = 0.15949271697116219
+BC = 0.4407192000158367
+CA = 0.95
+CB = 0.4601166884216701
+CC = -0.7931442387771803
+
+[yomi-score preferences]
+A = 0.5403940889442445
+B = 0.7245569370727173
+C = 0.0
+

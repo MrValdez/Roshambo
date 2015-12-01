@@ -1,0 +1,43 @@
+[info]
+name = Bierbrier, Tilde Tello
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.57933959092899
+AB = -0.13366820044432842
+AC = -0.018780963280190965
+BA = 0.7559505042800565
+BB = -0.06260738278285272
+BC = 0.6996117992469404
+CA = 0.8745649747002558
+CB = 0.4880484676946555
+CC = 0.03626304663895452
+
+[yomi-score preferences]
+A = 0.835402373323546
+B = 0.5                 # Mid influence
+C = 0.5273490566819675
+

@@ -1,0 +1,44 @@
+[info]
+Mutate From = Bluschke, Keeper Chaudhary
+name = Bluschke, Harrihan Sabat
+Dominant Parent = Bluschke, Attilio Ivancevic.txt
+Mate = Chaudhary, Snap KleynenbergNTNTIB.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+MBFP 2
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6858288287371279
+AB = 0.4662599854977237
+AC = 0.0
+BA = 1.0884396896010484
+BB = 0.8184533976072021
+BC = 0.32064958382256437
+CA = 1.7327358603392604
+CB = 0.6148716567717017
+CC = 0.3294325681676941
+
+[yomi-score preferences]
+A = 0.0
+B = 0.3790525638683032
+C = 0.0
+

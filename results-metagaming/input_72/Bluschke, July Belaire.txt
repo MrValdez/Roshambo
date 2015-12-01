@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Bluschke, July Belaire
+Dominant Parent = Bluschke, Keeper Chaudhary.txt
+Mate = Belaire, Baylor Kohalmi.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7969757605228014
+AB = 0.31354933837124016
+AC = 0.0
+BA = 1.8983195486707007
+BB = 0.31230016554700335
+BC = 0.7083634184819663
+CA = 1.6895361215449993
+CB = 1.562824305896444
+CC = 0.006323282101358324
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

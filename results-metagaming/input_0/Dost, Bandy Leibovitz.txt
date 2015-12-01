@@ -1,0 +1,60 @@
+[info]
+name = Soong, Mishkin Sobeck
+Dominant Parent = Dost, Bardinet Abbatantuono.txt
+Mate = Leibovitz, Horseface Leibovitz.txt
+MutateFrom = Soong, Gopowalla McFadden.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 7
+PP 8
+PP 9
+PP 11
+PP 12
+PP 13
+PP 14
+PP 16
+PP 18
+PP 20
+PP 21
+PP 22
+PP 23
+PP 24
+PP 25
+PP 26
+PP 27
+PP 28
+PP 29
+MBFP 2
+PP 17
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.4333788510643988
+AB = 0.0
+AC = 0.12081743607008055
+BA = 0.7909857529152642
+BB = 0.562390627032638
+BC = 0.5833635724073978
+CA = 0.0
+CB = 0.6182479143428681
+CC = 0.0
+
+[yomi-score preferences]
+A = 1.0
+B = 0.27704080542250664
+C = 0.8850812838247559
+

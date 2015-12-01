@@ -1,0 +1,52 @@
+[info]
+name = Ianace, Korsos Coley
+Dominant Parent = Valdez, Data Estrada.txt
+Mate = Abel, Somchart Younan.txt
+MutateFrom = Ianace, Comedy Murphy-king (from gen 147)
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 1
+PP 2
+PP 3
+PP 6
+PP 9
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+PP 17
+PP 18
+PP 20
+PP 23
+PP 25
+PP 27
+PP 29
+MBFP 1
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.1204167163952323
+AB = -0.24985393875378276
+AC = -0.17724578311338113
+BA = 0.9433198378499768
+BB = -0.2525843895973384
+BC = -0.7880524884548159
+CA = 1.2672154435911218
+CB = -0.20643484736925094
+CC = -0.062191435585045696
+
+[yomi-score preferences]
+A = 1.0
+B = 0.5609595642895328
+C = 0.2676407428212785
+

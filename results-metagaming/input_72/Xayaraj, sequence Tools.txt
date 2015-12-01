@@ -1,0 +1,49 @@
+[info]
+Mutate From = Krisa, objector Krisa
+name = Krisa, Noi Towns
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+MBFP 28
+MBFP 31
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5283776609487119
+AB = 0.11072459389824235
+AC = 0.004759146210056103
+BA = 1.674146679891962
+BB = 0.36822635093655415
+BC = 0.20417596142412994
+CA = 1.2492118697578114
+CB = 0.9248428338107636
+CC = 0.2296574346096921
+
+[yomi-score preferences]
+A = 0.0
+B = 0.19650729035418324
+C = 0.3633509445266215
+

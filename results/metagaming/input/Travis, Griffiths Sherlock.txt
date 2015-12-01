@@ -1,0 +1,44 @@
+[info]
+Mutate From = Helton, Fritz-Patrick Bagwell
+name = Travis, Griffiths Sherlock
+Dominant Parent = Travis, Redband Faust.txt
+Mate = Sherlock, Vernon Bromley.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.8256269159971548
+AB = 0.0
+AC = 0.0
+BA = 1.225289104577369
+BB = 0.9148438880495182
+BC = 0.6431511169284783
+CA = 1.2871397086946113
+CB = 0.7576039219664368
+CC = 0.05950069611865347
+
+[yomi-score preferences]
+A = 0.0
+B = 0.1210650537021371
+C = 0.24566015989977524
+
+[yomi-score preferences weight]
+weight = 1.0
+

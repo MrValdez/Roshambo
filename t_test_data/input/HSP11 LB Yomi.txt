@@ -1,0 +1,29 @@
+[info]
+name="Yomi - HSP11 - Lower Bound - Disabled SI"
+rng = gcc       # use the original rng
+[strategies]
+# random, none
+random
+[strategy ranking]
+# wilson-high, wilson-low, none
+wilson-low
+[predictors]
+# PP ?, MBFP ?, rock, none
+PP 11
+[predictor ranking]
+# wilson-high, wilson-low, none
+wilson-low
+[yomi preferences]
+AA=1
+AB=0.01
+AC=0
+BA=1.0
+BB=0.3
+BC=0.2
+CA=1.0
+CB=0.7
+CC=0.1
+[yomi-score preferences]
+A=1.0                 # Highest influence
+B=1.0                 # Mid influence
+C=1.0                 # Lowest influence

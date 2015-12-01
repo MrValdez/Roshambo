@@ -1,0 +1,48 @@
+[info]
+Mutate From = Krisa, Faccino Horgan
+name = Krisa, Schiavi Wyllie
+Dominant Parent = Krisa, Zlatka Andre.txt
+Mate = Horgan, Marsdon Pambianchi.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7574722502419462
+AB = 0.017136031893933867
+AC = 0.10759098391447941
+BA = 1.3541937081377373
+BB = 1.5602161926803026
+BC = 0.0537855086345328
+CA = 0.8791723799570388
+CB = 1.2974615802911507
+CC = 0.47368577724380834
+
+[yomi-score preferences]
+A = 0.0
+B = 0.20848670736668606
+C = 0.0
+

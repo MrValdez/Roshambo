@@ -1,0 +1,48 @@
+[info]
+name = Pellegrini, Kier Balanger
+Mutate From = Pellegrini, Gelsey Sheidafar
+Dominant Parent = Zolmer, Minissi O'Neil.txt
+Mate = Anhorn, Varrick Banville.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.8164128638509551
+AB = 0.0
+AC = 0.025221008553438562
+BA = 1.0926632905757396
+BB = 0.7720383219410848
+BC = 0.34378105553099975
+CA = 1.0721921904362843
+CB = 0.8373656035383317
+CC = 0.4209662055532103
+
+[yomi-score preferences]
+A = 0.9744545605792077
+B = 0.4659718946426337
+C = 0.32489724891848937
+

@@ -1,0 +1,48 @@
+[info]
+Mutate From = Bellis, Marmaduke Akbas
+name = Monfre, Franchette Kamminga
+Dominant Parent = Monfre, Corey Syssupport.txt
+Mate = Kamminga, Rage Weisenberg.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+MBFP 2
+PP 32
+PP 21
+MBFP 8
+PP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.398945876778111
+AB = 0.0
+AC = 0.02610170205236506
+BA = 0.4211549843116175
+BB = 1.3270232434832474
+BC = 0.44938244787808307
+CA = 1.3514874210560537
+CB = 1.2150311332188881
+CC = 0.8862082956077877
+
+[yomi-score preferences]
+A = 0.19863282682288114
+B = 0.0
+C = 1.0
+
+[yomi-score preferences weight]
+weight = 1.0
+

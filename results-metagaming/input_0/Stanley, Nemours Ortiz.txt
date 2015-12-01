@@ -1,0 +1,50 @@
+[info]
+name = Kiens, Esker Hagstrom
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Kiens, Pease Bushnik
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+MBFP 19
+MBFP 18
+MBFP 6
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.5538109391929174
+AB = -0.036397603527252326
+AC = -0.06306881245785015
+BA = 0.7186822877063839
+BB = -0.05577202430250357
+BC = 0.7940926660668087
+CA = 0.9024034544563476
+CB = 0.5297474159316283
+CC = -0.04620845286103109
+
+[yomi-score preferences]
+A = 0.15901889768584632
+B = 0.33451735469984284
+C = 0.552403199419448
+

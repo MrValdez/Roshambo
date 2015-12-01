@@ -1,0 +1,48 @@
+[info]
+Mutate From = Godden, Marya MacKenzie
+name = Krisa, Faccino Horgan
+Dominant Parent = Krisa, Zlatka Andre.txt
+Mate = Horgan, Marsdon Pambianchi.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.9329449603219394
+AB = 0.0
+AC = 0.0
+BA = 1.5249641349954293
+BB = 1.5602161926803026
+BC = 0.0537855086345328
+CA = 0.8791723799570388
+CB = 1.368059207901736
+CC = 0.47368577724380834
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

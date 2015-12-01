@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Bluschke, Keeper Chaudhary
+Dominant Parent = Bluschke, Attilio Ivancevic.txt
+Mate = Chaudhary, Snap KleynenbergNTNTIB.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.6858288287371279
+AB = 0.0
+AC = 0.0
+BA = 1.0884396896010484
+BB = 0.5473435347393936
+BC = 0.40834737927749193
+CA = 1.7327358603392604
+CB = 0.6148716567717017
+CC = 0.19475602309933698
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

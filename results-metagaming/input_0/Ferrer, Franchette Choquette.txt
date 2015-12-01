@@ -1,0 +1,49 @@
+[info]
+name = Ferrer, Franchette Choquette
+Mutate From = Hoque, Conchi Fargis
+Dominant Parent = Ferrer, Tamise Bovee.txt
+Mate = Choquette, notary Bame.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.679584514297702
+AB = 0.0
+AC = 0.0
+BA = 0.946880807229784
+BB = 0.726956747015713
+BC = 0.31852454854189843
+CA = 1.0
+CB = 0.9020366986800405
+CC = 0.3346150542366595
+
+[yomi-score preferences]
+A = 1.0
+B = 0.5329166283310524
+C = 0.19391809784132918
+

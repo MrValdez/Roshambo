@@ -1,0 +1,47 @@
+[info]
+name = Dumouchel, commissioner Sotelo
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Dumouchel, Overman Belzile
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.47620790091309606
+AB = -0.13366820044432842
+AC = -0.06306881245785015
+BA = 0.7471197854691622
+BB = -0.06260738278285272
+BC = 0.7370197440370606
+CA = 0.8961733726730243
+CB = 0.5023482261605775
+CC = 0.02620813854264581
+
+[yomi-score preferences]
+A = 0.312004440205616
+B = 0.46038905730407637
+C = 0.5329151835868365
+

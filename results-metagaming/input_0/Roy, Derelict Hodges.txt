@@ -1,0 +1,46 @@
+[info]
+Mutate From = Bryan, Escape Marcom
+name = Bryan, Galveston Mtl
+Dominant Parent = Bryan, Conovan Bunner.txt
+Mate = Marcom, LUCKY Masters.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.06490114650567091
+AB = 0.0
+AC = 0.0
+BA = 1.0072371871289407
+BB = 0.808058192837575
+BC = 0.07551346190817268
+CA = 1.0635897648827608
+CB = 0.9161429578752571
+CC = 0.21840394139801694
+
+[yomi-score preferences]
+A = 0.46219934516294964
+B = 0.0
+C = 0.3023689915244339
+

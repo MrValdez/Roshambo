@@ -1,0 +1,48 @@
+[info]
+Mutate From = Godden, Marya MacKenzie
+name = Krisa, Guildenstern Krisa
+Dominant Parent = Krisa, Faccino Horgan.txt
+Mate = Krisa, played Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.3114541433846616
+AB = 0.0
+AC = 0.0
+BA = 1.5249641349954293
+BB = 1.5602161926803026
+BC = 0.1582676670350194
+CA = 1.0055430228315574
+CB = 0.9579204056895855
+CC = 0.48889561631803174
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

@@ -244,10 +244,6 @@ class Yomi:
         layer2ratio = 0
         layer3ratio = 0
 
-#        layer1score = self.yomiHistoryWins.count("0") + self.yomiHistoryLosts.count("0") #- int(self.yomiHistoryTies.count("0")/1)
-#        layer2score = self.yomiHistoryWins.count("1") + self.yomiHistoryLosts.count("1") #- int(self.yomiHistoryTies.count("1")/1)
-#        layer3score = self.yomiHistoryWins.count("2") + self.yomiHistoryLosts.count("2") #- int(self.yomiHistoryTies.count("2")/1)
-
         layer1score = self.yomiLayerWins[0] #- self.yomiLayerLosts[0]# - self.yomiLayerTies[0]
         layer2score = self.yomiLayerWins[1] #- self.yomiLayerLosts[1]# - self.yomiLayerTies[1]
         layer3score = self.yomiLayerWins[2] #- self.yomiLayerLosts[2]# - self.yomiLayerTies[2]
@@ -289,21 +285,13 @@ class Yomi:
         if layer1ratio > 1: layer1ratio = 1
         if layer2ratio > 1: layer2ratio = 1
         if layer3ratio > 1: layer3ratio = 1
-            
-##
-#        transitionAA *= layer1ratio
-#        transitionBA *= layer1ratio
-#        transitionCA *= layer1ratio
-       
-#        transitionAB *= layer2ratio
-#        transitionBB *= layer2ratio
-#        transitionCB *= layer2ratio
         
-#        transitionAC *= layer3ratio
-#        transitionBC *= layer3ratio
-#        transitionCC *= layer3ratio
-##
+        weight = dna.yomi_score_preferences_weight         # yomi-score preference weight .
 
+        layer1ratio *= weight
+        layer2ratio *= weight
+        layer3ratio *= weight
+        
         transitionAA += layer1ratio
         transitionBA += layer1ratio
         transitionCA += layer1ratio
@@ -315,15 +303,6 @@ class Yomi:
         transitionAC += layer3ratio
         transitionBC += layer3ratio
         transitionCC += layer3ratio
-
-##
-#        transitionAB -= layer1ratio
-        
-#        transitionBA -= layer2ratio
-#        transitionBC -= layer2ratio
-        
-#        transitionCA -= layer3ratio
-#        transitionCB -= layer3ratio
 
 ##
         if Debug:
@@ -484,6 +463,7 @@ class Yomi:
 #                    layerToUse, layerConfidence = -1, ownPlayConfidence
 
             #print(dice, dice - ownPlayConfidence, layerConfidence, ownPlayConfidence)
+
             if layerConfidence == 0:
                 layerToUse, layerConfidence = -1, ownPlayConfidence
             elif layerConfidence < ownPlayConfidence:
@@ -554,7 +534,7 @@ def init(dna):
     global yomi, strategy, predictorSelector
     
     yomi = Yomi()
-    strategy = RPSstrategy.RPSstrategy()
+    strategy = RPSstrategy.RPSstrategy(dna)
     predictorSelector = yomiPredictorSelector.PredictorSelector(dna)
     
 

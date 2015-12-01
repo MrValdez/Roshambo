@@ -1,0 +1,45 @@
+[info]
+Mutate From = Dupras, Hagon Lunn
+name = Dupras, Aide Merciline
+Dominant Parent = Fanthome, Nastia Garrett.txt
+Mate = Oxendine, objector Goddard.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-low
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.810729064792846
+AB = 0.0
+AC = 0.0
+BA = 1.2740614034605222
+BB = 0.8925865832716758
+BC = 0.4586492609596673
+CA = 1.4886864559066986
+CB = 1.38664128009075
+CC = 0.5294221100725856
+
+[yomi-score preferences]
+A = 0.061005190031226175
+B = 0.0
+C = 0.0
+

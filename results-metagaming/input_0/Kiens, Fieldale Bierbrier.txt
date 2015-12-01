@@ -1,0 +1,49 @@
+[info]
+name = Kiens, Fieldale Bierbrier
+MutateFrom = Bierbrier, Carla Carrmtce (gen 135)
+Mutate From = Sapena, Nickie Hippert
+Dominant Parent = Kiens, Pease Bushnik.txt
+Mate = Bierbrier, Carla Carrmtce.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+PP 15
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.8572129653124663
+AB = -0.03397713846757655
+AC = 0.0007127208495601722
+BA = 0.6515918613195599
+BB = 0.06306775836622648
+BC = 0.3533137581923317
+CA = 0.95
+CB = 0.0892553530399471
+CC = -0.2989813259213209
+
+[yomi-score preferences]
+A = 0.835402373323546
+B = 0.5                 # Mid influence
+C = 0.5329151835868365
+

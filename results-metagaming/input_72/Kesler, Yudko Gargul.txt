@@ -1,0 +1,46 @@
+[info]
+Mutate From = Olmstead, Leeland Lehtovaara
+name = Olmstead, Flamenca Brunoni
+Dominant Parent = Rowell, Nuget Jewett.txt
+Mate = Delle, Clooney Moorcroft.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 14
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7572978801816026
+AB = 0.0
+AC = 0.0
+BA = 0.23695398067971596
+BB = 0.7920540637972138
+BC = 0.7582096768015792
+CA = 0.8851503453835781
+CB = 0.20512825840845994
+CC = 0.2362764338715471
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.06784425340732458
+

@@ -1,0 +1,48 @@
+[info]
+Mutate From = Sherlock, Vernon Bromley
+name = Sherlock, Walks Telke
+Dominant Parent = Krisa, Faccino Fanthome.txt
+Mate = Krisa, objector Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 5
+PP 6
+PP 8
+PP 11
+PP 13
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.8256269159971548
+AB = 0.0
+AC = 0.3414355050721331
+BA = 0.8294212806711112
+BB = 0.01096949549411852
+BC = 0.9643234749152129
+CA = 1.2871397086946113
+CB = 0.7576039219664368
+CC = 0.6485651243595747
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.4737249308893109
+
+[yomi-score preferences weight]
+weight = 1.0
+

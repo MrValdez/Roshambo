@@ -1,0 +1,45 @@
+[info]
+Mutate From = Beaulieu, Roelofs Pratt
+name = Beaulieu, Baldassare Robitaille
+Dominant Parent = Krisa, played Demone.txt
+Mate = Bryan, objector Fanthome.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+PP 28
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5262510972893728
+AB = 0.0
+AC = 0.5316333407938276
+BA = 1.4694162988891586
+BB = 0.4884313550982527
+BC = 0.7557319791709252
+CA = 0.9858357948212648
+CB = 0.9003381069044181
+CC = 1.0369169533411398
+
+[yomi-score preferences]
+A = 0.0
+B = 0.9199251459635505
+C = 0.0
+

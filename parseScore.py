@@ -4,6 +4,7 @@ import sys
 import os
 
 pathbase = "./results/output/"             # Note: this string should end with "/"
+pathbase = "./DNAVillage/output_197/"             # Note: this string should end with "/"
 
 def FindScore(bot, showresults):
     """Get the best and worst score of a bot against Yomi AI"""
@@ -19,7 +20,9 @@ def FindScore(bot, showresults):
     
     for filename in fileList:
         if filename[-4:] != ".txt":
-            print("%s is not txt file" % (filename))
+            if showresults:
+                print("%s is not txt file" % (filename))
+            continue
         
         variable = filename.split(".")[0]
             

@@ -1,0 +1,46 @@
+[info]
+Mutate From = Heinke, manor Gadouchis
+name = Heinke, Mervyn DuBois
+Dominant Parent = Chaudhary, Snap KleynenbergNTNTIB.txt
+Mate = Dimillo, objector Horgan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.39155665988675037
+AB = 0.205224950399354
+AC = 0.05826290592800348
+BA = 1.6056262358108544
+BB = 1.3537763292550347
+BC = 0.3227348232843045
+CA = 1.599885782034022
+CB = 1.346634532691908
+CC = 0.8104173838067577
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.2332587522330719
+

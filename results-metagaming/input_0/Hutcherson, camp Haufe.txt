@@ -1,0 +1,47 @@
+[info]
+Mutate From = Krisa, Faccino Fanthome
+name = Krisa, Recruting Bunce
+Dominant Parent = Krisa, Faccino Horgan.txt
+Mate = Fanthome, Phelps Peptis.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.9502570297149524
+AB = 0.2932479464827265
+AC = 0.09705547282296201
+BA = 1.6093119439039307
+BB = 2.293527315569633
+BC = 0.3449871916720036
+CA = 1.4886864559066986
+CB = 1.2823734959293709
+CC = 0.592766205390937
+
+[yomi-score preferences]
+A = 0.031799134585872274
+B = 0.0
+C = 0.23821936197746124
+

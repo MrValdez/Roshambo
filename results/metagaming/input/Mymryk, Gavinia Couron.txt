@@ -1,0 +1,43 @@
+[info]
+Mutate From = Travis, Redband Faust
+name = Travis, Toshio Blake-Knox
+Dominant Parent = Tilton, Morevitch Smothers.txt
+Mate = Bellis, Marmaduke Akbas.txt
+
+[strategies]
+random
+random 0.01382264826597088 0.10435470090780036 49.78605955754432
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 3
+PP 4
+PP 5
+PP 6
+PP 10
+MBFP 2
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.5526365229145542
+AB = 0.0
+AC = 0.14153098392398206
+BA = 0.7435585977249248
+BB = 1.993266729186378
+BC = 0.4459236617230392
+CA = 1.0514076218002937
+CB = 0.8727362667483457
+CC = 0.05950069611865347
+
+[yomi-score preferences]
+A = 0.28224468127993274
+B = 0.07330867907438415
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

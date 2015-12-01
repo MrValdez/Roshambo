@@ -1,0 +1,47 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Bluschke, Taplinger Krisa
+Dominant Parent = Bluschke, Dacoit Bluschke.txt
+Mate = Krisa, Faello Bryan.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+MBFP 27
+PP 21
+MBFP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.7566878503070968
+AB = 0.0
+AC = 0.09114103193302275
+BA = 0.7882857561530953
+BB = 0.7760332955424307
+BC = 0.012166554340253932
+CA = 1.2354929655353977
+CB = 1.2511032467014531
+CC = 0.36928950130535265
+
+[yomi-score preferences]
+A = 0.48665921479954205
+B = 0.0
+C = 0.0
+

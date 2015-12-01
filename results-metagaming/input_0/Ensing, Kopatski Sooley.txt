@@ -1,0 +1,46 @@
+[info]
+Mutate From = Krisa, played Demone-II
+name = Krisa, Haverstick Asghar
+Dominant Parent = Krisa, played Dimillo.txt
+Mate = Demone, Attila Anstead.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 5
+PP 6
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 0.9303820842853645
+AB = 0.33294900781264325
+AC = 0.0
+BA = 1.6293550746070051
+BB = 0.6685196429222047
+BC = 0.00443058786601036
+CA = 1.1394016040414934
+CB = 1.1257029243242176
+CC = 0.874354851385825
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

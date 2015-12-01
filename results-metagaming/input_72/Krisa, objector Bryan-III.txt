@@ -1,0 +1,48 @@
+[info]
+Mutate From = Godden, Marya MacKenzie
+name = Krisa, objector Bryan
+Dominant Parent = Krisa, played Demone-II.txt
+Mate = Bryan, objector Demone.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 3
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 11
+PP 13
+PP 14
+MBFP 2
+PP 32
+MBFP 27
+MBFP 14
+PP 21
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 1.709642176907359
+AB = 0.0
+AC = 0.0
+BA = 1.188036196921339
+BB = 0.4710303217312925
+BC = 0.1582676670350194
+CA = 1.581732695601434
+CB = 0.8441892550121496
+CC = 0.20502695336161939
+
+[yomi-score preferences]
+A = 0.0
+B = 0.0
+C = 0.0
+

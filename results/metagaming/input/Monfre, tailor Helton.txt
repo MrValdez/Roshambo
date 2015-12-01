@@ -1,0 +1,48 @@
+[info]
+Mutate From = Bellis, Marmaduke Akbas
+name = Monfre, tailor Helton
+Dominant Parent = Monfre, Corey Syssupport.txt
+Mate = Helton, Fritz-Patrick Bagwell.txt
+
+[strategies]
+random
+
+[strategy ranking]
+wilson-high
+
+[predictors]
+PP 2
+PP 4
+PP 5
+PP 6
+PP 8
+PP 10
+PP 13
+MBFP 2
+PP 32
+PP 21
+MBFP 8
+PP 14
+
+[predictor ranking]
+wilson-high
+
+[yomi preferences]
+AA = 2.727083578997847
+AB = 0.27424482346595597
+AC = 0.27871848056544973
+BA = 0.4730851693471916
+BB = 1.5718194109474475
+BC = 0.4459236617230392
+CA = 1.0514076218002937
+CB = 1.160499800946205
+CC = 0.20304388892881506
+
+[yomi-score preferences]
+A = 0.0
+B = 0.5795829977256396
+C = 0.21322084779196288
+
+[yomi-score preferences weight]
+weight = 1.0
+

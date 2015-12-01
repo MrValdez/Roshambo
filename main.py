@@ -14,7 +14,7 @@ class cDNA:
             self.predictor_ranking      = []
             self.yomi_preferences       = [0] * 3 * 3
             self.yomi_score_preferences = [0] * 3
-        
+            
             filename = "results/input/base.txt"
             self.load(filename)
         else:
@@ -35,6 +35,14 @@ class cDNA:
         self.predictor_ranking      = [cleanup(spam) for spam in config["predictor ranking"]][0]
         self.yomi_preferences       = [float(cleanup(spam)) for spam in config["yomi preferences"].values()]
         self.yomi_score_preferences = [float(cleanup(spam)) for spam in config["yomi-score preferences"].values()]
+        
+        if "yomi-score preferences weight" in config:
+            # late addition to GA
+            self.yomi_score_preferences_weight = [float(cleanup(spam)) for spam in config["yomi-score preferences weight"].values()][0]
+        else:
+            self.yomi_score_preferences_weight = 1
+ 
+#        print(self.yomi_preferences       , self.yomi_score_preferences     , self.yomi_score_preferences_weight)
         
         # check if we should use Mersenne or the gcc rng
         if "rng" in config["info"] and \
